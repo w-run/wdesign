@@ -22,7 +22,7 @@
   padding: 26px 26px 24px;
   background: var(--wd-card);
   border-radius: 28px;
-  box-shadow: 0 24px 60px rgba(25, 27, 31, .18);
+  box-shadow: var(--wd-shadow-lg);
   animation: wd-modal-in .22s ease;
 }
 @keyframes wd-modal-in {
@@ -43,21 +43,6 @@
 }
 .wd-modal__title { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
 
-.wd-modal__close {
-  width: 36px;
-  height: 36px;
-  flex: none;
-  border: 0;
-  border-radius: 50%;
-  background: var(--wd-field);
-  color: var(--wd-ink-2);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s ease, color .15s ease;
-}
-.wd-modal__close:hover { background: var(--wd-tint-2); color: var(--wd-red-active); }
 
 .wd-modal__body { font-size: 14.5px; color: var(--wd-ink-2); line-height: 1.65; }
 

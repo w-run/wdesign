@@ -157,7 +157,7 @@ onBeforeUnmount(() => {
           <svg class="wd-ai-msg__reasoning-spark" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.2 5.3 1.9-5.3 1.9L12 16.7l-1.9-5.2-5.3-1.9 5.3-1.9z"></path></svg>
           <span class="wd-ai-msg__reasoning-title">深度思考</span>
           <span class="wd-ai-msg__reasoning-state">{{ reasoningStreaming ? '进行中' : '已完成' }}</span>
-          <span class="wd-ai-msg__reasoning-chevron">
+          <span class="wd-chevron" :class="{ 'wd-chevron--open': reasoningOpen }">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
           </span>
         </button>

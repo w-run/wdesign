@@ -31,5 +31,5 @@
 .wd-tabs__item--active {
   background: var(--wd-card);
   color: var(--wd-ink);
-  box-shadow: 0 6px 16px rgba(25, 27, 31, .08);
+  box-shadow: var(--wd-shadow-sm);
 }

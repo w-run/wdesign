@@ -12,7 +12,7 @@
   transition: background .18s ease;
 }
 .wd-switch:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring); }
-.wd-switch--off { background: #E3E7EC; }
+.wd-switch--off { background: var(--wd-field-hover); }
 
 .wd-switch__knob {
   position: absolute;
@@ -22,7 +22,7 @@
   height: 27px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+  box-shadow: var(--wd-shadow-knob);
   transition: transform .18s ease;
   transform: translateX(21px);
 }

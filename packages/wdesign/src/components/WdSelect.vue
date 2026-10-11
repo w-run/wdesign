@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
     <button type="button" class="wd-select__trigger" :disabled="disabled" @click="open = !open">
       <span v-if="current" class="wd-select__value">{{ current.label }}</span>
       <span v-else class="wd-select__placeholder">{{ placeholder }}</span>
-      <svg class="wd-select__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+      <svg class="wd-chevron" :class="{ 'wd-chevron--open': open }" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
     </button>
 
     <Transition name="wd-select-pop">

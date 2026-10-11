@@ -20,6 +20,8 @@ const props = withDefaults(
   },
 )
 
+const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
+
 const classes = computed(() => [
   'wd-btn',
   `wd-btn--${props.variant}`,
@@ -32,7 +34,7 @@ const classes = computed(() => [
 </script>
 
 <template>
-  <button :class="classes" type="button" :disabled="disabled">
+  <button :class="classes" type="button" :disabled="disabled" @click="emit('click', $event)">
     <slot />
   </button>
 </template>

@@ -107,10 +107,10 @@ onBeforeUnmount(() => {
         <div class="wd-datepicker__head">
           <span class="wd-datepicker__month">{{ monthLabel }}</span>
           <span class="wd-datepicker__nav">
-            <button type="button" class="wd-datepicker__navbtn" aria-label="上个月" @click="prevMonth">
+            <button type="button" class="wd-icon-btn wd-icon-btn--sm" aria-label="上个月" @click="prevMonth">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
             </button>
-            <button type="button" class="wd-datepicker__navbtn" aria-label="下个月" @click="nextMonth">
+            <button type="button" class="wd-icon-btn wd-icon-btn--sm" aria-label="下个月" @click="nextMonth">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
             </button>
           </span>

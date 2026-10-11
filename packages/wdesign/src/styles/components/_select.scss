@@ -17,12 +17,10 @@
   color: var(--wd-ink);
   transition: background .15s ease, box-shadow .16s ease;
 }
-.wd-select__trigger:hover { background: #E3E7EC; }
+.wd-select__trigger:hover { background: var(--wd-field-hover); }
 .wd-select--open .wd-select__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-select__placeholder { color: var(--wd-ink-3); }
-.wd-select__chevron { flex: none; color: var(--wd-ink-3); transition: transform .18s ease; }
-.wd-select--open .wd-select__chevron { transform: rotate(180deg); }
 
 .wd-select--disabled { opacity: .6; pointer-events: none; }
 

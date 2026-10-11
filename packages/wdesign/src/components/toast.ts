@@ -39,7 +39,7 @@ function show(message: string, options: WdToastOptions = {}) {
   el.className = `wd-toast wd-toast--${type} wd-toast--enter`
 
   const dot = document.createElement('span')
-  dot.className = 'wd-toast__dot'
+  dot.className = 'wd-dot wd-dot--' + type
 
   const text = document.createElement('span')
   text.textContent = message

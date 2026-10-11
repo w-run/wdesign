@@ -23,7 +23,7 @@
 
 .wd-card__title { font-size: 16px; font-weight: 700; }
 .wd-card__meta { font-size: 13px; color: var(--wd-ink-2); margin-top: 4px; }
-.wd-card--dark .wd-card__meta { color: rgba(255, 255, 255, .6); }
+.wd-card--dark .wd-card__meta { color: var(--wd-on-dark); }
 
 .wd-card__stat {
   font-size: 40px;

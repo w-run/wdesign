@@ -25,7 +25,7 @@ function close() {
 
 <template>
   <div v-if="visible" class="wd-alert" :class="`wd-alert--${variant}`" role="alert">
-    <span class="wd-alert__icon"></span>
+    <span class="wd-alert__icon wd-dot wd-dot--lg" :class="`wd-dot--${variant}`"></span>
     <div class="wd-alert__body">
       <div v-if="title" class="wd-alert__title">{{ title }}</div>
       <div v-if="description || $slots.default" class="wd-alert__desc">

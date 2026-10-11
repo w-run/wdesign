@@ -55,7 +55,7 @@
   background: var(--wd-dark);
   color: #fff;
   &:hover:not(:disabled) { background: var(--wd-dark-2); }
-  &:active:not(:disabled) { background: #3A3A3A; }
+  &:active:not(:disabled) { background: var(--wd-dark-3); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
 

@@ -88,7 +88,7 @@ const WdSelect = {
       <button type="button" class="wd-select__trigger" :disabled="disabled" @click="open = !open">
         <span v-if="current" class="wd-select__value">{{ current.label }}</span>
         <span v-else class="wd-select__placeholder">{{ placeholder }}</span>
-        <svg class="wd-select__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+        <svg class="wd-chevron" :class="{ 'wd-chevron--open': open }" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
       </button>
       <transition name="wd-select-pop">
         <div v-if="open" class="wd-select__menu">
@@ -147,7 +147,7 @@ const WdAlert = {
   },
   template: `
     <div v-if="visible" class="wd-alert" :class="'wd-alert--' + variant">
-      <span class="wd-alert__icon"></span>
+      <span class="wd-alert__icon wd-dot wd-dot--lg" :class="'wd-dot--' + variant"></span>
       <div class="wd-alert__body">
         <div v-if="title" class="wd-alert__title">{{ title }}</div>
         <div v-if="description || $slots.default" class="wd-alert__desc"><slot>{{ description }}</slot></div>
@@ -246,7 +246,7 @@ const WdModal = {
       <div class="wd-modal__panel" :style="{ maxWidth: maxWidth }">
         <div class="wd-modal__head">
           <div class="wd-modal__title">{{ title }}</div>
-          <button type="button" class="wd-modal__close" @click="close">
+          <button type="button" class="wd-icon-btn" @click="close">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
           </button>
         </div>
@@ -388,10 +388,10 @@ const WdDatePicker = {
           <div class="wd-datepicker__head">
             <span class="wd-datepicker__month">{{ monthLabel }}</span>
             <span class="wd-datepicker__nav">
-              <button type="button" class="wd-datepicker__navbtn" @click="prevMonth">
+              <button type="button" class="wd-icon-btn wd-icon-btn--sm" @click="prevMonth">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
               </button>
-              <button type="button" class="wd-datepicker__navbtn" @click="nextMonth">
+              <button type="button" class="wd-icon-btn wd-icon-btn--sm" @click="nextMonth">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
               </button>
             </span>
@@ -613,7 +613,7 @@ window.WD_TOAST = (() => {
     const el = document.createElement('div')
     el.className = 'wd-toast wd-toast--' + type + ' wd-toast--enter'
     const dot = document.createElement('span')
-    dot.className = 'wd-toast__dot'
+    dot.className = 'wd-dot wd-dot--' + type
     const text = document.createElement('span')
     text.textContent = message
     el.appendChild(dot)
@@ -764,7 +764,7 @@ const WdCollapse = {
         :class="{ 'wd-collapse__item--open': isOpen(i) }">
         <button type="button" class="wd-collapse__head" @click="toggle(i)">
           <span>{{ item.title }}</span>
-          <svg class="wd-collapse__chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+          <svg class="wd-chevron" :class="{ 'wd-chevron--open': isOpen(i) }" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
         </button>
         <div class="wd-collapse__body">
           <div class="wd-collapse__inner">
@@ -811,7 +811,7 @@ const WdDrawer = {
         <div class="wd-drawer__panel">
           <div class="wd-drawer__head">
             <div class="wd-drawer__title">{{ title }}</div>
-            <button type="button" class="wd-drawer__close" @click="close">
+            <button type="button" class="wd-icon-btn" @click="close">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
             </button>
           </div>
@@ -1038,12 +1038,12 @@ const WdNotification = {
   template: `
     <transition name="wd-notification-fade">
       <div v-if="modelValue" class="wd-notification" :class="'wd-notification--' + variant">
-        <span class="wd-notification__icon"></span>
+        <span class="wd-notification__icon wd-dot wd-dot--lg" :class="'wd-dot--' + variant"></span>
         <div class="wd-notification__body">
           <div v-if="title" class="wd-notification__title">{{ title }}</div>
           <div v-if="description || $slots.default" class="wd-notification__desc"><slot>{{ description }}</slot></div>
         </div>
-        <button type="button" class="wd-notification__close" @click="$emit('update:modelValue', false)">
+        <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-icon-btn--sm" @click="$emit('update:modelValue', false)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
         </button>
       </div>
@@ -1114,10 +1114,10 @@ const WdCarousel = {
           </slot>
         </div>
       </div>
-      <button v-if="showArrows && items.length > 1" type="button" class="wd-carousel__arrow wd-carousel__arrow--prev" @click="go(index - 1)">
+      <button v-if="showArrows && items.length > 1" type="button" class="wd-icon-btn wd-carousel__arrow wd-carousel__arrow--prev" @click="go(index - 1)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
       </button>
-      <button v-if="showArrows && items.length > 1" type="button" class="wd-carousel__arrow wd-carousel__arrow--next" @click="go(index + 1)">
+      <button v-if="showArrows && items.length > 1" type="button" class="wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next" @click="go(index + 1)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
       </button>
       <div v-if="showDots && items.length > 1" class="wd-carousel__dots">
@@ -1278,13 +1278,13 @@ const WdImagePreview = {
         </div>
         <div v-if="images.length > 1" class="wd-preview__count">{{ cur + 1 }} / {{ images.length }}</div>
         <div class="wd-preview__toolbar">
-          <button v-if="images.length > 1" type="button" class="wd-preview__btn" @click="view(cur - 1)">‹</button>
-          <button type="button" class="wd-preview__btn" @click="rotate = (rotate + 90) % 360">↻</button>
-          <button type="button" class="wd-preview__btn" @click="zoom(-0.25)">−</button>
-          <button type="button" class="wd-preview__btn" @click="zoom(0.25)">＋</button>
-          <button type="button" class="wd-preview__btn" @click="resetView">1:1</button>
-          <button v-if="images.length > 1" type="button" class="wd-preview__btn" @click="view(cur + 1)">›</button>
-          <button type="button" class="wd-preview__btn" @click="open = false">
+          <button v-if="images.length > 1" type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="view(cur - 1)">‹</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="rotate = (rotate + 90) % 360">↻</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="zoom(-0.25)">−</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="zoom(0.25)">＋</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="resetView">1:1</button>
+          <button v-if="images.length > 1" type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="view(cur + 1)">›</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" @click="open = false">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
           </button>
         </div>
@@ -1345,7 +1345,7 @@ const WdFileList = {
         :class="'wd-file-list__row--' + (row.node.type || 'file')"
         :style="{ paddingLeft: (12 + row.depth * 20) + 'px' }"
         @click="onRow(row)">
-        <span class="wd-file-list__chevron" :class="{ 'wd-file-list__chevron--open': isOpen(row.path) }">
+        <span class="wd-file-list__chevron wd-chevron wd-chevron--right" :class="{ 'wd-chevron--open': isOpen(row.path) }">
           <svg v-if="row.node.type === 'folder'" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
         </span>
         <span class="wd-file-list__icon">
@@ -1566,7 +1566,7 @@ const WdAiMessage = {
             <svg class="wd-ai-msg__reasoning-spark" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.2 5.3 1.9-5.3 1.9L12 16.7l-1.9-5.2-5.3-1.9 5.3-1.9z"></path></svg>
             <span class="wd-ai-msg__reasoning-title">深度思考</span>
             <span class="wd-ai-msg__reasoning-state">{{ reasoningStreaming ? '进行中' : '已完成' }}</span>
-            <span class="wd-ai-msg__reasoning-chevron">
+            <span class="wd-chevron" :class="{ 'wd-chevron--open': reasoningOpen }">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
             </span>
           </button>

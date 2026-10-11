@@ -39,7 +39,7 @@ watchEffect((onCleanup) => {
         <div class="wd-drawer__panel">
           <div class="wd-drawer__head">
             <div class="wd-drawer__title">{{ title }}</div>
-            <button type="button" class="wd-drawer__close" aria-label="关闭" @click="close">
+            <button type="button" class="wd-icon-btn" aria-label="关闭" @click="close">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
             </button>
           </div>

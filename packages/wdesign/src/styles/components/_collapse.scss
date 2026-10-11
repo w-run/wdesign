@@ -27,12 +27,6 @@
 }
 .wd-collapse__head:hover { background: var(--wd-bg); }
 
-.wd-collapse__chevron {
-  flex: none;
-  color: var(--wd-ink-3);
-  transition: transform .2s ease, color .2s ease;
-}
-.wd-collapse__item--open .wd-collapse__chevron { transform: rotate(180deg); color: var(--wd-red); }
 
 .wd-collapse__body {
   display: grid;

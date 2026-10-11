@@ -38,7 +38,7 @@
   a {
     color: var(--wd-red);
     text-decoration: underline;
-    text-decoration-color: rgba(214, 40, 57, .35);
+    text-decoration-color: var(--wd-link-underline);
     text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
     transition: color .15s ease, text-decoration-color .15s ease;
@@ -46,12 +46,12 @@
   a:hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
   strong, b { font-weight: 700; }
   em { font-style: italic; }
-  mark { padding: .05em .35em; border-radius: 6px; background: rgba(214, 40, 57, .14); color: inherit; }
+  mark { padding: .05em .35em; border-radius: 6px; background: var(--wd-mark-bg); color: inherit; }
   small { font-size: .88em; color: var(--wd-ink-2); }
   sub, sup { font-size: .72em; line-height: 0; position: relative; vertical-align: baseline; }
   sub { bottom: -.25em; }
   sup { top: -.5em; }
-  abbr[title] { text-decoration: underline dotted rgba(25, 27, 31, .4); text-underline-offset: 3px; }
+  abbr[title] { text-decoration: underline dotted var(--wd-underline); text-underline-offset: 3px; }
 
   // ---- 代码
   code, kbd, pre, samp { font-family: var(--wd-font-mono); }
@@ -67,7 +67,7 @@
     margin: 0 0 1.25em;
     padding: 18px 20px;
     background: var(--wd-dark);
-    color: #EDEFF2;
+    color: var(--wd-on-dark-text);
     border-radius: 16px;
     overflow: auto;
     font-size: 13.5px;
@@ -80,7 +80,7 @@
     border-radius: 7px;
     background: var(--wd-field);
     color: var(--wd-ink);
-    box-shadow: 0 2px 0 rgba(25, 27, 31, .12);
+    box-shadow: 0 2px 0 var(--wd-ring-soft);
   }
 
   // ---- 引用块（嵌套层级 = 静态分层，父级不会被连带高亮）
@@ -108,7 +108,7 @@
     blockquote {
       margin: 12px 0 2px;
       background: var(--wd-card);
-      box-shadow: 0 8px 20px rgba(25, 27, 31, .06);
+      box-shadow: var(--wd-shadow-sm);
       &::before { background: var(--wd-tint-4); }
 
       // 三级：浅红加深
@@ -175,7 +175,8 @@
   dt { font-weight: 700; margin-top: .8em; }
   dd { margin: .2em 0 0; padding-left: 1.2em; color: var(--wd-ink-2); }
 
-  // ---- hljs 深色代码配色（配套 pre 的深色块）
+  // ---- hljs 深色代码配色���配套 pre 的深色块）
+  // 注意：以下为固定语法色板（VS Code Dark），不受主题影响，刻意保留的硬编码
   .hljs-comment, .hljs-quote, .hljs-meta { color: #6A9955; }
   .hljs-name, .hljs-keyword, .hljs-selector-tag, .hljs-literal,
   .hljs-link, .hljs-modifier, .hljs-template-tag { color: #569CD6; }

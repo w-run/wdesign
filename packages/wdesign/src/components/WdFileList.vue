@@ -67,7 +67,7 @@ function fmtSize(n?: number) {
       @click="onRow(row)"
     >
       <!-- 箭头列始终占位：文件夹与文件的图标保持同列对齐 -->
-      <span class="wd-file-list__chevron" :class="{ 'wd-file-list__chevron--open': openPaths.has(row.path) }">
+      <span class="wd-file-list__chevron wd-chevron wd-chevron--right" :class="{ 'wd-chevron--open': openPaths.has(row.path) }">
         <svg v-if="row.node.type === 'folder'" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
       </span>
       <span class="wd-file-list__icon">

@@ -1,5 +1,7 @@
 # WDesign — Soft Bento · Red
 
+> 代码约定与结构规范见 [CONVENTIONS.md](./CONVENTIONS.md)
+
 SCSS + Vue3 组件库。主题色 `#D62839`；**无边框 · 色块分区 · 全圆角 · 留白极简 · 无毛玻璃**。
 
 ## 设计四原则（硬规则）

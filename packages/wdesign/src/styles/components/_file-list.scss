@@ -20,10 +20,7 @@
   flex: none;
   display: inline-flex;
   justify-content: center;
-  color: var(--wd-ink-3);
-  transition: transform .18s ease, color .18s ease;
 }
-.wd-file-list__chevron--open { transform: rotate(90deg); color: var(--wd-red); }
 
 .wd-file-list__icon {
   width: 26px;

@@ -17,7 +17,7 @@
   color: var(--wd-ink);
   transition: background .15s ease, box-shadow .16s ease;
 }
-.wd-datepicker__trigger:hover { background: #E3E7EC; }
+.wd-datepicker__trigger:hover { background: var(--wd-field-hover); }
 .wd-datepicker--open .wd-datepicker__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-datepicker__placeholder { color: var(--wd-ink-3); }
 .wd-datepicker__icon { flex: none; color: var(--wd-ink-3); }
@@ -42,20 +42,6 @@
 }
 .wd-datepicker__month { font-size: 14.5px; font-weight: 700; }
 .wd-datepicker__nav { display: flex; gap: 6px; }
-.wd-datepicker__navbtn {
-  width: 30px;
-  height: 30px;
-  border: 0;
-  border-radius: 50%;
-  background: var(--wd-field);
-  color: var(--wd-ink-2);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s ease, color .15s ease;
-}
-.wd-datepicker__navbtn:hover { background: var(--wd-tint-2); color: var(--wd-red-active); }
 
 .wd-datepicker__week { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
 .wd-datepicker__week span { text-align: center; font-size: 11.5px; font-weight: 600; color: var(--wd-ink-3); }

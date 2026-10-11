@@ -72,7 +72,7 @@ onBeforeUnmount(stop)
     <button
       v-if="showArrows && items.length > 1"
       type="button"
-      class="wd-carousel__arrow wd-carousel__arrow--prev"
+      class="wd-icon-btn wd-carousel__arrow wd-carousel__arrow--prev"
       aria-label="上一张"
       @click="go(index - 1)"
     >
@@ -81,7 +81,7 @@ onBeforeUnmount(stop)
     <button
       v-if="showArrows && items.length > 1"
       type="button"
-      class="wd-carousel__arrow wd-carousel__arrow--next"
+      class="wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next"
       aria-label="下一张"
       @click="go(index + 1)"
     >

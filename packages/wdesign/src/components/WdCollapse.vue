@@ -39,7 +39,7 @@ function toggle(i: number) {
     >
       <button type="button" class="wd-collapse__head" @click="toggle(i)">
         <span>{{ item.title }}</span>
-        <svg class="wd-collapse__chevron" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+        <svg class="wd-chevron" :class="{ 'wd-chevron--open': openSet.has(i) }" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
       </button>
       <div class="wd-collapse__body">
         <div class="wd-collapse__inner">

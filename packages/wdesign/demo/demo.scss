@@ -4,6 +4,9 @@
 //  编译：sassc demo.scss demo.css
 // =============================================================
 @import '../src/styles/tokens';
+@import '../src/styles/components/dot';
+@import '../src/styles/components/icon-btn';
+@import '../src/styles/components/chevron';
 @import '../src/styles/components/button';
 @import '../src/styles/components/tag';
 @import '../src/styles/components/card';

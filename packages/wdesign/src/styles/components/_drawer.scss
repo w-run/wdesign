@@ -15,7 +15,7 @@
   padding: 24px;
   background: var(--wd-card);
   border-radius: 24px;
-  box-shadow: 0 24px 60px rgba(25, 27, 31, .2);
+  box-shadow: var(--wd-shadow-lg);
 }
 .wd-drawer--left .wd-drawer__panel { right: auto; left: 12px; }
 
@@ -28,21 +28,6 @@
 }
 .wd-drawer__title { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
 
-.wd-drawer__close {
-  width: 36px;
-  height: 36px;
-  flex: none;
-  border: 0;
-  border-radius: 50%;
-  background: var(--wd-field);
-  color: var(--wd-ink-2);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s ease, color .15s ease;
-}
-.wd-drawer__close:hover { background: var(--wd-tint-2); color: var(--wd-red-active); }
 
 .wd-drawer__body { flex: 1; overflow: auto; font-size: 14px; line-height: 1.7; color: var(--wd-ink-2); }
 

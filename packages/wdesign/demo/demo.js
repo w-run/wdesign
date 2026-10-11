@@ -7,6 +7,7 @@ const { createApp } = Vue
 
 const WdButton = {
   name: 'WdButton',
+  emits: ['click'],
   props: {
     variant: { type: String, default: 'primary' },
     size: { type: String, default: 'md' },
@@ -24,7 +25,7 @@ const WdButton = {
       ]
     },
   },
-  template: `<button :class="classes" type="button" :disabled="disabled"><slot></slot></button>`,
+  template: `<button :class="classes" type="button" :disabled="disabled" @click="$emit('click', $event)"><slot></slot></button>`,
 }
 
 const WdTag = {

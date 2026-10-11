@@ -12,41 +12,15 @@
   padding: 16px 18px;
   background: var(--wd-card);
   border-radius: 18px;
-  box-shadow: 0 16px 40px rgba(25, 27, 31, .14);
+  box-shadow: var(--wd-shadow-pop);
 }
 
-.wd-notification__icon {
-  width: 10px;
-  height: 10px;
-  margin-top: 6px;
-  flex: none;
-  border-radius: 50%;
-  background: currentColor;
-  color: var(--wd-ink-2);
-}
-.wd-notification--success .wd-notification__icon { color: var(--wd-success); }
-.wd-notification--warning .wd-notification__icon { color: var(--wd-warning); }
-.wd-notification--danger .wd-notification__icon { color: var(--wd-red); }
+.wd-notification__icon { flex: none; margin-top: 6px; }
 
 .wd-notification__body { flex: 1; min-width: 0; }
 .wd-notification__title { font-size: 14.5px; font-weight: 700; }
 .wd-notification__desc { margin-top: 3px; font-size: 13.5px; color: var(--wd-ink-2); line-height: 1.6; }
 
-.wd-notification__close {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--wd-ink-3);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s ease, color .15s ease;
-}
-.wd-notification__close:hover { background: var(--wd-bg); color: var(--wd-ink); }
 
 .wd-notification-fade-enter-active,
 .wd-notification-fade-leave-active { transition: opacity .22s ease, transform .22s ease; }

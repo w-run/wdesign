@@ -18,6 +18,18 @@
   --wd-tint-4:     #5A3540;
   --wd-mask:      rgba(0, 0, 0, .62);
   --wd-toast-bg:  rgba(34, 34, 38, .74);
+  --wd-field-hover: #3A3A40;
+  --wd-dark-3:      #4A4A52;
+  --wd-ring-soft:   rgba(255, 255, 255, .14);
+  --wd-underline:   rgba(255, 255, 255, .4);
+  --wd-shadow:        0 12px 30px rgba(0, 0, 0, .45);
+  --wd-shadow-hover:  0 16px 40px rgba(0, 0, 0, .55);
+  --wd-shadow-sm:     0 4px 12px rgba(0, 0, 0, .4);
+  --wd-shadow-pop:    0 12px 28px rgba(0, 0, 0, .5);
+  --wd-shadow-lg:     0 24px 60px rgba(0, 0, 0, .6);
+  --wd-shadow-knob:   0 2px 8px rgba(0, 0, 0, .5);
+  --wd-mark-bg:       rgba(214, 40, 57, .28);
+  --wd-link-underline: rgba(214, 40, 57, .5);
 
   background: var(--wd-bg);
   color: var(--wd-ink);

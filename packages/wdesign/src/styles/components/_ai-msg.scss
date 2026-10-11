@@ -99,13 +99,6 @@
 .wd-ai-msg__reasoning-spark { color: var(--wd-red-soft); flex: none; }
 .wd-ai-msg__reasoning-title { color: var(--wd-ink); }
 .wd-ai-msg__reasoning-state { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--wd-ink-3); }
-.wd-ai-msg__reasoning-chevron {
-  display: inline-flex;
-  flex: none;
-  color: var(--wd-ink-3);
-  transition: transform .18s ease;
-}
-.wd-ai-msg__reasoning--open .wd-ai-msg__reasoning-chevron { transform: rotate(180deg); color: var(--wd-red-soft); }
 
 .wd-ai-msg__reasoning-body {
   display: grid;

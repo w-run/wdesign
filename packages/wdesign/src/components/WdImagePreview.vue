@@ -72,13 +72,13 @@ function openPreview() {
         </div>
         <div v-if="images.length > 1" class="wd-preview__count">{{ cur + 1 }} / {{ images.length }}</div>
         <div class="wd-preview__toolbar">
-          <button v-if="images.length > 1" type="button" class="wd-preview__btn" aria-label="上一张" @click="view(cur - 1)">‹</button>
-          <button type="button" class="wd-preview__btn" aria-label="旋转" @click="rotate = (rotate + 90) % 360">↻</button>
-          <button type="button" class="wd-preview__btn" aria-label="缩小" @click="zoom(-0.25)">−</button>
-          <button type="button" class="wd-preview__btn" aria-label="放大" @click="zoom(0.25)">＋</button>
-          <button type="button" class="wd-preview__btn" aria-label="还原" @click="resetView">1:1</button>
-          <button v-if="images.length > 1" type="button" class="wd-preview__btn" aria-label="下一张" @click="view(cur + 1)">›</button>
-          <button type="button" class="wd-preview__btn" aria-label="关闭" @click="open = false">
+          <button v-if="images.length > 1" type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="上一张" @click="view(cur - 1)">‹</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="旋转" @click="rotate = (rotate + 90) % 360">↻</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="缩小" @click="zoom(-0.25)">−</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="放大" @click="zoom(0.25)">＋</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="还原" @click="resetView">1:1</button>
+          <button v-if="images.length > 1" type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="下一张" @click="view(cur + 1)">›</button>
+          <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-preview__btn" aria-label="关闭" @click="open = false">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
           </button>
         </div>

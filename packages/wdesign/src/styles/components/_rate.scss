@@ -7,7 +7,7 @@
   padding: 2px;
   cursor: pointer;
   display: inline-flex;
-  color: #E3E7EC;
+  color: var(--wd-field-hover);
   transition: transform .12s ease, color .12s ease;
 }
 .wd-rate__item:hover { transform: scale(1.15); }
