@@ -12,7 +12,7 @@
 .wd-modal__mask {
   position: absolute;
   inset: 0;
-  background: rgba(28, 28, 28, .42);
+  background: var(--wd-mask);
 }
 
 .wd-modal__panel {

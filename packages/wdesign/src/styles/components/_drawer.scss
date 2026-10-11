@@ -1,7 +1,7 @@
 // WDesign — Drawer（侧滑抽屉）
 .wd-drawer { position: fixed; inset: 0; z-index: 1000; }
 
-.wd-drawer__mask { position: absolute; inset: 0; background: rgba(28, 28, 28, .42); }
+.wd-drawer__mask { position: absolute; inset: 0; background: var(--wd-mask); }
 
 .wd-drawer__panel {
   position: absolute;

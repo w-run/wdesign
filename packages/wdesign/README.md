@@ -101,6 +101,9 @@ createApp(App).use(WdUI).mount('#app')
 | `WdDrawer` | 侧滑抽屉 | `v-model`；`title`、`side`；#footer 插槽 |
 | `WdResult` | 结果页 | `status`: success/warning/error/info；`title`、`description`；#extra 插槽 |
 | `WdRate` | 评分 | `v-model`；`count`、`disabled`（再次点击可清空） |
+| `WdSegmented` | 分段控制 | `v-model`；`options`、`block`、`tone`:light/dark |
+| `WdUpload` | 文件上传 | `accept`、`multiple`、`hint`；拖拽 + 进度 |
+| `WdNotification` | 通知横幅 | `v-model`；`title`、`description`、`variant` |
 
 ## 主题定制（运行期）
 组件样式全部引用 CSS 变量，覆盖即可换肤：
@@ -130,6 +133,13 @@ createApp(App).use(WdUI).mount('#app')
 <WdIcon name="bell" filled :size="28" style="color: var(--wd-red)" />
 ```
 （非构建环境用 `wdesign-icons/icons.data.js`，详见其 README。）
+
+## 深色主题
+给根元素加 `data-theme="dark"` 即整套切换（底色/文字翻转，`--wd-mask` 加深，**主题红 #D62839 不变**）：
+```html
+<html data-theme="dark">
+```
+深色值：底 `#121214` / 卡 `#1C1C1E` / 控件 `#2A2A2E` / 文字 `#E8E8EC`；400+ 处样式全部走 token，无需单独适配。
 
 ## Markdown 样式
 `.wd-markdown` 包裹渲染后的 HTML 即可获得完整排版（标题 / 列表 / 引用 / 表格 / 代码 / 任务列表…）：

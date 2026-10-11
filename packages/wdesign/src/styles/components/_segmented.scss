@@ -1,0 +1,31 @@
+// WDesign — Segmented Control（分段控制）
+.wd-segmented { display: inline-flex; gap: 4px; padding: 5px; background: var(--wd-field); border-radius: var(--wd-radius-pill); }
+.wd-segmented--block { display: flex; width: 100%; }
+.wd-segmented--block .wd-segmented__item { flex: 1; }
+
+.wd-segmented__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+  white-space: nowrap;
+}
+.wd-segmented__item:hover { color: var(--wd-ink); }
+.wd-segmented__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
+.wd-segmented__item--active {
+  background: var(--wd-card);
+  color: var(--wd-ink);
+  box-shadow: 0 6px 16px rgba(25, 27, 31, .1);
+}
+.wd-segmented--dark { background: var(--wd-dark-2); }
+.wd-segmented--dark .wd-segmented__item--active { background: var(--wd-dark); color: #fff; }

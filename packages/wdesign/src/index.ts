@@ -42,6 +42,9 @@ import WdDrawer from './components/WdDrawer.vue'
 import WdRate from './components/WdRate.vue'
 import WdResult from './components/WdResult.vue'
 import WdTable from './components/WdTable.vue'
+import WdNotification from './components/WdNotification.vue'
+import WdSegmented from './components/WdSegmented.vue'
+import WdUpload from './components/WdUpload.vue'
 import { toast } from './components/toast'
 
 export {
@@ -76,6 +79,9 @@ export {
   WdRate,
   WdResult,
   WdTable,
+  WdNotification,
+  WdSegmented,
+  WdUpload,
   toast,
 }
 

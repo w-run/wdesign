@@ -1,0 +1,31 @@
+/* =============================================================
+ *  WDesign — 深色主题（data-theme="dark"）
+ *  底色切换 + 文字翻转；主题红 #D62839 不变
+ * ============================================================= */
+
+[data-theme="dark"] {
+  --wd-bg:         #121214;   /* 深底 */
+  --wd-card:       #1C1C1E;   /* 深卡 */
+  --wd-field:      #2A2A2E;   /* 深控件底 */
+  --wd-dark:       #F0F0F0;   /* 深色锚点反转 */
+  --wd-dark-2:     #3A3A40;
+  --wd-ink:        #E8E8EC;   /* 正文 → 亮 */
+  --wd-ink-2:      #8888A0;   /* 次级 → 暗灰 */
+  --wd-ink-3:      #55556A;   /* 占位 */
+  --wd-tint-1:     #2A1A1E;   /* 浅红底（暗色版） */
+  --wd-tint-2:     #3A2025;
+  --wd-tint-3:     #4A2830;
+  --wd-tint-4:     #5A3540;
+  --wd-mask:      rgba(0, 0, 0, .62);
+
+  background: var(--wd-bg);
+  color: var(--wd-ink);
+}
+
+/* 深色下滚动条 */
+[data-theme="dark"] ::-webkit-scrollbar { width: 6px; }
+[data-theme="dark"] ::-webkit-scrollbar-track { background: transparent; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3A3A40; border-radius: 999px; }
+
+/* 文字选中 */
+[data-theme="dark"] ::selection { background: rgba(214, 40, 57, .3); }

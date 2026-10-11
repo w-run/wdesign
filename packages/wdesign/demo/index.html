@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=20261016">
+<link rel="stylesheet" href="demo.css?v=20261018">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -14,6 +14,9 @@
     <div class="demo-chips">
       <span class="wd-tag wd-tag--tint">SCSS + Vue3</span>
       <span class="wd-tag wd-tag--dark">wdesign v1.0</span>
+    </div>
+    <div style="margin-top: 18px;">
+      <wd-button size="sm" variant="tint" @click="toggleDark">{{ dark ? '☀ 浅色模式' : '🌙 深色模式' }}</wd-button>
     </div>
     <h1>Soft Bento · Red</h1>
     <p>组件库实时演示 —— 无边框 · 色块分区 · 全圆角 · 留白极简 · 无毛玻璃</p>
@@ -322,6 +325,45 @@
   </section>
 
   <section class="demo-sec">
+    <h2>扩展组件</h2>
+    <p class="hint">分段控制 · 文件上传 · 通知横幅；页面右上角按钮可切换深浅模式（主题红 #D62839 不变）。</p>
+
+    <div class="demo-panel">
+      <h3>SEGMENTED 分段控制</h3>
+      <div class="demo-row" style="gap: 48px; align-items: center;">
+        <div class="demo-col" style="width: 360px;">
+          <wd-segmented v-model="segVal" :options="['日', '周', '月', '年']" block></wd-segmented>
+          <span class="demo-cap">block 等宽分段 · {{ segVal }}</span>
+        </div>
+        <div class="demo-col">
+          <span style="display: inline-flex; padding: 8px; border-radius: 999px; background: var(--wd-dark-2);">
+            <wd-segmented v-model="segVal2" :options="['列表', '卡片', '看板']" tone="dark"></wd-segmented>
+          </span>
+          <span class="demo-cap">tone=dark 深色分段</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>UPLOAD 文件上传</h3>
+      <div style="max-width: 460px;">
+        <wd-upload hint="支持 .png / .zip，拖拽或点击" accept=".png,.jpg,.zip" multiple></wd-upload>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>NOTIFICATION 通知横幅</h3>
+      <div class="demo-row">
+        <wd-button variant="tint" size="sm" @click="notice('success')">成功通知</wd-button>
+        <wd-button variant="tint" size="sm" @click="notice('warning')">警告通知</wd-button>
+        <wd-button variant="tint" size="sm" @click="notice('danger')">危险通知</wd-button>
+        <span class="demo-cap">左下角卡片 · Esc 关闭</span>
+      </div>
+      <wd-notification v-model="noticeOpen" :title="noticeTitle" :description="noticeDesc" :variant="noticeVariant"></wd-notification>
+    </div>
+  </section>
+
+  <section class="demo-sec">
     <h2>MARKDOWN 样式</h2>
     <p class="hint">.wd-markdown 包裹渲染后的 HTML；引用块嵌套为静态分层，父级不会被连带高亮。</p>
     <div class="demo-board">
@@ -454,7 +496,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 </div>
 <script src="vue.global.prod.js"></script>
 <script src="icons.data.js?v=2"></script>
-<script src="demo-extra.js?v=2"></script>
-<script src="demo.js?v=5"></script>
+<script src="demo-extra.js?v=4"></script>
+<script src="demo.js?v=6"></script>
 </body>
 </html>

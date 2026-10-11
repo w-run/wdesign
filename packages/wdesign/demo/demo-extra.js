@@ -657,16 +657,53 @@ const WdTable = {
     striped: { type: Boolean, default: true },
     emptyText: { type: String, default: '暂无数据' },
   },
+  data() {
+    return { sortKey: '', sortDir: 'asc' }
+  },
+  computed: {
+    sorted() {
+      if (!this.sortKey) return this.rows
+      const dir = this.sortDir
+      return this.rows.slice().sort((a, b) => {
+        const av = String(a[this.sortKey] ?? '')
+        const bv = String(b[this.sortKey] ?? '')
+        const cmp = av.localeCompare(bv, 'zh-CN', { numeric: true })
+        return dir === 'asc' ? cmp : -cmp
+      })
+    },
+  },
+  methods: {
+    toggleSort(col) {
+      if (!col.sortable) return
+      if (this.sortKey === col.key) {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'
+      } else {
+        this.sortKey = col.key
+        this.sortDir = 'asc'
+      }
+    },
+  },
   template: `
     <div class="wd-table-wrap">
       <table v-if="rows.length" class="wd-table" :class="{ 'wd-table--striped': striped }">
         <thead>
           <tr>
-            <th v-for="col in columns" :key="col.key" :style="col.width ? { width: col.width } : null">{{ col.title }}</th>
+            <th v-for="col in columns" :key="col.key" :style="col.width ? { width: col.width } : null"
+              class="wd-table__th" :class="{ 'wd-table__th--sort': col.sortable }"
+              @click="toggleSort(col)">
+              {{ col.title }}
+              <span v-if="col.sortable" class="wd-table__sort">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
+                  :style="{ color: sortKey === col.key ? 'var(--wd-red)' : 'var(--wd-ink-3)' }">
+                  <path v-if="sortKey !== col.key || sortDir === 'asc'" d="M12 5l7 7H5l7-7z"></path>
+                  <path v-else d="M12 19l-7-7h14l-7 7z"></path>
+                </svg>
+              </span>
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, i) in rows" :key="i">
+          <tr v-for="(row, i) in sorted" :key="i">
             <td v-for="col in columns" :key="col.key" :style="col.align ? { textAlign: col.align } : null">
               <slot :name="'cell-' + col.key" :row="row" :value="row[col.key]">{{ row[col.key] }}</slot>
             </td>
@@ -840,4 +877,147 @@ const WdRate = {
 
 window.WD_EXTRA_COMPONENTS = (window.WD_EXTRA_COMPONENTS || []).concat([
   WdTable, WdBreadcrumb, WdCollapse, WdDrawer, WdResult, WdRate,
+])
+
+
+/* =============================================================
+ *  demo 镜像（第 6 段）：Segmented / Upload / Notification
+ * ============================================================= */
+
+const WdSegmented = {
+  name: 'WdSegmented',
+  props: {
+    modelValue: { type: [String, Number], default: '' },
+    options: { type: Array, default: () => [] },
+    block: Boolean,
+    tone: { type: String, default: 'light' },
+  },
+  emits: ['update:modelValue'],
+  computed: {
+    items() {
+      return this.options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o))
+    },
+  },
+  template: `
+    <div class="wd-segmented" :class="{ 'wd-segmented--block': block, 'wd-segmented--dark': tone === 'dark' }">
+      <button v-for="o in items" :key="o.value" type="button" class="wd-segmented__item"
+        :class="{ 'wd-segmented__item--active': o.value === modelValue }"
+        @click="$emit('update:modelValue', o.value)">{{ o.label }}</button>
+    </div>`,
+}
+
+const WdUpload = {
+  name: 'WdUpload',
+  props: {
+    accept: { type: String, default: '*' },
+    multiple: Boolean,
+    hint: { type: String, default: '' },
+  },
+  emits: ['change'],
+  data() {
+    return { files: [], dragging: false }
+  },
+  methods: {
+    fmtSize(n) {
+      if (n < 1024) return n + ' B'
+      if (n < 1048576) return (n / 1024).toFixed(1) + ' KB'
+      return (n / 1048576).toFixed(1) + ' MB'
+    },
+    openPicker() {
+      if (this.$refs.input) this.$refs.input.click()
+    },
+    addFiles(list) {
+      const arr = Array.from(list || [])
+      for (const f of arr) {
+        if (!this.multiple && this.files.length >= 1) this.files = []
+        const item = { name: f.name, size: f.size, percent: 0 }
+        this.files.push(item)
+        this.$emit('change', this.files.slice())
+        const timer = setInterval(() => {
+          item.percent = Math.min(100, item.percent + Math.round(12 + Math.random() * 16))
+          if (item.percent >= 100) clearInterval(timer)
+        }, 120)
+      }
+    },
+    onPick(e) {
+      this.addFiles(e.target.files)
+      e.target.value = ''
+    },
+    onDrop(e) {
+      e.preventDefault()
+      this.dragging = false
+      this.addFiles(e.dataTransfer.files)
+    },
+    remove(i) {
+      this.files.splice(i, 1)
+      this.$emit('change', this.files.slice())
+    },
+  },
+  template: `
+    <div class="wd-upload">
+      <div class="wd-upload__zone" :class="{ 'wd-upload__zone--over': dragging }"
+        @click="openPicker" @dragover.prevent="dragging = true" @dragleave="dragging = false" @drop="onDrop">
+        <span class="wd-upload__icon">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"></path><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"></path></svg>
+        </span>
+        <span class="wd-upload__hint"><strong>点击选择</strong> 或拖拽文件到这里</span>
+        <span v-if="hint" class="wd-upload__hint">{{ hint }}</span>
+        <span class="wd-upload__browse">浏览文件</span>
+        <input ref="input" class="wd-upload__input" type="file" :accept="accept" :multiple="multiple" @change="onPick" />
+      </div>
+      <div v-if="files.length" class="wd-upload__list">
+        <div v-for="(f, i) in files" :key="i" class="wd-upload__item">
+          <span class="wd-upload__file-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>
+          </span>
+          <div class="wd-upload__info">
+            <div class="wd-upload__name">{{ f.name }}</div>
+            <div class="wd-upload__meta">{{ fmtSize(f.size) }} · {{ f.percent >= 100 ? '已完成' : '上传中 ' + f.percent + '%' }}</div>
+            <div v-if="f.percent < 100" class="wd-upload__progress">
+              <span class="wd-upload__progress-bar" :style="{ width: f.percent + '%' }"></span>
+            </div>
+          </div>
+          <button type="button" class="wd-upload__remove" @click.stop="remove(i)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>`,
+}
+
+const WdNotification = {
+  name: 'WdNotification',
+  props: {
+    modelValue: Boolean,
+    title: { type: String, default: '' },
+    description: { type: String, default: '' },
+    variant: { type: String, default: 'info' },
+  },
+  emits: ['update:modelValue'],
+  mounted() {
+    this._onKey = (e) => {
+      if (e.key === 'Escape' && this.modelValue) this.$emit('update:modelValue', false)
+    }
+    document.addEventListener('keydown', this._onKey)
+  },
+  beforeUnmount() {
+    document.removeEventListener('keydown', this._onKey)
+  },
+  template: `
+    <transition name="wd-notification-fade">
+      <div v-if="modelValue" class="wd-notification" :class="'wd-notification--' + variant">
+        <span class="wd-notification__icon"></span>
+        <div class="wd-notification__body">
+          <div v-if="title" class="wd-notification__title">{{ title }}</div>
+          <div v-if="description || $slots.default" class="wd-notification__desc"><slot>{{ description }}</slot></div>
+        </div>
+        <button type="button" class="wd-notification__close" @click="$emit('update:modelValue', false)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+        </button>
+      </div>
+    </transition>`,
+}
+
+window.WD_EXTRA_COMPONENTS = (window.WD_EXTRA_COMPONENTS || []).concat([
+  WdSegmented, WdUpload, WdNotification,
 ])

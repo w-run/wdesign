@@ -240,9 +240,9 @@ const app = createApp({
         { label: 'components', value: 'components' },
       ],
       tableCols: [
-        { key: 'name', title: '仓库' },
+        { key: 'name', title: '仓库', sortable: true },
         { key: 'lang', title: '语言' },
-        { key: 'stars', title: 'Stars', align: 'right' },
+        { key: 'stars', title: 'Stars', align: 'right', sortable: true },
         { key: 'status', title: '状态' },
       ],
       tableRows: [
@@ -258,6 +258,13 @@ const app = createApp({
       openItems: [0],
       rateVal: 4,
       drawerOpen: false,
+      segVal: '月',
+      segVal2: '列表',
+      noticeOpen: false,
+      noticeTitle: '',
+      noticeDesc: '',
+      noticeVariant: 'info',
+      dark: false,
       files: [
         { name: '季度汇报.pdf', size: '12 MB' },
         { name: '品牌规范.fig', size: '94 MB' },
@@ -271,6 +278,24 @@ const app = createApp({
     },
     onCrumb(v) {
       window.WD_TOAST.info('跳转：' + v)
+    },
+    notice(v) {
+      const map = {
+        success: { t: '构建完成', d: 'wdesign v1.5.0 打包成功，用时 42s。', v: 'success' },
+        warning: { t: '存储将满', d: '剩余空间不足 10%，请及时清理。', v: 'warning' },
+        danger: { t: '同步失败', d: '无法连接远程仓库，请检查网络。', v: 'danger' },
+      }
+      const m = map[v]
+      this.noticeTitle = m.t
+      this.noticeDesc = m.d
+      this.noticeVariant = m.v
+      this.noticeOpen = true
+    },
+    toggleDark() {
+      this.dark = !this.dark
+      document.documentElement.setAttribute('data-theme', this.dark ? 'dark' : 'light')
+      document.documentElement.style.colorScheme = this.dark ? 'dark' : 'light'
+      window.WD_TOAST.info(this.dark ? '已切换深色模式' : '已切换浅色模式')
     },
     pop(type) {
       const names = { info: '信息', success: '成功', warning: '警告', danger: '危险' }

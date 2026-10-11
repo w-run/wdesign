@@ -27,6 +27,11 @@
 .wd-table--striped tbody tr:nth-child(even) { background: var(--wd-bg); }
 .wd-table tbody tr:hover { background: var(--wd-tint-1); }
 
+.wd-table__th { cursor: default; }
+.wd-table__th--sort { cursor: pointer; user-select: none; }
+.wd-table__th--sort:hover { color: var(--wd-red); }
+.wd-table__sort { display: inline-flex; margin-left: 5px; vertical-align: middle; }
+
 .wd-table__empty {
   padding: 42px 20px;
   text-align: center;
