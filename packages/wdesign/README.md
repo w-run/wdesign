@@ -108,8 +108,8 @@ createApp(App).use(WdUI).mount('#app')
 | `WdSortableList` | 拖动排序 | `v-model`；HTML5 拖拽 |
 | `WdOtp` | 验证码输入 | `v-model`；`length`；自动前进/回退/粘贴 |
 | `WdImagePreview` | 图片预览（灯箱） | `src` / `list`；缩放 / 旋转 / 上一张下一张 |
-| `WdFileList` | 文件列表（下拉展开） | `items` 树形；`@select` |
-| `WdExplorer` | 模拟资源管理器 | `folders`；路径 + 表格 |
+| `WdFileList` | 文件列表（下拉展开，图标/箭头同列对齐） | `items` 树形；`@select` |
+| `WdExplorer` | 模拟资源管理器（详情 / 图标双视图） | `folders`、`view`；路径 + 表格 + 网格 |
 | `WdAiMessage` | AI 消息框 | `content`；`streaming` 流式 / `thinking` 思考 / `actions` 操作；`@action`、`@stream-end` |
 
 ## 主题定制（运行期）
