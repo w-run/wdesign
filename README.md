@@ -44,6 +44,7 @@ createApp(App).use(WdUI).mount('#app')
 ![演示 · 日期与 Toast](docs/preview-demo.jpg)
 ![组件 · 表格与折叠](docs/preview-components.jpg)
 ![Markdown 样式](docs/preview-markdown.jpg)
+![深色模式](docs/preview-dark.jpg)
 ![图标库](docs/preview-icons.jpg)
 
 ## License
