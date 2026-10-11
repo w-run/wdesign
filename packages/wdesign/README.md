@@ -88,7 +88,7 @@ createApp(App).use(WdUI).mount('#app')
 | `WdModal` | 对话框 | `v-model`；`title`、`width`、`closeOnMask`；#footer 插槽 |
 | `WdBadge` | 徽标 | `value`、`dot`、`max`、`tone` |
 | `WdDatePicker` | 日期选择 | `v-model`（YYYY-MM-DD）；`placeholder` |
-| `WdToast` | 轻提示（命令式） | `toast('…')` · `toast.success / warning / danger`；`{ duration }` |
+| `WdToast` | 轻提示（命令式 · 半透明浮层） | `toast('…')` · `toast.success / warning / danger`；`{ duration }` |
 | `WdTooltip` | 气泡提示 | `content`、`placement`: top/bottom |
 | `WdDropdown` | 下拉菜单 | `items`；`@select` |
 | `WdPagination` | 分页 | `v-model`（页码）；`total`、`pageSize` |
@@ -101,9 +101,16 @@ createApp(App).use(WdUI).mount('#app')
 | `WdDrawer` | 侧滑抽屉 | `v-model`；`title`、`side`；#footer 插槽 |
 | `WdResult` | 结果页 | `status`: success/warning/error/info；`title`、`description`；#extra 插槽 |
 | `WdRate` | 评分 | `v-model`；`count`、`disabled`（再次点击可清空） |
-| `WdSegmented` | 分段控制 | `v-model`；`options`、`block`、`tone`:light/dark |
+| `WdSegmented` | 分段控制（选中滑块平滑平移） | `v-model`；`options`、`block`、`tone`:light/dark |
 | `WdUpload` | 文件上传 | `accept`、`multiple`、`hint`；拖拽 + 进度 |
 | `WdNotification` | 通知横幅 | `v-model`；`title`、`description`、`variant` |
+| `WdCarousel` | 轮播 | `items`、`height`、`autoplay`；箭头 + 圆点 |
+| `WdSortableList` | 拖动排序 | `v-model`；HTML5 拖拽 |
+| `WdOtp` | 验证码输入 | `v-model`；`length`；自动前进/回退/粘贴 |
+| `WdImagePreview` | 图片预览（灯箱） | `src` / `list`；缩放 / 旋转 / 上一张下一张 |
+| `WdFileList` | 文件列表（下拉展开） | `items` 树形；`@select` |
+| `WdExplorer` | 模拟资源管理器 | `folders`；路径 + 表格 |
+| `WdAiMessage` | AI 消息框 | `content`；`streaming` 流式 / `thinking` 思考 / `actions` 操作；`@action`、`@stream-end` |
 
 ## 主题定制（运行期）
 组件样式全部引用 CSS 变量，覆盖即可换肤：

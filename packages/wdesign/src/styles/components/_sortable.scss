@@ -1,0 +1,21 @@
+// WDesign — SortableList（拖动排序）
+.wd-sortable { display: flex; flex-direction: column; gap: 8px; }
+
+.wd-sortable__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  background: var(--wd-card);
+  border-radius: 14px;
+  box-shadow: var(--wd-shadow);
+  cursor: grab;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.wd-sortable__item:active { cursor: grabbing; }
+
+.wd-sortable__item--drag { opacity: .55; transform: scale(.98); }
+.wd-sortable__item--over { background: var(--wd-tint-1); }
+
+.wd-sortable__handle { display: inline-flex; color: var(--wd-ink-3); flex: none; }
+.wd-sortable__label { font-size: 14px; font-weight: 600; }

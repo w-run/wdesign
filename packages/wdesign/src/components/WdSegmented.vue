@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 defineOptions({ name: 'WdSegmented' })
 
@@ -20,14 +20,38 @@ const emit = defineEmits<{ (e: 'update:modelValue', value: string | number): voi
 const items = computed(() =>
   props.options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o)),
 )
+
+const track = ref<HTMLElement>()
+const slider = ref<HTMLElement>()
+
+/** 选中滑块：测量激活项的位置/宽度，平移过渡 */
+function updateSlider() {
+  const t = track.value
+  const s = slider.value
+  if (!t || !s) return
+  const active = t.querySelector<HTMLElement>('.wd-segmented__item--active')
+  if (!active) return
+  s.style.transform = `translateX(${active.offsetLeft - 5}px)`
+  s.style.width = `${active.offsetWidth}px`
+}
+
+onMounted(() => {
+  updateSlider()
+  window.addEventListener('resize', updateSlider)
+})
+onBeforeUnmount(() => window.removeEventListener('resize', updateSlider))
+watch(() => props.modelValue, () => nextTick(updateSlider))
+watch(items, () => nextTick(updateSlider))
 </script>
 
 <template>
   <div
+    ref="track"
     class="wd-segmented"
     :class="{ 'wd-segmented--block': block, 'wd-segmented--dark': tone === 'dark' }"
     role="tablist"
   >
+    <span ref="slider" class="wd-segmented__slider"></span>
     <button
       v-for="o in items"
       :key="o.value"

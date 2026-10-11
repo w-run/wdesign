@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=20261018">
+<link rel="stylesheet" href="demo.css?v=20261019">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -364,6 +364,71 @@
   </section>
 
   <section class="demo-sec">
+    <h2>交互组件</h2>
+    <p class="hint">轮播 · 拖动排序 · 验证码 · 图片预览 · 文件列表 · 资源管理器 · AI 消息。</p>
+
+    <div class="demo-panel">
+      <h3>CAROUSEL 轮播</h3>
+      <div style="max-width: 560px;">
+        <wd-carousel :items="carouselItems" :height="220" :autoplay="3200"></wd-carousel>
+        <span class="demo-cap">3 张实机截图 · 自动播放 3.2s · 悬停暂停</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>SORTABLE 拖动排序 · OTP 验证码</h3>
+      <div class="demo-row" style="gap: 48px; align-items: flex-start;">
+        <div class="demo-col" style="width: 300px;">
+          <wd-sortable-list v-model="sortableItems"></wd-sortable-list>
+          <span class="demo-cap">拖动行即可排序</span>
+        </div>
+        <div class="demo-col">
+          <wd-otp v-model="otpVal"></wd-otp>
+          <span class="demo-cap">otp · 自动前进 / 回退 / 粘贴</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>IMAGE PREVIEW 图片预览</h3>
+      <div style="width: 220px;">
+        <wd-image-preview :list="previewList" :index="0"></wd-image-preview>
+        <span class="demo-cap">点击缩略图打开灯箱 · 滚轮缩放 / 旋转</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>FILELIST · EXPLORER</h3>
+      <div class="demo-row" style="gap: 32px; align-items: flex-start;">
+        <div class="demo-col" style="flex: 1; min-width: 300px;">
+          <div style="background: var(--wd-card); border-radius: 16px; padding: 10px; box-shadow: var(--wd-shadow);">
+            <wd-file-list :items="fileTree" @select="onFileSelect"></wd-file-list>
+          </div>
+          <span class="demo-cap">文件列表 · 文件夹下拉展开</span>
+        </div>
+        <div class="demo-col" style="flex: 1.4; min-width: 380px;">
+          <wd-explorer :folders="explorerFolders" @select="onExplorerSelect"></wd-explorer>
+          <span class="demo-cap">模拟资源管理器</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>AI MESSAGE 消息框</h3>
+      <div style="display: flex; flex-direction: column; gap: 14px; max-width: 660px;">
+        <wd-ai-message self content="帮我把 WDesign 的视觉规范再精简一版。"></wd-ai-message>
+        <wd-ai-message content="好的，我先深度思考一下当前结构……"></wd-ai-message>
+        <wd-ai-message :content="aiText" :streaming="aiStreaming" :thinking="aiThinking" :speed="60" :actions="aiActions" @action="onAiAction"></wd-ai-message>
+        <div class="demo-row">
+          <wd-button variant="tint" size="sm" @click="aiStreaming = !aiStreaming">{{ aiStreaming ? '暂停流式' : '开始流式' }}</wd-button>
+          <wd-button variant="ghost" size="sm" @click="aiThinking = !aiThinking">思考指示</wd-button>
+          <span class="demo-cap">流式 ▍光标 · 思考三点脉动 · 操作胶囊</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-sec">
     <h2>MARKDOWN 样式</h2>
     <p class="hint">.wd-markdown 包裹渲染后的 HTML；引用块嵌套为静态分层，父级不会被连带高亮。</p>
     <div class="demo-board">
@@ -496,7 +561,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 </div>
 <script src="vue.global.prod.js"></script>
 <script src="icons.data.js?v=2"></script>
-<script src="demo-extra.js?v=4"></script>
-<script src="demo.js?v=6"></script>
+<script src="demo-extra.js?v=6"></script>
+<script src="demo.js?v=7"></script>
 </body>
 </html>

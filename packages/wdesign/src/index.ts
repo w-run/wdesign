@@ -45,6 +45,13 @@ import WdTable from './components/WdTable.vue'
 import WdNotification from './components/WdNotification.vue'
 import WdSegmented from './components/WdSegmented.vue'
 import WdUpload from './components/WdUpload.vue'
+import WdAiMessage from './components/WdAiMessage.vue'
+import WdCarousel from './components/WdCarousel.vue'
+import WdExplorer from './components/WdExplorer.vue'
+import WdFileList from './components/WdFileList.vue'
+import WdImagePreview from './components/WdImagePreview.vue'
+import WdOtp from './components/WdOtp.vue'
+import WdSortableList from './components/WdSortableList.vue'
 import { toast } from './components/toast'
 
 export {
@@ -82,6 +89,13 @@ export {
   WdNotification,
   WdSegmented,
   WdUpload,
+  WdAiMessage,
+  WdCarousel,
+  WdExplorer,
+  WdFileList,
+  WdImagePreview,
+  WdOtp,
+  WdSortableList,
   toast,
 }
 

@@ -41,6 +41,7 @@ $wd-dur:      .18s !default;
 $wd-dur-fast: .12s !default;
 $wd-ease:     cubic-bezier(.25, .8, .35, 1) !default;
 $wd-mask:     rgba(28, 28, 28, .42) !default; // 遮罩（深色主题会覆盖）
+$wd-toast-bg: rgba(255, 255, 255, .78) !default; // Toast 半透明底（深色主题会覆盖）
 $wd-danger:     $wd-red !default;
 
 // --- Focus Ring --------------------------------------------
@@ -112,6 +113,7 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
   --wd-dur-fast: #{$wd-dur-fast};
   --wd-ease:     #{$wd-ease};
   --wd-mask:     #{$wd-mask};
+  --wd-toast-bg: #{$wd-toast-bg};
 
   --wd-focus-ring:      #{$wd-focus-ring};
   --wd-focus-ring-soft: #{$wd-focus-ring-soft};

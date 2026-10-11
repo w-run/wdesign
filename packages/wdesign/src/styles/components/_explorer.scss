@@ -1,0 +1,43 @@
+// WDesign — Explorer（模拟资源管理器）
+.wd-explorer {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 18px;
+  padding: 18px;
+  background: var(--wd-card);
+  border-radius: 20px;
+  box-shadow: var(--wd-shadow);
+}
+
+.wd-explorer__side { display: flex; flex-direction: column; gap: 4px; }
+
+.wd-explorer__folder {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background .14s ease, color .14s ease;
+}
+.wd-explorer__folder:hover { background: var(--wd-bg); color: var(--wd-ink); }
+.wd-explorer__folder--active { background: var(--wd-tint-2); color: var(--wd-red-active); }
+
+.wd-explorer__count { margin-left: auto; font-size: 11px; color: var(--wd-ink-3); font-family: var(--wd-font-mono); }
+
+.wd-explorer__main { min-width: 0; }
+
+.wd-explorer__path { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; font-size: 13px; }
+.wd-explorer__crumb { color: var(--wd-ink-2); cursor: pointer; }
+.wd-explorer__crumb:hover { color: var(--wd-red); }
+.wd-explorer__crumb--cur { color: var(--wd-ink); font-weight: 700; cursor: default; }
+.wd-explorer__sep { color: var(--wd-ink-3); }
+
+.wd-explorer__file-icon { display: inline-flex; vertical-align: -3px; margin-right: 7px; color: var(--wd-ink-3); }

@@ -1,9 +1,31 @@
-// WDesign — Segmented Control（分段控制）
-.wd-segmented { display: inline-flex; gap: 4px; padding: 5px; background: var(--wd-field); border-radius: var(--wd-radius-pill); }
+// WDesign — Segmented（分段控制 · 选中滑块平滑平移）
+.wd-segmented {
+  position: relative;
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  background: var(--wd-field);
+  border-radius: var(--wd-radius-pill);
+}
 .wd-segmented--block { display: flex; width: 100%; }
 .wd-segmented--block .wd-segmented__item { flex: 1; }
 
+.wd-segmented__slider {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-card);
+  box-shadow: 0 6px 16px rgba(25, 27, 31, .1);
+  transition: transform .24s cubic-bezier(.25, .8, .35, 1), width .24s cubic-bezier(.25, .8, .35, 1);
+}
+.wd-segmented--dark .wd-segmented__slider { background: var(--wd-dark); box-shadow: none; }
+
 .wd-segmented__item {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -17,15 +39,10 @@
   font-weight: 600;
   color: var(--wd-ink-2);
   cursor: pointer;
-  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+  transition: color .16s ease;
   white-space: nowrap;
 }
 .wd-segmented__item:hover { color: var(--wd-ink); }
 .wd-segmented__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
-.wd-segmented__item--active {
-  background: var(--wd-card);
-  color: var(--wd-ink);
-  box-shadow: 0 6px 16px rgba(25, 27, 31, .1);
-}
-.wd-segmented--dark { background: var(--wd-dark-2); }
-.wd-segmented--dark .wd-segmented__item--active { background: var(--wd-dark); color: #fff; }
+.wd-segmented__item--active { color: var(--wd-ink); }
+.wd-segmented--dark .wd-segmented__item--active { color: #fff; }

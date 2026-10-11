@@ -1,4 +1,4 @@
-// WDesign — Toast（深色胶囊轻提示）
+// WDesign — Toast（顶部半透明浮层 · 轻量不突兀）
 .wd-toasts {
   position: fixed;
   top: 24px;
@@ -18,12 +18,14 @@
   gap: 9px;
   padding: 12px 20px;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-dark);
-  color: #fff;
+  background: var(--wd-toast-bg);
+  color: var(--wd-ink);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
-  box-shadow: 0 12px 30px rgba(25, 27, 31, .18);
+  box-shadow: 0 12px 30px rgba(25, 27, 31, .12);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
   pointer-events: auto;
   cursor: pointer;
   transition: opacity .25s ease, transform .25s ease;
@@ -37,8 +39,8 @@
   height: 8px;
   flex: none;
   border-radius: 50%;
-  background: #C9CDD4;
+  background: var(--wd-ink-3);
 }
-.wd-toast--success .wd-toast__dot { background: #7BE0B4; }
-.wd-toast--warning .wd-toast__dot { background: #F3C77E; }
-.wd-toast--danger .wd-toast__dot { background: #F08A93; }
+.wd-toast--success .wd-toast__dot { background: var(--wd-success); }
+.wd-toast--warning .wd-toast__dot { background: var(--wd-warning); }
+.wd-toast--danger .wd-toast__dot { background: var(--wd-red); }

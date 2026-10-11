@@ -1,0 +1,70 @@
+// WDesign — ImagePreview（图片预览 · 灯箱）
+.wd-image-preview { display: inline-flex; cursor: zoom-in; }
+.wd-image-preview__thumb { width: 100%; border-radius: 14px; display: block; }
+
+.wd-preview { position: fixed; inset: 0; z-index: 1300; }
+.wd-preview__mask { position: absolute; inset: 0; background: var(--wd-mask); }
+
+.wd-preview__stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+}
+.wd-preview__img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+  transition: transform .18s ease;
+  cursor: grab;
+}
+
+.wd-preview__toolbar {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: var(--wd-card);
+  border-radius: 999px;
+  box-shadow: 0 16px 40px rgba(25, 27, 31, .2);
+}
+.wd-preview__btn {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  font-size: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease, color .15s ease;
+}
+.wd-preview__btn:hover { background: var(--wd-tint-2); color: var(--wd-red); }
+
+.wd-preview__count {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 2;
+  padding: 6px 14px;
+  background: rgba(28, 28, 28, .55);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.wd-preview-fade-enter-active,
+.wd-preview-fade-leave-active { transition: opacity .2s ease; }
+.wd-preview-fade-enter-from,
+.wd-preview-fade-leave-to { opacity: 0; }

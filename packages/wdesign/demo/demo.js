@@ -265,6 +265,41 @@ const app = createApp({
       noticeDesc: '',
       noticeVariant: 'info',
       dark: false,
+      carouselItems: [
+        { src: 'images/dark.jpg', alt: '深色模式预览' },
+        { src: 'images/components.jpg', alt: '扩展组件' },
+        { src: 'images/markdown.jpg', alt: 'Markdown 样式' },
+      ],
+      previewList: ['images/dark.jpg', 'images/components.jpg', 'images/markdown.jpg'],
+      sortableItems: ['接口文档', '视觉规范', '组件库', '图标库', '字体包'],
+      otpVal: '',
+      fileTree: [
+        { name: 'src', type: 'folder', children: [
+          { name: 'components', type: 'folder', children: [
+            { name: 'WdButton.vue', type: 'file', size: 712 },
+            { name: 'WdTable.vue', type: 'file', size: 2834 },
+          ]},
+          { name: 'styles', type: 'folder', children: [
+            { name: 'tokens.scss', type: 'file', size: 4312 },
+          ]},
+          { name: 'index.ts', type: 'file', size: 312 },
+        ]},
+        { name: 'README.md', type: 'file', size: 9563 },
+        { name: 'LICENSE', type: 'file', size: 1064 },
+      ],
+      explorerFolders: [
+        { name: '设计', files: [ { name: '规范页.html', size: 28332, modified: '今天 09:12' }, { name: '设计摘要.md', size: 4152, modified: '昨天 18:40' }, { name: '字体方案.txt', size: 642, modified: '10-09' } ] },
+        { name: '代码', files: [ { name: 'wdesign.ts', size: 1342, modified: '今天 08:03' }, { name: 'tokens.json', size: 3408, modified: '昨天 21:15' }, { name: 'package.json', size: 670, modified: '10-11' } ] },
+        { name: '图片', files: [ { name: 'preview-dark.png', size: 398000, modified: '今天 10:02' }, { name: 'preview-light.png', size: 374000, modified: '今天 10:02' } ] },
+      ],
+      aiText: '这是 WDesign 的第 42 次发布：\n\n1. 深色主题包已上线（data-theme=\"dark\"）\n2. 分段控制改为平滑滑块\n3. Toast 调整为半透明浮层\n\n后续还有：图片预览、AI 消息、资源管理器。\n感谢使用。',
+      aiStreaming: false,
+      aiThinking: true,
+      aiActions: [
+        { label: '重试', variant: 'tint' },
+        { label: '复制' },
+        { label: '停止生成', variant: 'ghost' },
+      ],
       files: [
         { name: '季度汇报.pdf', size: '12 MB' },
         { name: '品牌规范.fig', size: '94 MB' },
@@ -296,6 +331,15 @@ const app = createApp({
       document.documentElement.setAttribute('data-theme', this.dark ? 'dark' : 'light')
       document.documentElement.style.colorScheme = this.dark ? 'dark' : 'light'
       window.WD_TOAST.info(this.dark ? '已切换深色模式' : '已切换浅色模式')
+    },
+    onAiAction(label) {
+      window.WD_TOAST.info('AI 操作：' + label)
+    },
+    onFileSelect(f) {
+      window.WD_TOAST.info('打开文件：' + f.name)
+    },
+    onExplorerSelect(f) {
+      window.WD_TOAST.info('选中：' + f.name)
     },
     pop(type) {
       const names = { info: '信息', success: '成功', warning: '警告', danger: '危险' }
