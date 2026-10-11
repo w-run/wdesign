@@ -110,7 +110,7 @@ createApp(App).use(WdUI).mount('#app')
 | `WdImagePreview` | 图片预览（灯箱） | `src` / `list`；缩放 / 旋转 / 上一张下一张 |
 | `WdFileList` | 文件列表（下拉展开，图标/箭头同列对齐） | `items` 树形；`@select` |
 | `WdExplorer` | 模拟资源管理器（详情 / 图标双视图） | `folders`、`view`；路径 + 表格 + 网格 |
-| `WdAiMessage` | AI 消息框 | `content`；`streaming` 流式 / `thinking` 思考 / `actions` 操作；`@action`、`@stream-end` |
+| `WdAiMessage` | AI 消息框（思考链与正文分离） | `content` 正文 / `reasoning` 思考（reasoning_content）；`streaming`、`reasoningStreaming`、`thinking`、`actions`；`@action`、`@stream-end`、`@reasoning-end` |
 
 ## 主题定制（运行期）
 组件样式全部引用 CSS 变量，覆盖即可换肤：

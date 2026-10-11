@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=20261020">
+<link rel="stylesheet" href="demo.css?v=20261022">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -330,16 +330,16 @@
 
     <div class="demo-panel">
       <h3>SEGMENTED 分段控制</h3>
-      <div class="demo-row" style="gap: 48px; align-items: center;">
-        <div class="demo-col" style="width: 360px;">
-          <wd-segmented v-model="segVal" :options="['日', '周', '月', '年']" block></wd-segmented>
-          <span class="demo-cap">block 等宽分段 · {{ segVal }}</span>
-        </div>
-        <div class="demo-col">
-          <span style="display: inline-flex; padding: 8px; border-radius: 999px; background: var(--wd-dark-2);">
+      <div class="demo-board">
+        <div class="demo-row" style="gap: 48px; align-items: center;">
+          <div class="demo-col" style="width: 360px;">
+            <wd-segmented v-model="segVal" :options="['日', '周', '月', '年']" block></wd-segmented>
+            <span class="demo-cap">block 等宽分段 · {{ segVal }}</span>
+          </div>
+          <div class="demo-col">
             <wd-segmented v-model="segVal2" :options="['列表', '卡片', '看板']" tone="dark"></wd-segmented>
-          </span>
-          <span class="demo-cap">tone=dark 深色分段</span>
+            <span class="demo-cap">tone=dark · 深色轨道自动匹配</span>
+          </div>
         </div>
       </div>
     </div>
@@ -417,12 +417,12 @@
       <h3>AI MESSAGE 消息框</h3>
       <div style="display: flex; flex-direction: column; gap: 14px; max-width: 660px;">
         <wd-ai-message self content="帮我把 WDesign 的视觉规范再精简一版。"></wd-ai-message>
-        <wd-ai-message content="好的，我先深度思考一下当前结构……"></wd-ai-message>
-        <wd-ai-message :content="aiText" :streaming="aiStreaming" :thinking="aiThinking" :speed="60" :actions="aiActions" @action="onAiAction"></wd-ai-message>
+        <wd-ai-message content="已完成精简，正文如下：保留 38 个组件、深色主题与 595 图标，逐条核对 token 无硬编码。" reasoning="检查 38 个组件 token 使用 → 去重重复圆角 → 确认深色主题覆盖完整 → 输出精简清单……" :default-reasoning-open="false"></wd-ai-message>
+        <wd-ai-message :content="aiText" :reasoning="aiReasoning" :streaming="aiStreaming" :reasoning-streaming="aiReasoningStreaming" :thinking="aiThinking" :speed="40" :actions="aiActions" @action="onAiAction"></wd-ai-message>
         <div class="demo-row">
-          <wd-button variant="tint" size="sm" @click="aiStreaming = !aiStreaming">{{ aiStreaming ? '暂停流式' : '开始流式' }}</wd-button>
-          <wd-button variant="ghost" size="sm" @click="aiThinking = !aiThinking">思考指示</wd-button>
-          <span class="demo-cap">流式 ▍光标 · 思考三点脉动 · 操作胶囊</span>
+          <wd-button variant="tint" size="sm" @click="startAi">▶ 播放（思考 → 正文）</wd-button>
+          <wd-button variant="ghost" size="sm" @click="resetAi">重置</wd-button>
+          <span class="demo-cap">思考链独立区域 · reasoning→content 两段流式 · 思考完自动收起</span>
         </div>
       </div>
     </div>
@@ -561,7 +561,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 </div>
 <script src="vue.global.prod.js"></script>
 <script src="icons.data.js?v=2"></script>
-<script src="demo-extra.js?v=7"></script>
-<script src="demo.js?v=7"></script>
+<script src="demo-extra.js?v=8"></script>
+<script src="demo.js?v=10"></script>
 </body>
 </html>

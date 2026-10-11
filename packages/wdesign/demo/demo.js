@@ -293,6 +293,7 @@ const app = createApp({
         { name: '图片', files: [ { name: 'preview-dark.png', size: 398000, modified: '今天 10:02' }, { name: 'preview-light.png', size: 374000, modified: '今天 10:02' } ] },
       ],
       aiText: '这是 WDesign 的第 42 次发布：\n\n1. 深色主题包已上线（data-theme=\"dark\"）\n2. 分段控制改为平滑滑块\n3. Toast 调整为半透明浮层\n\n后续还有：图片预览、AI 消息、资源管理器。\n感谢使用。',
+      aiReasoning: '1. 检查 38 个组件的 token 使用情况 → 无硬编码\n2. 分段控制暗色轨道与滑块配色统一\n3. AI 消息的思考链与正文分离展示\n4. 输出：本轮无破坏性变更，可放心升级。',
       aiStreaming: false,
       aiThinking: true,
       aiActions: [
@@ -331,6 +332,24 @@ const app = createApp({
       document.documentElement.setAttribute('data-theme', this.dark ? 'dark' : 'light')
       document.documentElement.style.colorScheme = this.dark ? 'dark' : 'light'
       window.WD_TOAST.info(this.dark ? '已切换深色模式' : '已切换浅色模式')
+    },
+    startAi() {
+      this.resetAi()
+      this.aiThinking = true
+      this.aiReasoningStreaming = true
+      const ms = (this.aiReasoning || '').length * 40 + 400
+      clearTimeout(this._aiTimer)
+      this._aiTimer = setTimeout(() => {
+        this.aiReasoningStreaming = false
+        this.aiThinking = false
+        this.aiStreaming = true
+      }, ms)
+    },
+    resetAi() {
+      clearTimeout(this._aiTimer)
+      this.aiReasoningStreaming = false
+      this.aiThinking = true
+      this.aiStreaming = false
     },
     onAiAction(label) {
       window.WD_TOAST.info('AI 操作：' + label)

@@ -1450,66 +1450,128 @@ const WdExplorer = {
     </div>`,
 }
 
+/* WDesign — WdAiMessage demo mirror（reasoning_content 与 content 分离） */
+
 const WdAiMessage = {
   name: 'WdAiMessage',
   props: {
     content: { type: String, default: '' },
+    reasoning: { type: String, default: '' },
     self: Boolean,
     thinking: Boolean,
     streaming: Boolean,
+    reasoningStreaming: Boolean,
     speed: { type: Number, default: 24 },
     actions: { type: Array, default: () => [] },
+    defaultReasoningOpen: { type: Boolean, default: true },
   },
-  emits: ['action', 'stream-end'],
+  emits: ['action', 'stream-end', 'reasoning-end'],
   data() {
-    return { shown: '' }
+    return {
+      shown: this.content,
+      shownReasoning: this.reasoning,
+      reasoningOpen: this.defaultReasoningOpen,
+      _ct: null,
+      _rt: null,
+    }
   },
   watch: {
-    streaming(v) {
-      if (v) this.start()
-      else {
-        this.stop()
-        this.shown = this.content
-      }
-    },
     content(v) {
       if (!this.streaming) this.shown = v
     },
-  },
-  mounted() {
-    if (this.streaming) this.start()
-    else this.shown = this.content
+    reasoning(v) {
+      if (!this.reasoningStreaming) this.shownReasoning = v
+    },
+    streaming: {
+      immediate: true,
+      handler(v) {
+        if (v) this.startContent()
+        else {
+          this.stopContent()
+          this.shown = this.content
+        }
+      },
+    },
+    reasoningStreaming: {
+      immediate: true,
+      handler(v) {
+        if (v) this.startReasoning()
+        else {
+          this.stopReasoning()
+          this.shownReasoning = this.reasoning
+        }
+      },
+    },
   },
   beforeUnmount() {
-    this.stop()
+    this.stopContent()
+    this.stopReasoning()
   },
   methods: {
-    start() {
-      this.stop()
+    stopContent() {
+      if (this._ct) {
+        clearInterval(this._ct)
+        this._ct = null
+      }
+    },
+    stopReasoning() {
+      if (this._rt) {
+        clearInterval(this._rt)
+        this._rt = null
+      }
+    },
+    startContent() {
+      this.stopContent()
       this.shown = ''
       let i = 0
-      this._timer = setInterval(() => {
+      this._ct = setInterval(() => {
         i += 1
         this.shown = this.content.slice(0, i)
         if (i >= this.content.length) {
-          this.stop()
+          this.stopContent()
           this.$emit('stream-end')
         }
       }, Math.max(8, this.speed))
     },
-    stop() {
-      if (this._timer) {
-        clearInterval(this._timer)
-        this._timer = null
-      }
+    startReasoning() {
+      this.stopReasoning()
+      this.shownReasoning = ''
+      let i = 0
+      this._rt = setInterval(() => {
+        i += 1
+        this.shownReasoning = this.reasoning.slice(0, i)
+        if (i >= this.reasoning.length) {
+          this.stopReasoning()
+          this.$emit('reasoning-end')
+          if (this.defaultReasoningOpen) this.reasoningOpen = false
+        }
+      }, Math.max(8, this.speed))
     },
   },
   template: `
     <div class="wd-ai-msg" :class="{ 'wd-ai-msg--self': self }">
       <span class="wd-ai-msg__avatar">{{ self ? '我' : 'AI' }}</span>
       <div class="wd-ai-msg__bubble">
-        <div v-if="thinking" class="wd-ai-msg__thinking"><i></i><i></i><i></i>深度思考中…</div>
-        <p class="wd-ai-msg__text">{{ shown }}<span v-if="streaming && shown.length < content.length" class="wd-ai-msg__cursor">▍</span></p>
+        <div v-if="thinking && !shownReasoning" class="wd-ai-msg__thinking">
+          <i></i><i></i><i></i>深度思考中…
+        </div>
+        <div v-if="shownReasoning" class="wd-ai-msg__reasoning"
+          :class="{ 'wd-ai-msg__reasoning--open': reasoningOpen }">
+          <button type="button" class="wd-ai-msg__reasoning-head" @click="reasoningOpen = !reasoningOpen">
+            <svg class="wd-ai-msg__reasoning-spark" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.2 5.3 1.9-5.3 1.9L12 16.7l-1.9-5.2-5.3-1.9 5.3-1.9z"></path></svg>
+            <span class="wd-ai-msg__reasoning-title">深度思考</span>
+            <span class="wd-ai-msg__reasoning-state">{{ reasoningStreaming ? '进行中' : '已完成' }}</span>
+            <span class="wd-ai-msg__reasoning-chevron">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+            </span>
+          </button>
+          <div class="wd-ai-msg__reasoning-body">
+            <div class="wd-ai-msg__reasoning-inner">
+              <p class="wd-ai-msg__reasoning-text">{{ shownReasoning }}<span v-if="reasoningStreaming" class="wd-ai-msg__cursor">▍</span></p>
+            </div>
+          </div>
+        </div>
+        <p v-if="content || shown" class="wd-ai-msg__text">{{ shown }}<span v-if="streaming && shown.length < content.length" class="wd-ai-msg__cursor">▍</span></p>
         <div v-if="actions.length" class="wd-ai-msg__actions">
           <button v-for="a in actions" :key="a.label" type="button" class="wd-btn"
             :class="['wd-btn--' + (a.variant || 'ghost'), 'wd-btn--sm']"

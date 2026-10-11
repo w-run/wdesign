@@ -21,6 +21,9 @@
   box-shadow: 0 6px 16px rgba(25, 27, 31, .1);
   transition: transform .24s cubic-bezier(.25, .8, .35, 1), width .24s cubic-bezier(.25, .8, .35, 1);
 }
+.wd-segmented--dark { background: var(--wd-dark-2); }
+.wd-segmented--dark .wd-segmented__item { color: rgba(255, 255, 255, .62); }
+.wd-segmented--dark .wd-segmented__item:hover { color: #fff; }
 .wd-segmented--dark .wd-segmented__slider { background: var(--wd-dark); box-shadow: none; }
 
 .wd-segmented__item {
