@@ -1,0 +1,35 @@
+// WDesign — Tabs（胶囊分段）
+.wd-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 5px;
+  background: var(--wd-field);
+  border-radius: var(--wd-radius-pill);
+}
+.wd-tabs--block { display: flex; width: 100%; }
+.wd-tabs--block .wd-tabs__item { flex: 1; }
+
+.wd-tabs__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  border-radius: var(--wd-radius-pill);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+  white-space: nowrap;
+}
+.wd-tabs__item:hover { color: var(--wd-ink); }
+.wd-tabs__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
+
+.wd-tabs__item--active {
+  background: var(--wd-card);
+  color: var(--wd-ink);
+  box-shadow: 0 6px 16px rgba(25, 27, 31, .08);
+}

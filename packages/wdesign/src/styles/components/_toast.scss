@@ -1,0 +1,44 @@
+// WDesign — Toast（深色胶囊轻提示）
+.wd-toasts {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.wd-toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 20px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-dark);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 12px 30px rgba(25, 27, 31, .18);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.wd-toast--enter,
+.wd-toast--leave { opacity: 0; transform: translateY(-8px); }
+
+.wd-toast__dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: #C9CDD4;
+}
+.wd-toast--success .wd-toast__dot { background: #7BE0B4; }
+.wd-toast--warning .wd-toast__dot { background: #F3C77E; }
+.wd-toast--danger .wd-toast__dot { background: #F08A93; }

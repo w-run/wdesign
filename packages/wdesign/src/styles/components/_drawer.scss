@@ -1,0 +1,64 @@
+// WDesign — Drawer（侧滑抽屉）
+.wd-drawer { position: fixed; inset: 0; z-index: 1000; }
+
+.wd-drawer__mask { position: absolute; inset: 0; background: rgba(28, 28, 28, .42); }
+
+.wd-drawer__panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 380px;
+  max-width: calc(100% - 24px);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--wd-card);
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(25, 27, 31, .2);
+}
+.wd-drawer--left .wd-drawer__panel { right: auto; left: 12px; }
+
+.wd-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.wd-drawer__title { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+
+.wd-drawer__close {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease, color .15s ease;
+}
+.wd-drawer__close:hover { background: var(--wd-tint-2); color: var(--wd-red-active); }
+
+.wd-drawer__body { flex: 1; overflow: auto; font-size: 14px; line-height: 1.7; color: var(--wd-ink-2); }
+
+.wd-drawer__foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+.wd-drawer-fade-enter-active, .wd-drawer-fade-leave-active { transition: opacity .22s ease; }
+.wd-drawer-fade-enter-from, .wd-drawer-fade-leave-to { opacity: 0; }
+
+.wd-drawer-fade-enter-active .wd-drawer__panel { animation: wd-drawer-in .26s cubic-bezier(.25, .8, .35, 1); }
+.wd-drawer-fade-leave-active .wd-drawer__panel { animation: wd-drawer-out .2s ease forwards; }
+
+@keyframes wd-drawer-in {
+  from { transform: translateX(24px); opacity: .6; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes wd-drawer-out {
+  from { transform: none; opacity: 1; }
+  to { transform: translateX(24px); opacity: 0; }
+}

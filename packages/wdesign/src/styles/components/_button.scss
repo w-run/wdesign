@@ -1,0 +1,69 @@
+// Soft Bento · Red — Button
+// 无边框；状态变化全部靠底色深浅
+.wd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--wd-radius-pill);
+  transition: background .16s ease, box-shadow .16s ease, transform .12s ease;
+
+  &:active:not(:disabled) { transform: scale(.97); }
+  &:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring); }
+  &:disabled { cursor: default; pointer-events: none; }
+
+  // ---- 尺寸
+  &.wd-btn--lg { padding: 16px 30px; font-size: 16px; }
+  &.wd-btn--md { padding: 13px 26px; font-size: 15px; }
+  &.wd-btn--sm { padding: 9px 18px; font-size: 13.5px; }
+
+  // ---- 图标按钮（圆形）
+  &.wd-btn--icon { width: 47px; height: 47px; padding: 0; }
+  &.wd-btn--icon.wd-btn--lg { width: 52px; height: 52px; }
+  &.wd-btn--icon.wd-btn--sm { width: 38px; height: 38px; }
+
+  // ---- 通栏
+  &.wd-btn--block { display: flex; width: 100%; }
+}
+
+// 主按钮 · 主题红
+.wd-btn--primary {
+  background: var(--wd-red);
+  color: #fff;
+  &:hover:not(:disabled) { background: var(--wd-red-hover); }
+  &:active:not(:disabled) { background: var(--wd-red-active); }
+  &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
+}
+
+// 次级按钮 · 浅色块底
+.wd-btn--tint {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-active);
+  &:hover:not(:disabled) { background: var(--wd-tint-3); }
+  &:active:not(:disabled) { background: var(--wd-tint-4); }
+  &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
+}
+
+// 深色按钮 · 画面锚点
+.wd-btn--dark {
+  background: var(--wd-dark);
+  color: #fff;
+  &:hover:not(:disabled) { background: var(--wd-dark-2); }
+  &:active:not(:disabled) { background: #3A3A3A; }
+  &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
+}
+
+// 幽灵按钮
+.wd-btn--ghost {
+  background: transparent;
+  color: var(--wd-ink);
+  &:hover:not(:disabled) { background: var(--wd-field); }
+  &:active:not(:disabled) { background: var(--wd-tint-2); }
+  &:disabled { background: transparent; color: var(--wd-ink-3); }
+}

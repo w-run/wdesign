@@ -1,0 +1,16 @@
+// WDesign — Rate（评分）
+.wd-rate { display: inline-flex; align-items: center; gap: 4px; }
+
+.wd-rate__item {
+  border: 0;
+  background: transparent;
+  padding: 2px;
+  cursor: pointer;
+  display: inline-flex;
+  color: #E3E7EC;
+  transition: transform .12s ease, color .12s ease;
+}
+.wd-rate__item:hover { transform: scale(1.15); }
+.wd-rate__item--on { color: var(--wd-red); }
+
+.wd-rate--disabled { pointer-events: none; opacity: .6; }

@@ -1,0 +1,66 @@
+// WDesign — Select
+.wd-select { position: relative; display: inline-block; min-width: 200px; }
+
+.wd-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 20px;
+  border: 0;
+  cursor: pointer;
+  background: var(--wd-field);
+  border-radius: var(--wd-radius-pill);
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--wd-ink);
+  transition: background .15s ease, box-shadow .16s ease;
+}
+.wd-select__trigger:hover { background: #E3E7EC; }
+.wd-select--open .wd-select__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
+
+.wd-select__placeholder { color: var(--wd-ink-3); }
+.wd-select__chevron { flex: none; color: var(--wd-ink-3); transition: transform .18s ease; }
+.wd-select--open .wd-select__chevron { transform: rotate(180deg); }
+
+.wd-select--disabled { opacity: .6; pointer-events: none; }
+
+.wd-select__menu {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: var(--wd-card);
+  border-radius: 18px;
+  box-shadow: var(--wd-shadow-hover);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 264px;
+  overflow: auto;
+}
+.wd-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 14px;
+  border: 0;
+  background: transparent;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14.5px;
+  color: var(--wd-ink);
+  cursor: pointer;
+  text-align: left;
+}
+.wd-select__option:hover { background: var(--wd-field); }
+.wd-select__option--active { background: var(--wd-tint-2); color: var(--wd-red-active); font-weight: 600; }
+.wd-select__option-mark { flex: none; color: var(--wd-red); }
+
+.wd-select-pop-enter-active { transition: opacity .15s ease, transform .15s ease; }
+.wd-select-pop-enter-from, .wd-select-pop-leave-to { opacity: 0; transform: translateY(-4px); }
+.wd-select-pop-leave-active { transition: opacity .12s ease, transform .12s ease; }

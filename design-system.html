@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Soft Bento · Red — 设计规范</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#D62839;--red-hover:#BC2332;--red-active:#A21E2B;--red-soft:#E05B68;
+  --t1:#FDF2F3;--t2:#FBEAEB;--t3:#F8DDDF;--tm:#F3BEC4;
+  --ink:#191B1F;--ink2:#8A9099;--ink3:#B8BEC7;
+  --bg:#F7F8FA;--card:#FFFFFF;--dark:#1C1C1C;--dark-2:#2F2F2F;
+  --sh:0 12px 30px rgba(25,27,31,.06);
+  --sh2:0 16px 40px rgba(25,27,31,.09);
+  --mono:"Mona Sans Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --font:"Mona Sans","Source Han Sans SC","Noto Sans SC","PingFang SC",-apple-system,BlinkMacSystemFont,"Inter","DM Sans",sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:60px 28px 120px}
+.hero{padding:20px 6px 42px}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;padding:7px 15px;border-radius:999px;background:#fff;color:var(--ink2);font-size:13px;font-weight:600;box-shadow:var(--sh)}
+.chip-red{background:var(--red);color:#fff}
+.hero h1{font-size:clamp(40px,7vw,64px);font-weight:800;letter-spacing:-.02em;line-height:1.04;margin:20px 0 12px}
+.lead{color:var(--ink2);font-size:16.5px;max-width:660px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:28px}
+.nav a{display:inline-flex;padding:9px 17px;border-radius:999px;background:#fff;color:var(--ink2);font-size:13.5px;font-weight:600;text-decoration:none;box-shadow:var(--sh)}
+.nav a:hover{color:var(--red)}
+.sec{background:var(--card);border-radius:32px;padding:46px;box-shadow:var(--sh);margin-bottom:26px}
+.eyebrow{color:var(--red);font-size:12.5px;font-weight:700;letter-spacing:.1em;margin-bottom:10px}
+.sec h2{font-size:29px;font-weight:800;letter-spacing:-.01em}
+.note{color:var(--ink2);font-size:15px;margin:10px 0 30px;max-width:760px}
+.sub{font-size:15px;font-weight:700;margin:32px 0 16px;display:flex;align-items:center;gap:8px}
+.sub::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red)}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:16px}
+.swc{height:92px;border-radius:20px;box-shadow:0 8px 20px rgba(25,27,31,.07)}
+.swm{padding:10px 2px 0}
+.swn{font-size:13px;font-weight:600}
+.swh{font-size:11.5px;color:var(--ink2);font-family:var(--mono)}
+.zoning{background:var(--bg);border-radius:26px;padding:22px}
+.zlabel{font-size:12px;font-weight:700;color:var(--ink2);letter-spacing:.03em}
+.zcard{background:#fff;border-radius:22px;padding:22px;box-shadow:var(--sh);margin-top:16px}
+.zrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.zblk{border-radius:18px;padding:18px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between;font-size:13px;font-weight:600;line-height:1.45}
+.zblk .zh{font-family:var(--mono);font-size:11px;opacity:.75}
+.z2{background:var(--t2);color:var(--red-active)}
+.z3{background:var(--red);color:#fff}
+.z4{background:var(--dark);color:#fff}
+.typerow{display:grid;grid-template-columns:190px 1fr;gap:20px;align-items:baseline;padding:18px 0}
+.tname{font-size:13.5px;font-weight:700;margin-bottom:2px}
+.tspec{font-size:12.5px;color:var(--ink2);font-family:var(--mono);line-height:1.7}
+.usage{background:var(--bg);border-radius:20px;padding:8px;display:flex;gap:8px;max-width:640px}
+.usage span{height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.sw-mini{display:flex;gap:12px;flex-wrap:wrap}
+.sw-mini .m{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;color:var(--ink2)}
+.sw-mini .d{width:10px;height:10px;border-radius:50%}
+.spacing{display:flex;flex-direction:column;gap:10px;max-width:680px}
+.sprow{display:grid;grid-template-columns:44px 1fr 230px;gap:16px;align-items:center;font-size:13px}
+.spval{font-family:var(--mono);font-weight:700}
+.spbar{height:14px;border-radius:7px;background:var(--t3)}
+.spbar.hi{background:var(--red)}
+.spuse{color:var(--ink2);font-size:12.5px}
+.radii{display:flex;gap:18px;flex-wrap:wrap}
+.rad{width:104px;text-align:center}
+.radbox{height:104px;background:var(--t2);margin:0 auto 10px}
+.radn{font-size:12.5px;font-weight:700}
+.rads{font-size:11.5px;color:var(--ink2);font-family:var(--mono)}
+.shadowrow{display:flex;gap:22px;flex-wrap:wrap}
+.shadcard{width:230px;height:132px;background:#fff;border-radius:24px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:13px}
+.code{display:inline-block;background:var(--bg);border-radius:12px;padding:10px 16px;font-family:var(--mono);font-size:12.5px;color:var(--ink2);margin-top:16px}
+.panel{background:var(--bg);border-radius:24px;padding:26px;margin-top:14px}
+.pantitle{font-size:12.5px;font-weight:700;color:var(--ink2);letter-spacing:.06em;margin-bottom:20px}
+.demo-row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.demo-col{display:flex;flex-direction:column;gap:9px;align-items:flex-start}
+.cap{font-size:11.5px;color:var(--ink2);font-family:var(--mono)}
+.btn{border:none;cursor:pointer;font-family:inherit;font-weight:600;border-radius:999px;padding:13px 26px;font-size:15px;transition:background .15s}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover{background:var(--red-hover)}
+.btn-primary:active{background:var(--red-active)}
+.btn-tint{background:var(--t2);color:var(--red-active)}
+.btn-tint:hover{background:var(--t3)}
+.btn-dark{background:var(--dark);color:#fff}
+.btn-ghost{background:transparent;color:var(--ink)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-disabled{background:var(--t1);color:var(--ink3);cursor:default}
+.btn-icon{width:47px;height:47px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:17px}
+.tag{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:999px;font-size:13.5px;font-weight:600}
+.tag-tint{background:var(--t2);color:var(--red-active)}
+.tag-gray{background:var(--bg);color:var(--ink2)}
+.tag-dark{background:var(--dark);color:#fff}
+.tag .dot{width:7px;height:7px;border-radius:50%;background:var(--red)}
+.input{display:inline-flex;align-items:center;gap:10px;background:var(--bg);border-radius:999px;padding:14px 22px;color:var(--ink3);font-size:15px;min-width:270px}
+.input.r18{border-radius:18px}
+.input .ph{flex:1}
+.input svg{flex:none;color:var(--ink3)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:16px}
+.card{background:#fff;border-radius:24px;padding:22px;box-shadow:var(--sh)}
+.card .thumb{width:46px;height:46px;border-radius:14px;background:var(--t2);color:var(--red);display:flex;align-items:center;justify-content:center}
+.card h4{font-size:16px;font-weight:700;margin-top:15px}
+.card .meta{font-size:13px;color:var(--ink2);margin-top:4px}
+.stat{font-size:40px;font-weight:800;letter-spacing:-.02em;color:var(--red);line-height:1.15;margin-top:12px}
+.card-tint{background:var(--t2)}
+.card-dark{background:var(--dark);color:#fff}
+.prog{height:10px;border-radius:999px;background:var(--t2);overflow:hidden;width:260px}
+.prog i{display:block;height:100%;border-radius:999px;background:var(--red)}
+.avs{display:flex;align-items:center}
+.av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex:none}
+.avs .av + .av{margin-left:-11px}
+.list{display:flex;flex-direction:column;gap:6px}
+.li{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:16px}
+.li:hover{background:var(--bg)}
+.li .ic{width:38px;height:38px;border-radius:12px;background:var(--t2);color:var(--red);display:flex;align-items:center;justify-content:center;flex:none}
+.li .t{flex:1;font-size:14.5px;font-weight:600}
+.li .s{font-size:13px;color:var(--ink2)}
+.switch{width:54px;height:33px;border-radius:999px;background:var(--red);position:relative;flex:none;transition:background .18s}
+.switch i{position:absolute;top:3px;right:3px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:all .18s}
+.switch.off{background:#E3E7EC}
+.switch.off i{right:auto;left:3px}
+.screen{background:var(--bg);border-radius:28px;padding:26px}
+.bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:18px}
+.bcard{background:#fff;border-radius:24px;padding:24px;box-shadow:var(--sh)}
+.bcard.card-dark{background:var(--dark);color:#fff}
+.dd{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.do,.dont{border-radius:24px;padding:28px}
+.do{background:var(--t1)}
+.dont{background:var(--bg)}
+.ddt{font-size:15px;font-weight:800;margin-bottom:14px}
+.do .ddt{color:var(--red)}
+.dont .ddt{color:var(--ink2)}
+.dd ul{list-style:none}
+.dd li{position:relative;padding:6px 0 6px 24px;font-size:14px}
+.dd li::before{content:"";position:absolute;left:4px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--red);opacity:.85}
+.dont li::before{background:var(--ink3);opacity:1}
+.mini-demo{margin-top:20px;background:#fff;border-radius:18px;padding:16px;display:flex;gap:12px;align-items:center;box-shadow:var(--sh)}
+.goodpill{background:var(--red);color:#fff;border-radius:999px;padding:10px 18px;font-size:12.5px;font-weight:600;flex:none}
+.badcard{flex:1;background:#fff;border:1.5px solid #C9CDD4;border-radius:10px;padding:14px;font-size:12.5px;color:var(--ink2);line-height:1.7}
+.bad-x{width:34px;height:34px;border-radius:50%;background:var(--t2);color:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.foot{color:var(--ink3);font-size:12.5px;text-align:center;margin-top:40px;line-height:2}
+@media (max-width:640px){
+.wrap{padding:34px 14px 80px}
+.sec{padding:30px 22px;border-radius:26px}
+.typerow{grid-template-columns:1fr;gap:6px}
+.dd{grid-template-columns:1fr}
+.zrow{grid-template-columns:1fr}
+.sprow{grid-template-columns:40px 1fr}
+.spuse{display:none}
+}
+@font-face{font-family:'Mona Sans';src:url('fonts/mona-sans-vf.woff2') format('woff2-variations');font-weight:200 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Source Han Sans SC';src:url('fonts/noto-sans-sc-vf.ttf') format('truetype-variations');font-weight:200 900;font-style:normal;font-display:swap}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="chips">
+    <span class="chip chip-red">#D62839</span>
+    <span class="chip">色块分区</span>
+    <span class="chip">全圆角 · 胶囊</span>
+    <span class="chip">留白极简</span>
+    <span class="chip">无边框 · 无玻璃</span>
+  </div>
+  <h1>Soft Bento · Red</h1>
+  <p class="lead">设计规范 v1.0 — 近白底 + 大留白 + 圆角 bento 卡片 + 红色点缀；区域靠色块分层区分，全程零边框、零毛玻璃。</p>
+  <nav class="nav">
+    <a href="#colors">01 色彩</a><a href="#zoning">02 分层</a><a href="#type">03 字体</a><a href="#metrics">04 基础</a><a href="#components">05 组件</a><a href="#example">06 示例</a><a href="#rules">07 规则</a>
+  </nav>
+</header>
+
+<section class="sec" id="colors">
+  <div class="eyebrow">01 · Foundation</div>
+  <h2>色彩系统</h2>
+  <p class="note">红只做点缀：界面红色面积 ≤ 10%。灰白承担 90% 的画面，红色负责指向、强调与情绪。</p>
+  <div class="sub">主题红 · 由 #D62839 派生</div>
+  <div class="swatches">
+    <div><div class="swc" style="background:#FDF2F3"></div><div class="swm"><div class="swn">Tint 最浅</div><div class="swh">#FDF2F3</div></div></div>
+    <div><div class="swc" style="background:#FBEAEB"></div><div class="swm"><div class="swn">Tint 浅 · 块底</div><div class="swh">#FBEAEB</div></div></div>
+    <div><div class="swc" style="background:#F8DDDF"></div><div class="swm"><div class="swn">Tint 中 · 选中</div><div class="swh">#F8DDDF</div></div></div>
+    <div><div class="swc" style="background:#F3BEC4"></div><div class="swm"><div class="swn">Tint 深 · 强调</div><div class="swh">#F3BEC4</div></div></div>
+    <div><div class="swc" style="background:#E05B68"></div><div class="swm"><div class="swn">深底红</div><div class="swh">#E05B68</div></div></div>
+    <div><div class="swc" style="background:#D62839"></div><div class="swm"><div class="swn">主题红</div><div class="swh">#D62839</div></div></div>
+    <div><div class="swc" style="background:#BC2332"></div><div class="swm"><div class="swn">悬停</div><div class="swh">#BC2332</div></div></div>
+    <div><div class="swc" style="background:#A21E2B"></div><div class="swm"><div class="swn">按下</div><div class="swh">#A21E2B</div></div></div>
+  </div>
+  <div class="sub">中性色</div>
+  <div class="swatches">
+    <div><div class="swc" style="background:#FFFFFF"></div><div class="swm"><div class="swn">卡片 · L1</div><div class="swh">#FFFFFF</div></div></div>
+    <div><div class="swc" style="background:#F7F8FA"></div><div class="swm"><div class="swn">页面底 · L0</div><div class="swh">#F7F8FA</div></div></div>
+    <div><div class="swc" style="background:#B8BEC7"></div><div class="swm"><div class="swn">占位</div><div class="swh">#B8BEC7</div></div></div>
+    <div><div class="swc" style="background:#8A9099"></div><div class="swm"><div class="swn">次级文字</div><div class="swh">#8A9099</div></div></div>
+    <div><div class="swc" style="background:#191B1F"></div><div class="swm"><div class="swn">正文墨色</div><div class="swh">#191B1F</div></div></div>
+    <div><div class="swc" style="background:#1C1C1C"></div><div class="swm"><div class="swn">深色锚点 · L4</div><div class="swh">#1C1C1C</div></div></div>
+    <div><div class="swc" style="background:#2F2F2F"></div><div class="swm"><div class="swn">深色 · 浮层</div><div class="swh">#2F2F2F</div></div></div>
+  </div>
+  <div class="sub">功能状态（可选 · 仅小面积）</div>
+  <div class="sw-mini">
+    <span class="m"><i class="d" style="background:#2FA57C"></i>成功 #2FA57C</span>
+    <span class="m"><i class="d" style="background:#E8A33D"></i>警告 #E8A33D</span>
+    <span class="m"><i class="d" style="background:#D62839"></i>错误 · 复用主题红</span>
+  </div>
+  <div class="sub">用量原则</div>
+  <div class="usage">
+    <span style="width:52%;background:#fff">白 · 底与卡</span>
+    <span style="width:22%;background:#EDF0F3;color:#8A9099">灰 · 次级</span>
+    <span style="width:16%;background:#1C1C1C;color:#fff">墨 · 文字</span>
+    <span style="width:10%;background:#D62839;color:#fff">红</span>
+  </div>
+</section>
+
+<section class="sec" id="zoning">
+  <div class="eyebrow">02 · Foundation</div>
+  <h2>区域分层（替代边框）</h2>
+  <p class="note">相邻区域只用「底色差 + 留白」区分；任何情况下不使用 border、outline、分隔线。需要强调时——加一块颜色，而不是加一条线。</p>
+  <div class="zoning">
+    <div class="zlabel">L0 页面底 · #F7F8FA</div>
+    <div class="zcard">
+      <div class="zlabel">L1 卡片 · #FFFFFF + 单层阴影</div>
+      <div class="zrow">
+        <div class="zblk z2"><span>L2 浅色块<div class="zh">#FBEAEB</div></span><span>高亮 · 选中 · 次级按钮</span></div>
+        <div class="zblk z3"><span>L3 主题红<div class="zh">#D62839</div></span><span>主按钮 · 关键数据 · 进度</span></div>
+        <div class="zblk z4"><span>L4 深色锚点<div class="zh">#1C1C1C</div></span><span>深色卡 · 少用（#1C1C1C / #2F2F2F）</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="type">
+  <div class="eyebrow">03 · Foundation</div>
+  <h2>字体与层级</h2>
+  <p class="note">一套无衬线走全程。层级靠「字号 + 字重 + 灰度」，不靠颜色：标题重而紧、正文稳、说明浅。</p>
+  <div class="typerow"><div><div class="tname">Display 展示</div><div class="tspec">56px / 1.05<br>800</div></div><div style="font-size:56px;font-weight:800;letter-spacing:-.02em;line-height:1.05">少即是多。</div></div>
+  <div class="typerow"><div><div class="tname">H1 标题</div><div class="tspec">32px / 1.2<br>800</div></div><div style="font-size:32px;font-weight:800;letter-spacing:-.01em">项目总览</div></div>
+  <div class="typerow"><div><div class="tname">H2 标题</div><div class="tspec">24px / 1.3<br>700</div></div><div style="font-size:24px;font-weight:700">本月进展</div></div>
+  <div class="typerow"><div><div class="tname">H3 标题</div><div class="tspec">18px / 1.4<br>600</div></div><div style="font-size:18px;font-weight:600">最近文件</div></div>
+  <div class="typerow"><div><div class="tname">Body 正文</div><div class="tspec">15.5px / 1.6<br>400 · #191B1F</div></div><div style="font-size:15.5px">正文文字为中文与英文混排优化，行高 1.6，层级稳定不跳脱。</div></div>
+  <div class="typerow"><div><div class="tname">Caption 辅助</div><div class="tspec">13px / 1.5<br>400 · #8A9099</div></div><div style="font-size:13px;color:#8A9099">辅助说明 / 时间戳 / 单位与数据注释</div></div>
+  <p class="note" style="margin-top:26px;margin-bottom:0">字族：Mona Sans（拉丁）+ 思源黑体 / Source Han Sans SC（中文），均为可变字体 VF —— 单文件覆盖 200–900 全字重；数字与代码用 Mona Sans Mono。</p>
+</section>
+
+<section class="sec" id="metrics">
+  <div class="eyebrow">04 · Foundation</div>
+  <h2>间距 · 圆角 · 阴影</h2>
+  <p class="note">4pt 基准网格；圆角超大（"圆润"是本风格的核心）；阴影只允许一层，柔且淡。</p>
+  <div class="sub">间距 Spacing</div>
+  <div class="spacing">
+    <div class="sprow"><span class="spval">4</span><div class="spbar" style="width:10px"></div><span class="spuse">微调</span></div>
+    <div class="sprow"><span class="spval">8</span><div class="spbar" style="width:18px"></div><span class="spuse">图标与文字</span></div>
+    <div class="sprow"><span class="spval">12</span><div class="spbar" style="width:26px"></div><span class="spuse">紧凑元素</span></div>
+    <div class="sprow"><span class="spval">16</span><div class="spbar" style="width:34px"></div><span class="spuse">元素间距</span></div>
+    <div class="sprow"><span class="spval">24</span><div class="spbar hi" style="width:52px"></div><span class="spuse">卡内边距 · 主</span></div>
+    <div class="sprow"><span class="spval">32</span><div class="spbar hi" style="width:70px"></div><span class="spuse">区块间距 · 主</span></div>
+    <div class="sprow"><span class="spval">48</span><div class="spbar" style="width:104px"></div><span class="spuse">大区块间距</span></div>
+    <div class="sprow"><span class="spval">64</span><div class="spbar" style="width:140px"></div><span class="spuse">页面级留白</span></div>
+  </div>
+  <div class="sub">圆角 Radius</div>
+  <div class="radii">
+    <div class="rad"><div class="radbox" style="border-radius:12px"></div><div class="radn">12px</div><div class="rads">小元件</div></div>
+    <div class="rad"><div class="radbox" style="border-radius:16px"></div><div class="radn">16px</div><div class="rads">列表行</div></div>
+    <div class="rad"><div class="radbox" style="border-radius:20px"></div><div class="radn">20px</div><div class="rads">小卡</div></div>
+    <div class="rad"><div class="radbox" style="border-radius:24px"></div><div class="radn">24px</div><div class="rads">卡片</div></div>
+    <div class="rad"><div class="radbox" style="border-radius:32px"></div><div class="radn">32px</div><div class="rads">大容器</div></div>
+    <div class="rad"><div class="radbox" style="border-radius:999px"></div><div class="radn">999px</div><div class="rads">胶囊 · 按钮/标签/输入</div></div>
+  </div>
+  <div class="sub">阴影 Shadow</div>
+  <div class="shadowrow">
+    <div class="shadcard" style="box-shadow:0 12px 30px rgba(25,27,31,.06)">默认 · 6%</div>
+    <div class="shadcard" style="box-shadow:0 16px 40px rgba(25,27,31,.09)">悬停 · 9%</div>
+  </div>
+  <br><span class="code">box-shadow: 0 12px 30px rgba(25,27,31,0.06)</span>
+</section>
+
+<section class="sec" id="components">
+  <div class="eyebrow">05 · Components</div>
+  <h2>组件</h2>
+  <p class="note">全部无边框；状态变化靠底色深浅。以下组件与设计库 WDesign（SCSS + Vue3）一一对应；图标由 wdesign-icons 提供。</p>
+
+  <div class="panel">
+    <div class="pantitle">按钮 · BUTTON</div>
+    <div class="demo-row">
+      <div class="demo-col"><button class="btn btn-primary">主按钮</button><span class="cap">默认 #D62839</span></div>
+      <div class="demo-col"><button class="btn btn-primary" style="background:#BC2332">主按钮</button><span class="cap">悬停 #BC2332</span></div>
+      <div class="demo-col"><button class="btn btn-primary" style="background:#A21E2B">主按钮</button><span class="cap">按下 #A21E2B</span></div>
+      <div class="demo-col"><button class="btn btn-tint">次级按钮</button><span class="cap">浅色块底</span></div>
+      <div class="demo-col"><button class="btn btn-dark">深色按钮</button><span class="cap">深色锚点</span></div>
+      <div class="demo-col"><button class="btn btn-ghost">幽灵按钮</button><span class="cap">无底色</span></div>
+      <div class="demo-col"><button class="btn btn-disabled">禁用</button><span class="cap">禁用态</span></div>
+      <div class="demo-col"><button class="btn btn-primary btn-icon">→</button><span class="cap">圆形图标钮</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pantitle">标签 · TAG</div>
+    <div class="demo-row">
+      <span class="tag tag-tint">浅色标签</span>
+      <span class="tag tag-gray">灰色标签</span>
+      <span class="tag tag-dark">深色标签</span>
+      <span class="tag tag-tint"><i class="dot"></i>运行中</span>
+      <span class="tag tag-gray"><i class="dot" style="background:#2FA57C"></i>已完成</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pantitle">输入 · INPUT</div>
+    <div class="demo-row">
+      <label class="input"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg><span class="ph">搜索项目…</span></label>
+      <label class="input r18" style="min-width:230px"><span class="ph" style="color:#191B1F">林小满</span></label>
+      <label class="input" style="min-width:190px"><span class="ph" style="color:#191B1F">最近更新</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-left:auto"><path d="m6 9 6 6 6-6"></path></svg></label>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pantitle">卡片 · CARD</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="thumb"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8a3 3 0 0 1 3-3h2.6c.5 0 1 .2 1.4.6l1 1c.4.4.9.6 1.4.6H18a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"></path></svg></div>
+        <h4>设计素材</h4>
+        <div class="meta">17 个文件 · 789 MB</div>
+      </div>
+      <div class="card">
+        <div class="meta" style="margin-top:0">本周新增任务</div>
+        <div class="stat">128</div>
+        <div class="prog" style="margin-top:16px"><i style="width:64%"></i></div>
+      </div>
+      <div class="card card-tint">
+        <h4 style="margin-top:0">团队进度</h4>
+        <div class="meta" style="color:#A21E2B;opacity:.8">75% · 还剩 3 项</div>
+        <div class="prog" style="margin-top:16px;background:#fff"><i style="width:75%"></i></div>
+      </div>
+      <div class="card card-dark">
+        <div class="meta" style="margin-top:0;color:rgba(255,255,255,.6)">本月预算</div>
+        <div class="stat" style="color:#E05B68">¥12,480</div>
+        <div class="meta" style="color:rgba(255,255,255,.55)">较上月 −8%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pantitle">进度 · 头像 · 开关 · 列表</div>
+    <div class="demo-row" style="align-items:flex-start;gap:34px">
+      <div class="demo-col"><div class="prog"><i style="width:75%"></i></div><span class="cap">进度条 · 轨道 #FBEAEB / 红填充</span></div>
+      <div class="demo-col"><div class="prog" style="height:6px;width:180px"><i style="width:45%"></i></div><span class="cap">细进度条</span></div>
+      <div class="demo-col"><div class="avs"><span class="av" style="background:#F3BEC4">李</span><span class="av" style="background:#F8DDDF;color:#A21E2B">王</span><span class="av" style="background:#E9EBEF;color:#8A9099">周</span><span class="av" style="background:#1C1C1C;color:#fff">+5</span></div><span class="cap">头像堆叠</span></div>
+      <div class="demo-col"><div style="display:flex;gap:10px;align-items:center"><div class="switch"><i></i></div><div class="switch off"><i></i></div></div><span class="cap">开关 · 开 / 关</span></div>
+    </div>
+    <div class="list" style="margin-top:22px;max-width:540px;background:#fff;border-radius:20px;padding:8px;box-shadow:0 12px 30px rgba(25,27,31,.06)">
+      <div class="li"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg></span><span class="t">季度汇报.pdf</span><span class="s">12 MB</span></div>
+      <div class="li"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg></span><span class="t">品牌规范.fig</span><span class="s">94 MB</span></div>
+      <div class="li"><span class="ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg></span><span class="t">页面设计稿.png</span><span class="s">10 MB</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="example">
+  <div class="eyebrow">06 · Pattern</div>
+  <h2>应用示例</h2>
+  <p class="note">同一块画布上同时出现 L0–L4 五层：灰底承载白卡，白卡里放浅红块、红按钮与深色卡——没有一条边框。</p>
+  <div class="screen">
+    <div class="bento">
+      <div class="bcard">
+        <div class="meta" style="margin-top:0">今日任务</div>
+        <div class="stat">12</div>
+        <div class="meta">完成 8 · 待处理 4</div>
+        <div class="prog" style="margin-top:16px"><i style="width:66%"></i></div>
+        <button class="btn btn-primary" style="margin-top:22px">查看详情</button>
+      </div>
+      <div class="bcard" style="background:#FBEAEB">
+        <h4 style="font-size:16px;font-weight:700;margin-top:0">团队协作</h4>
+        <div class="avs" style="margin-top:14px"><span class="av" style="background:#F3BEC4">李</span><span class="av" style="background:#fff;color:#A21E2B;box-shadow:0 2px 8px rgba(25,27,31,.08)">王</span><span class="av" style="background:#1C1C1C;color:#fff">+3</span></div>
+        <p style="margin-top:16px;font-size:14px;color:#A21E2B;font-weight:600">本周完成 21 项 · 同比 +12%</p>
+        <a href="#example" style="color:#A21E2B;font-weight:700;font-size:14px;display:inline-block;margin-top:10px;text-decoration:none">查看报告 →</a>
+      </div>
+      <div class="bcard card-dark">
+        <div class="meta" style="margin-top:0;color:rgba(255,255,255,.62)">待处理事项</div>
+        <div class="stat" style="color:#E05B68">4</div>
+        <div class="prog" style="margin-top:14px;background:rgba(255,255,255,.14)"><i style="width:40%"></i></div>
+      </div>
+      <div class="bcard">
+        <div class="meta" style="margin-bottom:8px">最近文件</div>
+        <div class="list">
+          <div class="li" style="padding:10px 12px"><span class="ic" style="width:34px;height:34px"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg></span><span class="t" style="font-size:13.5px">预算表.xlsx</span><span class="s" style="font-size:12px">2 MB</span></div>
+          <div class="li" style="padding:10px 12px"><span class="ic" style="width:34px;height:34px"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg></span><span class="t" style="font-size:13.5px">方案终稿.md</span><span class="s" style="font-size:12px">34 KB</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="rules">
+  <div class="eyebrow">07 · Rules</div>
+  <h2>使用规则</h2>
+  <div class="dd" style="margin-top:26px">
+    <div class="do">
+      <div class="ddt">✓ 推荐</div>
+      <ul>
+        <li>用色块与留白分区，层级靠底色深浅</li>
+        <li>大圆角：卡片 24–32，按钮/标签/输入框全胶囊</li>
+        <li>留白大于内容，给足呼吸感</li>
+        <li>红色只点缀：按钮、关键数字、进度、状态点</li>
+        <li>深色卡少用，作为画面锚点</li>
+        <li>标题重、正文稳、说明浅</li>
+      </ul>
+      <div class="mini-demo">
+        <div style="flex:1;background:#F7F8FA;border-radius:14px;padding:14px"><div style="background:#FBEAEB;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:600;color:#A21E2B">浅色块分区</div></div>
+        <span class="goodpill">色块 + 留白</span>
+      </div>
+    </div>
+    <div class="dont">
+      <div class="ddt">✕ 避免</div>
+      <ul>
+        <li>边框 / 分割线 / outline</li>
+        <li>毛玻璃、backdrop-filter、半透明</li>
+        <li>渐变、霓虹色、大面积彩色铺底</li>
+        <li>多重阴影、重投影</li>
+        <li>尖角、直角卡片</li>
+        <li>密集信息、拥挤网格线</li>
+      </ul>
+      <div class="mini-demo">
+        <div class="badcard">看得到的边框 = 不要<br>分隔线也一样删掉</div>
+        <span class="bad-x">✕</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  Soft Bento · Red — 设计规范 v1.0 · 2026-10-11 生成<br>
+  配套：设计库 WDesign · /var/minis/workspace/style/wdesign/ · 图标库 wdesign-icons<br>
+  字体：Mona Sans + 思源黑体 VF（演示页已内嵌）
+</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+// Soft Bento · Red — Input
+.wd-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 270px;
+  padding: 14px 22px;
+  background: var(--wd-field);
+  border-radius: var(--wd-radius-pill);
+  color: var(--wd-ink);
+  font-size: 15px;
+  transition: box-shadow .16s ease;
+}
+.wd-input--rounded { border-radius: 18px; }
+.wd-input:focus-within { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
+
+.wd-input__icon { display: inline-flex; flex: none; color: var(--wd-ink-3); }
+
+.wd-input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+}
+.wd-input input::placeholder { color: var(--wd-ink-3); }
+.wd-input input:disabled { color: var(--wd-ink-3); }

@@ -1,0 +1,128 @@
+// =============================================================
+//  Soft Bento · Red — Design Tokens
+//  主题色 #D62839 · 无边框 · 色块分层 · 全圆角
+//
+//  双轨制：
+//   · SCSS 变量  —— 编译期使用（mixin / 扩展样式）
+//   · CSS 自定义属性 —— 运行期使用（组件样式全部引用 var()，
+//     覆盖 :root 上的变量即可整体换肤）
+// =============================================================
+
+// --- Brand · 主题红及其状态（浅色 / 深色模式下恒为 #D62839） --
+$wd-red:        #D62839 !default; // 主题红 · 主按钮 / 关键数据
+$wd-red-hover:  #BC2332 !default; // 悬停
+$wd-red-active: #A21E2B !default; // 按下
+$wd-red-soft:   #E05B68 !default; // 深色底上的红
+
+// --- Tint · 红的浅色延伸（L2 浅色块层） ---------------------
+$wd-tint-1:     #FDF2F3 !default; // 最浅 · 高亮底
+$wd-tint-2:     #FBEAEB !default; // 块底 / 次级按钮
+$wd-tint-3:     #F8DDDF !default; // 轨道 / 选中
+$wd-tint-4:     #F3BEC4 !default; // 强调块
+
+// --- Neutral · 灰白承担 90% 画面 ---------------------------
+$wd-ink:        #191B1F !default; // 正文
+$wd-ink-2:      #8A9099 !default; // 说明
+$wd-ink-3:      #B8BEC7 !default; // 占位
+$wd-bg:         #F7F8FA !default; // 页面底 L0
+$wd-card:       #FFFFFF !default; // 卡片 L1
+$wd-dark:       #1C1C1C !default; // 深色一级 · 锚点 L4
+$wd-dark-2:     #2F2F2F !default; // 深色二级 · 浮层 / 悬停
+
+// --- Semantic · 仅小面积（状态点 / 小字提示） --------------
+$wd-success:    #2FA57C !default;
+$wd-warning:    #E8A33D !default;
+$wd-success-soft: #E8F6F0 !default; // 成功 · 浅底
+$wd-warning-soft: #FCF4E8 !default; // 警告 · 浅底
+$wd-field:        #E9EDF1 !default; // 控件底色 · 白卡 / 灰底均可辨识
+
+// --- Motion（动效）
+$wd-dur:      .18s !default;
+$wd-dur-fast: .12s !default;
+$wd-ease:     cubic-bezier(.25, .8, .35, 1) !default;
+$wd-danger:     $wd-red !default;
+
+// --- Focus Ring --------------------------------------------
+$wd-focus-ring:      rgba(214, 40, 57, .22) !default;
+$wd-focus-ring-soft: rgba(214, 40, 57, .14) !default;
+
+// --- Radius · 圆润是风格核心 --------------------------------
+$wd-radius-sm:   12px !default;
+$wd-radius-md:   16px !default;
+$wd-radius-lg:   24px !default;
+$wd-radius-xl:   32px !default;
+$wd-radius-pill: 999px !default;
+
+// --- Shadow · 只允许一层 ------------------------------------
+$wd-shadow:       0 12px 30px rgba(25, 27, 31, .06) !default;
+$wd-shadow-hover: 0 16px 40px rgba(25, 27, 31, .09) !default;
+
+// --- Spacing · 4pt 基准 -------------------------------------
+$wd-space-1:  4px  !default;
+$wd-space-2:  8px  !default;
+$wd-space-3:  12px !default;
+$wd-space-4:  16px !default;
+$wd-space-6:  24px !default;
+$wd-space-8:  32px !default;
+$wd-space-12: 48px !default;
+$wd-space-16: 64px !default;
+
+// --- Typography ---------------------------------------------
+// 字体：拉丁 Mona Sans + 中文 思源黑体（Source Han Sans SC）—— 均为 VF 可变字体
+$wd-font-family: "Mona Sans", "Source Han Sans SC", "Noto Sans SC", "PingFang SC", -apple-system, BlinkMacSystemFont, "Inter", "DM Sans", sans-serif !default;
+$wd-font-mono:   "Mona Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace !default;
+$wd-fs-display:  56px !default; // 800
+$wd-fs-h1:       32px !default; // 800
+$wd-fs-h2:       24px !default; // 700
+$wd-fs-h3:       18px !default; // 600
+$wd-fs-body:     15.5px !default; // 400
+$wd-fs-caption:  13px !default; // 400 · $wd-ink-2
+
+// =============================================================
+//  CSS 自定义属性（运行期主题化）
+//  换肤示例：在任意作用域覆盖这些变量
+//  .theme-warm { --wd-red: #E5484D; --wd-tint-2: #FDECEC; }
+// =============================================================
+:root {
+  --wd-red:        #{$wd-red};
+  --wd-red-hover:  #{$wd-red-hover};
+  --wd-red-active: #{$wd-red-active};
+  --wd-red-soft:   #{$wd-red-soft};
+
+  --wd-tint-1:     #{$wd-tint-1};
+  --wd-tint-2:     #{$wd-tint-2};
+  --wd-tint-3:     #{$wd-tint-3};
+  --wd-tint-4:     #{$wd-tint-4};
+
+  --wd-ink:        #{$wd-ink};
+  --wd-ink-2:      #{$wd-ink-2};
+  --wd-ink-3:      #{$wd-ink-3};
+  --wd-bg:         #{$wd-bg};
+  --wd-card:       #{$wd-card};
+  --wd-dark:       #{$wd-dark};
+  --wd-dark-2:     #{$wd-dark-2};
+
+  --wd-success:    #{$wd-success};
+  --wd-warning:    #{$wd-warning};
+  --wd-success-soft: #{$wd-success-soft};
+  --wd-warning-soft: #{$wd-warning-soft};
+  --wd-field:        #{$wd-field};
+  --wd-dur:      #{$wd-dur};
+  --wd-dur-fast: #{$wd-dur-fast};
+  --wd-ease:     #{$wd-ease};
+
+  --wd-focus-ring:      #{$wd-focus-ring};
+  --wd-focus-ring-soft: #{$wd-focus-ring-soft};
+
+  --wd-radius-sm:   #{$wd-radius-sm};
+  --wd-radius-md:   #{$wd-radius-md};
+  --wd-radius-lg:   #{$wd-radius-lg};
+  --wd-radius-xl:   #{$wd-radius-xl};
+  --wd-radius-pill: #{$wd-radius-pill};
+
+  --wd-shadow:       #{$wd-shadow};
+  --wd-shadow-hover: #{$wd-shadow-hover};
+
+  --wd-font-family: #{$wd-font-family};
+  --wd-font-mono:   #{$wd-font-mono};
+}

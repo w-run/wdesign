@@ -1,0 +1,42 @@
+// =============================================================
+//  Soft Bento · Red — 全量样式入口
+//  用法（Vite）：
+//    import 'wdesign/src/styles/index.scss'
+//  或在宿主 scss 中：
+//    @import 'wdesign/src/styles/index';
+// =============================================================
+@import 'tokens';
+@import 'base';
+@import 'components/button';
+@import 'components/tag';
+@import 'components/card';
+@import 'components/input';
+@import 'components/switch';
+@import 'components/progress';
+@import 'components/avatar';
+@import 'components/list';
+@import 'components/checkbox';
+@import 'components/radio';
+@import 'components/select';
+@import 'components/tabs';
+@import 'components/alert';
+@import 'components/skeleton';
+@import 'components/empty';
+@import 'components/modal';
+@import 'components/badge';
+@import 'components/datepicker';
+@import 'components/toast';
+@import 'components/tooltip';
+@import 'components/dropdown';
+@import 'components/pagination';
+@import 'components/slider';
+@import 'components/steps';
+@import 'components/spinner';
+@import 'components/markdown';
+@import 'components/table';
+@import 'components/breadcrumb';
+@import 'components/collapse';
+@import 'components/drawer';
+@import 'components/result';
+@import 'components/rate';
+
