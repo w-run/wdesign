@@ -31,8 +31,14 @@ function updateSlider() {
   if (!t || !s) return
   const active = t.querySelector<HTMLElement>('.wd-segmented__item--active')
   if (!active) return
-  s.style.transform = `translateX(${active.offsetLeft - 5}px)`
-  s.style.width = `${active.offsetWidth}px`
+  // 以滑块自身静止位置为基准计算位移（兼容各环境 padding/offsetParent 差异）
+  s.style.transform = 'none'
+  void s.offsetHeight
+  const base = s.getBoundingClientRect()
+  const ar = active.getBoundingClientRect()
+  s.style.transform = `translate(${ar.left - base.left}px, ${ar.top - base.top}px)`
+  s.style.width = `${ar.width}px`
+  s.style.height = `${ar.height}px`
 }
 
 onMounted(() => {

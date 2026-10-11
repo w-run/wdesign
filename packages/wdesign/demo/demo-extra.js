@@ -916,11 +916,18 @@ const WdSegmented = {
   },
   methods: {
     updateSlider() {
-      if (!this.$refs.track || !this.$refs.slider) return
-      const active = this.$refs.track.querySelector('.wd-segmented__item--active')
+      const t = this.$refs.track
+      const s = this.$refs.slider
+      if (!t || !s) return
+      const active = t.querySelector('.wd-segmented__item--active')
       if (!active) return
-      this.$refs.slider.style.transform = 'translateX(' + (active.offsetLeft - 5) + 'px)'
-      this.$refs.slider.style.width = active.offsetWidth + 'px'
+      s.style.transform = 'none'
+  void s.offsetHeight
+      const base = s.getBoundingClientRect()
+      const ar = active.getBoundingClientRect()
+      s.style.transform = 'translate(' + (ar.left - base.left) + 'px, ' + (ar.top - base.top) + 'px)'
+      s.style.width = ar.width + 'px'
+      s.style.height = ar.height + 'px'
     },
   },
   template: `
