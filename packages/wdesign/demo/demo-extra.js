@@ -921,13 +921,11 @@ const WdSegmented = {
       if (!t || !s) return
       const active = t.querySelector('.wd-segmented__item--active')
       if (!active) return
-      s.style.transform = 'none'
-  void s.offsetHeight
-      const base = s.getBoundingClientRect()
-      const ar = active.getBoundingClientRect()
-      s.style.transform = 'translate(' + (ar.left - base.left) + 'px, ' + (ar.top - base.top) + 'px)'
-      s.style.width = ar.width + 'px'
-      s.style.height = ar.height + 'px'
+      const dx = active.offsetLeft - s.offsetLeft
+      const dy = active.offsetTop - s.offsetTop
+      s.style.transform = 'translate(' + dx + 'px, ' + dy + 'px)'
+      s.style.width = active.offsetWidth + 'px'
+      s.style.height = active.offsetHeight + 'px'
     },
   },
   template: `
