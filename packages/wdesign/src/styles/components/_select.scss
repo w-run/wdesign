@@ -7,7 +7,8 @@
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 13px 20px;
+  height: 44px;
+  padding: 0 20px;
   border: 0;
   cursor: pointer;
   background: var(--wd-field);
@@ -17,8 +18,8 @@
   color: var(--wd-ink);
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
-.wd-select__trigger--lg { padding: 15px 26px; font-size: 16px; }
-.wd-select__trigger--sm { padding: 9px 16px; font-size: 13px; }
+.wd-select__trigger--lg { height: 54px; padding: 0 26px; font-size: var(--wd-font-size-lg); }
+.wd-select__trigger--sm { height: 34px; padding: 0 12px; font-size: var(--wd-font-size-sm); }
 .wd-select__trigger:hover { background: var(--wd-field-hover); }
 .wd-select__trigger:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-select--open .wd-select__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }

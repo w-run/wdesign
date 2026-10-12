@@ -18,15 +18,16 @@
   &:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
   &:disabled { cursor: default; pointer-events: none; }
 
-  // ---- 尺寸
-  &.wd-btn--lg { padding: 16px 30px; font-size: 16px; }
-  &.wd-btn--md { padding: 13px 26px; font-size: 15px; }
-  &.wd-btn--sm { padding: 9px 18px; font-size: 13.5px; }
+  // ---- 尺寸（显式高度，三档视觉差异明确）
+  &.wd-btn--lg { height: 56px; padding: 0 34px; font-size: var(--wd-font-size-lg); }
+  &.wd-btn--md { height: 44px; padding: 0 24px; font-size: var(--wd-font-size-md); }
+  &.wd-btn--sm { height: 34px; padding: 0 14px; font-size: var(--wd-font-size-sm); }
 
-  // ---- 图标按钮（圆形）
-  &.wd-btn--icon { width: 47px; height: 47px; padding: 0; }
-  &.wd-btn--icon.wd-btn--lg { width: 52px; height: 52px; }
-  &.wd-btn--icon.wd-btn--sm { width: 38px; height: 38px; }
+  // ---- 图标按钮（圆形，高度同档位）
+  &.wd-btn--icon { width: 44px; height: 44px; padding: 0; }
+  &.wd-btn--icon.wd-btn--lg { width: 56px; height: 56px; }
+  &.wd-btn--icon.wd-btn--md { width: 44px; height: 44px; }
+  &.wd-btn--icon.wd-btn--sm { width: 34px; height: 34px; }
 
   // ---- 通栏
   &.wd-btn--block { display: flex; width: 100%; }
