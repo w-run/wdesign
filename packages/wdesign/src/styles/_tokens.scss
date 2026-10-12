@@ -64,6 +64,7 @@ $wd-link-underline: rgba(214, 40, 57, .35) !default; // 链接下划线
 $wd-danger:     $wd-red !default;
 
 // --- Focus Ring --------------------------------------------
+$wd-focus-ring-faint: rgba(214, 40, 57, .08) !default; // 轻淡（输入框等大面积控件）
 $wd-focus-ring:      rgba(214, 40, 57, .22) !default;
 $wd-focus-ring-soft: rgba(214, 40, 57, .14) !default;
 
@@ -153,6 +154,7 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
   --wd-link-underline: #{$wd-link-underline};
   --wd-danger:         #{$wd-danger};
 
+  --wd-focus-ring-faint: #{$wd-focus-ring-faint};
   --wd-focus-ring:      #{$wd-focus-ring};
   --wd-focus-ring-soft: #{$wd-focus-ring-soft};
 

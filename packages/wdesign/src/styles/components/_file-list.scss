@@ -52,3 +52,17 @@
   font-family: var(--wd-font-mono);
   font-variant-numeric: tabular-nums;
 }
+
+/* 行进出场动画（展开 / 收起子级时生效） */
+.wd-row-move {
+  transition: transform var(--wd-dur-slow) var(--wd-ease);
+}
+.wd-row-enter-active,
+.wd-row-leave-active {
+  transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease;
+}
+.wd-row-enter-from,
+.wd-row-leave-to {
+  opacity: 0;
+  transform: translateX(-8px);
+}

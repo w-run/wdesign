@@ -44,6 +44,7 @@
   --wd-mark-bg:      rgba(214, 40, 57, 0.14);
   --wd-link-underline: rgba(214, 40, 57, 0.35);
   --wd-danger:         #D62839;
+  --wd-focus-ring-faint: rgba(214, 40, 57, 0.08);
   --wd-focus-ring:      rgba(214, 40, 57, 0.22);
   --wd-focus-ring-soft: rgba(214, 40, 57, 0.14);
   --wd-radius-sm:   12px;
@@ -646,7 +647,7 @@ body {
   font-size: var(--wd-font-size-sm); }
 
 .wd-input:focus-within {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-faint);
   animation: wd-ring-in var(--wd-dur) var(--wd-ease-out);
   caret-color: var(--wd-red); }
 
@@ -2230,7 +2231,13 @@ body {
   padding: 0 20px 18px;
   font-size: 14px;
   line-height: 1.65;
-  color: var(--wd-ink-2); }
+  color: var(--wd-ink-2);
+  opacity: 1;
+  transition: opacity var(--wd-dur) ease; }
+
+.wd-collapse__item:not(.wd-collapse__item--open) .wd-collapse__content {
+  opacity: 0;
+  pointer-events: none; }
 
 .wd-drawer {
   position: fixed;
@@ -2961,6 +2968,19 @@ body {
   font-family: var(--wd-font-mono);
   font-variant-numeric: tabular-nums; }
 
+/* 行进出场动画（展开 / 收起子级时生效） */
+.wd-row-move {
+  transition: transform var(--wd-dur-slow) var(--wd-ease); }
+
+.wd-row-enter-active,
+.wd-row-leave-active {
+  transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease; }
+
+.wd-row-enter-from,
+.wd-row-leave-to {
+  opacity: 0;
+  transform: translateX(-8px); }
+
 .wd-explorer {
   display: grid;
   grid-template-columns: 196px 1fr;
@@ -3203,6 +3223,16 @@ body {
   text-align: center;
   font-size: 13px;
   color: var(--wd-ink-2); }
+
+/* 视图切换过渡（详情 ↔ 图标 / 文件夹切换） */
+.wd-fade-enter-active,
+.wd-fade-leave-active {
+  transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease; }
+
+.wd-fade-enter-from,
+.wd-fade-leave-to {
+  opacity: 0;
+  transform: translateY(6px); }
 
 .wd-ai-msg {
   display: flex;

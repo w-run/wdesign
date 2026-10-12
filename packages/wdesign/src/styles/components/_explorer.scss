@@ -187,3 +187,9 @@
 .wd-explorer__tile-size { font-size: 11px; color: var(--wd-ink-3); font-family: var(--wd-font-mono); }
 
 .wd-explorer__empty { padding: 44px 12px; text-align: center; font-size: 13px; color: var(--wd-ink-2); }
+
+/* 视图切换过渡（详情 ↔ 图标 / 文件夹切换） */
+.wd-fade-enter-active,
+.wd-fade-leave-active { transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease; }
+.wd-fade-enter-from,
+.wd-fade-leave-to { opacity: 0; transform: translateY(6px); }

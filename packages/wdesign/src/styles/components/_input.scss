@@ -16,7 +16,7 @@
 .wd-input--lg { height: 54px; padding: 0 28px; font-size: var(--wd-font-size-lg); }
 .wd-input--sm { height: 34px; padding: 0 14px; font-size: var(--wd-font-size-sm); }
 .wd-input:focus-within {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-faint);
   animation: wd-ring-in var(--wd-dur) var(--wd-ease-out);
   caret-color: var(--wd-red);
 }
