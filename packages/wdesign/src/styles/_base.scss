@@ -6,7 +6,15 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* 移动端：去除系统点击高亮（改用组件自身的 :active 反馈） */
+  -webkit-tap-highlight-color: transparent;
+}
+a, button, [role="button"], label, input, select, textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 
 body {
   margin: 0;

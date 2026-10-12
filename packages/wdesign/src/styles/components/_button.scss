@@ -56,7 +56,7 @@
 // 深色按钮 · 画面锚点
 .wd-btn--dark {
   background: var(--wd-dark);
-  color: #fff;
+  color: var(--wd-dark-text);
   &:hover:not(:disabled) { background: var(--wd-dark-2); }
   &:active:not(:disabled) { background: var(--wd-dark-3); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }

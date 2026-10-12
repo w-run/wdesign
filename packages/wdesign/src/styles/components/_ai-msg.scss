@@ -15,7 +15,7 @@
   align-items: center;
   justify-content: center;
 }
-.wd-ai-msg--self .wd-ai-msg__avatar { background: var(--wd-dark); color: #fff; }
+.wd-ai-msg--self .wd-ai-msg__avatar { background: var(--wd-dark); color: var(--wd-dark-text); }
 
 .wd-ai-msg__bubble {
   max-width: 78%;

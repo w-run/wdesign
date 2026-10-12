@@ -45,4 +45,12 @@
   stroke-dashoffset: 0;
   transition: stroke-dashoffset var(--wd-dur-slow) var(--wd-ease-out);
 }
+/* 选中瞬间：盒子轻微弹一下（红底回弹） */
+.wd-checkbox--checked .wd-checkbox__box {
+  animation: wd-check-pop var(--wd-dur-slow) var(--wd-ease-spring);
+}
+/* 取消选中：盒底色回落 */
+.wd-checkbox .wd-checkbox__box {
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, transform var(--wd-dur) var(--wd-ease-out);
+}
 

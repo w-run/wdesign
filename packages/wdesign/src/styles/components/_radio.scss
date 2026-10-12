@@ -47,6 +47,14 @@
 .wd-radio--disabled .wd-radio__inner { background: var(--wd-ink-3); }
 /* ---- 微交互（精致版）---- */
 .wd-radio--checked .wd-radio__inner {
-  animation: wd-bloom var(--wd-dur) var(--wd-ease-out) both;
+  animation: wd-radio-dot var(--wd-dur-slow) var(--wd-ease-spring) both;
 }
+/* 选中瞬间：外圈轻震一下 */
+.wd-radio--checked .wd-radio__dot {
+  animation: wd-ring-out var(--wd-dur-slow) var(--wd-ease-out);
+}
+.wd-radio__dot {
+  transition: background var(--wd-dur-fast) ease, transform var(--wd-dur) var(--wd-ease-out);
+}
+.wd-radio:active .wd-radio__dot { transform: scale(.94); }
 

@@ -7,7 +7,7 @@
   box-shadow: var(--wd-shadow);
 }
 .wd-card--tint { background: var(--wd-tint-2); }
-.wd-card--dark { background: var(--wd-dark); color: #fff; }
+.wd-card--dark { background: var(--wd-dark); color: var(--wd-dark-text); }
 
 .wd-card--pad-sm { padding: 16px; border-radius: var(--wd-radius-md); }
 .wd-card--pad-lg { padding: 32px; border-radius: var(--wd-radius-xl); }

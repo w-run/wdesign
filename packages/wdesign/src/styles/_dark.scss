@@ -8,6 +8,7 @@
   --wd-card:       #1C1C1E;   /* 深卡 */
   --wd-field:      #2A2A2E;   /* 深控件底 */
   --wd-dark:       #F0F0F0;   /* 深色锚点反转 */
+  --wd-dark-text:  #1C1C1E;   /* 锚点反转后其上的文字用深色 */
   --wd-dark-2:     #3A3A40;
   --wd-ink:        #E8E8EC;   /* 正文 → 亮 */
   --wd-ink-2:      #8888A0;   /* 次级 → 暗灰 */
@@ -42,3 +43,6 @@
 
 /* 文字选中 */
 [data-theme="dark"] ::selection { background: rgba(214, 40, 57, .3); }
+
+/* 深色主题：锚点卡片反转为浅色，其上次级文字改中性灰 */
+[data-theme="dark"] .wd-card--dark .wd-card__meta { color: var(--wd-ink-2); }

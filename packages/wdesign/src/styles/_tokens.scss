@@ -28,6 +28,7 @@ $wd-bg:         #F7F8FA !default; // 页面底 L0
 $wd-card:       #FFFFFF !default; // 卡片 L1
 $wd-dark:       #1C1C1C !default; // 深色一级 · 锚点 L4
 $wd-dark-2:     #2F2F2F !default; // 深色二级 · 浮层 / 悬停
+$wd-dark-text:  #FFFFFF !default; // 深色锚点上的文字（深色主题翻转为深字）
 
 // --- Semantic · 仅小面积（状态点 / 小字提示） --------------
 $wd-success:    #2FA57C !default;
@@ -121,6 +122,7 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
   --wd-card:       #{$wd-card};
   --wd-dark:       #{$wd-dark};
   --wd-dark-2:     #{$wd-dark-2};
+  --wd-dark-text:  #{$wd-dark-text};
 
   --wd-success:    #{$wd-success};
   --wd-warning:    #{$wd-warning};

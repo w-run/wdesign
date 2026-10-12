@@ -15,7 +15,7 @@
 .wd-tag--sm { height: 22px; padding: 0 10px; font-size: var(--wd-font-size-sm); }
 .wd-tag--tint { background: var(--wd-tint-2); color: var(--wd-red-active); }
 .wd-tag--gray { background: var(--wd-field); color: var(--wd-ink-2); }
-.wd-tag--dark { background: var(--wd-dark); color: #fff; }
+.wd-tag--dark { background: var(--wd-dark); color: var(--wd-dark-text); }
 .wd-tag:active { transform: scale(.96); }
 
 .wd-tag__dot {
