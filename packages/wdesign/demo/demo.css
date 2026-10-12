@@ -39,6 +39,7 @@
   --wd-on-dark-text: #EDEFF2;
   --wd-mark-bg:      rgba(214, 40, 57, 0.14);
   --wd-link-underline: rgba(214, 40, 57, 0.35);
+  --wd-danger:         #D62839;
   --wd-focus-ring:      rgba(214, 40, 57, 0.22);
   --wd-focus-ring-soft: rgba(214, 40, 57, 0.14);
   --wd-radius-sm:   12px;
@@ -49,7 +50,21 @@
   --wd-shadow:       0 12px 30px rgba(25, 27, 31, 0.06);
   --wd-shadow-hover: 0 16px 40px rgba(25, 27, 31, 0.09);
   --wd-font-family: Mona Sans, Source Han Sans SC, Noto Sans SC, PingFang SC, -apple-system, BlinkMacSystemFont, Inter, DM Sans, sans-serif;
-  --wd-font-mono:   Mona Sans Mono, ui-monospace, SF Mono, Menlo, Consolas, monospace; }
+  --wd-font-mono:   Mona Sans Mono, ui-monospace, SF Mono, Menlo, Consolas, monospace;
+  --wd-fs-display: 56px;
+  --wd-fs-h1:      32px;
+  --wd-fs-h2:      24px;
+  --wd-fs-h3:      18px;
+  --wd-fs-body:    15.5px;
+  --wd-fs-caption: 13px;
+  --wd-space-1:  4px;
+  --wd-space-2:  8px;
+  --wd-space-3:  12px;
+  --wd-space-4:  16px;
+  --wd-space-6:  24px;
+  --wd-space-8:  32px;
+  --wd-space-12: 48px;
+  --wd-space-16: 64px; }
 
 .wd-dot {
   display: inline-block;

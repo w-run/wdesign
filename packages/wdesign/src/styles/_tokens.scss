@@ -143,7 +143,7 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
   --wd-on-dark-text: #{$wd-on-dark-text};
   --wd-mark-bg:      #{$wd-mark-bg};
   --wd-link-underline: #{$wd-link-underline};
-
+  --wd-danger:         #{$wd-danger};
 
   --wd-focus-ring:      #{$wd-focus-ring};
   --wd-focus-ring-soft: #{$wd-focus-ring-soft};
@@ -159,4 +159,20 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
 
   --wd-font-family: #{$wd-font-family};
   --wd-font-mono:   #{$wd-font-mono};
+
+  --wd-fs-display: #{$wd-fs-display};
+  --wd-fs-h1:      #{$wd-fs-h1};
+  --wd-fs-h2:      #{$wd-fs-h2};
+  --wd-fs-h3:      #{$wd-fs-h3};
+  --wd-fs-body:    #{$wd-fs-body};
+  --wd-fs-caption: #{$wd-fs-caption};
+
+  --wd-space-1:  #{$wd-space-1};
+  --wd-space-2:  #{$wd-space-2};
+  --wd-space-3:  #{$wd-space-3};
+  --wd-space-4:  #{$wd-space-4};
+  --wd-space-6:  #{$wd-space-6};
+  --wd-space-8:  #{$wd-space-8};
+  --wd-space-12: #{$wd-space-12};
+  --wd-space-16: #{$wd-space-16};
 }

@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
 
 <template>
   <span ref="root" class="wd-dropdown">
-    <span class="wd-dropdown__trigger" @click="open = !open"><slot /></span>
+    <span class="wd-dropdown__trigger" role="button" :aria-haspopup="true" :aria-expanded="open" @click="open = !open"><slot /></span>
     <Transition name="wd-dropdown-pop">
       <div v-if="open" class="wd-dropdown__menu" role="menu">
         <button

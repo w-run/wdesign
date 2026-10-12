@@ -241,12 +241,12 @@ const WdModal = {
   },
   template: `
     <transition name="wd-modal-fade">
-    <div v-if="modelValue" class="wd-modal">
+    <div v-if="modelValue" class="wd-modal" role="dialog" aria-modal="true">
       <div class="wd-modal__mask" @click="closeOnMask && close()"></div>
       <div class="wd-modal__panel" :style="{ maxWidth: maxWidth }">
         <div class="wd-modal__head">
           <div class="wd-modal__title">{{ title }}</div>
-          <button type="button" class="wd-icon-btn" @click="close">
+          <button type="button" class="wd-icon-btn" aria-label="关闭" @click="close">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
           </button>
         </div>
@@ -457,7 +457,7 @@ const WdDropdown = {
   },
   template: `
     <span class="wd-dropdown">
-      <span class="wd-dropdown__trigger" @click="open = !open"><slot></slot></span>
+      <span class="wd-dropdown__trigger" role="button" :aria-haspopup="true" :aria-expanded="open" @click="open = !open"><slot></slot></span>
       <transition name="wd-dropdown-pop">
         <div v-if="open" class="wd-dropdown__menu">
           <button v-for="it in items" :key="it.value" type="button" class="wd-dropdown__item"
@@ -690,6 +690,7 @@ const WdTable = {
           <tr>
             <th v-for="col in columns" :key="col.key" :style="col.width ? { width: col.width } : null"
               class="wd-table__th" :class="{ 'wd-table__th--sort': col.sortable }"
+              :aria-sort="sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'"
               @click="toggleSort(col)">
               {{ col.title }}
               <span v-if="col.sortable" class="wd-table__sort">
@@ -762,7 +763,7 @@ const WdCollapse = {
     <div class="wd-collapse">
       <div v-for="(item, i) in items" :key="i" class="wd-collapse__item"
         :class="{ 'wd-collapse__item--open': isOpen(i) }">
-        <button type="button" class="wd-collapse__head" @click="toggle(i)">
+        <button type="button" class="wd-collapse__head" :aria-expanded="isOpen(i)" @click="toggle(i)">
           <span>{{ item.title }}</span>
           <svg class="wd-chevron" :class="{ 'wd-chevron--open': isOpen(i) }" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
         </button>
@@ -806,7 +807,7 @@ const WdDrawer = {
   },
   template: `
     <transition name="wd-drawer-fade">
-      <div v-if="modelValue" class="wd-drawer" :class="side === 'left' ? 'wd-drawer--left' : ''">
+      <div v-if="modelValue" class="wd-drawer" :class="side === 'left' ? 'wd-drawer--left' : ''" role="dialog" aria-modal="true" aria-label="抽屉">
         <div class="wd-drawer__mask" @click="closeOnMask && close()"></div>
         <div class="wd-drawer__panel">
           <div class="wd-drawer__head">
@@ -816,6 +817,7 @@ const WdDrawer = {
             </button>
           </div>
           <div class="wd-drawer__body"><slot></slot></div>
+        <div v-if="$slots.footer" class="wd-drawer__foot"><slot name="footer"></slot></div>
         </div>
       </div>
     </transition>`,
@@ -1392,7 +1394,7 @@ const WdExplorer = {
           :class="{ 'wd-explorer__folder--active': i === active }"
           @click="active = i">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8a3 3 0 0 1 3-3h2.6c.5 0 1 .2 1.4.6l1 1c.4.4.9.6 1.4.6H18a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"></path></svg>
-          {{ f.name }}
+          <span class="wd-explorer__folder-name">{{ f.name }}</span>
           <span class="wd-explorer__count">{{ f.files.length }}</span>
         </button>
       </div>
@@ -1432,7 +1434,7 @@ const WdExplorer = {
                   <span class="wd-explorer__file-chip">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>
                   </span>
-                  {{ f.name }}
+                  <span class="wd-explorer__file-name">{{ f.name }}</span>
                 </span>
               </td>
               <td class="is-num">{{ fmtSize(f.size) }}</td>

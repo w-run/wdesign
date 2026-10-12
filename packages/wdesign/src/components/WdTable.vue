@@ -55,6 +55,7 @@ function toggleSort(key: string, col: WdTableColumn) {
             :style="col.width ? { width: col.width } : undefined"
             class="wd-table__th"
             :class="{ 'wd-table__th--sort': col.sortable }"
+            :aria-sort="sortKey === col.key ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'"
             @click="toggleSort(col.key, col)"
           >
             {{ col.title }}
