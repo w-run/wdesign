@@ -9,9 +9,9 @@
   border-radius: var(--wd-radius-pill);
   background: var(--wd-red);
   cursor: pointer;
-  transition: background .18s ease;
+  transition: background var(--wd-dur) ease;
 }
-.wd-switch:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring); }
+.wd-switch:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-switch--off { background: var(--wd-field-hover); }
 
 .wd-switch__knob {
@@ -22,8 +22,8 @@
   height: 27px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: var(--wd-shadow-knob);
-  transition: transform .18s ease;
+  box-shadow: 0 2px 8px rgba(25,27,31,.10);
+  transition: transform var(--wd-dur) ease;
   transform: translateX(21px);
 }
 .wd-switch--off .wd-switch__knob { transform: translateX(0); }

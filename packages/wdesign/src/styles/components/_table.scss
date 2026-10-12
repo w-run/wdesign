@@ -1,7 +1,7 @@
 // WDesign — Table（无边框表格：斑马纹 + 色块表头）
 .wd-table-wrap {
   background: var(--wd-card);
-  border-radius: 18px;
+  border-radius: var(--wd-radius-md);
   overflow: hidden;
   box-shadow: var(--wd-shadow);
 }
@@ -23,7 +23,7 @@
 }
 .wd-table td { padding: 14px 16px; color: var(--wd-ink); }
 
-.wd-table tbody tr { transition: background .15s ease; }
+.wd-table tbody tr { transition: background var(--wd-dur-fast) ease; }
 .wd-table--striped tbody tr:nth-child(even) { background: var(--wd-bg); }
 .wd-table tbody tr:hover { background: var(--wd-tint-1); }
 

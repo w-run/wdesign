@@ -1,6 +1,6 @@
 // WDesign — ImagePreview（图片预览 · 灯箱）
 .wd-image-preview { display: inline-flex; cursor: zoom-in; }
-.wd-image-preview__thumb { width: 100%; border-radius: 14px; display: block; }
+.wd-image-preview__thumb { width: 100%; border-radius: var(--wd-radius-sm); display: block; }
 
 .wd-preview { position: fixed; inset: 0; z-index: 1300; }
 .wd-preview__mask { position: absolute; inset: 0; background: var(--wd-mask); }
@@ -16,9 +16,9 @@
 .wd-preview__img {
   max-width: 100%;
   max-height: 100%;
-  border-radius: 12px;
+  border-radius: var(--wd-radius-sm);
   box-shadow: var(--wd-shadow-lg);
-  transition: transform .18s ease;
+  transition: transform var(--wd-dur) ease;
   cursor: grab;
 }
 
@@ -51,6 +51,6 @@
 }
 
 .wd-preview-fade-enter-active,
-.wd-preview-fade-leave-active { transition: opacity .2s ease; }
+.wd-preview-fade-leave-active { transition: opacity var(--wd-dur) ease; }
 .wd-preview-fade-enter-from,
 .wd-preview-fade-leave-to { opacity: 0; }

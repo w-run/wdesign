@@ -41,7 +41,7 @@
     text-decoration-color: var(--wd-link-underline);
     text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
-    transition: color .15s ease, text-decoration-color .15s ease;
+    transition: color var(--wd-dur-fast) ease, text-decoration-color var(--wd-dur-fast) ease;
   }
   a:hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
   strong, b { font-weight: 700; }
@@ -68,7 +68,7 @@
     padding: 18px 20px;
     background: var(--wd-dark);
     color: var(--wd-on-dark-text);
-    border-radius: 16px;
+    border-radius: var(--wd-radius-md);
     overflow: auto;
     font-size: 13.5px;
     line-height: 1.7;
@@ -89,7 +89,7 @@
     margin: 0 0 1.25em;
     padding: 15px 18px 15px 27px;
     background: var(--wd-tint-1);
-    border-radius: 16px;
+    border-radius: var(--wd-radius-md);
     color: var(--wd-ink-2);
 
     &::before {
@@ -146,7 +146,7 @@
     border-spacing: 0;
     font-size: 14.5px;
     background: var(--wd-card);
-    border-radius: 14px;
+    border-radius: var(--wd-radius-sm);
     overflow: hidden;
     box-shadow: var(--wd-shadow);
     th, td { padding: 11px 16px; text-align: left; }
@@ -166,7 +166,7 @@
   }
 
   // ---- 图片 / 图注
-  img { max-width: 100%; height: auto; border-radius: 16px; background: var(--wd-bg); }
+  img { max-width: 100%; height: auto; border-radius: var(--wd-radius-md); background: var(--wd-bg); }
   figure { margin: 0 0 1.25em; }
   figcaption { margin-top: 8px; font-size: 12.5px; color: var(--wd-ink-2); text-align: center; }
 

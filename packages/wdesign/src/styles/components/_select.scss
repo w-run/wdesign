@@ -15,7 +15,7 @@
   font: inherit;
   font-size: 14.5px;
   color: var(--wd-ink);
-  transition: background .15s ease, box-shadow .16s ease;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 .wd-select__trigger:hover { background: var(--wd-field-hover); }
 .wd-select__trigger:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
@@ -33,7 +33,7 @@
   right: 0;
   padding: 8px;
   background: var(--wd-card);
-  border-radius: 18px;
+  border-radius: var(--wd-radius-md);
   box-shadow: var(--wd-shadow-hover);
   display: flex;
   flex-direction: column;
@@ -49,7 +49,7 @@
   padding: 11px 14px;
   border: 0;
   background: transparent;
-  border-radius: 12px;
+  border-radius: var(--wd-radius-sm);
   font: inherit;
   font-size: 14.5px;
   color: var(--wd-ink);
@@ -60,6 +60,6 @@
 .wd-select__option--active { background: var(--wd-tint-2); color: var(--wd-red-active); font-weight: 600; }
 .wd-select__option-mark { flex: none; color: var(--wd-red); }
 
-.wd-select-pop-enter-active { transition: opacity .15s ease, transform .15s ease; }
+.wd-select-pop-enter-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }
 .wd-select-pop-enter-from, .wd-select-pop-leave-to { opacity: 0; transform: translateY(-4px); }
-.wd-select-pop-leave-active { transition: opacity .12s ease, transform .12s ease; }
+.wd-select-pop-leave-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }

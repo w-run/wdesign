@@ -11,7 +11,7 @@
   max-width: calc(100% - 48px);
   padding: 16px 18px;
   background: var(--wd-card);
-  border-radius: 18px;
+  border-radius: var(--wd-radius-md);
   box-shadow: var(--wd-shadow-pop);
 }
 
@@ -23,6 +23,6 @@
 
 
 .wd-notification-fade-enter-active,
-.wd-notification-fade-leave-active { transition: opacity .22s ease, transform .22s ease; }
+.wd-notification-fade-leave-active { transition: opacity var(--wd-dur-slow) ease, transform var(--wd-dur-slow) ease; }
 .wd-notification-fade-enter-from,
 .wd-notification-fade-leave-to { opacity: 0; transform: translateY(12px); }

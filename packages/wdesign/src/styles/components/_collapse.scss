@@ -3,7 +3,7 @@
 
 .wd-collapse__item {
   background: var(--wd-card);
-  border-radius: 16px;
+  border-radius: var(--wd-radius-md);
   box-shadow: var(--wd-shadow);
   overflow: hidden;
 }
@@ -23,7 +23,7 @@
   color: var(--wd-ink);
   cursor: pointer;
   text-align: left;
-  transition: background .15s ease;
+  transition: background var(--wd-dur-fast) ease;
 }
 .wd-collapse__head:hover { background: var(--wd-bg); }
 
@@ -31,7 +31,7 @@
 .wd-collapse__body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows .24s ease;
+  transition: grid-template-rows var(--wd-dur-slow) ease;
 }
 .wd-collapse__item--open .wd-collapse__body { grid-template-rows: 1fr; }
 .wd-collapse__inner { overflow: hidden; }

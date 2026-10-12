@@ -16,7 +16,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background .15s ease, color .15s ease;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 .wd-pagination__btn:hover:not(:disabled) { background: var(--wd-field); color: var(--wd-ink); }
 .wd-pagination__btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }

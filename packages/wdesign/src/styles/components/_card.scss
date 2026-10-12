@@ -14,7 +14,7 @@
 
 .wd-card--hoverable {
   cursor: pointer;
-  transition: box-shadow .18s ease, transform .18s ease;
+  transition: box-shadow var(--wd-dur) ease, transform var(--wd-dur) ease;
 }
 .wd-card--hoverable:hover {
   box-shadow: var(--wd-shadow-hover);

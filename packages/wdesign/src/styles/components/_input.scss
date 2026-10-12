@@ -9,9 +9,9 @@
   border-radius: var(--wd-radius-pill);
   color: var(--wd-ink);
   font-size: 15px;
-  transition: box-shadow .16s ease;
+  transition: box-shadow var(--wd-dur-fast) ease;
 }
-.wd-input--rounded { border-radius: 18px; }
+.wd-input--rounded { border-radius: var(--wd-radius-md); }
 .wd-input:focus-within { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-input__icon { display: inline-flex; flex: none; color: var(--wd-ink-3); }
@@ -26,4 +26,4 @@
   color: inherit;
 }
 .wd-input input::placeholder { color: var(--wd-ink-3); }
-.wd-input input:disabled { color: var(--wd-ink-3); }
+.wd-input input:disabled { color: var(--wd-ink-3); background: transparent; pointer-events: none; }

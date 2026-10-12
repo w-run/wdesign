@@ -4,7 +4,7 @@
   align-items: flex-start;
   gap: 12px;
   padding: 16px 18px;
-  border-radius: 18px;
+  border-radius: var(--wd-radius-md);
   background: var(--wd-field);
   color: var(--wd-ink);
   font-size: 14px;

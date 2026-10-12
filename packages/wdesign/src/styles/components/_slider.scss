@@ -25,9 +25,9 @@
   height: 22px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: var(--wd-shadow-knob);
+  box-shadow: 0 2px 8px rgba(25,27,31,.10);
   cursor: grab;
-  transition: transform .12s ease;
+  transition: transform var(--wd-dur-fast) ease;
 }
 .wd-slider input[type='range']::-webkit-slider-thumb:active {
   cursor: grabbing;

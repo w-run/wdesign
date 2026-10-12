@@ -8,7 +8,7 @@
   cursor: pointer;
   display: inline-flex;
   color: var(--wd-field-hover);
-  transition: transform .12s ease, color .12s ease;
+  transition: transform var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 .wd-rate__item:hover { transform: scale(1.15); }
 .wd-rate__item--on { color: var(--wd-red); }

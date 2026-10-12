@@ -7,9 +7,9 @@
   gap: 9px;
   min-height: 38px;
   padding: 8px 12px;
-  border-radius: 12px;
+  border-radius: var(--wd-radius-sm);
   cursor: pointer;
-  transition: background .14s ease;
+  transition: background var(--wd-dur-fast) ease;
 }
 .wd-file-list__row:hover { background: var(--wd-bg); }
 .wd-file-list__row--folder { font-weight: 600; }

@@ -7,10 +7,10 @@
   gap: 12px;
   padding: 13px 16px;
   background: var(--wd-card);
-  border-radius: 14px;
+  border-radius: var(--wd-radius-sm);
   box-shadow: var(--wd-shadow);
   cursor: grab;
-  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  transition: transform var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
 }
 .wd-sortable__item:active { cursor: grabbing; }
 

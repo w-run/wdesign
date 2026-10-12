@@ -21,16 +21,16 @@
   max-width: 440px;
   padding: 26px 26px 24px;
   background: var(--wd-card);
-  border-radius: 28px;
+  border-radius: var(--wd-radius-xl);
   box-shadow: var(--wd-shadow-lg);
-  animation: wd-modal-in .22s ease;
+  animation: wd-modal-in var(--wd-dur-slow) ease;
 }
 @keyframes wd-modal-in {
   from { opacity: 0; transform: translateY(14px) scale(.98); }
 }
 
 .wd-modal-fade-enter-active,
-.wd-modal-fade-leave-active { transition: opacity .2s ease; }
+.wd-modal-fade-leave-active { transition: opacity var(--wd-dur) ease; }
 .wd-modal-fade-enter-from,
 .wd-modal-fade-leave-to { opacity: 0; }
 

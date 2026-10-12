@@ -3,7 +3,7 @@
   display: grid;
   grid-template-columns: 196px 1fr;
   background: var(--wd-card);
-  border-radius: 20px;
+  border-radius: var(--wd-radius-lg);
   box-shadow: var(--wd-shadow);
   overflow: hidden;
 }
@@ -29,7 +29,7 @@
   padding: 10px 12px;
   min-height: 40px;
   border: 0;
-  border-radius: 12px;
+  border-radius: var(--wd-radius-sm);
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
@@ -37,7 +37,7 @@
   font-weight: 600;
   cursor: pointer;
   text-align: left;
-  transition: background .14s ease, color .14s ease;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 .wd-explorer__folder:hover { background: var(--wd-tint-1); color: var(--wd-ink); }
 .wd-explorer__folder--active {
@@ -81,7 +81,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 .wd-explorer__view-btn:hover { color: var(--wd-ink); }
 .wd-explorer__view-btn--active {
@@ -115,7 +115,7 @@
   vertical-align: middle;
   border-top: 4px solid transparent;   // 行间留白（视觉分隔，不画线）
 }
-.wd-explorer__table tbody tr { cursor: pointer; transition: background .14s ease; }
+.wd-explorer__table tbody tr { cursor: pointer; transition: background var(--wd-dur-fast) ease; }
 .wd-explorer__table tbody tr:hover { background: var(--wd-tint-1); }
 
 .wd-explorer__table .is-num {
@@ -154,11 +154,11 @@
   gap: 9px;
   padding: 16px 8px 12px;
   border: 0;
-  border-radius: 14px;
+  border-radius: var(--wd-radius-sm);
   background: transparent;
   cursor: pointer;
   font: inherit;
-  transition: background .14s ease;
+  transition: background var(--wd-dur-fast) ease;
 }
 .wd-explorer__tile:hover { background: var(--wd-tint-1); }
 .wd-explorer__tile-icon {
@@ -170,7 +170,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background .14s ease, color .14s ease;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 .wd-explorer__tile:hover .wd-explorer__tile-icon { background: var(--wd-card); color: var(--wd-red); }
 .wd-explorer__tile-name {

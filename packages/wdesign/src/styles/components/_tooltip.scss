@@ -12,12 +12,12 @@
   font-weight: 600;
   line-height: 1.5;
   padding: 8px 12px;
-  border-radius: 12px;
+  border-radius: var(--wd-radius-sm);
   white-space: nowrap;
   box-shadow: var(--wd-shadow-pop);
   opacity: 0;
   pointer-events: none;
-  transition: opacity .15s ease, transform .15s ease;
+  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
 }
 .wd-tooltip--top .wd-tooltip__bubble { bottom: calc(100% + 10px); }
 .wd-tooltip--bottom .wd-tooltip__bubble { top: calc(100% + 10px); }

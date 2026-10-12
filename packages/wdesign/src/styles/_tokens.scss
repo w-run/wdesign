@@ -38,6 +38,7 @@ $wd-field:        #E9EDF1 !default; // 控件底色 · 白卡 / 灰底均可辨�
 
 // --- Motion（动效）
 $wd-dur:      .18s !default;
+$wd-dur-slow: .24s !default; // 大位移 / 尺寸变化（分段滑块、抽屉、折叠）
 $wd-dur-fast: .12s !default;
 $wd-ease:     cubic-bezier(.25, .8, .35, 1) !default;
 $wd-mask:     rgba(28, 28, 28, .42) !default; // 遮罩（深色主题会覆盖）
@@ -125,6 +126,7 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
   --wd-warning-soft: #{$wd-warning-soft};
   --wd-field:        #{$wd-field};
   --wd-dur:      #{$wd-dur};
+  --wd-dur-slow: #{$wd-dur-slow};
   --wd-dur-fast: #{$wd-dur-fast};
   --wd-ease:     #{$wd-ease};
   --wd-mask:     #{$wd-mask};

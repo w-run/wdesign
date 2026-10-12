@@ -28,7 +28,7 @@
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   pointer-events: auto;
   cursor: pointer;
-  transition: opacity .25s ease, transform .25s ease;
+  transition: opacity var(--wd-dur-slow) ease, transform var(--wd-dur-slow) ease;
 }
 
 .wd-toast--enter,

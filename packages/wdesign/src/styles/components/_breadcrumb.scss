@@ -15,7 +15,7 @@
   font: inherit;
   color: var(--wd-ink-2);
   cursor: pointer;
-  transition: color .15s ease, background .15s ease;
+  transition: color var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
 }
 .wd-breadcrumb__item:hover { color: var(--wd-red); background: var(--wd-tint-1); }
 

@@ -19,7 +19,7 @@
   border-radius: var(--wd-radius-pill);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow-sm);
-  transition: transform .24s cubic-bezier(.25, .8, .35, 1), width .24s cubic-bezier(.25, .8, .35, 1), height .24s cubic-bezier(.25, .8, .35, 1);
+  transition: transform var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1), width var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1), height var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1);
 }
 .wd-segmented--dark { background: var(--wd-dark-2); }
 .wd-segmented--dark .wd-segmented__item { color: var(--wd-on-dark); }
@@ -42,7 +42,7 @@
   font-weight: 600;
   color: var(--wd-ink-2);
   cursor: pointer;
-  transition: color .16s ease;
+  transition: color var(--wd-dur-fast) ease;
   white-space: nowrap;
 }
 .wd-segmented__item:hover { color: var(--wd-ink); }

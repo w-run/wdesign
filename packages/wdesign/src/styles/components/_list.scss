@@ -10,7 +10,7 @@
   gap: 14px;
   padding: 12px 16px;
   border-radius: var(--wd-radius-md);
-  transition: background .15s ease;
+  transition: background var(--wd-dur-fast) ease;
 }
 .wd-list-item--clickable { cursor: pointer; }
 .wd-list-item--clickable:hover { background: var(--wd-bg); }
@@ -22,7 +22,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: var(--wd-radius-sm);
   background: var(--wd-tint-2);
   color: var(--wd-red);
 }
