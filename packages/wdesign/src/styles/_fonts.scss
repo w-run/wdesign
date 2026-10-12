@@ -33,7 +33,8 @@ $wd-font-cdn: 'https://box.w-run.net/npm/fonts' !default;
 // https://github.com/adobe-fonts/source-han-sans ｜ 可用 Noto Sans SC VF 直替
 @font-face {
   font-family: 'Source Han Sans SC';
-  src: url('#{$wd-font-cdn}/noto-sans-sc-vf.ttf') format('truetype-variations');
+  src: url('#{$wd-font-cdn}/noto-sans-sc-vf.woff2') format('woff2-variations'),
+       url('#{$wd-font-cdn}/noto-sans-sc-vf.ttf') format('truetype-variations');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;

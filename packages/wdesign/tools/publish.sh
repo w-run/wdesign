@@ -19,7 +19,8 @@ NPM_BASE_URL=https://box.w-run.net/npm node tools/publish-static.mjs dist-npm
 
 # 2) 字体一起放入 npm/fonts（若尚未同步）
 mkdir -p dist-npm/fonts
-cp -n fonts/mona-sans-vf.woff2 dist-npm/fonts/ 2>/dev/null || true
+cp -f fonts/mona-sans-vf.woff2 dist-npm/fonts/ 2>/dev/null || true
+cp -f fonts/noto-sans-sc-vf.woff2 dist-npm/fonts/ 2>/dev/null || true
 cp -n fonts/noto-sans-sc-vf.ttf dist-npm/fonts/ 2>/dev/null || true
 cp -f fonts/wdesign-fonts.css dist-npm/fonts/
 
