@@ -19,6 +19,7 @@
   transition: background .15s ease, color .15s ease;
 }
 .wd-pagination__btn:hover:not(:disabled) { background: var(--wd-field); color: var(--wd-ink); }
+.wd-pagination__btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-pagination__btn:disabled { color: var(--wd-ink-3); cursor: default; }
 
 .wd-pagination__btn--active { background: var(--wd-red); color: #fff; }

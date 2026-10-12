@@ -265,16 +265,34 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1
   </div>
   <div class="sub">阴影 Shadow</div>
   <div class="shadowrow">
-    <div class="shadcard" style="box-shadow:0 12px 30px rgba(25,27,31,.06)">默认 · 6%</div>
-    <div class="shadcard" style="box-shadow:0 16px 40px rgba(25,27,31,.09)">悬停 · 9%</div>
+    <div class="shadcard" style="box-shadow:0 4px 12px rgba(25,27,31,.06)">sm · 小元件浮起<br>6% · 4px/12px</div>
+    <div class="shadcard" style="box-shadow:0 12px 30px rgba(25,27,31,.06)">默认 · 卡片<br>6% · 12px/30px</div>
+    <div class="shadcard" style="box-shadow:0 16px 40px rgba(25,27,31,.09)">hover · 悬停<br>9% · 16px/40px</div>
+    <div class="shadcard" style="box-shadow:0 12px 28px rgba(25,27,31,.14)">pop · 浮层/菜单<br>14% · 12px/28px</div>
+    <div class="shadcard" style="box-shadow:0 24px 60px rgba(25,27,31,.2)">lg · 模态/抽屉<br>20% · 24px/60px</div>
+    <div class="shadcard" style="box-shadow:0 2px 8px rgba(25,27,31,.22)">knob · 滑块/旋钮<br>22% · 2px/8px</div>
   </div>
-  <br><span class="code">box-shadow: 0 12px 30px rgba(25,27,31,0.06)</span>
+  <br><span class="code">阶梯 token：--wd-shadow-sm / default / hover / pop / lg / knob（深色模式整体加深）</span>
 </section>
 
 <section class="sec" id="components">
   <div class="eyebrow">05 · Components</div>
   <h2>组件</h2>
   <p class="note">全部无边框；状态变化靠底色深浅。以下组件与设计库 WDesign（SCSS + Vue3）一一对应；图标由 wdesign-icons 提供。</p>
+
+  <div class="panel">
+    <div class="pantitle">原子基础件 · ATOMS</div>
+    <div class="demo-row" style="align-items:center">
+      <div class="demo-col"><i class="dot" style="background:#2FA57C;display:inline-block;width:8px;height:8px;border-radius:50%"></i><span class="cap">wd-dot · success</span></div>
+      <div class="demo-col"><i class="dot" style="background:#E8A33D;display:inline-block;width:8px;height:8px;border-radius:50%"></i><span class="cap">wd-dot · warning</span></div>
+      <div class="demo-col"><i class="dot" style="background:#D62839;display:inline-block;width:8px;height:8px;border-radius:50%"></i><span class="cap">wd-dot · danger</span></div>
+      <div class="demo-col"><i class="dot" style="background:#8A9099;display:inline-block;width:8px;height:8px;border-radius:50%"></i><span class="cap">wd-dot · info</span></div>
+      <div class="demo-col"><button class="btn btn-tint" style="width:36px;height:36px;padding:0;border-radius:50%">✕</button><span class="cap">wd-icon-btn</span></div>
+      <div class="demo-col"><button class="btn btn-ghost" style="width:36px;height:36px;padding:0;border-radius:50%">✕</button><span class="cap">--ghost</span></div>
+      <div class="demo-col"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#B8BEC7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg><span class="cap">wd-chevron</span></div>
+      <div class="demo-col"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D62839" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 12 12)"><path d="m6 9 6 6 6-6"></path></svg><span class="cap">--open · 红</span></div>
+    </div>
+  </div>
 
   <div class="panel">
     <div class="pantitle">按钮 · BUTTON</div>

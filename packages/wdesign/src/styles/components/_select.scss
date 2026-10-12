@@ -18,6 +18,7 @@
   transition: background .15s ease, box-shadow .16s ease;
 }
 .wd-select__trigger:hover { background: var(--wd-field-hover); }
+.wd-select__trigger:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-select--open .wd-select__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-select__placeholder { color: var(--wd-ink-3); }

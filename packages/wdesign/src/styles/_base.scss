@@ -20,6 +20,12 @@ body {
 }
 
 // 尊重系统「减弱动态效果」设置
+// 选区高亮：主题红浅底（细节统一）
+::selection {
+  background: var(--wd-tint-3);
+  color: var(--wd-ink);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;

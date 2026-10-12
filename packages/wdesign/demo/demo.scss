@@ -207,3 +207,6 @@ body {
   padding: 24px;
   box-shadow: 0 10px 24px rgba(25, 27, 31, .05);
 }
+
+// 细节：锚点平滑滚动
+html { scroll-behavior: smooth; }

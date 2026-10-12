@@ -1,6 +1,10 @@
 // WDesign — Dropdown（下拉菜单）
 .wd-dropdown { position: relative; display: inline-flex; }
-.wd-dropdown__trigger { display: inline-flex; }
+.wd-dropdown__trigger {
+  display: inline-flex;
+  cursor: pointer;
+}
+.wd-dropdown__trigger:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-dropdown__menu {
   position: absolute;
