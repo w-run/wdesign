@@ -12,6 +12,8 @@
   transition: box-shadow var(--wd-dur-fast) ease;
 }
 .wd-input--rounded { border-radius: var(--wd-radius-md); }
+.wd-input--lg { padding: 16px 30px; font-size: 16px; }
+.wd-input--sm { padding: 9px 18px; font-size: 13.5px; }
 .wd-input:focus-within { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-input__icon { display: inline-flex; flex: none; color: var(--wd-ink-3); }

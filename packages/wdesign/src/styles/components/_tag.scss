@@ -10,6 +10,8 @@
   line-height: 1.2;
   white-space: nowrap;
 }
+.wd-tag--lg { padding: 10px 20px; font-size: 14px; }
+.wd-tag--sm { padding: 6px 12px; font-size: 12.5px; }
 .wd-tag--tint { background: var(--wd-tint-2); color: var(--wd-red-active); }
 .wd-tag--gray { background: var(--wd-field); color: var(--wd-ink-2); }
 .wd-tag--dark { background: var(--wd-dark); color: #fff; }

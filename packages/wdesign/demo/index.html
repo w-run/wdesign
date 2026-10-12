@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=20261029">
+<link rel="stylesheet" href="demo.css?v=20261031">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -429,6 +429,53 @@
   </section>
 
   <section class="demo-sec">
+    <h2>布局容器</h2>
+    <p class="hint">Space · Grid · Container —— 无边框，用间距与留白组织；再附组件尺寸档位演示。</p>
+
+    <div class="demo-panel">
+      <h3>Space · 水平间距（sm · md · lg）</h3>
+      <wd-space size="sm"><wd-tag variant="tint">标签 A</wd-tag><wd-tag variant="gray">标签 B</wd-tag><wd-tag variant="dark">标签 C</wd-tag></wd-space>
+      <div style="height:14px"></div>
+      <wd-space size="lg" wrap><wd-button size="sm" variant="tint">操作一</wd-button><wd-button size="sm" variant="tint">操作二</wd-button><wd-button size="sm" variant="ghost">操作三</wd-button></wd-space>
+      <div style="height:14px"></div>
+      <wd-space between><wd-button size="sm">左</wd-button><wd-button size="sm" variant="primary">右</wd-button></wd-space>
+    </div>
+
+    <div class="demo-panel">
+      <h3>Grid · 3 列栅格（gap md）</h3>
+      <wd-grid :columns="3" gap="md">
+        <wd-card pad="sm" v-for="i in 3" :key="i"><div style="height:56px;display:flex;align-items:center;justify-content:center">卡片 {{ i }}</div></wd-card>
+      </wd-grid>
+    </div>
+
+    <div class="demo-panel">
+      <h3>Container · 页面容器（max-width 640px）</h3>
+      <div style="background:var(--wd-bg)"><wd-container max-width="640px"><wd-card pad="sm"><div style="height:48px">居中容器内容 —— 居中 + 限宽</div></wd-card></wd-container></div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>尺寸档位 · Button · Input · Tag</h3>
+      <wd-space size="lg" wrap>
+        <wd-button size="lg" variant="primary">大按钮</wd-button>
+        <wd-button size="md" variant="primary">中按钮</wd-button>
+        <wd-button size="sm" variant="primary">小按钮</wd-button>
+      </wd-space>
+      <div style="height:14px"></div>
+      <wd-space size="lg" wrap>
+        <wd-input size="lg" placeholder="大输入框" />
+        <wd-input size="md" placeholder="中输入框" />
+        <wd-input size="sm" placeholder="小输入框" />
+      </wd-space>
+      <div style="height:14px"></div>
+      <wd-space size="lg" wrap>
+        <wd-tag size="lg" variant="tint">大标签</wd-tag>
+        <wd-tag size="md" variant="gray">中标签</wd-tag>
+        <wd-tag size="sm" variant="dark">小标签</wd-tag>
+      </wd-space>
+    </div>
+  </section>
+
+  <section class="demo-sec">
     <h2>MARKDOWN 样式</h2>
     <p class="hint">.wd-markdown 包裹渲染后的 HTML；引用块嵌套为静态分层，父级不会被连带高亮。</p>
     <div class="demo-board">
@@ -561,7 +608,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 </div>
 <script src="vue.global.prod.js"></script>
 <script src="icons.data.js?v=2"></script>
-<script src="demo-extra.js?v=17"></script>
-<script src="demo.js?v=11"></script>
+<script src="demo-extra.js?v=19"></script>
+<script src="demo.js?v=12"></script>
 </body>
 </html>

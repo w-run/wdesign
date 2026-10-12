@@ -8,8 +8,9 @@ withDefaults(
     shape?: 'pill' | 'rounded'
     type?: string
     disabled?: boolean
+    size?: 'lg' | 'md' | 'sm'
   }>(),
-  { modelValue: '', placeholder: '', shape: 'pill', type: 'text', disabled: false },
+  { modelValue: '', placeholder: '', shape: 'pill', type: 'text', disabled: false, size: 'md' },
 )
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
@@ -20,7 +21,7 @@ function onInput(event: Event) {
 </script>
 
 <template>
-  <label class="wd-input" :class="{ 'wd-input--rounded': shape === 'rounded' }">
+  <label class="wd-input" :class="{ 'wd-input--rounded': shape === 'rounded', 'wd-input--lg': size === 'lg', 'wd-input--sm': size === 'sm' }">
     <span v-if="$slots.icon" class="wd-input__icon"><slot name="icon" /></span>
     <input
       :type="type"

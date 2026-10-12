@@ -25,6 +25,7 @@ const WdRadioGroup = {
     modelValue: { type: [String, Number], default: '' },
     options: { type: Array, default: () => [] },
     disabled: Boolean,
+    size: { type: String, default: 'md' },
   },
   emits: ['update:modelValue'],
   computed: {
@@ -85,7 +86,7 @@ const WdSelect = {
   },
   template: `
     <div class="wd-select" :class="{ 'wd-select--open': open, 'wd-select--disabled': disabled }">
-      <button type="button" class="wd-select__trigger" :disabled="disabled" @click="open = !open">
+      <button type="button" class="wd-select__trigger" :class="{ 'wd-select__trigger--lg': size === 'lg', 'wd-select__trigger--sm': size === 'sm' }" :disabled="disabled" @click="open = !open">
         <span v-if="current" class="wd-select__value">{{ current.label }}</span>
         <span v-else class="wd-select__placeholder">{{ placeholder }}</span>
         <svg class="wd-chevron" :class="{ 'wd-chevron--open': open }" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
@@ -1592,3 +1593,59 @@ window.WD_EXTRA_COMPONENTS = (window.WD_EXTRA_COMPONENTS || []).concat([
   WdCarousel, WdSortableList, WdOtp, WdImagePreview,
   WdFileList, WdExplorer, WdAiMessage,
 ])
+
+// ── 布局容器 · 演示镜像 ──
+const WdSpace = {
+  name: 'WdSpace',
+  props: {
+    size: { type: [String, Number], default: 'md' },
+    direction: { type: String, default: 'row' },
+    wrap: { type: Boolean, default: false },
+    between: { type: Boolean, default: false },
+    center: { type: Boolean, default: false },
+    grow: { type: Boolean, default: false },
+  },
+  computed: {
+    gap() {
+      if (typeof this.size === 'number') return this.size + 'px'
+      return { sm: 'var(--wd-space-2)', md: 'var(--wd-space-3)', lg: 'var(--wd-space-6)' }[this.size]
+    },
+  },
+  template: `
+    <div class="wd-space"
+      :class="{ 'wd-space--col': direction === 'col', 'wd-space--wrap': wrap,
+                'wd-space--between': between, 'wd-space--center': center, 'wd-space--grow': grow }"
+      :style="{ gap }"><slot></slot></div>`,
+}
+const WdGrid = {
+  name: 'WdGrid',
+  props: {
+    columns: { type: [Number, String], default: 1 },
+    gap: { type: String, default: 'md' },
+    gutter: { type: Number, default: 0 },
+  },
+  computed: {
+    cols() {
+      if (this.columns === 'auto') return 'repeat(auto-fit, minmax(200px, 1fr))'
+      return 'repeat(' + this.columns + ', 1fr)'
+    },
+    gapValue() {
+      if (this.gutter) return this.gutter + 'px'
+      return ({ sm: 8, md: 16, lg: 24 }[this.gap] || 16) + 'px'
+    },
+  },
+  template: `<div class="wd-grid" :style="{ gridTemplateColumns: cols, gap: gapValue }"><slot></slot></div>`,
+}
+const WdContainer = {
+  name: 'WdContainer',
+  props: {
+    maxWidth: { type: String, default: '1200px' },
+    pad: { type: String, default: 'md' },
+  },
+  template: `
+    <div class="wd-container"
+      :style="{ maxWidth, paddingInline: { sm: 'var(--wd-space-3)', md: 'var(--wd-space-4)', lg: 'var(--wd-space-6)' }[pad] }">
+      <slot></slot>
+    </div>`,
+}
+window.WD_EXTRA_COMPONENTS = (window.WD_EXTRA_COMPONENTS || []).concat([WdSpace, WdGrid, WdContainer])

@@ -33,8 +33,9 @@ const WdTag = {
   props: {
     variant: { type: String, default: 'tint' },
     dot: Boolean,
+    size: { type: String, default: 'md' },
   },
-  template: `<span class="wd-tag" :class="'wd-tag--' + variant"><i v-if="dot" class="wd-tag__dot"></i><slot></slot></span>`,
+  template: `<span class="wd-tag" :class="['wd-tag--' + variant, { 'wd-tag--lg': size === 'lg', 'wd-tag--sm': size === 'sm' }]"><i v-if="dot" class="wd-tag__dot"></i><slot></slot></span>`,
 }
 
 const WdCard = {
@@ -65,10 +66,11 @@ const WdInput = {
     shape: { type: String, default: 'pill' },
     type: { type: String, default: 'text' },
     disabled: Boolean,
+    size: { type: String, default: 'md' },
   },
   emits: ['update:modelValue'],
   template: `
-    <label class="wd-input" :class="{ 'wd-input--rounded': shape === 'rounded' }">
+    <label class="wd-input" :class="{ 'wd-input--rounded': shape === 'rounded', 'wd-input--lg': size === 'lg', 'wd-input--sm': size === 'sm' }">
       <span v-if="$slots.icon" class="wd-input__icon"><slot name="icon"></slot></span>
       <input :type="type" :value="modelValue" :placeholder="placeholder" :disabled="disabled"
              @input="$emit('update:modelValue', $event.target.value)" />

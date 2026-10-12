@@ -1,0 +1,88 @@
+// Soft Bento · Red — Animations
+// 基于 duration token（dur-fast / dur / dur-slow）+ ease 的动画封装
+
+// ── 通用动效 ──
+@mixin wd-transition($dur: var(--wd-dur), $easing: var(--wd-ease)) {
+  transition: $dur $easing;
+}
+
+// Fade（淡入淡出）
+@mixin wd-fade-in($dur: var(--wd-dur-fast)) {
+  animation: wd-fade-in $dur ease forwards;
+  @keyframes wd-fade-in { from { opacity: 0 } to { opacity: 1 } }
+}
+@mixin wd-fade-out($dur: var(--wd-dur-fast)) {
+  animation: wd-fade-out $dur ease forwards;
+  @keyframes wd-fade-out { from { opacity: 1 } to { opacity: 0 } }
+}
+
+// Slide（滑入）
+@mixin wd-slide-up($dist: 8px, $dur: var(--wd-dur-fast)) {
+  animation: wd-slide-up $dur ease forwards;
+  @keyframes wd-slide-up { from { opacity: 0; transform: translateY($dist) } to { opacity: 1; transform: translateY(0) } }
+}
+@mixin wd-slide-down($dist: 8px, $dur: var(--wd-dur-fast)) {
+  animation: wd-slide-down $dur ease forwards;
+  @keyframes wd-slide-down { from { opacity: 0; transform: translateY(-$dist) } to { opacity: 1; transform: translateY(0) } }
+}
+
+// Scale（缩放）
+@mixin wd-scale-in($scale: .92, $dur: var(--wd-dur-fast)) {
+  animation: wd-scale-in $dur ease forwards;
+  @keyframes wd-scale-in { from { opacity: 0; transform: scale($scale) } to { opacity: 1; transform: scale(1) } }
+}
+
+// ── 通用 class（给非 Vue 组件使用） ──
+
+// Press：按压反馈（配 :active）
+.wd-animated--press {
+  transition: transform var(--wd-dur-fast) ease;
+  &:active { transform: scale(.96); }
+}
+
+// Enter/Leave：菜单 / 折叠 / 提示 的入场离场
+.wd-collapse-enter-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }
+.wd-collapse-enter-from,
+.wd-collapse-leave-to    { opacity: 0; transform: translateY(-4px); }
+
+// SlidePanel：抽屉 / 侧滑面板（配套 --right 反向）
+.wd-slide-panel--enter-active { transition: transform var(--wd-dur-slow) var(--wd-ease); }
+.wd-slide-panel--enter-from   { transform: translateX(-100%); }
+.wd-slide-panel--enter-to     { transform: translateX(0); }
+.wd-slide-panel--right .wd-slide-panel--enter-from { transform: translateX(100%); }
+
+// Skeleton 闪烁
+.wd-animated--skeleton {
+  background: linear-gradient(90deg, var(--wd-field) 25%, var(--wd-field-hover) 50%, var(--wd-field) 75%);
+  background-size: 200% 100%;
+  animation: wd-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes wd-shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+
+// Progress 进度条（宽度变化用 dur 档）
+.wd-animated--progress { transition: width var(--wd-dur) var(--wd-ease); }
+
+// ── 尺寸档位（sm / md / lg） ──
+$wd-size-sm: 28px;
+$wd-size-md: 36px;
+$wd-size-lg: 44px;
+
+$wd-padding-sm: 10px 20px;
+$wd-padding-md: 13px 24px;
+$wd-padding-lg: 16px 32px;
+
+$wd-font-size-sm: 13px;
+$wd-font-size-md: 14.5px;
+$wd-font-size-lg: 16px;
+
+:root {
+  --wd-size-sm: #{$wd-size-sm};
+  --wd-size-md: #{$wd-size-md};
+  --wd-size-lg: #{$wd-size-lg};
+  --wd-padding-sm: #{$wd-padding-sm};
+  --wd-padding-md: #{$wd-padding-md};
+  --wd-padding-lg: #{$wd-padding-lg};
+  --wd-font-size-sm: #{$wd-font-size-sm};
+  --wd-font-size-md: #{$wd-font-size-md};
+  --wd-font-size-lg: #{$wd-font-size-lg};
+}
