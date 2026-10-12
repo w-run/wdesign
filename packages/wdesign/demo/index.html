@@ -10,20 +10,50 @@
 <body>
 <div id="app" class="demo-wrap">
 
-  <header class="demo-hero">
-    <div class="demo-chips">
-      <span class="wd-tag wd-tag--tint">SCSS + Vue3</span>
-      <span class="wd-tag wd-tag--dark">wdesign v1.0</span>
+  <!-- ===== 顶部导航 ===== -->
+  <nav class="demo-nav" id="demoNav">
+    <a class="nav-brand" href="#top">WDesign<span class="nav-brand-dot"></span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#sec-01" data-sec="sec-01">基础</a>
+      <a href="#sec-02" data-sec="sec-02">表单</a>
+      <a href="#sec-03" data-sec="sec-03">反馈</a>
+      <a href="#sec-04" data-sec="sec-04">数据</a>
+      <a href="#sec-05" data-sec="sec-05">扩展</a>
+      <a href="#sec-06" data-sec="sec-06">交互</a>
+      <a href="#sec-07" data-sec="sec-07">布局</a>
+      <a href="#sec-08" data-sec="sec-08">文档</a>
+      <a href="#sec-09" data-sec="sec-09">图标</a>
+      <a href="#sec-10" data-sec="sec-10">组合</a>
     </div>
-    <div style="margin-top: 18px;">
-      <wd-button size="sm" variant="tint" @click="toggleDark">{{ dark ? '☀ 浅色模式' : '🌙 深色模式' }}</wd-button>
+    <wd-button class="nav-toggle" size="sm" variant="ghost" @click="toggleDark">{{ dark ? '☀' : '🌙' }}</wd-button>
+  </nav>
+
+  <!-- ===== Hero ===== -->
+  <header class="demo-hero" id="top">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span class="hero-dot"></span> WDesign · SCSS + Vue3 组件库 · v1.0
+      </div>
+      <h1>Soft Bento <span class="hero-accent">· Red</span></h1>
+      <p class="hero-lead">38 个真实 Vue3 组件 · 595 枚图标 · 深色主题 —— <em>无边框 · 色块分区 · 全圆角 · 留白极简</em></p>
+      <div class="hero-actions">
+        <a class="wd-btn wd-btn--primary" href="#sec-01">开始浏览</a>
+        <a class="wd-btn wd-btn--ghost" href="#sec-10">查看组合示例</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>38</b><span>组件</span></div>
+        <div class="stat"><b>595</b><span>图标</span></div>
+        <div class="stat"><b>2</b><span>主题</span></div>
+        <div class="stat"><b>0</b><span>边框</span></div>
+      </div>
     </div>
-    <h1>Soft Bento · Red</h1>
-    <p>组件库实时演示 —— 无边框 · 色块分区 · 全圆角 · 留白极简 · 无毛玻璃</p>
   </header>
 
-  <section class="demo-sec">
-    <h2>组件演示</h2>
+  <section class="demo-sec" id="sec-01">
+    <div class="sec-head">
+      <span class="sec-eyebrow">01 · 基础组件</span>
+      <h2>组件演示</h2>
+    </div>
     <p class="hint">以下均为真实 Vue3 组件（离线运行；输入框和开关可交互）。</p>
 
     <div class="demo-panel">
@@ -94,8 +124,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>实用组件</h2>
+  <section class="demo-sec" id="sec-02">
+    <div class="sec-head">
+      <span class="sec-eyebrow">02 · 表单与反馈</span>
+      <h2>实用组件</h2>
+    </div>
     <p class="hint">表单 / 导航 / 反馈 / 弹窗 —— 全部无边框、色块分层。</p>
 
     <div class="demo-panel">
@@ -193,8 +226,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>进阶组件</h2>
+  <section class="demo-sec" id="sec-03">
+    <div class="sec-head">
+      <span class="sec-eyebrow">03 · 进阶交互</span>
+      <h2>进阶组件</h2>
+    </div>
     <p class="hint">日期选择 · 下拉菜单 · 提示 · 分页 · 滑杆 · 步骤 · 加载 · Toast。</p>
 
     <div class="demo-panel">
@@ -258,8 +294,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>更多组件</h2>
+  <section class="demo-sec" id="sec-04">
+    <div class="sec-head">
+      <span class="sec-eyebrow">04 · 数据展示</span>
+      <h2>更多组件</h2>
+    </div>
     <p class="hint">表格 / 面包屑 / 折叠 / 抽屉 / 结果页 / 评分 —— 组件总数来到 32。</p>
 
     <div class="demo-panel">
@@ -324,8 +363,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>扩展组件</h2>
+  <section class="demo-sec" id="sec-05">
+    <div class="sec-head">
+      <span class="sec-eyebrow">05 · 高级控件</span>
+      <h2>扩展组件</h2>
+    </div>
     <p class="hint">分段控制 · 文件上传 · 通知横幅；页面右上角按钮可切换深浅模式（主题红 #D62839 不变）。</p>
 
     <div class="demo-panel">
@@ -363,8 +405,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>交互组件</h2>
+  <section class="demo-sec" id="sec-06">
+    <div class="sec-head">
+      <span class="sec-eyebrow">06 · 交互体验</span>
+      <h2>交互组件</h2>
+    </div>
     <p class="hint">轮播 · 拖动排序 · 验证码 · 图片预览 · 文件列表 · 资源管理器 · AI 消息。</p>
 
     <div class="demo-panel">
@@ -428,8 +473,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>布局容器</h2>
+  <section class="demo-sec" id="sec-07">
+    <div class="sec-head">
+      <span class="sec-eyebrow">07 · 布局体系</span>
+      <h2>布局容器</h2>
+    </div>
     <p class="hint">Space · Grid · Container —— 无边框，用间距与留白组织；再附组件尺寸档位演示。</p>
 
     <div class="demo-panel">
@@ -475,8 +523,11 @@
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>MARKDOWN 样式</h2>
+  <section class="demo-sec" id="sec-08">
+    <div class="sec-head">
+      <span class="sec-eyebrow">08 · 文档排版</span>
+      <h2>MARKDOWN 样式</h2>
+    </div>
     <p class="hint">.wd-markdown 包裹渲染后的 HTML；引用块嵌套为静态分层，父级不会被连带高亮。</p>
     <div class="demo-board">
       <article class="wd-markdown" style="max-width: 720px; margin: 0 auto;">
@@ -526,8 +577,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>ICONS 图标库</h2>
+  <section class="demo-sec" id="sec-09">
+    <div class="sec-head">
+      <span class="sec-eyebrow">09 · 图标库</span>
+      <h2>ICONS 图标库</h2>
+    </div>
     <p class="hint">由 wdesign-icons 提供 · WdIcon 渲染 —— 256×256 · currentColor（颜色交给 CSS color）</p>
     <div class="demo-panel" style="margin-top: 0;">
       <h3>WDICON 用法</h3>
@@ -555,8 +609,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
   </section>
 
-  <section class="demo-sec">
-    <h2>组合示例</h2>
+  <section class="demo-sec" id="sec-10">
+    <div class="sec-head">
+      <span class="sec-eyebrow">10 · 组合示例</span>
+      <h2>组合示例</h2>
+    </div>
     <p class="hint">L0–L4 五层色块同时在场，没有一条边框。</p>
     <div class="demo-screen">
       <div class="demo-bento">
@@ -601,14 +658,45 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
   </section>
 
-  <footer style="text-align: center; color: var(--wd-ink-3); font-size: 12.5px; margin-top: 36px;">
-    WDesign · Soft Bento · Red · 2026-10-11
+  <footer class="demo-foot">
+    <div class="foot-inner">
+      <div class="foot-brand">WDesign<span class="nav-brand-dot"></span></div>
+      <p class="foot-tag">Soft Bento · Red —— 无边框 · 色块分区 · 全圆角 · 留白极简</p>
+      <div class="foot-links">
+        <a href="https://github.com/w-run/wdesign" target="_blank" rel="noopener">GitHub</a>
+        <a href="#top">回到顶部 ↑</a>
+      </div>
+      <p class="foot-meta">38 组件 · 595 图标 · 深色主题 · 0 条边框 · <a href="https://github.com/w-run/wdesign/blob/main/packages/wdesign/CONVENTIONS.md" target="_blank" rel="noopener">CONVENTIONS</a></p>
+    </div>
   </footer>
 
 </div>
 <script src="vue.global.prod.js"></script>
 <script src="icons.data.js?v=2"></script>
-<script src="demo-extra.js?v=20"></script>
+<script src="demo-extra.js?v=21"></script>
 <script src="demo.js?v=12"></script>
+
+<!-- Scrollspy：导航高亮 -->
+<script>
+(function () {
+  var links = document.querySelectorAll('.nav-links a')
+  var map = {}
+  links.forEach(function (a) { map[a.dataset.sec] = a })
+  var secs = document.querySelectorAll('section[id^="sec-"]')
+  var sections = []
+  secs.forEach(function (sec) { sections.push(sec) })
+  function onScroll() {
+    var pos = (window.scrollY || document.documentElement.scrollTop) + 120
+    var cur = null
+    sections.forEach(function (sec) { if (sec.offsetTop <= pos) cur = sec.id })
+    links.forEach(function (a) { a.classList.toggle('is-active', a.dataset.sec === cur) })
+    var nav = document.getElementById('demoNav')
+    if (nav) nav.classList.toggle('is-scrolled', pos > 40)
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+})()
+</script>
+
 </body>
 </html>
