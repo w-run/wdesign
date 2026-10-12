@@ -1161,73 +1161,133 @@ const WdSortableList = {
   },
   emits: ['update:modelValue', 'change'],
   data() {
-    return { dragIndex: -1, overIndex: -1 }
+    return { dragIndex: -1, overIndex: -1, pressed: -1, startX: 0, startY: 0, cloneEl: null }
+  },
+  computed: {
+    lineTop() {
+      if (this.overIndex < 0 || !this.$el) return -9999
+      const items = this.$el.querySelectorAll('.wd-sortable__item')
+      const el = items[Math.min(this.overIndex, items.length - 1)]
+      return el ? el.offsetTop : -9999
+    },
+  },
+  beforeUnmount() {
+    this.detach()
+    this.dropClone()
   },
   methods: {
+    keyOf(it, i) {
+      return typeof it === 'string' ? it : (it && it.value != null ? it.value : i)
+    },
     labelOf(it) {
-      return typeof it === 'string' ? it : it.label
+      return typeof it === 'string' ? it : (it && it.label)
     },
-    onDragStart(i) {
-      this.dragIndex = i
+    /* ---------- 指针（鼠标 / 触摸统一） ---------- */
+    onDown(i, e) {
+      const t = e.touches ? e.touches[0] : e
+      if (!t) return
+      this.pressed = i
+      this.startX = t.clientX
+      this.startY = t.clientY
+      window.addEventListener('mousemove', this.onMove)
+      window.addEventListener('mouseup', this.onUp)
+      window.addEventListener('touchmove', this.onMove, { passive: false })
+      window.addEventListener('touchend', this.onUp)
+      window.addEventListener('touchcancel', this.onUp)
     },
-    onDragOver(i) {
-      if (this.dragIndex < 0 || i === this.dragIndex) return
-      this.overIndex = i
+    onMove(e) {
+      if (this.pressed < 0) return
+      const t = e.touches ? e.touches[0] : e
+      if (!t) return
+      const dx = Math.abs(t.clientX - this.startX)
+      const dy = Math.abs(t.clientY - this.startY)
+      // 超过阈值才算拖动（避免误触）
+      if (this.dragIndex < 0) {
+        if (dx + dy < 6) return
+        this.dragIndex = this.pressed
+        this.overIndex = this.pressed
+        this.makeClone(this.pressed, t.clientX, t.clientY)
+        document.body.style.userSelect = 'none'
+      }
+      e.preventDefault()
+      this.moveClone(t.clientX, t.clientY)
+      const el = document.elementFromPoint(t.clientX, t.clientY)
+      const item = el && el.closest ? el.closest('.wd-sortable__item') : null
+      if (item && this.$el && this.$el.contains(item)) {
+        const list = Array.prototype.slice.call(this.$el.querySelectorAll('.wd-sortable__item'))
+        const idx = list.indexOf(item)
+        if (idx > -1) this.overIndex = idx
+      }
     },
-    onDrop(i) {
-      if (this.dragIndex < 0 || i === this.dragIndex || !this.modelValue.length) return
+    onUp(e) {
+      const t = e.changedTouches ? e.changedTouches[0] : e
+      const wasDrag = this.dragIndex >= 0
+      if (wasDrag && this.overIndex >= 0 && this.overIndex !== this.dragIndex) {
+        this.drop(this.overIndex)
+      }
+      this.pressed = -1
+      this.dragIndex = -1
+      this.overIndex = -1
+      this.detach()
+      this.dropClone()
+      document.body.style.userSelect = ''
+    },
+    detach() {
+      window.removeEventListener('mousemove', this.onMove)
+      window.removeEventListener('mouseup', this.onUp)
+      window.removeEventListener('touchmove', this.onMove)
+      window.removeEventListener('touchend', this.onUp)
+      window.removeEventListener('touchcancel', this.onUp)
+    },
+    /* ---------- 悬浮镜像 ---------- */
+    makeClone(i, x, y) {
+      const item = this.$el && this.$el.querySelectorAll('.wd-sortable__item')[i]
+      if (!item) return
+      const r = item.getBoundingClientRect()
+      const c = item.cloneNode(true)
+      c.classList.add('wd-sortable__clone')
+      c.style.width = r.width + 'px'
+      c.style.height = r.height + 'px'
+      document.body.appendChild(c)
+      this.cloneEl = c
+      this.moveClone(x, y)
+    },
+    moveClone(x, y) {
+      if (!this.cloneEl) return
+      const r = this.cloneEl.getBoundingClientRect()
+      this.cloneEl.style.left = (x - r.width / 2) + 'px'
+      this.cloneEl.style.top = (y - r.height / 2) + 'px'
+    },
+    dropClone() {
+      if (this.cloneEl) {
+        this.cloneEl.remove()
+        this.cloneEl = null
+      }
+    },
+    /* ---------- 落位 ---------- */
+    drop(i) {
       const arr = this.modelValue.slice()
       const moved = arr.splice(this.dragIndex, 1)[0]
       arr.splice(i, 0, moved)
       this.$emit('update:modelValue', arr)
       this.$emit('change', arr)
-      this.reset()
-    },
-    reset() {
-      this.dragIndex = -1
-      this.overIndex = -1
-    },
-    onTouchStart(i, e) {
-      this.touchDrag = true
-      this.dragIndex = i
-      this.overIndex = i
-      e.preventDefault()
-    },
-    onTouchMove(e) {
-      if (!this.touchDrag || this.dragIndex < 0) return
-      const t = e.touches && e.touches[0]
-      if (!t) return
-      const el = document.elementFromPoint(t.clientX, t.clientY)
-      const item = el && el.closest('.wd-sortable__item')
-      if (!item || item.parentNode !== this.$el) return
-      const idx = this.$el ? [...this.$el.querySelectorAll('.wd-sortable__item')].indexOf(item) : -1
-      if (idx > -1 && idx !== this.overIndex) this.overIndex = idx
-    },
-    onTouchEnd() {
-      this.touchDrag = false
-      if (this.dragIndex >= 0 && this.overIndex >= 0 && this.overIndex !== this.dragIndex) {
-        this.onDrop(this.overIndex)
-      } else {
-        this.reset()
-      }
     },
   },
   template: `
     <div class="wd-sortable">
-      <div v-for="(it, i) in modelValue" :key="i" class="wd-sortable__item"
-        :class="{ 'wd-sortable__item--drag': dragIndex === i, 'wd-sortable__item--over': overIndex === i }"
-        draggable="true"
-        @dragstart="onDragStart(i)" @dragover.prevent="onDragOver(i)"
-        @drop.prevent="onDrop(i)" @dragend="reset">
-        <span class="wd-sortable__handle"
-          @touchstart.prevent.stop="onTouchStart(i, $event)"
-          @touchmove.prevent.stop="onTouchMove($event)"
-          @touchend.stop="onTouchEnd"
-          @touchcancel="reset">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg>
-        </span>
-        <span class="wd-sortable__label">{{ labelOf(it) }}</span>
-      </div>
+      <transition-group name="wd-sort" tag="div" class="wd-sortable__list">
+        <div v-for="(it, i) in modelValue" :key="keyOf(it, i)" class="wd-sortable__item"
+          :class="{ 'wd-sortable__item--drag': dragIndex === i, 'wd-sortable__item--over': dragIndex >= 0 && overIndex === i && dragIndex !== i }"
+          @mousedown.prevent="onDown(i, $event)"
+          @touchstart.prevent="onDown(i, $event)">
+          <span class="wd-sortable__handle">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg>
+          </span>
+          <span class="wd-sortable__label">{{ labelOf(it) }}</span>
+        </div>
+      </transition-group>
+      <div v-if="dragIndex >= 0 && overIndex >= 0 && dragIndex !== overIndex"
+        class="wd-sortable__drop-line" :style="{ top: lineTop + 'px' }"></div>
     </div>`,
 }
 
