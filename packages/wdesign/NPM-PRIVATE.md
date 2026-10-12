@@ -7,9 +7,19 @@
 | 资源 | URL |
 |---|---|
 | 私有 npm 源 | `https://box.w-run.net/npm/` |
-| 包元数据 | `https://box.w-run.net/npm/@w-run/wdesign` |
-| 包体 | `https://box.w-run.net/npm/@w-run/wdesign/-/w-run-wdesign-1.0.0.tgz` |
+| 组件包元数据 | `https://box.w-run.net/npm/@w-run/wdesign` |
+| 图标包元数据 | `https://box.w-run.net/npm/@w-run/wdesign-icons` |
 | 字体 CSS | `https://box.w-run.net/npm/fonts/wdesign-fonts.css` |
+
+### 已发布的包
+
+| 包 | 体积 | 说明 |
+|---|---|---|
+| `@w-run/wdesign` | 47 KB | 组件库（41 个 Vue3 组件 + SCSS） |
+| `@w-run/wdesign-icons` | 1.0 MB | 图标库（595 SVG + WdIcon 组件） |
+| `fonts/`（CDN） | 7.4 MB | 字体（woff2），不占包体 |
+
+`@w-run/wdesign` 的 `dependencies` 已声明 `@w-run/wdesign-icons`，**安装组件库会自动带上图标包**。
 
 ## 消费端用法
 

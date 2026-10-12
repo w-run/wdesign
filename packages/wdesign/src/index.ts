@@ -144,5 +144,5 @@ const WdUI: Plugin = {
 
 export default WdUI
 
-// —— 图标库引用（wdesign-icons，与本包保持同级目录时可用）——
-export { WdIcon } from '../../wdesign-icons/src/index'
+// —— 图标库（独立包 @w-run/wdesign-icons）——
+export { WdIcon } from '@w-run/wdesign-icons'

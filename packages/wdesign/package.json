@@ -29,5 +29,8 @@
   "peerDependencies": {
     "vue": "^3.3.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@w-run/wdesign-icons": "^1.0.0"
+  }
 }
