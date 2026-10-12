@@ -175,7 +175,7 @@
   dt { font-weight: 700; margin-top: .8em; }
   dd { margin: .2em 0 0; padding-left: 1.2em; color: var(--wd-ink-2); }
 
-  // ---- hljs 深色代码配色���配套 pre 的深色块）
+  // ---- hljs 深色代码配色（配套 pre 的深色块）
   // 注意：以下为固定语法色板（VS Code Dark），不受主题影响，刻意保留的硬编码
   .hljs-comment, .hljs-quote, .hljs-meta { color: #6A9955; }
   .hljs-name, .hljs-keyword, .hljs-selector-tag, .hljs-literal,
