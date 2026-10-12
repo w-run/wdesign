@@ -17,6 +17,10 @@
   --wd-tint-2:     #3A2025;
   --wd-tint-3:     #4A2830;
   --wd-tint-4:     #5A3540;
+  --wd-success:     #4CC79A;   /* 深色下提亮 */
+  --wd-warning:     #F0B459;
+  --wd-success-soft: #17352A;  /* 深色浅底 → 深绿调 */
+  --wd-warning-soft: #3A2E17;  /* 深色浅底 → 深橙调 */
   --wd-mask:      rgba(0, 0, 0, .62);
   --wd-toast-bg:  rgba(34, 34, 38, .74);
   --wd-field-hover: #3A3A40;
@@ -37,9 +41,7 @@
 }
 
 /* 深色下滚动条 */
-[data-theme="dark"] ::-webkit-scrollbar { width: 6px; }
-[data-theme="dark"] ::-webkit-scrollbar-track { background: transparent; }
-[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #3A3A40; border-radius: 999px; }
+
 
 /* 文字选中 */
 [data-theme="dark"] ::selection { background: rgba(214, 40, 57, .3); }

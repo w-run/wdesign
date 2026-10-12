@@ -4,6 +4,7 @@
 //  编译：sassc demo.scss demo.css
 // =============================================================
 @import '../src/styles/tokens';
+@import '../src/styles/base';   // 全局：滚动条统一 / 点击高亮去除 / reduced-motion
 @import '../src/styles/components/dot';
 @import '../src/styles/components/icon-btn';
 @import '../src/styles/components/chevron';

@@ -49,3 +49,4 @@
 .wd-segmented__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-segmented__item--active { color: var(--wd-ink); }
 .wd-segmented--dark .wd-segmented__item--active { color: var(--wd-dark-text); }
+.wd-segmented--dark .wd-segmented__item--active:hover { color: var(--wd-dark-text); }

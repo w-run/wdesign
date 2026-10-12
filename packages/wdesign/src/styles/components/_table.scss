@@ -2,12 +2,16 @@
 .wd-table-wrap {
   background: var(--wd-card);
   border-radius: var(--wd-radius-md);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow: var(--wd-shadow);
 }
+.wd-table-wrap::-webkit-scrollbar { height: 4px; }
+.wd-table-wrap::-webkit-scrollbar-thumb { background: var(--wd-ink-3); border-radius: 999px; }
 
 .wd-table {
-  width: 100%;
+  min-width: 100%;
+  width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;

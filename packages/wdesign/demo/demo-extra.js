@@ -1072,11 +1072,11 @@ const WdCarousel = {
     showArrows: { type: Boolean, default: true },
   },
   data() {
-    return { index: 0 }
+    return { index: 0, touchX: null, touchDelta: 0, touchLock: false }
   },
   computed: {
     trackStyle() {
-      return { transform: 'translateX(-' + this.index * 100 + '%)' }
+      return { transform: 'translateX(calc(-' + this.index * 100 + '% + ' + this.touchDelta + 'px))' }
     },
   },
   mounted() {
@@ -1088,6 +1088,29 @@ const WdCarousel = {
   methods: {
     pal(i) {
       return ['var(--wd-tint-2)', 'var(--wd-success-soft)', 'var(--wd-warning-soft)', 'var(--wd-field)'][i % 4]
+    },
+    onTouchStart(e) {
+      const t = e.touches && e.touches[0]
+      if (!t) return
+      this.stop()
+      this.touchX = t.clientX
+      this.touchDelta = 0
+      this.touchLock = true
+    },
+    onTouchMove(e) {
+      const t = e.touches && e.touches[0]
+      if (!t || !this.touchLock) return
+      const d = t.clientX - this.touchX
+      const w = this.$el ? this.$el.offsetWidth : 1
+      this.touchDelta = d / Math.max(1, w * 0.25) * 60   // 阻尼跟随
+    },
+    onTouchEnd() {
+      this.touchLock = false
+      const TH = 42
+      if (this.touchDelta < -TH) this.go(this.index + 1)
+      else if (this.touchDelta > TH) this.go(this.index - 1)
+      this.touchDelta = 0
+      this.start()
     },
     go(i) {
       const n = this.items.length
@@ -1108,7 +1131,8 @@ const WdCarousel = {
     },
   },
   template: `
-    <div class="wd-carousel" :style="{ height: height + 'px' }" @mouseenter="stop" @mouseleave="start">
+    <div class="wd-carousel" :class="{ 'wd-carousel--dragging': touchLock }" :style="{ height: height + 'px' }" @mouseenter="stop" @mouseleave="start"
+      @touchstart.prevent="onTouchStart" @touchmove.prevent="onTouchMove" @touchend="onTouchEnd">
       <div class="wd-carousel__track" :style="trackStyle">
         <div v-for="(it, i) in items" :key="i" class="wd-carousel__slide" :style="{ background: pal(i) }">
           <slot name="item" :item="it" :index="i">
@@ -1163,6 +1187,30 @@ const WdSortableList = {
       this.dragIndex = -1
       this.overIndex = -1
     },
+    onTouchStart(i, e) {
+      this.touchDrag = true
+      this.dragIndex = i
+      this.overIndex = i
+      e.preventDefault()
+    },
+    onTouchMove(e) {
+      if (!this.touchDrag || this.dragIndex < 0) return
+      const t = e.touches && e.touches[0]
+      if (!t) return
+      const el = document.elementFromPoint(t.clientX, t.clientY)
+      const item = el && el.closest('.wd-sortable__item')
+      if (!item || item.parentNode !== this.$el) return
+      const idx = this.$el ? [...this.$el.querySelectorAll('.wd-sortable__item')].indexOf(item) : -1
+      if (idx > -1 && idx !== this.overIndex) this.overIndex = idx
+    },
+    onTouchEnd() {
+      this.touchDrag = false
+      if (this.dragIndex >= 0 && this.overIndex >= 0 && this.overIndex !== this.dragIndex) {
+        this.onDrop(this.overIndex)
+      } else {
+        this.reset()
+      }
+    },
   },
   template: `
     <div class="wd-sortable">
@@ -1171,7 +1219,11 @@ const WdSortableList = {
         draggable="true"
         @dragstart="onDragStart(i)" @dragover.prevent="onDragOver(i)"
         @drop.prevent="onDrop(i)" @dragend="reset">
-        <span class="wd-sortable__handle">
+        <span class="wd-sortable__handle"
+          @touchstart.prevent.stop="onTouchStart(i, $event)"
+          @touchmove.prevent.stop="onTouchMove($event)"
+          @touchend.stop="onTouchEnd"
+          @touchcancel="reset">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg>
         </span>
         <span class="wd-sortable__label">{{ labelOf(it) }}</span>

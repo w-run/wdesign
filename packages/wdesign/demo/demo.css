@@ -70,6 +70,63 @@
   --wd-space-12: 48px;
   --wd-space-16: 64px; }
 
+*, *::before, *::after {
+  box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* 移动端：去除系统点击高亮（改用组件自身的 :active 反馈） */
+  -webkit-tap-highlight-color: transparent; }
+
+a, button, [role="button"], label, input, select, textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0;
+  background: var(--wd-bg);
+  color: var(--wd-ink);
+  font-family: var(--wd-font-family);
+  font-size: 15.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+::selection {
+  background: var(--wd-tint-3);
+  color: var(--wd-ink); }
+
+/* ── 统一极简滚动条（全库生效）── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px; }
+
+::-webkit-scrollbar-track {
+  background: transparent; }
+
+::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-3);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box; }
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--wd-ink-2);
+  background-clip: content-box; }
+
+::-webkit-scrollbar-corner {
+  background: transparent; }
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wd-ink-3) transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; } }
+
 .wd-dot {
   display: inline-block;
   width: 8px;
@@ -1878,7 +1935,8 @@
   .wd-markdown pre {
     margin: 0 0 1.25em;
     padding: 18px 20px;
-    background: var(--wd-dark);
+    background: #101013;
+    /* 固定深色块，不随主题翻转 */
     color: var(--wd-on-dark-text);
     border-radius: var(--wd-radius-md);
     overflow: auto;
@@ -2030,11 +2088,20 @@
 .wd-table-wrap {
   background: var(--wd-card);
   border-radius: var(--wd-radius-md);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow: var(--wd-shadow); }
 
+.wd-table-wrap::-webkit-scrollbar {
+  height: 4px; }
+
+.wd-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-3);
+  border-radius: 999px; }
+
 .wd-table {
-  width: 100%;
+  min-width: 100%;
+  width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px; }
@@ -2399,6 +2466,9 @@
 .wd-segmented--dark .wd-segmented__item--active {
   color: var(--wd-dark-text); }
 
+.wd-segmented--dark .wd-segmented__item--active:hover {
+  color: var(--wd-dark-text); }
+
 .wd-upload {
   display: flex;
   flex-direction: column;
@@ -2571,7 +2641,8 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--wd-radius-lg);
-  background: var(--wd-field); }
+  background: var(--wd-field);
+  touch-action: pan-y; }
 
 .wd-carousel__track {
   display: flex;
@@ -2637,6 +2708,10 @@
   width: 26px;
   background: var(--wd-red); }
 
+/* 跟手拖动：拖动过程中禁用过渡（避免滞后感） */
+.wd-carousel--dragging .wd-carousel__track {
+  transition: none; }
+
 .wd-sortable {
   display: flex;
   flex-direction: column;
@@ -2666,7 +2741,13 @@
 .wd-sortable__handle {
   display: inline-flex;
   color: var(--wd-ink-3);
-  flex: none; }
+  flex: none;
+  touch-action: none;
+  user-select: none;
+  cursor: grab; }
+
+.wd-sortable__item--drag .wd-sortable__handle {
+  cursor: grabbing; }
 
 .wd-sortable__label {
   font-size: 14px;
@@ -3255,6 +3336,13 @@
   --wd-tint-2:     #3A2025;
   --wd-tint-3:     #4A2830;
   --wd-tint-4:     #5A3540;
+  --wd-success:     #4CC79A;
+  /* 深色下提亮 */
+  --wd-warning:     #F0B459;
+  --wd-success-soft: #17352A;
+  /* 深色浅底 → 深绿调 */
+  --wd-warning-soft: #3A2E17;
+  /* 深色浅底 → 深橙调 */
   --wd-mask:      rgba(0, 0, 0, .62);
   --wd-toast-bg:  rgba(34, 34, 38, .74);
   --wd-field-hover: #3A3A40;
@@ -3273,16 +3361,6 @@
   color: var(--wd-ink); }
 
 /* 深色下滚动条 */
-[data-theme="dark"] ::-webkit-scrollbar {
-  width: 6px; }
-
-[data-theme="dark"] ::-webkit-scrollbar-track {
-  background: transparent; }
-
-[data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background: #3A3A40;
-  border-radius: 999px; }
-
 /* 文字选中 */
 [data-theme="dark"] ::selection {
   background: rgba(214, 40, 57, 0.3); }

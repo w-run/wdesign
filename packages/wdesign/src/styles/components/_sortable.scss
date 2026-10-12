@@ -17,5 +17,6 @@
 .wd-sortable__item--drag { opacity: .55; transform: scale(.98); }
 .wd-sortable__item--over { background: var(--wd-tint-1); }
 
-.wd-sortable__handle { display: inline-flex; color: var(--wd-ink-3); flex: none; }
+.wd-sortable__handle { display: inline-flex; color: var(--wd-ink-3); flex: none; touch-action: none; user-select: none; cursor: grab; }
+.wd-sortable__item--drag .wd-sortable__handle { cursor: grabbing; }
 .wd-sortable__label { font-size: 14px; font-weight: 600; }
