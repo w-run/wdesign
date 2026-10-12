@@ -30,3 +30,8 @@
 }
 .wd-input input::placeholder { color: var(--wd-ink-3); }
 .wd-input input:disabled { color: var(--wd-ink-3); background: transparent; pointer-events: none; }
+/* ---- 微交互（精致版）---- */
+.wd-input { transition: box-shadow var(--wd-dur) var(--wd-ease-out), background var(--wd-dur-fast) var(--wd-ease-out); }
+.wd-input__icon { transition: color var(--wd-dur-fast) var(--wd-ease-out); }
+.wd-input:focus-within .wd-input__icon { color: var(--wd-red); }
+

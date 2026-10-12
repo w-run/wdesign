@@ -86,3 +86,26 @@ $wd-font-size-lg: 16px;
   --wd-font-size-md: #{$wd-font-size-md};
   --wd-font-size-lg: #{$wd-font-size-lg};
 }
+
+// ── 精致微动效关键帧 ──
+// 光影掠过（填充面：让"光"滑过，而非位移/缩放）
+@keyframes wd-sheen {
+  from { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
+  25%  { opacity: 1; }
+  to   { transform: translateX(330%) skewX(-18deg); opacity: 0; }
+}
+// 柔光呼吸（当前步骤 / 进行中状态：缓慢、克制）
+@keyframes wd-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(214, 40, 57, .16); }
+  50%      { box-shadow: 0 0 0 7px rgba(214, 40, 57, 0); }
+}
+// 绽开（徽标 / 内点：从中心柔和展开，无回弹）
+@keyframes wd-bloom {
+  from { opacity: 0; transform: scale(.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+// 轻盈沉降（浮层入场：位移 + 极轻缩放，收尾慢）
+@keyframes wd-settle {
+  from { opacity: 0; transform: translateY(-5px) scale(.985); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

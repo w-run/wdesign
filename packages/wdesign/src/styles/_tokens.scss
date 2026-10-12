@@ -41,6 +41,8 @@ $wd-dur:      .18s !default;
 $wd-dur-slow: .24s !default; // 大位移 / 尺寸变化（分段滑块、抽屉、折叠）
 $wd-dur-fast: .12s !default;
 $wd-ease:     cubic-bezier(.25, .8, .35, 1) !default;
+$wd-ease-spring: cubic-bezier(.34, 1.56, .64, 1) !default; // 微型弹簧
+$wd-ease-out:    cubic-bezier(.16, 1, .3, 1) !default;    // 轻盈沉降
 $wd-mask:     rgba(28, 28, 28, .42) !default; // 遮罩（深色主题会覆盖）
 $wd-toast-bg: rgba(255, 255, 255, .78) !default; // Toast 半透明底（深色主题会覆盖）
 $wd-field-hover: #E3E7EC !default; // 控件悬停底
@@ -129,6 +131,8 @@ $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
   --wd-dur-slow: #{$wd-dur-slow};
   --wd-dur-fast: #{$wd-dur-fast};
   --wd-ease:     #{$wd-ease};
+  --wd-ease-spring: #{$wd-ease-spring};
+  --wd-ease-out:    #{$wd-ease-out};
   --wd-mask:     #{$wd-mask};
   --wd-toast-bg: #{$wd-toast-bg};
   --wd-field-hover: #{$wd-field-hover};
