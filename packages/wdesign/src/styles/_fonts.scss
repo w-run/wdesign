@@ -1,24 +1,29 @@
 // =============================================================
-//  Soft Bento · Red — Fonts（可选 · 自托管可变字体 VF）
+//  Soft Bento · Red — Fonts（可选 · 可变字体 VF，远程加载）
 //
 //  字体方案：拉丁 Mona Sans + 中文 思源黑体（Source Han Sans SC）
 //  两者均为可变字体（Variable Font）：单文件覆盖 200–900 全字重。
 //
+//  字体文件已从 npm 包中拆出（包体瘦身），部署在
+//    https://box.w-run.net/npm/fonts/            （对应 w-box /workspace/static/npm/fonts/）
+//  可直接使用绝对 CDN 地址，无需本地字体文件。
+//  如需自定义 CDN：import 前重定义 $wd-font-cdn 即可。
+//
 //  用法：
-//   1) 将字体文件放入站点静态目录（本包默认约定 fonts/，已随包提供）：
-//        fonts/mona-sans-vf.woff2      （拉丁子集，≈ 40 KB）
-//        fonts/noto-sans-sc-vf.ttf     （思源黑体 SC，≈ 18 MB）
-//   2) 在样式中引入一次：@import 'wdesign/src/styles/fonts';
-//   3) url() 路径按实际部署调整。
+//   @import 'wdesign/src/styles/tokens';       // 确保用到 $wd-font-cdn
+//   @import 'wdesign/src/styles/fonts';
 //
 //  许可：两个字体均为 SIL OFL 1.1，可免费商用。
 // =============================================================
+
+// 字体 CDN 根（静态托管；可按实际情况覆盖）
+$wd-font-cdn: 'https://box.w-run.net/npm/fonts' !default;
 
 // 拉丁 · Mona Sans VF（wght 200–900）
 // https://github.com/github/mona-sans
 @font-face {
   font-family: 'Mona Sans';
-  src: url('fonts/mona-sans-vf.woff2') format('woff2-variations');
+  src: url('#{$wd-font-cdn}/mona-sans-vf.woff2') format('woff2-variations');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;
@@ -28,7 +33,7 @@
 // https://github.com/adobe-fonts/source-han-sans ｜ 可用 Noto Sans SC VF 直替
 @font-face {
   font-family: 'Source Han Sans SC';
-  src: url('fonts/noto-sans-sc-vf.ttf') format('truetype-variations');
+  src: url('#{$wd-font-cdn}/noto-sans-sc-vf.ttf') format('truetype-variations');
   font-weight: 200 900;
   font-style: normal;
   font-display: swap;

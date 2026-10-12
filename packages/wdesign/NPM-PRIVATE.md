@@ -1,59 +1,78 @@
-# 私有 npm 源（纯静态）
+# 私有 npm 源（纯静态 · 已上线）
 
-把 `@w-run/*` 组件发布到 **w-box 的静态站**，零后端进程，复用现有 `box.w-run.net`。
+`@w-run/*` 组件发布在 **w-box 静态站**，零后端进程。
 
-## 原理
+## 线上地址
 
-npm 客户端只需要两个 GET 请求，因此纯静态托管即可：
-
-| 请求 | 返回 |
+| 资源 | URL |
 |---|---|
-| `GET /npm/@w-run/wdesign` | 包元数据（packument JSON） |
-| `GET /npm/@w-run/wdesign/-/w-run-wdesign-1.0.0.tgz` | tarball |
+| 私有 npm 源 | `https://box.w-run.net/npm/` |
+| 包元数据 | `https://box.w-run.net/npm/@w-run/wdesign` |
+| 包体 | `https://box.w-run.net/npm/@w-run/wdesign/-/w-run-wdesign-1.0.0.tgz` |
+| 字体 CSS | `https://box.w-run.net/npm/fonts/wdesign-fonts.css` |
 
-## 目录结构（w-box）
-
-```
-/workspace/static/npm/
-├── @w-run/
-│   ├── wdesign.json                    ← 元数据
-│   └── wdesign/-/w-run-wdesign-1.0.0.tgz  ← 包体
-```
-
-## 发布
-
-```sh
-sh tools/publish.sh          # 生成产物 + rsync 到 w-box
-```
-
-## 消费端（项目根 .npmrc）
+## 消费端用法
 
 ```ini
+# 项目根 .npmrc
 registry=https://registry.npmmirror.com/
 @w-run:registry=https://box.w-run.net/npm/
 ```
-
 ```sh
 npm install @w-run/wdesign
 ```
 
-> ⚠️ **必须带 scope**（`@w-run/...`）：私有源没有公共包，
-> 只有给包加 scope 才能用 `.npmrc` 精准路由，让 vue 等依赖仍走公共源。
+字体（可选，独立于包）：
+```html
+<link rel="stylesheet" href="https://box.w-run.net/npm/fonts/wdesign-fonts.css">
+```
 
-## Nginx
+## 服务器布局
 
-见 `tools/nginx-npm.conf`，挂到 `box.w-run.net` 站点内即可。
+```
+w-box (10.0.0.99)  /workspace/static/     ← 由 server.js 提供 8020 端口
+└── npm/
+    ├── @w-run/
+    │   ├── wdesign.json                  ← 包元数据（packument）
+    │   └── wdesign/-/w-run-wdesign-1.0.0.tgz
+    └── fonts/                            ← 字体包（CDN，独立）
+        ├── wdesign-fonts.css
+        ├── mona-sans-vf.woff2
+        └── noto-sans-sc-vf.ttf
+```
+`box.w-run.net` → w-srv(openresty) → 反代 w-box:8020 (`box-webroot.service`)
+
+## 服务端补丁（重要）
+
+原 `server.js` 对"路径既是目录又有同名 `.json`"的情况会 404（npm 元数据请求正是这种）。
+已打补丁 `tools/patch-box-server.py`：目录无 `index.html` 时回退同路径 + `.json`。
+备份见 `/workspace/static/server.js.bak*`。
+
+## 发布
+
+```sh
+sh tools/publish.sh      # 生成产物 + scp 到 w-box
+```
+
+## 字体拆分说明
+
+组件包里**不再包含字体**（原 16.9MB 占包体 95%），改为 CDN 引用：
+
+| | 拆分前 | 拆分后 |
+|---|---|---|
+| npm 包体 | 11.3 MB | **47 KB** |
+| 安装后占用 | 11 MB | 460 KB |
+
+`src/styles/_fonts.scss` 通过 `$wd-font-cdn` 引用线上字体，可覆盖：
+```scss
+$wd-font-cdn: 'https://your-cdn/fonts';
+@import 'wdesign/src/styles/fonts';
+```
 
 ## 能力边界
 
-| 操作 | 支持 | 说明 |
-|---|---|---|
-| `npm install` / `view` / `pack` | ✅ | 走静态文件 |
-| 多版本并存 | ✅ | 每次发布会合并进 packument |
-| `npm publish` | ❌ | 静态不能写；改用 `tools/publish.sh` |
-| `npm deprecate` / dist-tag 增改 | ⚠️ | 直接编辑 `<pkg>.json` |
-
-## 优化建议
-
-- 字体（`fonts/` 17MB）占包体 95%，建议拆成独立包 `@w-run/wdesign-fonts`，或改为 CDN 引用
-- 若不想加 scope，可在 Nginx 对未命中路径 `proxy_pass` 到公共源做兜底（需少量反代，非纯静态）
+| 操作 | 支持 |
+|---|---|
+| `npm install` / `view` / `pack` | ✅ |
+| 多版本并存 | ✅（发布时合并 packument） |
+| `npm publish` | ❌ 静态不可写，改用 `tools/publish.sh` |

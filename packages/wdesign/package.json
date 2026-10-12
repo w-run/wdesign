@@ -1,7 +1,7 @@
 {
   "name": "@w-run/wdesign",
   "version": "1.0.0",
-  "description": "WDesign — Soft Bento · Red；SCSS + Vue3 组件库（无边框 · 色块分区 · 全圆角 · 留白极简）",
+  "description": "WDesign — Soft Bento · Red；SCSS + Vue3 组件库（无边框 · 色块分区 · 全圆角 · 留白极简；字体走 CDN: https://box.w-run.net/npm/fonts/）",
   "type": "module",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -12,7 +12,6 @@
   },
   "files": [
     "src",
-    "fonts",
     "tokens.json"
   ],
   "sideEffects": [
