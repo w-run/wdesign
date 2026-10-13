@@ -62,30 +62,7 @@
 // Progress 进度条（宽度变化用 dur 档）
 .wd-animated--progress { transition: width var(--wd-dur) var(--wd-ease); }
 
-// ── 尺寸档位（sm / md / lg） ──
-$wd-size-sm: 34px;
-$wd-size-md: 44px;
-$wd-size-lg: 56px;
-
-$wd-padding-sm: 10px 20px;
-$wd-padding-md: 13px 24px;
-$wd-padding-lg: 16px 32px;
-
-$wd-font-size-sm: 13px;
-$wd-font-size-md: 14.5px;
-$wd-font-size-lg: 16px;
-
-:root {
-  --wd-size-sm: #{$wd-size-sm};
-  --wd-size-md: #{$wd-size-md};
-  --wd-size-lg: #{$wd-size-lg};
-  --wd-padding-sm: #{$wd-padding-sm};
-  --wd-padding-md: #{$wd-padding-md};
-  --wd-padding-lg: #{$wd-padding-lg};
-  --wd-font-size-sm: #{$wd-font-size-sm};
-  --wd-font-size-md: #{$wd-font-size-md};
-  --wd-font-size-lg: #{$wd-font-size-lg};
-}
+// ── 尺寸档位已迁移至 _tokens.scss（控件尺寸属令牌层）──
 
 // ── 精致微动效关键帧 ──
 // 光影掠过（填充面：让"光"滑过，而非位移/缩放）
@@ -142,5 +119,24 @@ $wd-font-size-lg: 16px;
   0%   { transform: scale(.4) }
   50%  { transform: scale(1.12) }
   100% { transform: scale(1) }
+}
+
+// ── 滚动揭示（反向迭代 · 源：w-run/blog）──────────────
+// 元素初始隐藏，进入视口时加 .is-revealed → 沿 expo 曲线从下方 12px 浮现。
+// 耗时用 --wd-dur-reveal（比普通快，留沉降空间）；可配合 JS 观察器错峰
+// （给每个元素设 --wd-reveal-delay）。
+@mixin wd-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1)),
+    transform var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1));
+  transition-delay: var(--wd-reveal-delay, 0s);
+  will-change: transform, opacity;
+
+  &.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
 }
 

@@ -5,7 +5,8 @@
 //  或在宿主 scss 中：
 //    @import 'wdesign/src/styles/index';
 // =============================================================
-@import 'tokens';
+@import 'vars';
+@import 'fonts';
 @import 'base';
 @import 'animations';
 @import 'components/space';
@@ -40,6 +41,9 @@
 @import 'components/steps';
 @import 'components/spinner';
 @import 'components/markdown';
+@import 'components/typography';
+@import 'components/timeline';
+@import 'components/post-item';
 @import 'components/table';
 @import 'components/breadcrumb';
 @import 'components/collapse';

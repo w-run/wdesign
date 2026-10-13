@@ -52,9 +52,13 @@ import WdFileList from './components/WdFileList.vue'
 import WdImagePreview from './components/WdImagePreview.vue'
 import WdOtp from './components/WdOtp.vue'
 import WdSortableList from './components/WdSortableList.vue'
+import WdPostItem from './components/WdPostItem.vue'
+import WdTimeline from './components/WdTimeline.vue'
 import { toast } from './components/toast'
 
 export {
+  WdPostItem,
+  WdTimeline,
   WdAvatar,
   WdAvatarGroup,
   WdButton,
