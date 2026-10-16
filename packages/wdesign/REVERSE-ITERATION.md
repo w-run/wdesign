@@ -173,6 +173,46 @@ WDesign 的 `$wd-*`）统一为 **WDesign 一套**：
     私有语言色改 `$lang-*`
 - **反哺新增令牌**：`$wd-shadow-accent`（主题红辉光，0 8px 20px rgba(214,40,57,.28)，来自 wcode）
 
+## v1.4 · 2026-10-17 · 视觉成熟度与查漏补缺
+
+### 1. 红色拆「填充 / 文字」两用（修深色不可读）
+`--wd-red` 作文字：浅色 4.3–4.7:1、深色 3.4–3.8:1，均未达 AA。新增 `--wd-red-text`
+（浅 `#BC2332` / 深 `#EE7A85`），全库 41 处 `color: var(--wd-red*)` 收敛到它；
+`background` / 图标填充仍用 `--wd-red`。
+
+### 2. 锚点面令牌族（修深色主题文字错配）
+`--wd-dark` 锚点面在深色主题下翻转为浅色，但 `--wd-on-dark*` / `--wd-dark-2` 不翻转：
+- 卡片 meta 落到浅色面上 → **1.1:1**（几乎不可见）
+- 深色按钮 hover 用 `--wd-dark-2`（仍是深灰）→ 深字压深灰
+
+新增 `--wd-dark-text-2` / `--wd-dark-track` / `--wd-red-on-dark` / `--wd-dark-hover` /
+`--wd-dark-active`，随锚点面同步翻转；**固定深色面**（代码块、图片浮层）继续用
+`--wd-on-dark*`（不翻转）。
+
+### 3. 说明文字与占位符对比度
+- `--wd-ink-2` `#8A9099` → `#636A73`（白卡 3.2 → 5.5:1，与 GitHub muted 同档）
+- 18 处「要读的弱文字」（占位符、星期表头、尺寸标注、计数、代码列表序号）
+  从 `ink-3`（1.6–1.9:1）改挂 `ink-2`；**禁用态与装饰类保留 ink-3**
+- 新增 `--wd-success-ink` / `--wd-warning-ink`，修 result 图标 2.0–2.8:1
+
+### 4. 健壮性
+- 入场动画 `fill-mode: both` → `forwards`（10 处）；`both` 含 `backwards`，
+  无头渲染 / 时钟停摆时元素会停在首帧
+- `wd-reveal` 去掉常驻 `will-change`，补 `@media (scripting: none)` 兜底
+
+### 5. 组件查漏补缺
+- **`index.ts` 三张清单对齐**：补回从未导出的 `WdContainer` / `WdGrid` / `WdSpace`，
+  以及 15 个未进 `app.use(WdUI)` 全局注册的组件
+- `tools/gen-index.mjs`：生成式 index.ts + `defineOptions.name` 校验
+- `toast` 常驻 live region（`aria-live`，warning/danger 用 assertive）
+- `WdModal` 焦点管理：焦点入面板 / Tab 循环 / 关闭归还
+
+### 6. 可复现
+- `tools/design-audit.py`：7 类检查 + 11 组对比度断言（浅色 + 深色）
+- **demo 构建修复**：`demo.scss` 从未导入 `vars`，令牌层拆分后重建会产出零变量裸页；
+  改用 dart-sass（`_dark.scss` 用 `@use`，sassc/libsass 不支持）
+- 控件高度接入 `--wd-size-*`（值本就一致，零像素变化）
+
 ## 待评估（尚未收编）
 
 - **WDesignSans 字体族**：blog 自托管分段字体（Latin/GB2312/BIG5/JIS × 4 字重，22.8MB woff2）。WDesign 目前用 Mona Sans + 思源黑体。若收编需解决体积（分包/子集化）与授权。
