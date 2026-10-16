@@ -26,10 +26,23 @@ function ensureContainer(): HTMLElement {
   return container
 }
 
+/**
+ * 无障碍：屏幕阅读器需要「常驻的 live region」才会播报动态插入的文案，
+ * 若在插入的同时才设置 aria-live，节点往往已被判定为初始内容而漏报。
+ * 因此容器常驻、property 提前就位；warning/danger 用 assertive 抢占播报。
+ */
+function setLive(el: HTMLElement, type: WdToastOptions['type']) {
+  const assert = type === 'warning' || type === 'danger'
+  el.setAttribute('role', assert ? 'alert' : 'status')
+  el.setAttribute('aria-live', assert ? 'assertive' : 'polite')
+  el.setAttribute('aria-atomic', 'true')
+}
+
 function show(message: string, options: WdToastOptions = {}) {
   if (typeof document === 'undefined') return
   const { type = 'info', duration = 2400 } = options
   const wrap = ensureContainer()
+  setLive(wrap, type)
 
   while (wrap.children.length >= MAX_STACK) {
     wrap.removeChild(wrap.firstChild as ChildNode)

@@ -24,5 +24,5 @@
 .wd-tooltip--open .wd-tooltip__bubble { opacity: 1; transform: translateX(-50%) translateY(0); }
 /* ---- 微交互（精致版）---- */
 .wd-tooltip__bubble { transition: opacity var(--wd-dur-fast) var(--wd-ease-out), transform var(--wd-dur-fast) var(--wd-ease-out); }
-.wd-tooltip--open .wd-tooltip__bubble { animation: wd-settle var(--wd-dur) var(--wd-ease-out) both; }
+.wd-tooltip--open .wd-tooltip__bubble { animation: wd-settle var(--wd-dur) var(--wd-ease-out) forwards; }
 

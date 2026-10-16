@@ -12,6 +12,7 @@
   --wd-red-hover:  #{$wd-red-hover};
   --wd-red-active: #{$wd-red-active};
   --wd-red-soft:   #{$wd-red-soft};
+  --wd-red-text:   #{$wd-red-text};
 
   --wd-tint-1:     #{$wd-tint-1};
   --wd-tint-2:     #{$wd-tint-2};
@@ -28,11 +29,20 @@
   --wd-dark:       #{$wd-dark};
   --wd-dark-2:     #{$wd-dark-2};
   --wd-dark-text:  #{$wd-dark-text};
+  /* 锚点面令牌族：仅用于「深色锚点面」之上的内容，会随锚点面一起翻转。
+     固定深色面（代码块、图片浮层）继续用 --wd-on-dark* 系列。 */
+  --wd-dark-text-2: #{$wd-dark-text-2};
+  --wd-dark-track:  #{$wd-dark-track};
+  --wd-red-on-dark: #{$wd-red-on-dark};
+  --wd-dark-hover:  #{$wd-dark-hover};
+  --wd-dark-active: #{$wd-dark-active};
 
   --wd-success:    #{$wd-success};
   --wd-warning:    #{$wd-warning};
   --wd-success-soft: #{$wd-success-soft};
   --wd-warning-soft: #{$wd-warning-soft};
+  --wd-success-ink:  #{$wd-success-ink};
+  --wd-warning-ink:  #{$wd-warning-ink};
   --wd-field:        #{$wd-field};
   --wd-dur:      #{$wd-dur};
   --wd-dur-slow: #{$wd-dur-slow};
@@ -80,6 +90,8 @@
 
   --wd-font-family: #{$wd-font-family};
   --wd-font-mono:   #{$wd-font-mono};
+  /* 滚动揭示的错峰延时：由消费方按元素逐个覆盖（--wd-reveal-delay: .1s） */
+  --wd-reveal-delay: 0s;
 
   --wd-img-filter:        #{$wd-img-filter};
   --wd-img-filter-invert: #{$wd-img-filter-invert};
@@ -90,8 +102,13 @@
   --wd-fs-h1:      #{$wd-fs-h1};
   --wd-fs-h2:      #{$wd-fs-h2};
   --wd-fs-h3:      #{$wd-fs-h3};
+  --wd-fs-lg:      #{$wd-fs-lg};
   --wd-fs-body:    #{$wd-fs-body};
+  --wd-fs-ui-lg:   #{$wd-fs-ui-lg};
+  --wd-fs-ui:      #{$wd-fs-ui};
   --wd-fs-caption: #{$wd-fs-caption};
+  --wd-fs-sm:      #{$wd-fs-sm};
+  --wd-fs-xs:      #{$wd-fs-xs};
   --wd-size-sm: #{$wd-size-sm};
   --wd-size-md: #{$wd-size-md};
   --wd-size-lg: #{$wd-size-lg};

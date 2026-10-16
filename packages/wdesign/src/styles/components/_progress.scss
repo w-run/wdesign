@@ -17,5 +17,5 @@
 }
 
 // 深色卡内使用
-.wd-progress--on-dark { background: var(--wd-on-dark-3); }
-.wd-progress--on-dark .wd-progress__bar { background: var(--wd-red-soft); }
+.wd-progress--on-dark { background: var(--wd-dark-track); }
+.wd-progress--on-dark .wd-progress__bar { background: var(--wd-red-on-dark); }

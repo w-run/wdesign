@@ -71,6 +71,8 @@
   25%  { opacity: 1; }
   to   { transform: translateX(330%) skewX(-18deg); opacity: 0; }
 }
+// 说明：本文件的脉冲/外环使用「主题红常量」rgba(214,40,57,·)——红在浅深两主题下恒为 #D62839，
+// 故不令牌化（令牌化的价值在于随主题翻转，而它不翻转）。灰色环值随 --wd-ink-2 同步维护。
 // 柔光呼吸（当前步骤 / 进行中状态：缓慢、克制）
 @keyframes wd-breathe {
   0%, 100% { box-shadow: 0 0 0 0 rgba(214, 40, 57, .16); }
@@ -105,8 +107,8 @@
 }
 /* wd-switch-ring-off — 关状态触发灰色外环 */
 @keyframes wd-switch-ring-off {
-  from { box-shadow: 0 0 0 0 rgba(138, 144, 153, .20) }
-  to   { box-shadow: 0 0 0 10px rgba(138, 144, 153, 0) }
+  from { box-shadow: 0 0 0 0 rgba(99, 106, 115, .20) }
+  to   { box-shadow: 0 0 0 10px rgba(99, 106, 115, 0) }
 }
 /* wd-check-pop — 勾选框选中时微弹 */
 @keyframes wd-check-pop {
@@ -132,7 +134,13 @@
     opacity var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1)),
     transform var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1));
   transition-delay: var(--wd-reveal-delay, 0s);
-  will-change: transform, opacity;
+
+  // ⚠️ 不用 will-change：常驻的合成层提示会为每个被揭示元素预留图层。
+  // JS 驱动的揭示依赖观察器；无脚本时降级为始终可见（内容优先）。
+  @media (scripting: none) {
+    opacity: 1;
+    transform: none;
+  }
 
   &.is-revealed {
     opacity: 1;

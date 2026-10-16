@@ -23,14 +23,14 @@
 
 .wd-card__title { font-size: 16px; font-weight: 700; }
 .wd-card__meta { font-size: 13px; color: var(--wd-ink-2); margin-top: 4px; }
-.wd-card--dark .wd-card__meta { color: var(--wd-on-dark); }
+.wd-card--dark .wd-card__meta { color: var(--wd-dark-text-2); }
 
 .wd-card__stat {
   font-size: 40px;
   font-weight: 800;
   letter-spacing: -.02em;
   line-height: 1.15;
-  color: var(--wd-red);
+  color: var(--wd-red-text);
   margin-top: 12px;
 }
-.wd-card--dark .wd-card__stat { color: var(--wd-red-soft); }
+.wd-card--dark .wd-card__stat { color: var(--wd-red-on-dark); }

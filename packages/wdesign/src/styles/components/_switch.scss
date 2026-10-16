@@ -22,7 +22,7 @@
   height: 27px;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(25,27,31,.10);
+  box-shadow: var(--wd-shadow-knob);
   transition: transform var(--wd-dur) ease;
   transform: translateX(21px);
 }

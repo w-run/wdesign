@@ -25,7 +25,7 @@
 .wd-pagination__btn--active { background: var(--wd-red); color: #fff; }
 .wd-pagination__btn--active:hover:not(:disabled) { background: var(--wd-red-hover); color: #fff; }
 
-.wd-pagination__dots { color: var(--wd-ink-3); font-size: 13px; padding: 0 2px; }
+.wd-pagination__dots { color: var(--wd-ink-2); font-size: 13px; padding: 0 2px; }
 /* ---- 微交互（精致版）---- */
-.wd-pagination__btn--active { animation: wd-bloom var(--wd-dur) var(--wd-ease-out) both; }
+.wd-pagination__btn--active { animation: wd-bloom var(--wd-dur) var(--wd-ease-out) forwards; }
 

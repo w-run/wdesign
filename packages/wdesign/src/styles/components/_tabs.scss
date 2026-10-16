@@ -34,5 +34,5 @@
   box-shadow: var(--wd-shadow-sm);
 }
 /* ---- 微交互（精致版）---- */
-.wd-tabs__item--active { animation: wd-bloom var(--wd-dur-fast) var(--wd-ease-out) both; }
+.wd-tabs__item--active { animation: wd-bloom var(--wd-dur-fast) var(--wd-ease-out) forwards; }
 

@@ -25,7 +25,7 @@
   justify-content: center;
   border-radius: var(--wd-radius-sm);
   background: var(--wd-tint-1);
-  color: var(--wd-red-soft);
+  color: var(--wd-red-text);
 }
 .wd-list-item__icon svg {
   color: inherit;
@@ -44,5 +44,5 @@
 .wd-list-item__icon {
   transition: transform var(--wd-dur) var(--wd-ease-out), background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-list-item--clickable:hover .wd-list-item__icon { transform: translateX(2px); background: var(--wd-tint-2); color: var(--wd-red); }
+.wd-list-item--clickable:hover .wd-list-item__icon { transform: translateX(2px); background: var(--wd-tint-2); color: var(--wd-red-text); }
 

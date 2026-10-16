@@ -36,7 +36,7 @@
 
   // ---- 链接 / 强调
   a {
-    color: var(--wd-red);
+    color: var(--wd-red-text);
     text-decoration: underline;
     text-decoration-color: var(--wd-link-underline);
     text-decoration-thickness: 1.5px;
@@ -125,8 +125,8 @@
   ul, ol { margin: 0 0 1.15em; padding-left: 1.5em; }
   ul ul, ul ol, ol ol, ol ul { margin: .35em 0 0; }
   li { margin: .3em 0; }
-  li::marker { color: var(--wd-red-soft); }
-  ol li::marker { color: var(--wd-ink-3); font-weight: 600; }
+  li::marker { color: var(--wd-red-text); }
+  ol li::marker { color: var(--wd-ink-2); font-weight: 600; }
   li > p { margin: .4em 0; }
   .task-list-item { list-style: none; }
   .task-list-item input[type='checkbox'],

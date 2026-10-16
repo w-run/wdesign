@@ -88,6 +88,6 @@ function toggleSort(key: string, col: WdTableColumn) {
 <style scoped>
 .wd-table__th { cursor: default; }
 .wd-table__th--sort { cursor: pointer; user-select: none; }
-.wd-table__th--sort:hover { color: var(--wd-red); }
+.wd-table__th--sort:hover { color: var(--wd-red-text); }
 .wd-table__sort { display: inline-flex; margin-left: 5px; vertical-align: middle; }
 </style>

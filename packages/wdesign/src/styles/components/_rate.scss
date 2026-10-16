@@ -11,7 +11,7 @@
   transition: transform var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 .wd-rate__item:hover { transform: scale(1.15); }
-.wd-rate__item--on { color: var(--wd-red); }
+.wd-rate__item--on { color: var(--wd-red-text); }
 
 .wd-rate--disabled { pointer-events: none; opacity: .6; }
 /* ---- 微交互（精致版）---- */

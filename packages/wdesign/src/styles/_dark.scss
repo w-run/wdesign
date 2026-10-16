@@ -17,6 +17,15 @@ html.dark-theme {
   --wd-field:      #{t.$wd-field-dark};   /* 深控件底 */
   --wd-dark:       #{t.$wd-dark-dark};   /* 深色锚点反转 */
   --wd-dark-text:  #{t.$wd-card-dark};   /* 锚点反转后其上的文字用深色 */
+
+  /* ---- 锚点面令牌族（随 --wd-dark 一起翻转）----
+     锚点面在深色主题下翻转为浅色，则其上的文字/轨道/红色强调必须同步翻转，
+     否则「白色半透明」落在浅色面上不可见（原缺陷：卡片 meta 仅 1.1:1）。 */
+  --wd-dark-text-2: #{t.$wd-dark-text-2-dark};
+  --wd-dark-track:  #{t.$wd-dark-track-dark};
+  --wd-red-on-dark: #{t.$wd-red-on-dark-dark};
+  --wd-dark-hover:  #{t.$wd-dark-hover-dark};
+  --wd-dark-active: #{t.$wd-dark-active-dark};
   --wd-dark-2:     #{t.$wd-field-hover-dark};
   --wd-ink:        #{t.$wd-ink-dark};   /* 正文 → 亮 */
   --wd-ink-2:      #{t.$wd-ink-2-dark};   /* 次级 → 暗灰（反向迭代：原 #8888A0 对比不足，~6.3:1） */
@@ -33,10 +42,14 @@ html.dark-theme {
   --wd-tint-2:     #3A2025;
   --wd-tint-3:     #4A2830;
   --wd-tint-4:     #5A3540;
+  --wd-red-text:   #EE7A85;   /* 红色文字款：浅色红在深底仅 3.4–3.8:1，换亮红后 ≥4.7:1 */
   --wd-success:     #4CC79A;   /* 深色下提亮 */
   --wd-warning:     #F0B459;
   --wd-success-soft: #17352A;  /* 深色浅底 → 深绿调 */
   --wd-warning-soft: #3A2E17;  /* 深色浅底 → 深橙调 */
+  /* 深色下语义色本就够亮（8.9 / 10.1:1），ink 款直接沿用亮色 */
+  --wd-success-ink: #4CC79A;
+  --wd-warning-ink: #F0B459;
   --wd-mask:      rgba(0, 0, 0, .62);
   --wd-toast-bg:  rgba(34, 34, 38, .74);
   --wd-field-hover: #{t.$wd-field-hover-dark};
@@ -63,6 +76,8 @@ html.dark-theme {
 [data-theme="dark"] ::selection,
 .dark-theme ::selection { background: rgba(214, 40, 57, .3); }
 
-/* 深色主题：锚点卡片反转为浅色，其上次级文字改中性灰 */
-[data-theme="dark"] .wd-card--dark,
-.dark-theme .wd-card--dark .wd-card__meta { color: var(--wd-ink-2); }
+/* 深色下 `mark` 高亮：半透明红配浅字对比不足（4.1:1），改用实心深红承白字（≈8:1） */
+[data-theme="dark"] mark,
+.dark-theme mark,
+:root[data-theme="dark"] mark,
+:root.dark-theme mark { background: #5A1A22; color: #FFF; }

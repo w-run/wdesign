@@ -36,7 +36,7 @@
   text-align: left;
 }
 .wd-dropdown__item:hover { background: var(--wd-bg); }
-.wd-dropdown__item--danger { color: var(--wd-red-active); }
+.wd-dropdown__item--danger { color: var(--wd-red-text); }
 .wd-dropdown__item--danger:hover { background: var(--wd-tint-1); }
 .wd-dropdown__item--disabled { color: var(--wd-ink-3); pointer-events: none; }
 
@@ -44,5 +44,5 @@
 .wd-dropdown-pop-enter-from, .wd-dropdown-pop-leave-to { opacity: 0; transform: translateY(-4px); }
 .wd-dropdown-pop-leave-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }
 /* ---- 微交互（精致版）---- */
-.wd-dropdown__menu { animation: wd-settle var(--wd-dur-fast) var(--wd-ease-out) both; }
+.wd-dropdown__menu { animation: wd-settle var(--wd-dur-fast) var(--wd-ease-out) forwards; }
 

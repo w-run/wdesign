@@ -13,6 +13,11 @@ $wd-red:        #D62839 !default; // 主题红 · 主按钮 / 关键数据
 $wd-red-hover:  #BC2332 !default; // 悬停
 $wd-red-active: #A21E2B !default; // 按下
 $wd-red-soft:   #E05B68 !default; // 深色底上的红
+// 红色「文字」款：仅用于 color（正文中的红色小字 / 链接 / 强调徽标）。
+// 浅色取略深一档（白卡 6.1 / 浅红底 5.3），深色由 _dark 换成亮红（见下）。
+// ⚠️ 注意：--wd-red 在浅色下对 tint-2/tint-3 底仅 4.3/3.9:1，未达 AA，
+//    所以「文字」场景一律用本令牌，--wd-red 只留给填充/边框/图标。
+$wd-red-text:   #BC2332 !default;
 
 // --- Tint · 红的浅色延伸（L2 浅色块层） ---------------------
 $wd-tint-1:     #FDF2F3 !default; // 最浅 · 高亮底
@@ -22,7 +27,9 @@ $wd-tint-4:     #F3BEC4 !default; // 强调块
 
 // --- Neutral · 灰白承担 90% 画面 ---------------------------
 $wd-ink:        #191B1F !default; // 正文
-$wd-ink-2:      #8A9099 !default; // 说明
+// 说明文字：原 #8A9099 在白卡仅 3.2:1（未达 AA 4.5），压深到 5.5:1；
+// 与 GitHub --fg-muted 同档，仍明显弱于正文，层次不丢。
+$wd-ink-2:      #636A73 !default; // 说明
 $wd-ink-3:      #B8BEC7 !default; // 占位
 // 反向迭代（源：w-run/blog）：更完整的弱文本梯度，供时间戳/分割/禁用使用
 $wd-ink-4:      #CDD2D7 !default; // 极弱（时间戳 / 次要标注）
@@ -38,6 +45,11 @@ $wd-success:    #2FA57C !default;
 $wd-warning:    #E8A33D !default;
 $wd-success-soft: #E8F6F0 !default; // 成功 · 浅底
 $wd-warning-soft: #FCF4E8 !default; // 警告 · 浅底
+// 语义色的「文字/图标款」：点在浅色底上需 ≥4.5:1（文字）或 ≥3:1（图形）。
+// $wd-success / $wd-warning 保持鲜亮，仅用于色点、图标填充等大面积/非文字场景；
+// 一旦语义色要承载文字或细线图标（如 result 图标、提示文字），改用 -ink 款。
+$wd-success-ink: #247D5E !default; // 白 5.0 / 页底 4.7 / success-soft 4.5
+$wd-warning-ink: #9C6412 !default; // 白 5.0 / 页底 4.7 / warning-soft 4.5
 $wd-field:        #E9EDF1 !default; // 控件底色 · 白卡 / 灰底均可辨识
 
 // --- Motion（动效）
@@ -57,6 +69,10 @@ $wd-dur-reveal: .45s !default; // 揭示 / 入场（比 dur-slow 更长，给沉
 // 导致消费方在编译期需要深色值时只能硬编码颜色。
 $wd-bg-dark:      #121214 !default;
 $wd-card-dark:    #1C1C1E !default;
+/* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
+$wd-dark-text-2-dark: #636A73 !default;
+$wd-dark-track-dark:  rgba(25, 27, 31, .14) !default;
+$wd-red-on-dark-dark: #A21E2B !default;
 $wd-field-dark:   #2A2A2E !default;
 $wd-field-hover-dark: #3A3A40 !default;
 $wd-ink-dark:     #E8E8EC !default;
@@ -88,10 +104,19 @@ $wd-shadow-pop:  0 12px 28px rgba(25, 27, 31, .14) !default; // 浮层（菜单/
 $wd-shadow-lg:   0 24px 60px rgba(25, 27, 31, .2) !default; // 模态 / 抽屉 / 灯箱
 $wd-shadow-knob: 0 2px 8px rgba(25, 27, 31, .22) !default; // 滑块拇指 / 开关旋钮
 $wd-shadow-accent: 0 8px 20px rgba(214, 40, 57, .28) !default; // 主题红辉光（强调按钮 / 选中卡）· 反哺自 wcode
-$wd-on-dark:      rgba(255, 255, 255, .62) !default; // 深色面上的次级文字
-$wd-on-dark-2:    rgba(255, 255, 255, .8) !default; // 深色面上的强次级
-$wd-on-dark-3:    rgba(255, 255, 255, .14) !default; // 深色面上的轨道
-$wd-on-dark-text: #EDEFF2 !default; // 深色面上的正文（如代码块）
+$wd-on-dark:      rgba(255, 255, 255, .62) !default; // 固定深色面上的次级文字
+$wd-on-dark-2:    rgba(255, 255, 255, .8) !default; // 固定深色面上的强次级
+$wd-on-dark-3:    rgba(255, 255, 255, .14) !default; // 固定深色面上的轨道
+$wd-on-dark-text: #EDEFF2 !default; // 固定深色面上的正文（如代码块）
+// 锚点面令牌族（浅色值；深色主题在 _dark.scss 翻转）
+$wd-dark-text-2:  rgba(255, 255, 255, .62) !default; // 锚点面上的次级文字
+$wd-dark-track:   rgba(255, 255, 255, .14) !default; // 锚点面上的轨道
+$wd-red-on-dark:  #{$wd-red-soft} !default;          // 锚点面上的红色强调
+// 锚点面的悬停/按下（随锚点面翻转；固定深色面仍用 --wd-dark-2 / --wd-dark-3）
+$wd-dark-hover:   #{$wd-dark-2} !default;
+$wd-dark-active:  #{$wd-dark-3} !default;
+$wd-dark-hover-dark:  #E0E0E0 !default;
+$wd-dark-active-dark: #D0D0D0 !default;
 $wd-mark-bg:      rgba(214, 40, 57, .14) !default; // 文本高亮
 $wd-link-underline: rgba(214, 40, 57, .35) !default; // 链接下划线
 
@@ -136,8 +161,13 @@ $wd-fs-display:  56px !default; // 800
 $wd-fs-h1:       32px !default; // 800
 $wd-fs-h2:       24px !default; // 700
 $wd-fs-h3:       18px !default; // 600
+$wd-fs-lg:       16px !default; // 大控件文字
 $wd-fs-body:     15.5px !default; // 400
+$wd-fs-ui-lg:    14.5px !default; // 主控件文字（按钮 / 输入 / 下拉）
+$wd-fs-ui:       14px !default;   // 控件标签文字
 $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
+$wd-fs-sm:       12.5px !default; // 辅助（角标内的说明）
+$wd-fs-xs:       11.5px !default; // 微标注（步骤标签 / 徽标）
 
 // --- 控件尺寸档位（sm / md / lg）· 供 button / input / select / tag 复用
 $wd-size-sm: 34px !default;

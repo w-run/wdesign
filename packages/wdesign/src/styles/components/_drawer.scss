@@ -48,5 +48,5 @@
   to { transform: translateX(24px); opacity: 0; }
 }
 /* ---- 微交互（精致版）---- */
-.wd-drawer-fade-enter-active .wd-drawer__panel { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) both; }
+.wd-drawer-fade-enter-active .wd-drawer__panel { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards; }
 

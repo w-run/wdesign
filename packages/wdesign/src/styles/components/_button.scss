@@ -11,7 +11,7 @@
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
-  height: 44px;
+  height: var(--wd-size-md);
   padding: 0 24px;
   border-radius: var(--wd-radius-pill);
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
@@ -21,15 +21,15 @@
   &:disabled { cursor: default; pointer-events: none; }
 
   // ---- 尺寸（显式高度，三档视觉差异明确）
-  &.wd-btn--lg { height: 56px; padding: 0 34px; font-size: var(--wd-font-size-lg); }
-  &.wd-btn--md { height: 44px; padding: 0 24px; font-size: var(--wd-font-size-md); }
-  &.wd-btn--sm { height: 34px; padding: 0 14px; font-size: var(--wd-font-size-sm); }
+  &.wd-btn--lg { height: var(--wd-size-lg); padding: 0 34px; font-size: var(--wd-font-size-lg); }
+  &.wd-btn--md { height: var(--wd-size-md); padding: 0 24px; font-size: var(--wd-font-size-md); }
+  &.wd-btn--sm { height: var(--wd-size-sm); padding: 0 14px; font-size: var(--wd-font-size-sm); }
 
   // ---- 图标按钮（圆形，高度同档位）
-  &.wd-btn--icon { width: 44px; height: 44px; padding: 0; }
-  &.wd-btn--icon.wd-btn--lg { width: 56px; height: 56px; }
-  &.wd-btn--icon.wd-btn--md { width: 44px; height: 44px; }
-  &.wd-btn--icon.wd-btn--sm { width: 34px; height: 34px; }
+  &.wd-btn--icon { width: var(--wd-size-md); height: var(--wd-size-md); padding: 0; }
+  &.wd-btn--icon.wd-btn--lg { width: var(--wd-size-lg); height: var(--wd-size-lg); }
+  &.wd-btn--icon.wd-btn--md { width: var(--wd-size-md); height: var(--wd-size-md); }
+  &.wd-btn--icon.wd-btn--sm { width: var(--wd-size-sm); height: var(--wd-size-sm); }
 
   // ---- 通栏
   &.wd-btn--block { display: flex; width: 100%; }
@@ -47,7 +47,7 @@
 // 次级按钮 · 浅色块底
 .wd-btn--tint {
   background: var(--wd-tint-2);
-  color: var(--wd-red-active);
+  color: var(--wd-red-text);
   &:hover:not(:disabled) { background: var(--wd-tint-3); }
   &:active:not(:disabled) { background: var(--wd-tint-4); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
@@ -57,8 +57,8 @@
 .wd-btn--dark {
   background: var(--wd-dark);
   color: var(--wd-dark-text);
-  &:hover:not(:disabled) { background: var(--wd-dark-2); }
-  &:active:not(:disabled) { background: var(--wd-dark-3); }
+  &:hover:not(:disabled) { background: var(--wd-dark-hover); }
+  &:active:not(:disabled) { background: var(--wd-dark-active); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
 
@@ -88,6 +88,7 @@
   bottom: -60%;
   left: 0;
   width: 38%;
+  /* 高光扫过：白色常量（深色按钮上的反光，不随主题翻转） */
   background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .38), transparent);
   transform: translateX(-130%) skewX(-18deg);
   opacity: 0;

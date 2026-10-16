@@ -53,5 +53,5 @@
   margin-top: 24px;
 }
 /* ---- 微交互（精致版）---- */
-.wd-modal-fade-enter-active .wd-modal__panel { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) both; }
+.wd-modal-fade-enter-active .wd-modal__panel { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards; }
 

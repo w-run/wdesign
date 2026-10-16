@@ -3,6 +3,8 @@
 //  由组件样式（同一源）+ 演示页外壳样式组成
 //  编译：sassc demo.scss demo.css
 // =============================================================
+// ⚠️ vars 是唯一的 :root 发射点（CSS 变量）——必须最先引入，且全站只此一次
+@import '../src/styles/vars';
 @import '../src/styles/tokens';
 @import '../src/styles/base';   // 全局：滚动条统一 / 点击高亮去除 / reduced-motion
 @import '../src/styles/components/dot';
@@ -147,7 +149,7 @@ body {
   border-radius: 999px;
   white-space: nowrap;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
-  &:hover { background: var(--wd-tint-1); color: var(--wd-red-active); }
+  &:hover { background: var(--wd-tint-1); color: var(--wd-red-text); }
   &.is-active {
     background: var(--wd-red);
     color: #fff;
@@ -167,7 +169,7 @@ body {
   justify-content: center;
   margin-left: auto;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, transform var(--wd-dur-fast) var(--wd-ease-spring);
-  &:hover { background: var(--wd-tint-2); color: var(--wd-red); transform: scale(1.08); }
+  &:hover { background: var(--wd-tint-2); color: var(--wd-red-text); transform: scale(1.08); }
 }
 
 // ── Hero ───────────────────────────────────────────────────────
@@ -208,7 +210,7 @@ body {
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--wd-red);
+  color: var(--wd-red-text);
 }
 .hero-dot {
   width: 6px;
@@ -226,18 +228,22 @@ body {
   color: var(--wd-ink);
 }
 .hero-accent {
-  color: var(--wd-red);
+  color: var(--wd-red-text);
 }
 .hero-lead {
   font-size: 17px;
   line-height: 1.65;
   color: var(--wd-ink-2);
-  max-width: 620px;
+  /* 24ch 级宽 + 中文两端对齐：避免「简」这类单字被挤成孤行 */
+  max-width: 34em;
   margin: 0;
+  text-wrap: pretty;
 }
 .hero-lead em {
   font-style: normal;
   color: var(--wd-ink);
+  /* 内层短语不允许被拆行 → 不产生孤字 */
+  white-space: nowrap;
 }
 .hero-actions {
   display: flex;
@@ -286,7 +292,7 @@ body {
   font-weight: 800;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--wd-red);
+  color: var(--wd-red-text);
   padding: 6px 12px;
   background: var(--wd-tint-2);
   border-radius: 999px;
@@ -322,7 +328,7 @@ body {
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--wd-red);
+  color: var(--wd-red-text);
   margin: 0 0 20px;
   display: flex;
   align-items: center;
@@ -351,7 +357,7 @@ body {
 }
 .demo-cap {
   font-size: 11px;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);
   letter-spacing: .02em;
 }
@@ -400,7 +406,7 @@ body {
   &:hover { transform: translateY(-3px); box-shadow: var(--wd-shadow-hover); }
 }
 .demo-iconwall .ic .wd-icon { color: var(--wd-ink-2); }
-.demo-iconwall .ic:hover .wd-icon { color: var(--wd-red); }
+.demo-iconwall .ic:hover .wd-icon { color: var(--wd-red-text); }
 
 // ── Footer ─────────────────────────────────────────────────────
 .demo-foot {
@@ -423,10 +429,10 @@ body {
 .foot-tag { font-size: 13px; color: var(--wd-ink-2); margin: 0; }
 .foot-links { display: flex; gap: 20px; font-size: 13px; }
 .foot-links a { color: var(--wd-ink-2); text-decoration: none; transition: color var(--wd-dur-fast) ease; }
-.foot-links a:hover { color: var(--wd-red); }
-.foot-meta { font-size: 12px; color: var(--wd-ink-3); margin: 0; }
-.foot-meta a { color: var(--wd-ink-3); text-decoration: none; }
-.foot-meta a:hover { color: var(--wd-red); }
+.foot-links a:hover { color: var(--wd-red-text); }
+.foot-meta { font-size: 12px; color: var(--wd-ink-2); margin: 0; }
+.foot-meta a { color: var(--wd-ink-2); text-decoration: none; }
+.foot-meta a:hover { color: var(--wd-red-text); }
 
 // 锚点平滑滚动
 html { scroll-behavior: smooth; }

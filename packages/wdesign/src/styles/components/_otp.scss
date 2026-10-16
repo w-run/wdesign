@@ -17,5 +17,5 @@
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 .wd-otp__box:focus { background: var(--wd-card); box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
-.wd-otp__box::placeholder { color: var(--wd-ink-3); }
+.wd-otp__box::placeholder { color: var(--wd-ink-2); }
 .wd-otp__box:disabled { opacity: .5; }

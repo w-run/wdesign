@@ -27,5 +27,5 @@
 .wd-notification-fade-enter-from,
 .wd-notification-fade-leave-to { opacity: 0; transform: translateY(12px); }
 /* ---- 微交互（精致版）---- */
-.wd-notification-fade-enter-active { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) both; }
+.wd-notification-fade-enter-active { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards; }
 

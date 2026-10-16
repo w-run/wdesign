@@ -8,6 +8,9 @@
 //
 //  按需引入：
 //    import { WdButton, WdCard } from './wdesign/src'
+//
+//  ⚠️ 本文件由 tools/gen-index.mjs 生成，请勿手工编辑；
+//     新增组件后运行 `node tools/gen-index.mjs` 重建。
 // =============================================================
 import type { App, Plugin } from 'vue'
 
@@ -54,11 +57,13 @@ import WdOtp from './components/WdOtp.vue'
 import WdSortableList from './components/WdSortableList.vue'
 import WdPostItem from './components/WdPostItem.vue'
 import WdTimeline from './components/WdTimeline.vue'
+import WdContainer from './components/WdContainer.vue'
+import WdGrid from './components/WdGrid.vue'
+import WdSpace from './components/WdSpace.vue'
 import { toast } from './components/toast'
 
 export {
-  WdPostItem,
-  WdTimeline,
+  toast,
   WdAvatar,
   WdAvatarGroup,
   WdButton,
@@ -100,9 +105,14 @@ export {
   WdImagePreview,
   WdOtp,
   WdSortableList,
-  toast,
+  WdPostItem,
+  WdTimeline,
+  WdContainer,
+  WdGrid,
+  WdSpace,
 }
 
+// 全量注册（app.use(WdUI)）：与 export 列表严格一致，避免半注册状态
 const components = [
   WdAvatar,
   WdAvatarGroup,
@@ -135,6 +145,21 @@ const components = [
   WdRate,
   WdResult,
   WdTable,
+  WdNotification,
+  WdSegmented,
+  WdUpload,
+  WdAiMessage,
+  WdCarousel,
+  WdExplorer,
+  WdFileList,
+  WdImagePreview,
+  WdOtp,
+  WdSortableList,
+  WdPostItem,
+  WdTimeline,
+  WdContainer,
+  WdGrid,
+  WdSpace,
 ]
 
 const WdUI: Plugin = {
