@@ -7197,10 +7197,7 @@ var WD_REAL_MODULE = (() => {
     key: 1,
     class: "wd-vplayer__time"
   };
-  var _hoisted_1310 = {
-    key: 2,
-    class: "wd-vplayer__time"
-  };
+  var _hoisted_1310 = { class: "wd-vplayer__time" };
   var _hoisted_1410 = { class: "wd-vplayer__vol" };
   var _hoisted_1510 = ["aria-label"];
   var _hoisted_165 = {
@@ -7267,10 +7264,10 @@ var WD_REAL_MODULE = (() => {
       function armLoadTimeout() {
         if (loadTimer) clearTimeout(loadTimer);
         loadTimer = setTimeout(() => {
-          if (!ready.value && !errMsg.value) {
-            errMsg.value = "\u52A0\u8F7D\u8D85\u65F6\uFF0C\u8BF7\u68C0\u67E5\u5730\u5740\u6216\u7F51\u7EDC";
-            emit("error", errMsg.value);
-          }
+          const v = video.value;
+          if (ready.value || v && v.readyState >= 1 || errMsg.value) return;
+          errMsg.value = "\u52A0\u8F7D\u8D85\u65F6\uFF0C\u8BF7\u68C0\u67E5\u5730\u5740\u6216\u7F51\u7EDC";
+          emit("error", errMsg.value);
         }, 15e3);
       }
       function clearLoadTimeout() {
@@ -7288,50 +7285,60 @@ var WD_REAL_MODULE = (() => {
           hls = null;
         }
       }
-      const hasMSE = () => typeof MediaSource !== "undefined" || typeof globalThis.ManagedMediaSource !== "undefined";
       const canNativeHls = () => {
         const v = document.createElement("video");
-        return !!v.canPlayType("application/vnd.apple.mpegurl") && !hasMSE();
+        return !!v.canPlayType("application/vnd.apple.mpegurl");
       };
+      const hasMSE = () => typeof MediaSource !== "undefined";
+      let tryFallbackHls = false;
       function mountSource() {
         const v = video.value;
         if (!v) return;
         destroyHls();
         clearLoadTimeout();
-        armLoadTimeout();
         v.removeAttribute("src");
         v.load();
         errMsg.value = "";
+        tryFallbackHls = false;
         if (props.hls === "off" || !isM3u8.value) {
           v.src = props.src;
           return;
         }
-        const forceJs = props.hls === "hlsjs";
-        if (!forceJs && canNativeHls()) {
+        if (props.hls === "hlsjs") {
+          attachHls();
+          return;
+        }
+        if (canNativeHls()) {
+          tryFallbackHls = !!HLS && hasMSE();
           v.src = props.src;
           return;
         }
-        if (HLS) {
-          hls = new HLS({
-            // 直播：从最近的边缘开始，别从头拉起一堆积压的分片
-            liveSyncDurationCount: props.liveSync ? 3 : 6,
-            enableWorker: true,
-            lowLatencyMode: false
-          });
-          hls.attachMedia(v);
-          hls.on("hlsMediaAttached", () => hls?.loadSource(props.src));
-          hls.on("hlsError", (_e, data) => {
-            if (!data?.fatal) return;
-            if (data.type === "mediaError") {
-              hls?.recoverMediaError();
-              return;
-            }
-            errMsg.value = "\u76F4\u64AD\u6D41\u8FDE\u63A5\u5931\u8D25";
-            emit("error", errMsg.value);
-          });
+        if (HLS && hasMSE()) {
+          attachHls();
           return;
         }
         v.src = props.src;
+      }
+      function attachHls() {
+        const v = video.value;
+        if (!v || !HLS) return;
+        hls = new HLS({
+          // 直播从近边缘起播，别从头拉一堆积压分片
+          liveSyncDurationCount: props.liveSync ? 3 : 6,
+          enableWorker: true,
+          lowLatencyMode: false
+        });
+        hls.on("hlsError", (_e, data) => {
+          if (!data?.fatal) return;
+          if (data.type === "mediaError") {
+            hls?.recoverMediaError();
+            return;
+          }
+          errMsg.value = "\u76F4\u64AD\u6D41\u8FDE\u63A5\u5931\u8D25";
+          emit("error", errMsg.value);
+        });
+        hls.loadSource(props.src);
+        hls.attachMedia(v);
       }
       const hovering = ref(false);
       const panelOpen = ref("");
@@ -7356,10 +7363,14 @@ var WD_REAL_MODULE = (() => {
       function togglePlay() {
         const v = video.value;
         if (!v) return;
-        if (v.paused) v.play().catch((e) => {
-          errMsg.value = "\u64AD\u653E\u5931\u8D25\uFF1A" + e.message;
-        });
-        else v.pause();
+        if (v.paused) {
+          if (!ready.value) armLoadTimeout();
+          v.play().catch((e) => {
+            errMsg.value = "\u64AD\u653E\u5931\u8D25\uFF1A" + e.message;
+          });
+        } else {
+          v.pause();
+        }
       }
       function fmtTime(t) {
         if (!isFinite(t) || t < 0) t = 0;
@@ -7369,14 +7380,32 @@ var WD_REAL_MODULE = (() => {
         if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
         return `${m}:${String(s).padStart(2, "0")}`;
       }
-      const progress = computed(
-        () => isLive.value || !duration.value ? 0 : current.value / duration.value * 100
-      );
+      const progress = computed(() => {
+        if (isLive.value || !isFinite(duration.value) || duration.value <= 0) return 0;
+        return current.value / duration.value * 100;
+      });
       const bufferedPct = computed(() => duration.value > 0 ? buffered.value / duration.value * 100 : 0);
       const remain = computed(() => Math.max(0, duration.value - current.value));
+      const liveClock = ref("");
+      let clockTimer;
+      function tickClock() {
+        const d = /* @__PURE__ */ new Date();
+        const p = (n) => String(n).padStart(2, "0");
+        liveClock.value = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+      }
+      watch(playing, (v) => {
+        if (v && isLive.value) {
+          tickClock();
+          clockTimer = setInterval(tickClock, 1e3);
+        } else if (clockTimer) {
+          clearInterval(clockTimer);
+          clockTimer = void 0;
+        }
+      });
       function onTimeUpdate() {
         const v = video.value;
         if (!v) return;
+        if (errMsg.value && v.readyState >= 2) errMsg.value = "";
         current.value = v.currentTime;
         duration.value = v.duration || 0;
         emit("timeupdate", current.value, duration.value);
@@ -7489,6 +7518,11 @@ var WD_REAL_MODULE = (() => {
       }
       function onError() {
         const v = video.value;
+        if (tryFallbackHls && HLS && hasMSE()) {
+          tryFallbackHls = false;
+          attachHls();
+          return;
+        }
         const map = { 1: "\u52A0\u8F7D\u88AB\u4E2D\u65AD", 2: "\u7F51\u7EDC\u9519\u8BEF", 3: "\u89E3\u7801\u5931\u8D25", 4: "\u5730\u5740\u4E0D\u652F\u6301\u6216\u683C\u5F0F\u4E0D\u517C\u5BB9" };
         errMsg.value = map[v?.error?.code || 0] || "\u89C6\u9891\u52A0\u8F7D\u5931\u8D25";
         emit("error", errMsg.value);
@@ -7503,6 +7537,7 @@ var WD_REAL_MODULE = (() => {
       });
       onMounted(() => {
         mountSource();
+        if (props.autoplay) armLoadTimeout();
         document.addEventListener("fullscreenchange", onFsChange);
       });
       watch(() => props.muted, (m) => {
@@ -7510,6 +7545,7 @@ var WD_REAL_MODULE = (() => {
       });
       onBeforeUnmount(() => {
         if (hideTimer) clearTimeout(hideTimer);
+        if (clockTimer) clearInterval(clockTimer);
         clearLoadTimeout();
         destroyHls();
         document.removeEventListener("fullscreenchange", onFsChange);
@@ -7556,9 +7592,16 @@ var WD_REAL_MODULE = (() => {
               onProgress: onProgressEvt,
               onLoadedmetadata: _cache[3] || (_cache[3] = ($event) => {
                 ready.value = true;
+                errMsg.value = "";
                 clearLoadTimeout();
                 onTimeUpdate();
               }),
+              onCanplay: _cache[4] || (_cache[4] = ($event) => {
+                ready.value = true;
+                errMsg.value = "";
+                clearLoadTimeout();
+              }),
+              onPlaying: _cache[5] || (_cache[5] = ($event) => errMsg.value = ""),
               onError
             }, null, 40, _hoisted_164),
             createCommentVNode(" ===== \u70B9\u51FB\u5C42\uFF1A\u6574\u4E2A\u753B\u9762\u53EF\u6682\u505C\uFF08\u9F20\u6807\u6307\u9488\u4E0D\u663E\u793A\uFF09 ===== "),
@@ -7580,7 +7623,7 @@ var WD_REAL_MODULE = (() => {
                   1
                   /* TEXT */
                 )) : createCommentVNode("v-if", true),
-                isLive.value ? (openBlock(), createElementBlock("span", _hoisted_338, [..._cache[8] || (_cache[8] = [
+                isLive.value ? (openBlock(), createElementBlock("span", _hoisted_338, [..._cache[10] || (_cache[10] = [
                   createElementVNode(
                     "i",
                     { class: "wd-vplayer__live-dot" },
@@ -7595,7 +7638,7 @@ var WD_REAL_MODULE = (() => {
                   )
                 ])])) : createCommentVNode("v-if", true),
                 createCommentVNode(" \u9876\u90E8\u53F3\u4FA7\uFF1A\u6E05\u6670\u5EA6\u5207\u6362\u3001\u5F39\u5E55\u5F00\u5173\u3001\u7247\u6E90\u7B49 "),
-                _cache[9] || (_cache[9] = createElementVNode(
+                _cache[11] || (_cache[11] = createElementVNode(
                   "span",
                   { class: "wd-vplayer__spacer" },
                   null,
@@ -7630,7 +7673,7 @@ var WD_REAL_MODULE = (() => {
               }, null, 8, ["variant"])
             ])) : createCommentVNode("v-if", true),
             createCommentVNode(" \u52A0\u8F7D\u4E2D "),
-            !ready.value && !errMsg.value ? (openBlock(), createElementBlock("div", _hoisted_522, [..._cache[10] || (_cache[10] = [
+            !ready.value && !errMsg.value ? (openBlock(), createElementBlock("div", _hoisted_522, [..._cache[12] || (_cache[12] = [
               createElementVNode(
                 "span",
                 { class: "wd-vplayer__spinner" },
@@ -7675,7 +7718,7 @@ var WD_REAL_MODULE = (() => {
                   onClick: withModifiers(seekAt, ["stop"]),
                   onKeydown: onScrubKey
                 }, [
-                  _cache[11] || (_cache[11] = createElementVNode(
+                  _cache[13] || (_cache[13] = createElementVNode(
                     "span",
                     { class: "wd-vplayer__track" },
                     null,
@@ -7717,7 +7760,7 @@ var WD_REAL_MODULE = (() => {
                   { key: 1 },
                   [
                     createCommentVNode(" \u76F4\u64AD\uFF1A\u4E0D\u505A\u8FDB\u5EA6\u6761\uFF0C\u53EA\u663E\u793A\u4E00\u6761\u300C\u5B9E\u65F6\u300D\u7EC6\u7EBF "),
-                    _cache[12] || (_cache[12] = createElementVNode(
+                    _cache[14] || (_cache[14] = createElementVNode(
                       "div",
                       { class: "wd-vplayer__live-bar" },
                       [
@@ -7787,13 +7830,22 @@ var WD_REAL_MODULE = (() => {
                     1
                     /* TEXT */
                   )) : (openBlock(), createElementBlock(
-                    "span",
-                    _hoisted_1310,
-                    "\u5DF2\u76F4\u64AD " + toDisplayString(fmtTime(current.value)),
-                    1
-                    /* TEXT */
+                    Fragment,
+                    { key: 2 },
+                    [
+                      createCommentVNode(' \u76F4\u64AD\u7684 currentTime \u662F\u76F8\u5BF9\u8D77\u64AD\u7684\u504F\u79FB\uFF0C\u4E0D\u662F\u8282\u76EE\u65F6\u95F4\uFF0C\n             \u663E\u793A "\u5DF2\u76F4\u64AD 00:00" \u4F1A\u8BA9\u7528\u6237\u56F0\u60D1 \u2192 \u6539\u663E\u793A\u5F53\u524D\u65F6\u523B '),
+                      createElementVNode(
+                        "span",
+                        _hoisted_1310,
+                        toDisplayString(liveClock.value),
+                        1
+                        /* TEXT */
+                      )
+                    ],
+                    2112
+                    /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
                   )),
-                  _cache[13] || (_cache[13] = createElementVNode(
+                  _cache[15] || (_cache[15] = createElementVNode(
                     "span",
                     { class: "wd-vplayer__spacer" },
                     null,
@@ -7839,12 +7891,12 @@ var WD_REAL_MODULE = (() => {
                       class: "wd-vplayer__btn wd-vplayer__btn--text",
                       "aria-expanded": panelOpen.value === "rate",
                       "aria-label": "\u500D\u901F",
-                      onClick: _cache[4] || (_cache[4] = withModifiers(($event) => togglePanel("rate"), ["stop"]))
+                      onClick: _cache[6] || (_cache[6] = withModifiers(($event) => togglePanel("rate"), ["stop"]))
                     }, toDisplayString(rate.value) + "\xD7", 9, _hoisted_173),
                     panelOpen.value === "rate" ? (openBlock(), createElementBlock("div", {
                       key: 0,
                       class: "wd-vplayer__panel wd-vplayer__panel--rates",
-                      onClick: _cache[5] || (_cache[5] = withModifiers(() => {
+                      onClick: _cache[7] || (_cache[7] = withModifiers(() => {
                       }, ["stop"]))
                     }, [
                       (openBlock(true), createElementBlock(
@@ -7870,7 +7922,7 @@ var WD_REAL_MODULE = (() => {
                       class: "wd-vplayer__btn",
                       "aria-expanded": panelOpen.value === "playlist",
                       "aria-label": "\u9009\u96C6",
-                      onClick: _cache[6] || (_cache[6] = withModifiers(($event) => togglePanel("playlist"), ["stop"]))
+                      onClick: _cache[8] || (_cache[8] = withModifiers(($event) => togglePanel("playlist"), ["stop"]))
                     }, [
                       createVNode(_component_wd_icon, {
                         name: "playlist",
@@ -7881,7 +7933,7 @@ var WD_REAL_MODULE = (() => {
                     panelOpen.value === "playlist" ? (openBlock(), createElementBlock("div", {
                       key: 0,
                       class: "wd-vplayer__panel wd-vplayer__panel--eps",
-                      onClick: _cache[7] || (_cache[7] = withModifiers(() => {
+                      onClick: _cache[9] || (_cache[9] = withModifiers(() => {
                       }, ["stop"]))
                     }, [
                       createElementVNode(

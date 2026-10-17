@@ -47,11 +47,20 @@ const props = withDefaults(
     /** 显示画中画 */
     pip?: boolean
     /**
-     * HLS(m3u8) 解析：
-     *  'auto'  — 地址以 .m3u8 结尾时自动启用（浏览器原生支持则用原生，否则用 hls.js）
-     *  'native'— 强制用浏览器原生（Safari / iOS）
-     *  'hlsjs' — 强制用 hls.js（需页面已加载 Hls 全局）
-     *  'off'   — 不处理
+     * m3u8 播放策略。默认 'auto'：**原生优先**。
+     *
+     * 现实情况（2026）：
+     *   Safari / iOS       — 原生支持，无需任何库
+     *   Chrome 142+        — 原生支持
+     *   Chrome ≤141 / FF / Edge — 不支持，需 hls.js
+     *
+     * 所以 hls.js 只在「原生不行 + 页面确实加载了 Hls + 有标准 MediaSource」
+     * 时才启用。不加载 hls.js 也不影响主流浏览器 —— 省掉 400KB 依赖。
+     *
+     *  'auto'   — 原生优先，失败/不支持时用 hls.js（若有）
+     *  'native' — 只用原生
+     *  'hlsjs'  — 强制 hls.js（需页面已加载 Hls 全局）
+     *  'off'    — 完全交给浏览器
      */
     hls?: 'auto' | 'native' | 'hlsjs' | 'off'
     /** 直播时停留在最新位置（滑出窗口后自动追到实时边缘） */
@@ -135,10 +144,11 @@ let loadTimer: ReturnType<typeof setTimeout> | undefined
 function armLoadTimeout() {
   if (loadTimer) clearTimeout(loadTimer)
   loadTimer = setTimeout(() => {
-    if (!ready.value && !errMsg.value) {
-      errMsg.value = '加载超时，请检查地址或网络'
-      emit('error', errMsg.value)
-    }
+    const v = video.value
+    // 已经有元数据/画面就不算超时（readyState >= 1 即有 metadata）
+    if (ready.value || (v && v.readyState >= 1) || errMsg.value) return
+    errMsg.value = '加载超时，请检查地址或网络'
+    emit('error', errMsg.value)
   }, 15000)
 }
 function clearLoadTimeout() {
@@ -150,72 +160,92 @@ function destroyHls() {
 }
 
 /**
- * ⚠️ canPlayType 会「假阳性」：某些 WebKit/MSE 环境声称支持
- * application/vnd.apple.mpegurl，实际没有解码能力（实测 networkState=3、
- * currentSrc 为空、readyState 永远 0）。单凭它选原生路径会静默失败。
+ * 是否支持原生 HLS 播放。
  *
- * 因此：只要页面上有 hls.js 且 MediaSource 可用，就优先走 hls.js ——
- * 行为可预期（可报错、可恢复），原生仅在 hls.js 缺席时使用。
+ * 顺序很重要：**原生优先，失败再降级 hls.js**。
+ * 之前写反了（有 MSE 就强推 hls.js），导致在原生支持 HLS 的 WebKit 上
+ * 反而播不了 —— 实测同一地址直接在地址栏打开能播，组件里却不能。
+ * 浏览器的原生 HLS 走系统解码器，比 MSE+hls.js 更稳，没有理由不用。
  */
-const hasMSE = () =>
-  typeof MediaSource !== 'undefined' ||
-  typeof (globalThis as { ManagedMediaSource?: unknown }).ManagedMediaSource !== 'undefined'
-
 const canNativeHls = () => {
   const v = document.createElement('video')
-  return !!v.canPlayType('application/vnd.apple.mpegurl') && !hasMSE()
+  return !!v.canPlayType('application/vnd.apple.mpegurl')
 }
 
 /**
- * 挂载视频源。m3u8 的处理顺序：
- *   1. hls='off' → 直接交给浏览器
- *   2. 浏览器原生支持（Safari/iOS）且非强制 hlsjs → 原生
- *   3. 页面有 Hls 全局 → hls.js（MSE）
- *   4. 都没有 → 交回原生，失败则由 error 事件兜底提示
+ * hls.js 只认标准 MediaSource。
+ * ⚠️ ManagedMediaSource（iOS 17.1+）**不是**它的替代品 ——
+ * 之前把它也算进来是错的：iOS 上 typeof MediaSource === 'undefined'，
+ * hls.js 根本跑不起来，强行选它必然失败。
  */
+const hasMSE = () => typeof MediaSource !== 'undefined'
+
+/** 原生播放 HLS 失败时，标记为需要降级 */
+let tryFallbackHls = false
+
 function mountSource() {
   const v = video.value
   if (!v) return
   destroyHls()
   clearLoadTimeout()
-  armLoadTimeout()
   v.removeAttribute('src')
   v.load()
   errMsg.value = ''
+  tryFallbackHls = false
 
+  // 非 m3u8（mp4/webm）或明确关闭 HLS 处理 → 直接交给浏览器
   if (props.hls === 'off' || !isM3u8.value) {
     v.src = props.src
     return
   }
-  const forceJs = props.hls === 'hlsjs'
-  if (!forceJs && canNativeHls()) {
+
+  // 强制 hls.js
+  if (props.hls === 'hlsjs') {
+    attachHls()
+    return
+  }
+
+  // 1) 原生优先（Safari / iOS / 支持 HLS 的 WebKit）
+  if (canNativeHls()) {
+    // 标记：若原生播放报错，error 处理里会降级到 hls.js
+    tryFallbackHls = !!HLS && hasMSE()
     v.src = props.src
     return
   }
-  if (HLS) {
-    hls = new HLS({
-      // 直播：从最近的边缘开始，别从头拉起一堆积压的分片
-      liveSyncDurationCount: props.liveSync ? 3 : 6,
-      enableWorker: true,
-      lowLatencyMode: false,
-    })
-    hls.attachMedia(v)
-    hls.on('hlsMediaAttached' as never, () => hls?.loadSource(props.src))
-    hls.on('hlsError' as never, ((_e: unknown, data: { fatal?: boolean; type?: string }) => {
-      if (!data?.fatal) return
-      // 媒体错误可恢复一次，避免网络抖动直接判死
-      if (data.type === 'mediaError') {
-        hls?.recoverMediaError()
-        return
-      }
-      errMsg.value = '直播流连接失败'
-      emit('error', errMsg.value)
-    }) as never)
+
+  // 2) 原生不支持 → hls.js
+  if (HLS && hasMSE()) {
+    attachHls()
     return
   }
-  // 兜底：交给浏览器，不行会触发 error
+
+  // 3) 都没有：交给浏览器，失败由 error 兜底提示
   v.src = props.src
 }
+
+/** 用 hls.js 挂载（MSE） */
+function attachHls() {
+  const v = video.value
+  if (!v || !HLS) return
+  hls = new HLS({
+    // 直播从近边缘起播，别从头拉一堆积压分片
+    liveSyncDurationCount: props.liveSync ? 3 : 6,
+    enableWorker: true,
+    lowLatencyMode: false,
+  })
+  // ⚠️ 顺序：先 loadSource 再 attachMedia。
+  // 反过来（attach 后靠 MEDIA_ATTACHED 事件再 load）在部分实现里
+  // 事件会早于监听器注册，导致永远不 load —— 表现为"一直转圈"。
+  hls.on('hlsError' as never, ((_e: unknown, data: { fatal?: boolean; type?: string }) => {
+    if (!data?.fatal) return
+    if (data.type === 'mediaError') { hls?.recoverMediaError(); return }
+    errMsg.value = '直播流连接失败'
+    emit('error', errMsg.value)
+  }) as never)
+  hls.loadSource(props.src)
+  hls.attachMedia(v)
+}
+
 
 /* ---------------- 控件显隐 ---------------- */
 /** 暂停 / 刚进入 / 有面板打开 / 有焦点时，控件必须保持可见 */
@@ -253,8 +283,13 @@ const showCursor = computed(() => !isFullscreen.value || barVisible.value)
 function togglePlay() {
   const v = video.value
   if (!v) return
-  if (v.paused) v.play().catch((e) => { errMsg.value = '播放失败：' + e.message })
-  else v.pause()
+  if (v.paused) {
+    // 直播/点播都是用户点播放才开始真正拉流，超时计时从此刻起算
+    if (!ready.value) armLoadTimeout()
+    v.play().catch((e) => { errMsg.value = '播放失败：' + e.message })
+  } else {
+    v.pause()
+  }
 }
 
 function fmtTime(t: number): string {
@@ -266,15 +301,38 @@ function fmtTime(t: number): string {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
-const progress = computed(() =>
-  isLive.value || !duration.value ? 0 : (current.value / duration.value) * 100,
-)
+const progress = computed(() => {
+  // 直播的 duration 是 Infinity，算出来是 NaN —— 必须挡掉，
+  // 否则 style.width 会变成 "NaN%"（无效声明被丢弃，进度条不动）
+  if (isLive.value || !isFinite(duration.value) || duration.value <= 0) return 0
+  return (current.value / duration.value) * 100
+})
 const bufferedPct = computed(() => (duration.value > 0 ? (buffered.value / duration.value) * 100 : 0))
 const remain = computed(() => Math.max(0, duration.value - current.value))
+
+/** 直播显示当前时刻（每秒跳），比"已直播 00:00"有意义 */
+const liveClock = ref('')
+let clockTimer: ReturnType<typeof setInterval> | undefined
+function tickClock() {
+  const d = new Date()
+  const p = (n: number) => String(n).padStart(2, '0')
+  liveClock.value = `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
+}
+watch(playing, (v) => {
+  if (v && isLive.value) {
+    tickClock()
+    clockTimer = setInterval(tickClock, 1000)
+  } else if (clockTimer) {
+    clearInterval(clockTimer)
+    clockTimer = undefined
+  }
+})
 
 function onTimeUpdate() {
   const v = video.value
   if (!v) return
+  // 能正常走时间轴说明源没问题，清掉之前的超时/错误提示
+  if (errMsg.value && v.readyState >= 2) errMsg.value = ''
   current.value = v.currentTime
   duration.value = v.duration || 0
   emit('timeupdate', current.value, duration.value)
@@ -390,6 +448,14 @@ function onFsChange() {
 /* ---------------- 错误 ---------------- */
 function onError() {
   const v = video.value
+
+  // 原生 HLS 播放失败 → 若还有 hls.js 这条路，降级再试一次
+  if (tryFallbackHls && HLS && hasMSE()) {
+    tryFallbackHls = false
+    attachHls()
+    return
+  }
+
   const map: Record<number, string> = { 1: '加载被中断', 2: '网络错误', 3: '解码失败', 4: '地址不支持或格式不兼容' }
   errMsg.value = map[v?.error?.code || 0] || '视频加载失败'
   emit('error', errMsg.value)
@@ -408,6 +474,7 @@ watch(() => props.src, async () => {
 // 首次挂载：等 video 元素就绪后再决定用哪种方式加载
 onMounted(() => {
   mountSource()
+  if (props.autoplay) armLoadTimeout()
   document.addEventListener('fullscreenchange', onFsChange)
 })
 
@@ -415,6 +482,7 @@ watch(() => props.muted, (m) => { if (video.value) video.value.muted = m })
 
 onBeforeUnmount(() => {
   if (hideTimer) clearTimeout(hideTimer)
+  if (clockTimer) clearInterval(clockTimer)
   clearLoadTimeout()
   destroyHls()
   document.removeEventListener('fullscreenchange', onFsChange)
@@ -446,7 +514,9 @@ onBeforeUnmount(() => {
       @ended="playing = false; emit('ended')"
       @timeupdate="onTimeUpdate"
       @progress="onProgressEvt"
-      @loadedmetadata="ready = true; clearLoadTimeout(); onTimeUpdate()"
+      @loadedmetadata="ready = true; errMsg = ''; clearLoadTimeout(); onTimeUpdate()"
+      @canplay="ready = true; errMsg = ''; clearLoadTimeout()"
+      @playing="errMsg = ''"
       @error="onError"
     ></video>
 
@@ -549,7 +619,9 @@ onBeforeUnmount(() => {
         <span v-if="!isLive" class="wd-vplayer__time">
           {{ fmtTime(current) }} / {{ fmtTime(duration) }}
         </span>
-        <span v-else class="wd-vplayer__time">已直播 {{ fmtTime(current) }}</span>
+        <!-- 直播的 currentTime 是相对起播的偏移，不是节目时间，
+             显示 "已直播 00:00" 会让用户困惑 → 改显示当前时刻 -->
+        <span v-else class="wd-vplayer__time">{{ liveClock }}</span>
 
         <span class="wd-vplayer__spacer"></span>
 
