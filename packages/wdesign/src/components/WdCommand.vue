@@ -11,7 +11,11 @@ export interface WdCommandItem {
   hint?: string
   /** 分组名 */
   group?: string
-  /** 图标（emoji 或文本） */
+  /**
+   * 图标名（wdesign-icons 的名字，如 file / folder / trash），
+   * 由 WdIcon 渲染。不要传 emoji —— 各平台字形、粗细、基线不一致，
+   * 且无法跟随 currentColor 变色，深浅主题下表现不可控。
+   */
   icon?: string
   /** 快捷键提示，如 ⌘K */
   shortcut?: string
@@ -206,7 +210,11 @@ watch(
               @click="choose(it)"
               @mousemove="!it.disabled && (activeIdx = idxOf(it))"
             >
-              <span v-if="it.icon" class="wd-command__item-icon">{{ it.icon }}</span>
+              <span v-if="it.icon || $slots.icon" class="wd-command__item-icon">
+                <slot name="icon" :item="it">
+                  <wd-icon :name="it.icon!" :size="16" />
+                </slot>
+              </span>
               <span class="wd-command__item-main">
                 <span class="wd-command__item-label">{{ it.label }}</span>
                 <span v-if="it.hint" class="wd-command__item-hint">{{ it.hint }}</span>

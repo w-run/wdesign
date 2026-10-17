@@ -24,7 +24,8 @@
     "audit:strict": "python3 tools/design-audit.py --strict",
     "gen:index": "node tools/gen-index.mjs",
     "hover:check": "python3 tools/hover-js.py --check",
-    "check:tokens": "python3 tools/check-tokens.py --strict"
+    "check:tokens": "python3 tools/check-tokens.py --strict",
+    "check:icons": "python3 tools/check-icons.py --strict"
   },
   "sideEffects": [
     "**/*.scss",

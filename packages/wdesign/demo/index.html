@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792254406">
+<link rel="stylesheet" href="demo.css?v=1792255067">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -25,7 +25,18 @@
       <a href="#sec-09" data-sec="sec-09">图标</a>
       <a href="#sec-10" data-sec="sec-10">组合</a>
     </div>
-    <wd-button class="nav-toggle" size="sm" variant="ghost" @click="toggleDark">{{ dark ? '☀' : '🌙' }}</wd-button>
+    <wd-button
+      class="nav-toggle"
+      size="sm"
+      variant="ghost"
+      :aria-label="dark ? '切换到浅色主题' : '切换到深色主题'"
+      :title="dark ? '切换到浅色主题' : '切换到深色主题'"
+      @click="toggleDark"
+    >
+      <!-- 用 WdIcon 而非 emoji：emoji 是字体字符，各平台字形/粗细/基线不一，
+           也无法跟随 currentColor 变色（深色主题下会发亮）。 -->
+      <wd-icon class="nav-toggle__icon" :name="dark ? 'sun' : 'moon'" :size="16" />
+    </wd-button>
   </nav>
 
   <!-- ===== Hero ===== -->
@@ -714,8 +725,16 @@
         <div style="flex:1; min-width:240px">
           <div class="demo-cap" style="margin-bottom:6px">单选 + 图标 + 悬停操作</div>
           <wd-tree :nodes="treeNodes" :expanded-keys="['src']" :selected-key="'App.vue'">
-            <template #icon="{ node }">{{ node.children ? '📁' : '📄' }}</template>
-            <template #extra><span class="demo-cap" style="margin:0">···</span></template>
+            <template #icon="{ node }">
+              <wd-icon :name="node.children ? 'folder' : 'file'" :size="14" />
+            </template>
+            <template #extra>
+              <button type="button" class="tree-more" aria-label="更多操作">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="6" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="18" cy="12" r="1.6"></circle>
+                </svg>
+              </button>
+            </template>
           </wd-tree>
           <span class="demo-cap" style="margin-top:10px">↑↓ 移动 · → 展开 · ← 收起/回到父级 · Enter 选中</span>
         </div>
@@ -1066,11 +1085,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792254406"></script>
-<script src="icons.data.js?v=1792254406"></script>
-<script src="demo-extra.js?v=1792254406"></script>
-<script src="components.js?v=1792254406"></script>
-<script src="demo.js?v=1792254406"></script>
+<script src="icons.optical.js?v=1792255067"></script>
+<script src="icons.data.js?v=1792255067"></script>
+<script src="demo-extra.js?v=1792255067"></script>
+<script src="components.js?v=1792255067"></script>
+<script src="demo.js?v=1792255067"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

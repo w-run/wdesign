@@ -104,12 +104,13 @@ var WD_REAL_MODULE = (() => {
   var onMounted = G.onMounted;
   var vModelText = G.vModelText;
   var withDirectives = G.withDirectives;
+  var resolveComponent = G.resolveComponent;
+  var createVNode = G.createVNode;
   var Teleport = G.Teleport;
   var nextTick = G.nextTick;
   var unref = G.unref;
   var Transition = G.Transition;
   var withCtx = G.withCtx;
-  var createVNode = G.createVNode;
   var watchEffect = G.watchEffect;
   var withKeys = G.withKeys;
   var createStaticVNode = G.createStaticVNode;
@@ -1449,6 +1450,7 @@ var WD_REAL_MODULE = (() => {
         }
       );
       return (_ctx, _cache) => {
+        const _component_wd_icon = resolveComponent("wd-icon");
         return openBlock(), createBlock(Teleport, { to: "body" }, [
           __props.modelValue ? (openBlock(), createElementBlock("div", _hoisted_111, [
             createElementVNode("div", {
@@ -1548,13 +1550,14 @@ var WD_REAL_MODULE = (() => {
                                   onClick: ($event) => choose(it),
                                   onMousemove: ($event) => !it.disabled && (activeIdx.value = idxOf(it))
                                 }, [
-                                  it.icon ? (openBlock(), createElementBlock(
-                                    "span",
-                                    _hoisted_62,
-                                    toDisplayString(it.icon),
-                                    1
-                                    /* TEXT */
-                                  )) : createCommentVNode("v-if", true),
+                                  it.icon || _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_62, [
+                                    renderSlot(_ctx.$slots, "icon", { item: it }, () => [
+                                      createVNode(_component_wd_icon, {
+                                        name: it.icon,
+                                        size: 16
+                                      }, null, 8, ["name"])
+                                    ])
+                                  ])) : createCommentVNode("v-if", true),
                                   createElementVNode("span", _hoisted_72, [
                                     createElementVNode(
                                       "span",
