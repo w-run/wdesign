@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792233582">
+<link rel="stylesheet" href="demo.css?v=1792234623">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -278,7 +278,7 @@
       </div>
     </div>
 
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>SLIDER 滑块</h3>
       <div class="demo-col">
         <wd-slider v-model="sliderVal" :max="100"></wd-slider>
@@ -326,7 +326,7 @@
     <div class="demo-panel">
       <h3>BREADCRUMB 面包屑</h3>
       <div class="demo-col">
-        <wd-breadcrumb :items="['首页','项目','设置']"></wd-breadcrumb>
+        <wd-breadcrumb :items="[{label:'首页',value:'home'},{label:'项目',value:'projects'},{label:'设置',value:'settings'}]"></wd-breadcrumb>
       </div>
     </div>
 
@@ -338,7 +338,7 @@
       </div>
     </div>
 
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>TABLE 表格</h3>
       <wd-table :columns="tableCols" :rows="tableRows">
         <template #cell-status="{ row }">
@@ -432,7 +432,7 @@
     <p class="hint">轮播 · 拖动排序 · 验证码 · 图片预览 · 文件列表 · 资源管理器 · AI 消息。</p>
 
     <div class="demo-grid">
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>CAROUSEL 轮播</h3>
       <div style="max-width: 560px;">
         <wd-carousel :items="carouselItems" :height="220" :autoplay="3200"></wd-carousel>
@@ -455,7 +455,7 @@
       </div>
     </div>
 
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>IMAGE PREVIEW 图片预览</h3>
       <div style="width: 220px;">
         <wd-image-preview :list="previewList" :index="0"></wd-image-preview>
@@ -473,7 +473,7 @@
       <wd-explorer :folders="explorerFolders"></wd-explorer>
     </div>
 
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>AI MESSAGE 消息框</h3>
       <div style="display: flex; flex-direction: column; gap: 14px; max-width: 660px;">
         <wd-ai-message self content="帮我把 WDesign 的视觉规范再精简一版。"></wd-ai-message>
@@ -518,7 +518,7 @@
       <div style="background:var(--wd-bg)"><wd-container max-width="640px"><wd-card pad="sm"><div style="height:48px">居中容器内容 —— 居中 + 限宽</div></wd-card></wd-container></div>
     </div>
 
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>尺寸档位 · Button · Input · Tag</h3>
       <wd-space size="lg" wrap>
         <wd-button size="lg" variant="primary">大按钮</wd-button>
@@ -617,7 +617,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
         <span class="demo-cap">尺寸 / 主题红 / 深底白 —— currentColor 全由 CSS 驱动</span>
       </div>
     </div>
-    <div class="demo-panel">
+    <div class="demo-panel demo-panel--wide">
       <h3>图标墙（节选 {{ wall.length }} / 共 {{ iconCount }} 枚）</h3>
       <div class="demo-iconwall">
         <div class="ic" v-for="n in wall" :key="n">
@@ -692,10 +692,10 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792233582"></script>
-<script src="icons.data.js?v=1792233582"></script>
-<script src="demo-extra.js?v=1792233582"></script>
-<script src="demo.js?v=1792233582"></script>
+<script src="icons.optical.js?v=1792234623"></script>
+<script src="icons.data.js?v=1792234623"></script>
+<script src="demo-extra.js?v=1792234623"></script>
+<script src="demo.js?v=1792234623"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

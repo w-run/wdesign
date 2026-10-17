@@ -4721,7 +4721,7 @@ body {
 }
 
 .demo-wrap {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 0 24px 120px;
 }
@@ -4980,20 +4980,24 @@ body {
 .demo-grid {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   margin-top: 24px;
 }
 
 .demo-panel {
+  width: 100%;
   background: var(--wd-card);
-  border-radius: 28px;
-  padding: 26px 28px;
+  border-radius: 24px;
+  padding: 22px 26px;
   box-shadow: var(--wd-shadow-sm);
   transition: box-shadow var(--wd-dur) var(--wd-ease-out);
-  min-width: 0;
 }
 .demo-panel:hover {
   box-shadow: var(--wd-shadow-hover);
+}
+
+.demo-panel--wide {
+  width: 100%;
 }
 
 .demo-panel h3 {
