@@ -39,6 +39,7 @@ var WD_REAL_MODULE = (() => {
     WdExplorer: () => WdExplorer_default,
     WdFileList: () => WdFileList_default,
     WdGrid: () => WdGrid_default,
+    WdIcon: () => WdIcon_default,
     WdImagePreview: () => WdImagePreview_default,
     WdInput: () => WdInput_default,
     WdListItem: () => WdListItem_default,
@@ -88,13 +89,13 @@ var WD_REAL_MODULE = (() => {
   var computed = G.computed;
   var createBlock = G.createBlock;
   var normalizeStyle = G.normalizeStyle;
+  var withModifiers = G.withModifiers;
   var onMounted = G.onMounted;
   var Transition = G.Transition;
   var withCtx = G.withCtx;
   var createVNode = G.createVNode;
   var Teleport = G.Teleport;
   var watchEffect = G.watchEffect;
-  var withModifiers = G.withModifiers;
   var withKeys = G.withKeys;
   var createStaticVNode = G.createStaticVNode;
   var resolveDynamicComponent = G.resolveDynamicComponent;
@@ -766,6 +767,7 @@ var WD_REAL_MODULE = (() => {
     class: "wd-carousel__dots"
   };
   var _hoisted_42 = ["aria-label", "onClick"];
+  var THRESHOLD = 40;
   var WdCarousel_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdCarousel" },
     __name: "WdCarousel",
@@ -780,7 +782,12 @@ var WD_REAL_MODULE = (() => {
       const props = __props;
       const PALETTE = ["var(--wd-tint-2)", "var(--wd-success-soft)", "var(--wd-warning-soft)", "var(--wd-field)"];
       const index = ref(0);
-      const trackStyle = computed(() => ({ transform: `translateX(-${index.value * 100}%)` }));
+      const root = ref(null);
+      const dragX = ref(0);
+      const trackStyle = computed(() => ({
+        transform: `translateX(calc(-${index.value * 100}% + ${dragX.value}px))`,
+        transition: dragX.value === 0 ? void 0 : "none"
+      }));
       function go(i) {
         const n = props.items.length;
         if (!n) return;
@@ -800,15 +807,80 @@ var WD_REAL_MODULE = (() => {
         }
       }
       onMounted(start);
-      onBeforeUnmount(stop);
+      onBeforeUnmount(() => {
+        stop();
+        detach();
+      });
+      let startX = 0;
+      let startY = 0;
+      let swiping = false;
+      let decided = false;
+      let pid = -1;
+      function onDown(e) {
+        if (props.items.length < 2) return;
+        if (e.pointerType === "mouse" && e.button !== 0) return;
+        swiping = true;
+        decided = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        pid = e.pointerId;
+        try {
+          ;
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+        } catch {
+        }
+        window.addEventListener("pointermove", onMove, { passive: false });
+        window.addEventListener("pointerup", onUp);
+        window.addEventListener("pointercancel", onUp);
+      }
+      function onMove(e) {
+        if (!swiping) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        if (!decided) {
+          if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+          if (Math.abs(dy) > Math.abs(dx)) {
+            end(false);
+            return;
+          }
+          decided = true;
+          stop();
+        }
+        if (e.cancelable) e.preventDefault();
+        const atEdge = index.value === 0 && dx > 0 || index.value === props.items.length - 1 && dx < 0;
+        dragX.value = atEdge ? dx * 0.35 : dx;
+      }
+      function onUp(e) {
+        if (!swiping) return;
+        const dx = e.clientX - startX;
+        if (decided && Math.abs(dx) > THRESHOLD) {
+          go(index.value + (dx < 0 ? 1 : -1));
+        }
+        end(true);
+      }
+      function end(restart) {
+        swiping = false;
+        decided = false;
+        dragX.value = 0;
+        detach();
+        if (restart) start();
+      }
+      function detach() {
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", onUp);
+        window.removeEventListener("pointercancel", onUp);
+      }
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock(
           "div",
           {
+            ref_key: "root",
+            ref: root,
             class: "wd-carousel",
             style: normalizeStyle({ height: __props.height + "px" }),
             onMouseenter: stop,
-            onMouseleave: start
+            onMouseleave: start,
+            onPointerdown: onDown
           },
           [
             createElementVNode(
@@ -838,7 +910,8 @@ var WD_REAL_MODULE = (() => {
                             key: 0,
                             src: it.src,
                             alt: it.alt || "",
-                            class: "wd-carousel__img"
+                            class: "wd-carousel__img",
+                            draggable: "false"
                           }, null, 8, _hoisted_18)) : (openBlock(), createElementBlock(
                             "span",
                             _hoisted_25,
@@ -859,58 +932,74 @@ var WD_REAL_MODULE = (() => {
               4
               /* STYLE */
             ),
-            __props.showArrows && __props.items.length > 1 ? (openBlock(), createElementBlock("button", {
-              key: 0,
-              type: "button",
-              class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--prev",
-              "aria-label": "\u4E0A\u4E00\u5F20",
-              onClick: _cache[0] || (_cache[0] = ($event) => go(index.value - 1))
-            }, [..._cache[2] || (_cache[2] = [
-              createElementVNode(
-                "svg",
-                {
-                  width: "15",
-                  height: "15",
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  "stroke-width": "2.6",
-                  "stroke-linecap": "round",
-                  "stroke-linejoin": "round"
-                },
-                [
-                  createElementVNode("path", { d: "m15 18-6-6 6-6" })
-                ],
-                -1
-                /* CACHED */
-              )
-            ])])) : createCommentVNode("v-if", true),
-            __props.showArrows && __props.items.length > 1 ? (openBlock(), createElementBlock("button", {
-              key: 1,
-              type: "button",
-              class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next",
-              "aria-label": "\u4E0B\u4E00\u5F20",
-              onClick: _cache[1] || (_cache[1] = ($event) => go(index.value + 1))
-            }, [..._cache[3] || (_cache[3] = [
-              createElementVNode(
-                "svg",
-                {
-                  width: "15",
-                  height: "15",
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  "stroke-width": "2.6",
-                  "stroke-linecap": "round",
-                  "stroke-linejoin": "round"
-                },
-                [
-                  createElementVNode("path", { d: "m9 6 6 6-6 6" })
-                ],
-                -1
-                /* CACHED */
-              )
-            ])])) : createCommentVNode("v-if", true),
+            __props.showArrows && __props.items.length > 1 ? (openBlock(), createElementBlock(
+              "button",
+              {
+                key: 0,
+                type: "button",
+                class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--prev",
+                "aria-label": "\u4E0A\u4E00\u5F20",
+                onPointerdown: _cache[0] || (_cache[0] = withModifiers(() => {
+                }, ["stop"])),
+                onClick: _cache[1] || (_cache[1] = ($event) => go(index.value - 1))
+              },
+              [..._cache[5] || (_cache[5] = [
+                createElementVNode(
+                  "svg",
+                  {
+                    width: "15",
+                    height: "15",
+                    viewBox: "0 0 24 24",
+                    fill: "none",
+                    stroke: "currentColor",
+                    "stroke-width": "2.6",
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round"
+                  },
+                  [
+                    createElementVNode("path", { d: "m15 18-6-6 6-6" })
+                  ],
+                  -1
+                  /* CACHED */
+                )
+              ])],
+              32
+              /* NEED_HYDRATION */
+            )) : createCommentVNode("v-if", true),
+            __props.showArrows && __props.items.length > 1 ? (openBlock(), createElementBlock(
+              "button",
+              {
+                key: 1,
+                type: "button",
+                class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next",
+                "aria-label": "\u4E0B\u4E00\u5F20",
+                onPointerdown: _cache[2] || (_cache[2] = withModifiers(() => {
+                }, ["stop"])),
+                onClick: _cache[3] || (_cache[3] = ($event) => go(index.value + 1))
+              },
+              [..._cache[6] || (_cache[6] = [
+                createElementVNode(
+                  "svg",
+                  {
+                    width: "15",
+                    height: "15",
+                    viewBox: "0 0 24 24",
+                    fill: "none",
+                    stroke: "currentColor",
+                    "stroke-width": "2.6",
+                    "stroke-linecap": "round",
+                    "stroke-linejoin": "round"
+                  },
+                  [
+                    createElementVNode("path", { d: "m9 6 6 6-6 6" })
+                  ],
+                  -1
+                  /* CACHED */
+                )
+              ])],
+              32
+              /* NEED_HYDRATION */
+            )) : createCommentVNode("v-if", true),
             __props.showDots && __props.items.length > 1 ? (openBlock(), createElementBlock("div", _hoisted_34, [
               (openBlock(true), createElementBlock(
                 Fragment,
@@ -921,8 +1010,10 @@ var WD_REAL_MODULE = (() => {
                     type: "button",
                     class: normalizeClass(["wd-carousel__dot", { "wd-carousel__dot--active": i === index.value }]),
                     "aria-label": `\u7B2C ${i + 1} \u5F20`,
+                    onPointerdown: _cache[4] || (_cache[4] = withModifiers(() => {
+                    }, ["stop"])),
                     onClick: ($event) => go(i)
-                  }, null, 10, _hoisted_42);
+                  }, null, 42, _hoisted_42);
                 }),
                 128
                 /* KEYED_FRAGMENT */
@@ -3938,19 +4029,40 @@ var WD_REAL_MODULE = (() => {
       const trackStyle = computed(() => ({
         background: `linear-gradient(to right, var(--wd-red) 0%, var(--wd-red) ${percent.value}%, var(--wd-tint-2) ${percent.value}%, var(--wd-tint-2) 100%)`
       }));
+      const el = ref(null);
+      let dragging = false;
       function onInput(e) {
-        emit("update:modelValue", Number(e.target.value));
+        const v = Number(e.target.value);
+        emit("update:modelValue", v);
       }
+      function onPointerDown() {
+        dragging = true;
+      }
+      function onPointerUp() {
+        dragging = false;
+      }
+      watch(
+        () => props.modelValue,
+        (v) => {
+          if (dragging || !el.value) return;
+          if (Number(el.value.value) !== v) el.value.value = String(v);
+        }
+      );
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock("div", _hoisted_134, [
           createElementVNode("input", {
+            ref_key: "el",
+            ref: el,
             type: "range",
             min: __props.min,
             max: __props.max,
             step: __props.step,
             value: __props.modelValue,
             style: normalizeStyle(trackStyle.value),
-            onInput
+            onInput,
+            onPointerdown: onPointerDown,
+            onPointerup: onPointerUp,
+            onPointercancel: onPointerUp
           }, null, 44, _hoisted_226),
           __props.showValue ? (openBlock(), createElementBlock(
             "span",
@@ -3965,9 +4077,10 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSortableList.ts
-  var _hoisted_135 = { class: "wd-sortable" };
-  var _hoisted_227 = ["onDragstart", "onDragover", "onDrop"];
+  var _hoisted_135 = ["onPointerdown"];
+  var _hoisted_227 = { class: "wd-sortable__label" };
   var _hoisted_323 = { class: "wd-sortable__label" };
+  var DRAG_THRESHOLD = 4;
   var WdSortableList_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSortableList" },
     __name: "WdSortableList",
@@ -3978,60 +4091,224 @@ var WD_REAL_MODULE = (() => {
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
-      const dragIndex = ref(-1);
-      const overIndex = ref(-1);
+      const list = ref(null);
       function labelOf(it) {
         return typeof it === "string" ? it : it.label;
       }
-      function onDragStart(i) {
-        dragIndex.value = i;
+      const dragging = ref(false);
+      const fromIndex = ref(-1);
+      const overIndex = ref(-1);
+      const ghost = ref(null);
+      let startY = 0;
+      let startX = 0;
+      let armed = false;
+      function itemEls() {
+        if (!list.value) return [];
+        return Array.from(list.value.querySelectorAll(".wd-sortable__item"));
       }
-      function onDragOver(i) {
-        if (dragIndex.value < 0 || i === dragIndex.value) return;
-        overIndex.value = i;
+      function computeOver(y) {
+        const els = itemEls();
+        for (let i = 0; i < els.length; i++) {
+          const r = els[i].getBoundingClientRect();
+          if (y < r.top + r.height / 2) return i;
+        }
+        return els.length;
       }
-      function onDrop(i) {
-        if (dragIndex.value < 0 || i === dragIndex.value || !props.modelValue.length) return;
-        const arr = [...props.modelValue];
-        const [moved] = arr.splice(dragIndex.value, 1);
-        arr.splice(i, 0, moved);
-        emit("update:modelValue", arr);
-        emit("change", arr);
-        reset();
+      function onPointerDown(e, i) {
+        if (e.button !== void 0 && e.button !== 0) return;
+        armed = true;
+        dragging.value = false;
+        fromIndex.value = i;
+        startY = e.clientY;
+        startX = e.clientX;
+        try {
+          ;
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+        } catch {
+        }
+        window.addEventListener("pointermove", onPointerMove, { passive: false });
+        window.addEventListener("pointerup", onPointerUp);
+        window.addEventListener("pointercancel", onPointerUp);
       }
-      function reset() {
-        dragIndex.value = -1;
+      function onPointerMove(e) {
+        if (!armed) return;
+        if (!dragging.value) {
+          if (Math.abs(e.clientY - startY) < DRAG_THRESHOLD && Math.abs(e.clientX - startX) < DRAG_THRESHOLD) return;
+          dragging.value = true;
+          const el = itemEls()[fromIndex.value];
+          if (el) {
+            const r = el.getBoundingClientRect();
+            ghost.value = {
+              top: r.top,
+              left: r.left,
+              width: r.width,
+              label: labelOf(props.modelValue[fromIndex.value])
+            };
+          }
+        }
+        if (e.cancelable) e.preventDefault();
+        if (ghost.value) ghost.value.top = e.clientY - 20;
+        overIndex.value = computeOver(e.clientY);
+      }
+      function onPointerUp() {
+        if (dragging.value && fromIndex.value >= 0 && overIndex.value >= 0) {
+          let to = overIndex.value;
+          if (to > fromIndex.value) to -= 1;
+          if (to !== fromIndex.value) {
+            const arr = [...props.modelValue];
+            const [moved] = arr.splice(fromIndex.value, 1);
+            arr.splice(to, 0, moved);
+            emit("update:modelValue", arr);
+            emit("change", arr);
+          }
+        }
+        cleanup();
+      }
+      function cleanup() {
+        armed = false;
+        dragging.value = false;
+        fromIndex.value = -1;
         overIndex.value = -1;
+        ghost.value = null;
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+        window.removeEventListener("pointercancel", onPointerUp);
       }
+      onBeforeUnmount(cleanup);
+      const dropLineTop = computed(() => {
+        if (!dragging.value || overIndex.value < 0 || !list.value) return null;
+        const els = itemEls();
+        if (!els.length) return null;
+        const base = list.value.getBoundingClientRect();
+        const i = overIndex.value;
+        return i < els.length ? els[i].getBoundingClientRect().top - base.top : els[els.length - 1].getBoundingClientRect().bottom - base.top;
+      });
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_135, [
-          (openBlock(true), createElementBlock(
-            Fragment,
-            null,
-            renderList(__props.modelValue, (it, i) => {
-              return openBlock(), createElementBlock("div", {
-                key: i,
-                class: normalizeClass(["wd-sortable__item", { "wd-sortable__item--drag": dragIndex.value === i, "wd-sortable__item--over": overIndex.value === i }]),
-                draggable: "true",
-                onDragstart: ($event) => onDragStart(i),
-                onDragover: withModifiers(($event) => onDragOver(i), ["prevent"]),
-                onDrop: withModifiers(($event) => onDrop(i), ["prevent"]),
-                onDragend: reset
-              }, [
-                _cache[0] || (_cache[0] = createStaticVNode('<span class="wd-sortable__handle"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>', 1)),
-                createElementVNode(
-                  "span",
-                  _hoisted_323,
-                  toDisplayString(labelOf(it)),
-                  1
-                  /* TEXT */
-                )
-              ], 42, _hoisted_227);
-            }),
-            128
-            /* KEYED_FRAGMENT */
-          ))
-        ]);
+        return openBlock(), createElementBlock(
+          Fragment,
+          null,
+          [
+            createElementVNode(
+              "div",
+              {
+                class: normalizeClass(["wd-sortable", { "wd-sortable--dragging": dragging.value }]),
+                ref_key: "list",
+                ref: list
+              },
+              [
+                (openBlock(true), createElementBlock(
+                  Fragment,
+                  null,
+                  renderList(__props.modelValue, (it, i) => {
+                    return openBlock(), createElementBlock("div", {
+                      key: i,
+                      class: normalizeClass(["wd-sortable__item", {
+                        "wd-sortable__item--drag": dragging.value && fromIndex.value === i,
+                        "wd-sortable__item--over": dragging.value && overIndex.value === i && fromIndex.value !== i
+                      }]),
+                      onPointerdown: ($event) => onPointerDown($event, i)
+                    }, [
+                      _cache[0] || (_cache[0] = createStaticVNode('<span class="wd-sortable__handle" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg></span>', 1)),
+                      createElementVNode(
+                        "span",
+                        _hoisted_227,
+                        toDisplayString(labelOf(it)),
+                        1
+                        /* TEXT */
+                      )
+                    ], 42, _hoisted_135);
+                  }),
+                  128
+                  /* KEYED_FRAGMENT */
+                )),
+                dropLineTop.value !== null ? (openBlock(), createElementBlock(
+                  "div",
+                  {
+                    key: 0,
+                    class: "wd-sortable__drop-line",
+                    style: normalizeStyle({ top: dropLineTop.value + "px" })
+                  },
+                  null,
+                  4
+                  /* STYLE */
+                )) : createCommentVNode("v-if", true)
+              ],
+              2
+              /* CLASS */
+            ),
+            (openBlock(), createBlock(Teleport, { to: "body" }, [
+              ghost.value ? (openBlock(), createElementBlock(
+                "div",
+                {
+                  key: 0,
+                  class: "wd-sortable__clone",
+                  style: normalizeStyle({ top: ghost.value.top + "px", left: ghost.value.left + "px", width: ghost.value.width + "px" })
+                },
+                [
+                  _cache[1] || (_cache[1] = createElementVNode(
+                    "span",
+                    {
+                      class: "wd-sortable__handle",
+                      "aria-hidden": "true"
+                    },
+                    [
+                      createElementVNode("svg", {
+                        width: "14",
+                        height: "14",
+                        viewBox: "0 0 24 24",
+                        fill: "currentColor"
+                      }, [
+                        createElementVNode("circle", {
+                          cx: "9",
+                          cy: "6",
+                          r: "1.6"
+                        }),
+                        createElementVNode("circle", {
+                          cx: "15",
+                          cy: "6",
+                          r: "1.6"
+                        }),
+                        createElementVNode("circle", {
+                          cx: "9",
+                          cy: "12",
+                          r: "1.6"
+                        }),
+                        createElementVNode("circle", {
+                          cx: "15",
+                          cy: "12",
+                          r: "1.6"
+                        }),
+                        createElementVNode("circle", {
+                          cx: "9",
+                          cy: "18",
+                          r: "1.6"
+                        }),
+                        createElementVNode("circle", {
+                          cx: "15",
+                          cy: "18",
+                          r: "1.6"
+                        })
+                      ])
+                    ],
+                    -1
+                    /* CACHED */
+                  )),
+                  createElementVNode(
+                    "span",
+                    _hoisted_323,
+                    toDisplayString(ghost.value.label),
+                    1
+                    /* TEXT */
+                  )
+                ],
+                4
+                /* STYLE */
+              )) : createCommentVNode("v-if", true)
+            ]))
+          ],
+          64
+          /* STABLE_FRAGMENT */
+        );
       };
     }
   });
@@ -4798,6 +5075,181 @@ var WD_REAL_MODULE = (() => {
             ))
           ])) : createCommentVNode("v-if", true)
         ]);
+      };
+    }
+  });
+
+  // .demo-build/optical.ts
+  var OPTICAL_TALL = /* @__PURE__ */ new Set([
+    // 33 个
+    "arrow-down",
+    "arrow-down-left",
+    "arrow-down-right",
+    "arrow-left",
+    "arrow-right",
+    "arrow-up",
+    "arrow-up-left",
+    "arrow-up-right",
+    "check",
+    "chevron-down",
+    "chevron-left",
+    "chevron-left-alt",
+    "chevron-left-double-alt",
+    "chevron-right",
+    "chevron-right-alt",
+    "chevron-right-double-alt",
+    "chevron-up",
+    "chevrons-down",
+    "chevrons-left",
+    "chevrons-right",
+    "chevrons-up",
+    "command-line",
+    "dots-drag",
+    "dots-horizontal",
+    "dots-vertical",
+    "hr-line",
+    "list",
+    "menu",
+    "minus",
+    "pause",
+    "play",
+    "plus",
+    "point"
+  ]);
+  var OPTICAL_LIGHT = /* @__PURE__ */ new Set([
+    // 20 个
+    "activity",
+    "circle-alt",
+    "close",
+    "corner-down-left",
+    "corner-down-right",
+    "corner-left-down",
+    "corner-left-up",
+    "corner-right-down",
+    "corner-right-up",
+    "corner-up-left",
+    "corner-up-right",
+    "eye-off",
+    "git-commit",
+    "italic",
+    "maximize",
+    "minimize",
+    "text",
+    "trending-down",
+    "trending-up",
+    "zoom-in-arrow"
+  ]);
+  var OPTICAL_HEAVY = /* @__PURE__ */ new Set([
+    // 49 个
+    "ad",
+    "apps",
+    "arrow-down-circle",
+    "arrow-right-circle",
+    "arrow-up-circle",
+    "board",
+    "box-back",
+    "box-go",
+    "box-ok",
+    "box-prize",
+    "brackets",
+    "calculator",
+    "cancel",
+    "check-circle",
+    "clipboard",
+    "clock",
+    "close-circle",
+    "develop",
+    "file",
+    "file-minus",
+    "file-plus",
+    "folder",
+    "folder-manage",
+    "folder-minus",
+    "folder-plus",
+    "folders",
+    "help-circle",
+    "id-card",
+    "identity",
+    "image",
+    "info-circle",
+    "language",
+    "layout-dashboard",
+    "layout-grid",
+    "message",
+    "message-circle",
+    "message-read",
+    "minus-circle",
+    "minus-square",
+    "money-bag",
+    "monitor",
+    "pause-circle",
+    "pip",
+    "plus-circle",
+    "plus-square",
+    "shopping-bag",
+    "ticket",
+    "video",
+    "warning-circle"
+  ]);
+  var DEFAULT_OPTICAL = {
+    tall: 1.14,
+    light: 1.08,
+    heavy: 0.97,
+    shrinkHeavy: true
+  };
+  function opticalFactor(name, opts = DEFAULT_OPTICAL) {
+    const o = { ...DEFAULT_OPTICAL, ...opts };
+    if (OPTICAL_TALL.has(name)) return o.tall;
+    if (OPTICAL_LIGHT.has(name)) return o.light;
+    if (o.shrinkHeavy && OPTICAL_HEAVY.has(name)) return o.heavy;
+    return 1;
+  }
+
+  // .demo-build/WdIcon.ts
+  var import_meta = {};
+  var _hoisted_145 = ["innerHTML"];
+  var WdIcon_default = /* @__PURE__ */ defineComponent({
+    ...{ name: "WdIcon" },
+    __name: "WdIcon",
+    props: {
+      name: { type: String, required: true },
+      variant: { type: String, required: false, default: "outlined" },
+      size: { type: [Number, String], required: false, default: 24 },
+      filled: { type: Boolean, required: false, default: false },
+      optical: { type: Boolean, required: false, default: true }
+    },
+    setup(__props) {
+      const props = __props;
+      const loaders = typeof import_meta !== "undefined" && typeof import_meta.glob === "function" ? import_meta.glob("../icons/*/*.svg", { query: "?raw", import: "default" }) : {};
+      const svg = ref("");
+      const resolvedStyle = computed(() => props.filled ? "filled" : props.variant);
+      const factor = computed(() => props.optical ? opticalFactor(props.name) : 1);
+      const sizePx = computed(() => {
+        const base = typeof props.size === "number" ? props.size : parseFloat(props.size) || 24;
+        return `${Math.round(base * factor.value * 100) / 100}px`;
+      });
+      watchEffect(async () => {
+        const order = resolvedStyle.value === "filled" ? ["filled", "outlined"] : ["outlined", "filled"];
+        const inline = globalThis.WD_ICONS;
+        for (const st of order) {
+          const key = `../icons/${st}/${props.name}.svg`;
+          if (loaders[key]) {
+            svg.value = await loaders[key]();
+            return;
+          }
+          if (inline?.[`${st}/${props.name}`]) {
+            svg.value = inline[`${st}/${props.name}`];
+            return;
+          }
+        }
+        svg.value = "";
+      });
+      return (_ctx, _cache) => {
+        return openBlock(), createElementBlock("span", {
+          class: normalizeClass(["wd-icon", { "wd-icon--optical": factor.value !== 1 }]),
+          style: normalizeStyle({ width: sizePx.value, height: sizePx.value }),
+          innerHTML: svg.value
+        }, null, 14, _hoisted_145);
       };
     }
   });

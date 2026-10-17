@@ -25,11 +25,16 @@ const props = withDefaults(
   { variant: 'outlined', size: 24, filled: false, optical: true },
 )
 
-/** Vite 构建期收集全部图标（按需懒加载） */
-const loaders: Record<string, () => Promise<string>> = import.meta.glob('../icons/*/*.svg', {
-  query: '?raw',
-  import: 'default',
-})
+/**
+ * Vite 构建期收集全部图标（按需懒加载）。
+ * ⚠️ `import.meta.glob` 是 Vite 专有 API —— 在普通浏览器或其他打包器里调用会
+ * 直接抛错，导致整个组件渲染失败（表现就是「图标全没了」）。
+ * 必须做能力检测，缺失时回退到 `window.WD_ICONS` 内联数据。
+ */
+const loaders: Record<string, () => Promise<string>> =
+  typeof import.meta !== 'undefined' && typeof (import.meta as any).glob === 'function'
+    ? (import.meta as any).glob('../icons/*/*.svg', { query: '?raw', import: 'default' })
+    : {}
 
 const svg = ref('')
 const resolvedStyle = computed(() => (props.filled ? 'filled' : props.variant))

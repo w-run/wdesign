@@ -29,6 +29,9 @@ rmSync(TMP, { recursive: true, force: true })
 mkdirSync(TMP, { recursive: true })
 
 const files = readdirSync(COMP).filter(f => f.endsWith('.vue')).sort()
+// 图标组件在独立包里，也要一并编译（demo 用 window.WD_ICONS 内联数据）
+const ICON_SRC = join(ROOT, '../wdesign-icons/src/WdIcon.vue')
+const ICON_OPT = join(ROOT, '../wdesign-icons/src/optical.js')
 const names = []
 const entry = []
 
@@ -51,11 +54,29 @@ for (const f of files) {
 }
 
 // 全局 Vue 适配：把 Vue 的具名导入重定向到 window.Vue
+// —— 追加图标组件（@w-run/wdesign-icons）——
+{
+  const source = readFileSync(ICON_SRC, 'utf8')
+  const { descriptor, errors } = parse(source, { filename: 'WdIcon.vue' })
+  if (errors.length) { console.error('❌ WdIcon.vue:', errors[0]); process.exit(1) }
+  const compiled = compileScript(descriptor, { id: 'WdIcon', inlineTemplate: true })
+  // 它 import { opticalFactor } from './optical' —— 改成相对临时目录
+  let code = compiled.content
+    .replace(/from\s+['"]\.\/optical['"]/g, "from './optical'")
+  writeFileSync(join(TMP, 'WdIcon.ts'), code)
+  // optical.js 是纯 JS，转成 ts 便于 esbuild 处理
+  writeFileSync(join(TMP, 'optical.ts'), readFileSync(ICON_OPT, 'utf8'))
+  names.push('WdIcon')
+  entry.push("export { default as WdIcon } from './WdIcon'")
+  console.log('   + WdIcon（来自 wdesign-icons）')
+}
+
 writeFileSync(join(TMP, 'entry.ts'), entry.join('\n') + '\n')
+
 // 收集所有组件实际从 vue 导入的具名符号（含 as 别名前的原名）
 const vueImports = new Set()
-for (const f of files) {
-  const src = readFileSync(join(TMP, f.replace(/\.vue$/, '.ts')), 'utf8')
+for (const tf of readdirSync(TMP).filter(x => x.endsWith('.ts'))) {
+  const src = readFileSync(join(TMP, tf), 'utf8')
   // import 可能跨多行：匹配 import { ... } from 'vue' 的完整块
   const re = /import\s*\{([\s\S]*?)\}\s*from\s*['"]vue['"]/g
   let m
