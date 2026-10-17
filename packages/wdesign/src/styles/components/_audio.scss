@@ -93,6 +93,10 @@
   transition: background var(--wd-dur-fast) ease, transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 .wd-audio--compact .wd-audio__play { width: 28px; height: 28px; }
+/* 同视频播放键：三角形重心偏左，右移 1.5px 做视觉补偿 */
+.wd-audio__play svg { transform: translateX(1.5px); }
+.wd-audio--compact .wd-audio__play svg { transform: translateX(1px); }
+
 .wd-audio__play:hover { background: var(--wd-red-hover, var(--wd-red-text)); }
 .wd-audio__play:active { transform: scale(.94); }
 

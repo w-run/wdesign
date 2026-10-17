@@ -6201,6 +6201,15 @@ img.wd-theme-invert {
   height: 28px;
 }
 
+/* 同视频播放键：三角形重心偏左，右移 1.5px 做视觉补偿 */
+.wd-audio__play svg {
+  transform: translateX(1.5px);
+}
+
+.wd-audio--compact .wd-audio__play svg {
+  transform: translateX(1px);
+}
+
 .wd-audio__play:hover {
   background: var(--wd-red-hover, var(--wd-red-text));
 }
@@ -6540,7 +6549,27 @@ img.wd-theme-invert {
   pointer-events: auto;
 }
 
+/*
+  顶部条要跟随容器圆角。
+  虽然父级有 overflow:hidden，但渐变背景的矩形在圆角处会露出"直角"
+  （外层圆角 16px，内层仍是 90°），视觉上像视频被切掉一块。
+*/
+.wd-vplayer__top {
+  border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0;
+}
+
+.wd-vplayer__bottom {
+  border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md);
+}
+
+.wd-vplayer:fullscreen .wd-vplayer__top,
+.wd-vplayer:fullscreen .wd-vplayer__bottom {
+  border-radius: 0;
+}
+
 .wd-vplayer__title {
+  /* 标题可收缩：窄屏时让位给 LIVE 标识与右侧按钮，而不是把它们挤出画面 */
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -6548,6 +6577,11 @@ img.wd-theme-invert {
   font-weight: 600;
   font-size: 13.5px;
   color: var(--wd-on-dark-text);
+}
+
+/* 顶部条的插槽内容不压缩 */
+.wd-vplayer__top > *:not(.wd-vplayer__title) {
+  flex: none;
 }
 
 .wd-vplayer__spacer {
@@ -6714,6 +6748,20 @@ img.wd-theme-invert {
   align-items: center;
   gap: 2px;
   height: 34px;
+  /* 窄容器下允许控件横向滚动，而不是把时间文字压成一团 */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  /* 关键：禁止 flex 子项被压缩 —— 每个按钮都是固定尺寸的点击目标，
+     被压窄会变成"看得见但点不准"，比溢出更糟 */
+}
+
+.wd-vplayer__row::-webkit-scrollbar {
+  display: none;
+}
+
+.wd-vplayer__row > * {
+  flex-shrink: 0;
 }
 
 .wd-vplayer__btn {
@@ -6750,14 +6798,28 @@ img.wd-theme-invert {
   padding: 0 7px;
 }
 
+/* 控制条里 18px 的小播放键：位移按比例缩小到 1px */
+.wd-vplayer__btn[aria-label=播放] svg,
+.wd-vplayer__btn[aria-label=暂停] svg {
+  transform: translateX(1px);
+}
+
 .wd-vplayer__time {
   margin-left: 6px;
   font-size: 12px;
   color: var(--wd-on-dark);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  /* 时间是最先被挤坏的元素：/ 两侧必须有空隙，否则 0:00/0:05 读不出来 */
+  letter-spacing: 0.01em;
 }
 
+/* 超窄容器（<420px）：先收起次要控件，保留播放与时间 */
+@media (max-width: 420px) {
+  .wd-vplayer__vol {
+    display: none;
+  }
+}
 /* ---------------- 音量（悬停展开） ---------------- */
 .wd-vplayer__vol {
   display: flex;
@@ -6909,8 +6971,8 @@ img.wd-theme-invert {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 62px;
-  height: 62px;
+  width: 68px;
+  height: 68px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -6919,6 +6981,19 @@ img.wd-theme-invert {
   cursor: pointer;
   backdrop-filter: blur(4px);
   transition: transform var(--wd-dur-fast) var(--wd-ease-out), background var(--wd-dur-fast) ease;
+}
+
+/*
+  播放三角形的视觉补偿。
+  几何上它已经居中（path bbox 左右各留 50/49.8），但三角的重心偏左：
+  左边是竖直边、右侧收成尖角，实心质量集中在左侧 —— 看起来就"压在左边"。
+
+  这类"指向性"图形都要往指向方向推一点才对得上视觉中心：
+  播放▶ 右移、返回◀ 左移、上箭头↑ 上移。经验值约为图标宽度的 5%~6%，
+  这里是 34px × 6% ≈ 2px。
+*/
+.wd-vplayer__big svg {
+  transform: translateX(2px);
 }
 
 .wd-vplayer__big:hover {
