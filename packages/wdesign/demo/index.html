@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792231951">
+<link rel="stylesheet" href="demo.css?v=1792233582">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -264,7 +264,9 @@
     <div class="demo-panel">
       <h3>DROPDOWN 下拉菜单</h3>
       <div class="demo-col">
-        <wd-dropdown :items="[{label:'编辑',value:'edit'},{label:'复制',value:'copy'},{label:'删除',value:'del',danger:true}]" @select="onDrop"></wd-dropdown>
+        <wd-dropdown :items="[{label:'编辑',value:'edit'},{label:'复制',value:'copy'},{label:'删除',value:'del',danger:true}]" @select="onDrop">
+          <wd-button variant="tint" size="sm">更多操作 ▾</wd-button>
+        </wd-dropdown>
         <span class="demo-cap">选择：{{ dropPick || '（无）' }}</span>
       </div>
     </div>
@@ -468,7 +470,7 @@
 
     <div class="demo-panel demo-panel--wide">
       <h3>EXPLORER 文件浏览器</h3>
-      <wd-explorer :files="fileTree"></wd-explorer>
+      <wd-explorer :folders="explorerFolders"></wd-explorer>
     </div>
 
     <div class="demo-panel">
@@ -690,10 +692,10 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792231951"></script>
-<script src="icons.data.js?v=1792231951"></script>
-<script src="demo-extra.js?v=1792231951"></script>
-<script src="demo.js?v=1792231951"></script>
+<script src="icons.optical.js?v=1792233582"></script>
+<script src="icons.data.js?v=1792233582"></script>
+<script src="demo-extra.js?v=1792233582"></script>
+<script src="demo.js?v=1792233582"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

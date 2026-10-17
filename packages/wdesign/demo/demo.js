@@ -248,17 +248,14 @@ const app = createApp({
         { id: 3, label: '发布计划' },
       ],
       fileNodes: [
-        { name: 'src', type: 'folder', size: '—', depth: 0 },
-        { name: 'components', type: 'folder', size: '—', depth: 1 },
-        { name: 'WdButton.vue', type: 'file', size: '1.2 KB', depth: 2 },
-        { name: 'styles', type: 'folder', size: '—', depth: 1 },
-        { name: 'index.scss', type: 'file', size: '3.4 KB', depth: 2 },
-      ],
-      fileTree: [
-        { name: 'src', type: 'folder', path: 'src', depth: 0 },
-        { name: 'components', type: 'folder', path: 'src/components', depth: 1 },
-        { name: 'WdButton.vue', type: 'file', path: 'src/components/WdButton.vue', depth: 2 },
-        { name: 'styles', type: 'folder', path: 'src/styles', depth: 1 },
+        { name: 'src', type: 'folder', children: [
+          { name: 'components', type: 'folder', children: [
+            { name: 'WdButton.vue', type: 'file', size: 1229 },
+            { name: 'WdCard.vue', type: 'file', size: 876 },
+          ] },
+          { name: 'index.scss', type: 'file', size: 3482 },
+        ] },
+        { name: 'README.md', type: 'file', size: 5120 },
       ],
       volume: 56,
       menu: [
