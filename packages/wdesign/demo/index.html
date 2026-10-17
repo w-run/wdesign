@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792243160">
+<link rel="stylesheet" href="demo.css?v=1792243893">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -233,14 +233,22 @@
 
     <div class="demo-panel">
       <h3>SELECT 下拉</h3>
-      <div class="demo-row" style="gap:20px; align-items:flex-start">
+      <div class="demo-row" style="gap:20px; align-items:flex-start; flex-wrap:wrap">
         <div class="demo-col">
           <wd-select v-model="sortBy" :options="['最近更新','最早创建','名称排序']" style="min-width:170px"></wd-select>
-          <span class="demo-cap">选中：{{ sortBy }}</span>
+          <span class="demo-cap">单选 · 选中：{{ sortBy }}</span>
         </div>
         <div class="demo-col">
-          <wd-select :model-value="''" placeholder="请选择（placeholder）" :options="['A','B','C']" style="min-width:200px"></wd-select>
-          <span class="demo-cap">空值显示 placeholder</span>
+          <wd-select v-model="city" :options="cityOptions" filterable placeholder="可搜索城市" style="min-width:200px"></wd-select>
+          <span class="demo-cap">filterable · 输入关键字过滤</span>
+        </div>
+        <div class="demo-col">
+          <wd-select v-model="tagsPick" :options="skillOptions" multiple :max-tag-count="3" clearable placeholder="多选技能" style="min-width:260px"></wd-select>
+          <span class="demo-cap">multiple · 已选 {{ tagsPick.length }} 项（标签可删）</span>
+        </div>
+        <div class="demo-col">
+          <wd-select v-model="sortBy" :options="['最近更新','最早创建']" clearable style="min-width:170px"></wd-select>
+          <span class="demo-cap">clearable</span>
         </div>
         <div class="demo-col">
           <wd-select :model-value="'A'" :options="['A','B']" disabled style="min-width:140px"></wd-select>
@@ -915,11 +923,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792243160"></script>
-<script src="icons.data.js?v=1792243160"></script>
-<script src="demo-extra.js?v=1792243160"></script>
-<script src="components.js?v=1792243160"></script>
-<script src="demo.js?v=1792243160"></script>
+<script src="icons.optical.js?v=1792243893"></script>
+<script src="icons.data.js?v=1792243893"></script>
+<script src="demo-extra.js?v=1792243893"></script>
+<script src="components.js?v=1792243893"></script>
+<script src="demo.js?v=1792243893"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

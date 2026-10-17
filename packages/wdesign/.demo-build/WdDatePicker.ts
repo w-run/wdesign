@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, renderList as _renderList, Fragment as _Fragment, normalizeClass as _normalizeClass, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode } from "vue"
+import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, unref as _unref, renderList as _renderList, Fragment as _Fragment, normalizeClass as _normalizeClass, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode } from "vue"
 
 const _hoisted_1 = ["disabled"]
 const _hoisted_2 = {
@@ -25,6 +25,8 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 // 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
 // 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
 // 给出 duration 让 Vue 用定时器兜底，动画时钟停摆也不会卡在首帧。
+import { popDuration } from './pop-duration'
+/** 过渡时长：尊重系统「减弱动态效果」，否则用它兜底 transitionend 丢失的情况 */
 
 export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdDatePicker' },
@@ -37,7 +39,7 @@ export default /*@__PURE__*/_defineComponent({
   emits: ["update:modelValue"],
   setup(__props: any, { emit: __emit }) {
 
-const POP_DURATION = { enter: 200, leave: 140 }
+const POP_DURATION = popDuration()
 
 
 
@@ -162,7 +164,7 @@ return (_ctx: any,_cache: any) => {
     ], 8 /* PROPS */, _hoisted_1),
     _createVNode(_Transition, {
       name: "wd-pop",
-      duration: POP_DURATION
+      duration: _unref(POP_DURATION)
     }, {
       default: _withCtx(() => [
         (open.value)
@@ -240,7 +242,7 @@ return (_ctx: any,_cache: any) => {
           : _createCommentVNode("v-if", true)
       ]),
       _: 1 /* STABLE */
-    })
+    }, 8 /* PROPS */, ["duration"])
   ], 2 /* CLASS */))
 }
 }
