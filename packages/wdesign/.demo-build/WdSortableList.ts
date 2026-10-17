@@ -1,9 +1,17 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle, createCommentVNode as _createCommentVNode, Teleport as _Teleport, createBlock as _createBlock, createStaticVNode as _createStaticVNode } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle, createCommentVNode as _createCommentVNode, Teleport as _Teleport, createBlock as _createBlock } from "vue"
 
 const _hoisted_1 = ["onPointerdown"]
-const _hoisted_2 = { class: "wd-sortable__label" }
+const _hoisted_2 = {
+  class: "wd-sortable__handle",
+  "aria-hidden": "true"
+}
 const _hoisted_3 = { class: "wd-sortable__label" }
+const _hoisted_4 = {
+  class: "wd-sortable__handle",
+  "aria-hidden": "true"
+}
+const _hoisted_5 = { class: "wd-sortable__label" }
 
 import { computed, onBeforeUnmount, ref } from 'vue'
 
@@ -143,6 +151,8 @@ const dropLineTop = computed(() => {
 })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock(_Fragment, null, [
     _createElementVNode("div", {
       class: _normalizeClass(["wd-sortable", { 'wd-sortable--dragging': dragging.value }]),
@@ -158,8 +168,13 @@ return (_ctx: any,_cache: any) => {
       }]),
           onPointerdown: ($event: any) => (onPointerDown($event, i))
         }, [
-          _cache[0] || (_cache[0] = _createStaticVNode("<span class=\"wd-sortable__handle\" aria-hidden=\"true\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"9\" cy=\"6\" r=\"1.6\"></circle><circle cx=\"15\" cy=\"6\" r=\"1.6\"></circle><circle cx=\"9\" cy=\"12\" r=\"1.6\"></circle><circle cx=\"15\" cy=\"12\" r=\"1.6\"></circle><circle cx=\"9\" cy=\"18\" r=\"1.6\"></circle><circle cx=\"15\" cy=\"18\" r=\"1.6\"></circle></svg></span>", 1)),
-          _createElementVNode("span", _hoisted_2, _toDisplayString(labelOf(it)), 1 /* TEXT */)
+          _createElementVNode("span", _hoisted_2, [
+            _createVNode(_component_wd_icon, {
+              name: "dots-drag",
+              size: 14
+            })
+          ]),
+          _createElementVNode("span", _hoisted_3, _toDisplayString(labelOf(it)), 1 /* TEXT */)
         ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_1))
       }), 128 /* KEYED_FRAGMENT */)),
       (dropLineTop.value !== null)
@@ -177,49 +192,13 @@ return (_ctx: any,_cache: any) => {
             class: "wd-sortable__clone",
             style: _normalizeStyle({ top: ghost.value.top + 'px', left: ghost.value.left + 'px', width: ghost.value.width + 'px' })
           }, [
-            _cache[1] || (_cache[1] = _createElementVNode("span", {
-              class: "wd-sortable__handle",
-              "aria-hidden": "true"
-            }, [
-              _createElementVNode("svg", {
-                width: "14",
-                height: "14",
-                viewBox: "0 0 24 24",
-                fill: "currentColor"
-              }, [
-                _createElementVNode("circle", {
-                  cx: "9",
-                  cy: "6",
-                  r: "1.6"
-                }),
-                _createElementVNode("circle", {
-                  cx: "15",
-                  cy: "6",
-                  r: "1.6"
-                }),
-                _createElementVNode("circle", {
-                  cx: "9",
-                  cy: "12",
-                  r: "1.6"
-                }),
-                _createElementVNode("circle", {
-                  cx: "15",
-                  cy: "12",
-                  r: "1.6"
-                }),
-                _createElementVNode("circle", {
-                  cx: "9",
-                  cy: "18",
-                  r: "1.6"
-                }),
-                _createElementVNode("circle", {
-                  cx: "15",
-                  cy: "18",
-                  r: "1.6"
-                })
-              ])
-            ], -1 /* CACHED */)),
-            _createElementVNode("span", _hoisted_3, _toDisplayString(ghost.value.label), 1 /* TEXT */)
+            _createElementVNode("span", _hoisted_4, [
+              _createVNode(_component_wd_icon, {
+                name: "dots-drag",
+                size: 14
+              })
+            ]),
+            _createElementVNode("span", _hoisted_5, _toDisplayString(ghost.value.label), 1 /* TEXT */)
           ], 4 /* STYLE */))
         : _createCommentVNode("v-if", true)
     ]))

@@ -107,7 +107,7 @@ onBeforeUnmount(() => {
     <button type="button" class="wd-datepicker__trigger" :disabled="disabled" @click="toggle">
       <span v-if="modelValue" class="wd-datepicker__value">{{ modelValue }}</span>
       <span v-else class="wd-datepicker__placeholder">{{ placeholder }}</span>
-      <svg class="wd-datepicker__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="4"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>
+      <wd-icon class="wd-datepicker__icon" name="calendar" :size="15" />
     </button>
 
     <Transition name="wd-pop" :duration="POP_DURATION">
@@ -116,10 +116,10 @@ onBeforeUnmount(() => {
           <span class="wd-datepicker__month">{{ monthLabel }}</span>
           <span class="wd-datepicker__nav">
             <button type="button" class="wd-icon-btn wd-icon-btn--sm" aria-label="上个月" @click="prevMonth">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+              <wd-icon name="chevron-left" :size="14" />
             </button>
             <button type="button" class="wd-icon-btn wd-icon-btn--sm" aria-label="下个月" @click="nextMonth">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+              <wd-icon name="chevron-right" :size="14" />
             </button>
           </span>
         </div>

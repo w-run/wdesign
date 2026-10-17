@@ -100,7 +100,7 @@ function onKeydown(e: KeyboardEvent) {
         :aria-label="`关闭 ${t.label}`"
         @click="close(t, $event)"
       >
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+        <wd-icon name="close" :size="10" />
       </span>
     </button>
 
@@ -112,7 +112,7 @@ function onKeydown(e: KeyboardEvent) {
       data-wd-hover
       @click="emit('add')"
     >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+      <wd-icon name="plus" :size="14" />
     </button>
   </div>
 </template>

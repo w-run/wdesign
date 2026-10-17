@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createElementVNode as _createElementVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, createCommentVNode as _createCommentVNode } from "vue"
+import { createElementVNode as _createElementVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, createCommentVNode as _createCommentVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, createBlock as _createBlock } from "vue"
 
 const _hoisted_1 = ["aria-hidden"]
 const _hoisted_2 = ["aria-selected", "tabindex", "onClick"]
@@ -16,14 +16,6 @@ const _hoisted_7 = {
   role: "listbox"
 }
 const _hoisted_8 = ["aria-selected", "onClick"]
-const _hoisted_9 = {
-  key: 0,
-  viewBox: "0 0 24 24",
-  width: "15",
-  height: "15",
-  fill: "none",
-  "aria-hidden": "true"
-}
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
@@ -194,6 +186,8 @@ watch(items, () =>
 )
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     ref_key: "wrap",
     ref: wrap,
@@ -242,22 +236,11 @@ return (_ctx: any,_cache: any) => {
           }, [
             _createElementVNode("span", _hoisted_5, _toDisplayString(activeLabel.value), 1 /* TEXT */),
             _createElementVNode("span", _hoisted_6, _toDisplayString(items.value.length) + " 项", 1 /* TEXT */),
-            (_openBlock(), _createElementBlock("svg", {
+            _createVNode(_component_wd_icon, {
               class: _normalizeClass(["wd-segmented-picker__caret", { 'is-open': dropdownOpen.value }]),
-              viewBox: "0 0 24 24",
-              width: "16",
-              height: "16",
-              fill: "none",
-              "aria-hidden": "true"
-            }, [...(_cache[1] || (_cache[1] = [
-              _createElementVNode("path", {
-                d: "M6 9l6 6 6-6",
-                stroke: "currentColor",
-                "stroke-width": "2.2",
-                "stroke-linecap": "round",
-                "stroke-linejoin": "round"
-              }, null, -1 /* CACHED */)
-            ]))], 2 /* CLASS */))
+              name: "chevron-down",
+              size: 16
+            }, null, 8 /* PROPS */, ["class"])
           ], 8 /* PROPS */, _hoisted_4),
           (dropdownOpen.value)
             ? (_openBlock(), _createElementBlock("div", _hoisted_7, [
@@ -272,15 +255,11 @@ return (_ctx: any,_cache: any) => {
                   }, [
                     _createElementVNode("span", null, _toDisplayString(o.label), 1 /* TEXT */),
                     (o.value === __props.modelValue)
-                      ? (_openBlock(), _createElementBlock("svg", _hoisted_9, [...(_cache[2] || (_cache[2] = [
-                          _createElementVNode("path", {
-                            d: "M5 13l4 4L19 7",
-                            stroke: "currentColor",
-                            "stroke-width": "2.4",
-                            "stroke-linecap": "round",
-                            "stroke-linejoin": "round"
-                          }, null, -1 /* CACHED */)
-                        ]))]))
+                      ? (_openBlock(), _createBlock(_component_wd_icon, {
+                          key: 0,
+                          name: "check",
+                          size: 15
+                        }))
                       : _createCommentVNode("v-if", true)
                   ], 10 /* CLASS, PROPS */, _hoisted_8))
                 }), 128 /* KEYED_FRAGMENT */))

@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, createCommentVNode as _createCommentVNode, createTextVNode as _createTextVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, normalizeClass as _normalizeClass, renderList as _renderList, Fragment as _Fragment } from "vue"
+import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, createCommentVNode as _createCommentVNode, createTextVNode as _createTextVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, resolveComponent as _resolveComponent, createVNode as _createVNode, normalizeClass as _normalizeClass, renderList as _renderList, Fragment as _Fragment } from "vue"
 
 const _hoisted_1 = { class: "wd-ai-msg__avatar" }
 const _hoisted_2 = { class: "wd-ai-msg__bubble" }
@@ -154,6 +154,8 @@ onBeforeUnmount(() => {
 })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     class: _normalizeClass(["wd-ai-msg", { 'wd-ai-msg--self': __props.self }])
   }, [
@@ -178,33 +180,21 @@ return (_ctx: any,_cache: any) => {
               class: "wd-ai-msg__reasoning-head",
               onClick: _cache[0] || (_cache[0] = ($event: any) => (reasoningOpen.value = !reasoningOpen.value))
             }, [
-              _cache[3] || (_cache[3] = _createElementVNode("svg", {
+              _createVNode(_component_wd_icon, {
                 class: "wd-ai-msg__reasoning-spark",
-                width: "13",
-                height: "13",
-                viewBox: "0 0 24 24",
-                fill: "currentColor"
-              }, [
-                _createElementVNode("path", { d: "M12 2.5l1.9 5.2 5.3 1.9-5.3 1.9L12 16.7l-1.9-5.2-5.3-1.9 5.3-1.9z" })
-              ], -1 /* CACHED */)),
-              _cache[4] || (_cache[4] = _createElementVNode("span", { class: "wd-ai-msg__reasoning-title" }, "深度思考", -1 /* CACHED */)),
+                name: "magic",
+                size: 13
+              }),
+              _cache[2] || (_cache[2] = _createElementVNode("span", { class: "wd-ai-msg__reasoning-title" }, "深度思考", -1 /* CACHED */)),
               _createElementVNode("span", _hoisted_4, _toDisplayString(__props.reasoningStreaming ? '进行中' : '已完成'), 1 /* TEXT */),
               _createElementVNode("span", {
                 class: _normalizeClass(["wd-chevron", { 'wd-chevron--open': reasoningOpen.value }])
-              }, [...(_cache[2] || (_cache[2] = [
-                _createElementVNode("svg", {
-                  width: "13",
-                  height: "13",
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  "stroke-width": "2.6",
-                  "stroke-linecap": "round",
-                  "stroke-linejoin": "round"
-                }, [
-                  _createElementVNode("path", { d: "m6 9 6 6 6-6" })
-                ], -1 /* CACHED */)
-              ]))], 2 /* CLASS */)
+              }, [
+                _createVNode(_component_wd_icon, {
+                  name: "chevron-down",
+                  size: 13
+                })
+              ], 2 /* CLASS */)
             ]),
             _createElementVNode("div", _hoisted_5, [
               _createElementVNode("div", _hoisted_6, [

@@ -1,63 +1,23 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass, renderList as _renderList, Fragment as _Fragment, toDisplayString as _toDisplayString, normalizeStyle as _normalizeStyle, createTextVNode as _createTextVNode, withModifiers as _withModifiers, renderSlot as _renderSlot } from "vue"
+import { resolveComponent as _resolveComponent, openBlock as _openBlock, createBlock as _createBlock, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, createElementBlock as _createElementBlock, renderList as _renderList, Fragment as _Fragment, toDisplayString as _toDisplayString, normalizeStyle as _normalizeStyle, createVNode as _createVNode, createTextVNode as _createTextVNode, withModifiers as _withModifiers, renderSlot as _renderSlot } from "vue"
 
 const _hoisted_1 = {
   key: 0,
   class: "wd-table__th wd-table__th--check"
 }
 const _hoisted_2 = ["aria-checked"]
-const _hoisted_3 = {
-  key: 0,
-  width: "10",
-  height: "10",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  "stroke-width": "3.6",
-  "stroke-linecap": "round"
-}
+const _hoisted_3 = ["aria-sort", "onClick"]
 const _hoisted_4 = {
-  key: 1,
-  width: "10",
-  height: "10",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  "stroke-width": "3.6",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round"
-}
-const _hoisted_5 = ["aria-sort", "onClick"]
-const _hoisted_6 = {
   key: 0,
   class: "wd-table__sort"
 }
+const _hoisted_5 = ["onClick"]
+const _hoisted_6 = ["aria-checked", "onClick"]
 const _hoisted_7 = {
-  key: 0,
-  d: "M12 5l7 7H5l7-7z"
-}
-const _hoisted_8 = {
-  key: 1,
-  d: "M12 19l-7-7h14l-7 7z"
-}
-const _hoisted_9 = ["onClick"]
-const _hoisted_10 = ["aria-checked", "onClick"]
-const _hoisted_11 = {
-  key: 0,
-  width: "10",
-  height: "10",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  "stroke-width": "3.6",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round"
-}
-const _hoisted_12 = {
   key: 1,
   class: "wd-table__empty"
 }
-const _hoisted_13 = {
+const _hoisted_8 = {
   key: 2,
   class: "wd-table__loading"
 }
@@ -156,6 +116,8 @@ const wrapStyle = computed(() =>
 )
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     class: _normalizeClass(["wd-table-wrap", { 'wd-table-wrap--loading': __props.loading }]),
     style: _normalizeStyle(wrapStyle.value)
@@ -178,13 +140,17 @@ return (_ctx: any,_cache: any) => {
                       onClick: toggleAll
                     }, [
                       (someChecked.value && !allChecked.value)
-                        ? (_openBlock(), _createElementBlock("svg", _hoisted_3, [...(_cache[1] || (_cache[1] = [
-                            _createElementVNode("path", { d: "M6 12h12" }, null, -1 /* CACHED */)
-                          ]))]))
+                        ? (_openBlock(), _createBlock(_component_wd_icon, {
+                            key: 0,
+                            name: "minus",
+                            size: 10
+                          }))
                         : (allChecked.value)
-                          ? (_openBlock(), _createElementBlock("svg", _hoisted_4, [...(_cache[2] || (_cache[2] = [
-                              _createElementVNode("path", { d: "m4.5 12.5 5 5 10-11" }, null, -1 /* CACHED */)
-                            ]))]))
+                          ? (_openBlock(), _createBlock(_component_wd_icon, {
+                              key: 1,
+                              name: "check",
+                              size: 10
+                            }))
                           : _createCommentVNode("v-if", true)
                     ], 10 /* CLASS, PROPS */, _hoisted_2)
                   ]))
@@ -199,21 +165,15 @@ return (_ctx: any,_cache: any) => {
                 }, [
                   _createTextVNode(_toDisplayString(col.title) + " ", 1 /* TEXT */),
                   (col.sortable)
-                    ? (_openBlock(), _createElementBlock("span", _hoisted_6, [
-                        (_openBlock(), _createElementBlock("svg", {
-                          width: "12",
-                          height: "12",
-                          viewBox: "0 0 24 24",
-                          fill: "currentColor",
+                    ? (_openBlock(), _createElementBlock("span", _hoisted_4, [
+                        _createVNode(_component_wd_icon, {
+                          name: sortKey.value !== col.key || sortDir.value === 'asc' ? 'arrow-up' : 'arrow-down',
+                          size: 12,
                           style: _normalizeStyle({ color: sortKey.value === col.key ? 'var(--wd-red)' : 'var(--wd-ink-3)' })
-                        }, [
-                          (sortKey.value !== col.key || sortDir.value === 'asc')
-                            ? (_openBlock(), _createElementBlock("path", _hoisted_7))
-                            : (_openBlock(), _createElementBlock("path", _hoisted_8))
-                        ], 4 /* STYLE */))
+                        }, null, 8 /* PROPS */, ["name", "style"])
                       ]))
                     : _createCommentVNode("v-if", true)
-                ], 14 /* CLASS, STYLE, PROPS */, _hoisted_5))
+                ], 14 /* CLASS, STYLE, PROPS */, _hoisted_3))
               }), 128 /* KEYED_FRAGMENT */))
             ])
           ]),
@@ -239,11 +199,13 @@ return (_ctx: any,_cache: any) => {
                         onClick: ($event: any) => (toggleRow(row))
                       }, [
                         (__props.selected.includes(row))
-                          ? (_openBlock(), _createElementBlock("svg", _hoisted_11, [...(_cache[3] || (_cache[3] = [
-                              _createElementVNode("path", { d: "m4.5 12.5 5 5 10-11" }, null, -1 /* CACHED */)
-                            ]))]))
+                          ? (_openBlock(), _createBlock(_component_wd_icon, {
+                              key: 0,
+                              name: "check",
+                              size: 10
+                            }))
                           : _createCommentVNode("v-if", true)
-                      ], 10 /* CLASS, PROPS */, _hoisted_10)
+                      ], 10 /* CLASS, PROPS */, _hoisted_6)
                     ]))
                   : _createCommentVNode("v-if", true),
                 (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(props.columns, (col) => {
@@ -259,17 +221,17 @@ return (_ctx: any,_cache: any) => {
                     ])
                   ], 4 /* STYLE */))
                 }), 128 /* KEYED_FRAGMENT */))
-              ], 10 /* CLASS, PROPS */, _hoisted_9))
+              ], 10 /* CLASS, PROPS */, _hoisted_5))
             }), 128 /* KEYED_FRAGMENT */))
           ])
         ], 2 /* CLASS */))
       : (!__props.loading)
-        ? (_openBlock(), _createElementBlock("div", _hoisted_12, _toDisplayString(__props.emptyText), 1 /* TEXT */))
+        ? (_openBlock(), _createElementBlock("div", _hoisted_7, _toDisplayString(__props.emptyText), 1 /* TEXT */))
         : _createCommentVNode("v-if", true),
     _createCommentVNode(" 加载中：盖一层半透明遮罩 + 转圈，保留表头结构 "),
     (__props.loading)
-      ? (_openBlock(), _createElementBlock("div", _hoisted_13, [
-          _cache[4] || (_cache[4] = _createElementVNode("span", { class: "wd-spinner" }, null, -1 /* CACHED */)),
+      ? (_openBlock(), _createElementBlock("div", _hoisted_8, [
+          _cache[1] || (_cache[1] = _createElementVNode("span", { class: "wd-spinner" }, null, -1 /* CACHED */)),
           _createElementVNode("span", null, _toDisplayString(__props.loadingText), 1 /* TEXT */)
         ]))
       : _createCommentVNode("v-if", true)

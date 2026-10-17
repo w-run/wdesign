@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, resolveComponent as _resolveComponent, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = ["aria-label", "aria-disabled"]
 const _hoisted_2 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"]
@@ -76,6 +76,8 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     ref_key: "root",
     ref: root,
@@ -99,16 +101,12 @@ return (_ctx: any,_cache: any) => {
         onPointerenter: ($event: any) => (onEnter(i - 1, $event)),
         onPointerleave: _cache[0] || (_cache[0] = ($event: any) => (onLeave($event))),
         onClick: ($event: any) => (pick(i - 1))
-      }, [...(_cache[2] || (_cache[2] = [
-        _createElementVNode("svg", {
-          width: "22",
-          height: "22",
-          viewBox: "0 0 24 24",
-          fill: "currentColor"
-        }, [
-          _createElementVNode("path", { d: "M12 2.8l2.7 5.7 6.3.8-4.6 4.3 1.2 6.2L12 16.9l-5.6 2.9 1.2-6.2L3 9.3l6.3-.8z" })
-        ], -1 /* CACHED */)
-      ]))], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_2))
+      }, [
+        _createVNode(_component_wd_icon, {
+          name: "star",
+          size: 22
+        })
+      ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_2))
     }), 128 /* KEYED_FRAGMENT */))
   ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_1))
 }

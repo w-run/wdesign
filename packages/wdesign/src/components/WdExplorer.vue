@@ -48,7 +48,7 @@ function fmtSize(n?: number) {
         :class="{ 'wd-explorer__folder--active': i === active }"
         @click="active = i"
       >
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8a3 3 0 0 1 3-3h2.6c.5 0 1 .2 1.4.6l1 1c.4.4.9.6 1.4.6H18a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"></path></svg>
+        <wd-icon name="folder" :size="15" />
         <span class="wd-explorer__folder-name">{{ f.name }}</span>
         <span class="wd-explorer__count">{{ f.files.length }}</span>
       </button>
@@ -69,7 +69,7 @@ function fmtSize(n?: number) {
             title="详情"
             @click="mode = 'details'"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            <wd-icon name="search" :size="15" />
           </button>
           <button
             type="button"
@@ -78,7 +78,7 @@ function fmtSize(n?: number) {
             title="图标"
             @click="mode = 'icons'"
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="2"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"></rect></svg>
+            <wd-icon name="layout-grid" :size="15" />
           </button>
         </div>
       </div>
@@ -101,7 +101,7 @@ function fmtSize(n?: number) {
             <td>
               <span class="wd-explorer__name">
                 <span class="wd-explorer__file-chip">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>
+                  <wd-icon name="file" :size="15" />
                 </span>
                 <span class="wd-explorer__file-name">{{ f.name }}</span>
               </span>
@@ -121,7 +121,7 @@ function fmtSize(n?: number) {
           @click="emit('select', f)"
         >
           <span class="wd-explorer__tile-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>
+            <wd-icon name="folder-open" :size="22" />
           </span>
           <span class="wd-explorer__tile-name">{{ f.name }}</span>
           <span class="wd-explorer__tile-size">{{ fmtSize(f.size) }}</span>

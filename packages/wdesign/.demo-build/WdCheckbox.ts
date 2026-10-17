@@ -1,8 +1,9 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, renderSlot as _renderSlot, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass } from "vue"
+import { resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, renderSlot as _renderSlot, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = ["aria-checked", "disabled"]
-const _hoisted_2 = {
+const _hoisted_2 = { class: "wd-checkbox__box" }
+const _hoisted_3 = {
   key: 0,
   class: "wd-checkbox__label"
 }
@@ -30,6 +31,8 @@ function toggle() {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("button", {
     type: "button",
     role: "checkbox",
@@ -38,22 +41,14 @@ return (_ctx: any,_cache: any) => {
     disabled: __props.disabled,
     onClick: toggle
   }, [
-    _cache[0] || (_cache[0] = _createElementVNode("span", { class: "wd-checkbox__box" }, [
-      _createElementVNode("svg", {
-        width: "13",
-        height: "13",
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        "stroke-width": "3.4",
-        "stroke-linecap": "round",
-        "stroke-linejoin": "round"
-      }, [
-        _createElementVNode("path", { d: "m4.5 12.5 5 5 10-11" })
-      ])
-    ], -1 /* CACHED */)),
+    _createElementVNode("span", _hoisted_2, [
+      _createVNode(_component_wd_icon, {
+        name: "check",
+        size: 13
+      })
+    ]),
     (__props.label || _ctx.$slots.default)
-      ? (_openBlock(), _createElementBlock("span", _hoisted_2, [
+      ? (_openBlock(), _createElementBlock("span", _hoisted_3, [
           _renderSlot(_ctx.$slots, "default", {}, () => [
             _createTextVNode(_toDisplayString(__props.label), 1 /* TEXT */)
           ])

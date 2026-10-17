@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, renderSlot as _renderSlot, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, withModifiers as _withModifiers, normalizeClass as _normalizeClass } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, renderSlot as _renderSlot, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, withModifiers as _withModifiers, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = ["src", "alt"]
 const _hoisted_2 = {
@@ -198,6 +198,8 @@ function detach() {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     ref_key: "root",
     ref: root,
@@ -243,20 +245,12 @@ return (_ctx: any,_cache: any) => {
           "aria-label": "上一张",
           onPointerdown: _cache[0] || (_cache[0] = _withModifiers(() => {}, ["stop"])),
           onClick: prev
-        }, [...(_cache[3] || (_cache[3] = [
-          _createElementVNode("svg", {
-            width: "15",
-            height: "15",
-            viewBox: "0 0 24 24",
-            fill: "none",
-            stroke: "currentColor",
-            "stroke-width": "2.6",
-            "stroke-linecap": "round",
-            "stroke-linejoin": "round"
-          }, [
-            _createElementVNode("path", { d: "m15 18-6-6 6-6" })
-          ], -1 /* CACHED */)
-        ]))], 32 /* NEED_HYDRATION */))
+        }, [
+          _createVNode(_component_wd_icon, {
+            name: "chevron-left",
+            size: 15
+          })
+        ], 32 /* NEED_HYDRATION */))
       : _createCommentVNode("v-if", true),
     (__props.showArrows && __props.items.length > 1)
       ? (_openBlock(), _createElementBlock("button", {
@@ -266,20 +260,12 @@ return (_ctx: any,_cache: any) => {
           "aria-label": "下一张",
           onPointerdown: _cache[1] || (_cache[1] = _withModifiers(() => {}, ["stop"])),
           onClick: next
-        }, [...(_cache[4] || (_cache[4] = [
-          _createElementVNode("svg", {
-            width: "15",
-            height: "15",
-            viewBox: "0 0 24 24",
-            fill: "none",
-            stroke: "currentColor",
-            "stroke-width": "2.6",
-            "stroke-linecap": "round",
-            "stroke-linejoin": "round"
-          }, [
-            _createElementVNode("path", { d: "m9 6 6 6-6 6" })
-          ], -1 /* CACHED */)
-        ]))], 32 /* NEED_HYDRATION */))
+        }, [
+          _createVNode(_component_wd_icon, {
+            name: "chevron-right",
+            size: 15
+          })
+        ], 32 /* NEED_HYDRATION */))
       : _createCommentVNode("v-if", true),
     (__props.showDots && __props.items.length > 1)
       ? (_openBlock(), _createElementBlock("div", _hoisted_3, [

@@ -10,6 +10,7 @@
 import type { App, Plugin } from 'vue'
 import WdAiMessage from './components/WdAiMessage.vue'
 import WdAlert from './components/WdAlert.vue'
+import WdAudioPlayer from './components/WdAudioPlayer.vue'
 import WdAvatar from './components/WdAvatar.vue'
 import WdAvatarGroup from './components/WdAvatarGroup.vue'
 import WdBadge from './components/WdBadge.vue'
@@ -62,10 +63,13 @@ import WdTimeline from './components/WdTimeline.vue'
 import WdTooltip from './components/WdTooltip.vue'
 import WdTree from './components/WdTree.vue'
 import WdUpload from './components/WdUpload.vue'
+import WdVideoPlayer from './components/WdVideoPlayer.vue'
+import WdVirtualList from './components/WdVirtualList.vue'
 
 const components = [
   WdAiMessage,
   WdAlert,
+  WdAudioPlayer,
   WdAvatar,
   WdAvatarGroup,
   WdBadge,
@@ -118,6 +122,8 @@ const components = [
   WdTooltip,
   WdTree,
   WdUpload,
+  WdVideoPlayer,
+  WdVirtualList,
 ]
 
 export const WdUI: Plugin = {

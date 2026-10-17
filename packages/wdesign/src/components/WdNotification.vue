@@ -39,7 +39,7 @@ watchEffect((onCleanup) => {
           <div v-if="description || $slots.default" class="wd-notification__desc"><slot>{{ description }}</slot></div>
         </div>
         <button type="button" class="wd-icon-btn wd-icon-btn--ghost wd-icon-btn--sm" aria-label="关闭" @click="close">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          <wd-icon name="close" :size="13" />
         </button>
       </div>
     </Transition>

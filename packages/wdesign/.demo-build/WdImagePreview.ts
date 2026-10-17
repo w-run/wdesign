@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, normalizeStyle as _normalizeStyle, withModifiers as _withModifiers, toDisplayString as _toDisplayString, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode, Teleport as _Teleport, createBlock as _createBlock, Fragment as _Fragment } from "vue"
+import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, normalizeStyle as _normalizeStyle, withModifiers as _withModifiers, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock, Fragment as _Fragment } from "vue"
 
 const _hoisted_1 = ["src", "alt"]
 const _hoisted_2 = {
@@ -66,6 +66,8 @@ function openPreview() {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock(_Fragment, null, [
     _createElementVNode("span", {
       class: "wd-image-preview",
@@ -153,19 +155,12 @@ return (_ctx: any,_cache: any) => {
                     class: "wd-icon-btn wd-icon-btn--ghost wd-preview__btn",
                     "aria-label": "关闭",
                     onClick: _cache[7] || (_cache[7] = ($event: any) => (open.value = false))
-                  }, [...(_cache[8] || (_cache[8] = [
-                    _createElementVNode("svg", {
-                      width: "13",
-                      height: "13",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      "stroke-width": "2.6",
-                      "stroke-linecap": "round"
-                    }, [
-                      _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-                    ], -1 /* CACHED */)
-                  ]))])
+                  }, [
+                    _createVNode(_component_wd_icon, {
+                      name: "close",
+                      size: 13
+                    })
+                  ])
                 ])
               ]))
             : _createCommentVNode("v-if", true)

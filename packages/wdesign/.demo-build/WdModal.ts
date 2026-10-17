@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, renderSlot as _renderSlot, createCommentVNode as _createCommentVNode, normalizeStyle as _normalizeStyle, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode, Teleport as _Teleport, createBlock as _createBlock } from "vue"
+import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, normalizeStyle as _normalizeStyle, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock } from "vue"
 
 const _hoisted_1 = ["aria-label"]
 const _hoisted_2 = { class: "wd-modal__head" }
@@ -84,6 +84,8 @@ watchEffect((onCleanup) => {
 })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
     _createVNode(_Transition, { name: "wd-modal-fade" }, {
       default: _withCtx(() => [
@@ -113,19 +115,12 @@ return (_ctx: any,_cache: any) => {
                     class: "wd-icon-btn",
                     "aria-label": "关闭",
                     onClick: close
-                  }, [...(_cache[1] || (_cache[1] = [
-                    _createElementVNode("svg", {
-                      width: "15",
-                      height: "15",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      "stroke-width": "2.6",
-                      "stroke-linecap": "round"
-                    }, [
-                      _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-                    ], -1 /* CACHED */)
-                  ]))])
+                  }, [
+                    _createVNode(_component_wd_icon, {
+                      name: "close",
+                      size: 15
+                    })
+                  ])
                 ]),
                 _createElementVNode("div", _hoisted_4, [
                   _renderSlot(_ctx.$slots, "default")

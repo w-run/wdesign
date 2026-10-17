@@ -273,7 +273,7 @@ function lineX(depth: number) {
           :class="{ 'wd-tree__arrow--open': isExpanded(keyOf(entry.node)), 'wd-tree__arrow--leaf': !entry.node.children?.length }"
           @click.stop="entry.node.children?.length && toggleExpand(entry.node)"
         >
-          <svg v-if="entry.node.children?.length" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+          <wd-icon v-if="entry.node.children?.length" name="chevron-right" :size="10" />
         </span>
 
         <label v-if="checkable" class="wd-tree__check" @click.stop>

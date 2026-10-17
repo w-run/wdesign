@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode } from "vue"
+import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, createVNode as _createVNode } from "vue"
 
 const _hoisted_1 = { class: "wd-alert__body" }
 const _hoisted_2 = {
@@ -40,6 +40,8 @@ function close() {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (visible.value)
     ? (_openBlock(), _createElementBlock("div", {
         key: 0,
@@ -68,19 +70,12 @@ return (_ctx: any,_cache: any) => {
               class: "wd-alert__close",
               "aria-label": "关闭",
               onClick: close
-            }, [...(_cache[0] || (_cache[0] = [
-              _createElementVNode("svg", {
-                width: "14",
-                height: "14",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                "stroke-width": "2.6",
-                "stroke-linecap": "round"
-              }, [
-                _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-              ], -1 /* CACHED */)
-            ]))]))
+            }, [
+              _createVNode(_component_wd_icon, {
+                name: "warning-circle",
+                size: 14
+              })
+            ]))
           : _createCommentVNode("v-if", true)
       ], 2 /* CLASS */))
     : _createCommentVNode("v-if", true)

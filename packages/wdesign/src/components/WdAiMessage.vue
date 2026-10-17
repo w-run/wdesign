@@ -154,11 +154,11 @@ onBeforeUnmount(() => {
         :class="{ 'wd-ai-msg__reasoning--open': reasoningOpen }"
       >
         <button type="button" class="wd-ai-msg__reasoning-head" @click="reasoningOpen = !reasoningOpen">
-          <svg class="wd-ai-msg__reasoning-spark" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.2 5.3 1.9-5.3 1.9L12 16.7l-1.9-5.2-5.3-1.9 5.3-1.9z"></path></svg>
+          <wd-icon class="wd-ai-msg__reasoning-spark" name="magic" :size="13" />
           <span class="wd-ai-msg__reasoning-title">深度思考</span>
           <span class="wd-ai-msg__reasoning-state">{{ reasoningStreaming ? '进行中' : '已完成' }}</span>
           <span class="wd-chevron" :class="{ 'wd-chevron--open': reasoningOpen }">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+            <wd-icon name="chevron-down" :size="13" />
           </span>
         </button>
         <div class="wd-ai-msg__reasoning-body">

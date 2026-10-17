@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode, Teleport as _Teleport, createBlock as _createBlock } from "vue"
+import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock } from "vue"
 
 const _hoisted_1 = { class: "wd-notification__body" }
 const _hoisted_2 = {
@@ -46,6 +46,8 @@ watchEffect((onCleanup) => {
 })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
     _createVNode(_Transition, { name: "wd-notification-fade" }, {
       default: _withCtx(() => [
@@ -75,19 +77,12 @@ return (_ctx: any,_cache: any) => {
                 class: "wd-icon-btn wd-icon-btn--ghost wd-icon-btn--sm",
                 "aria-label": "关闭",
                 onClick: close
-              }, [...(_cache[0] || (_cache[0] = [
-                _createElementVNode("svg", {
-                  width: "13",
-                  height: "13",
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  "stroke-width": "2.6",
-                  "stroke-linecap": "round"
-                }, [
-                  _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-                ], -1 /* CACHED */)
-              ]))])
+              }, [
+                _createVNode(_component_wd_icon, {
+                  name: "close",
+                  size: 13
+                })
+              ])
             ], 2 /* CLASS */))
           : _createCommentVNode("v-if", true)
       ]),

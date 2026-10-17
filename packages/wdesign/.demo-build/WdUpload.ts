@@ -1,28 +1,30 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, createTextVNode as _createTextVNode, toDisplayString as _toDisplayString, createCommentVNode as _createCommentVNode, withModifiers as _withModifiers, normalizeClass as _normalizeClass, renderList as _renderList, Fragment as _Fragment, normalizeStyle as _normalizeStyle, createStaticVNode as _createStaticVNode } from "vue"
+import { resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, createTextVNode as _createTextVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, withModifiers as _withModifiers, normalizeClass as _normalizeClass, renderList as _renderList, Fragment as _Fragment, normalizeStyle as _normalizeStyle } from "vue"
 
 const _hoisted_1 = { class: "wd-upload" }
-const _hoisted_2 = {
+const _hoisted_2 = { class: "wd-upload__icon" }
+const _hoisted_3 = {
   key: 0,
   class: "wd-upload__hint"
 }
-const _hoisted_3 = ["accept", "multiple"]
-const _hoisted_4 = {
+const _hoisted_4 = ["accept", "multiple"]
+const _hoisted_5 = {
   key: 1,
   class: "wd-upload__error"
 }
-const _hoisted_5 = {
+const _hoisted_6 = {
   key: 0,
   class: "wd-upload__list"
 }
-const _hoisted_6 = { class: "wd-upload__info" }
-const _hoisted_7 = { class: "wd-upload__name" }
-const _hoisted_8 = { class: "wd-upload__meta" }
-const _hoisted_9 = {
+const _hoisted_7 = { class: "wd-upload__file-icon" }
+const _hoisted_8 = { class: "wd-upload__info" }
+const _hoisted_9 = { class: "wd-upload__name" }
+const _hoisted_10 = { class: "wd-upload__meta" }
+const _hoisted_11 = {
   key: 0,
   class: "wd-upload__progress"
 }
-const _hoisted_10 = ["onClick"]
+const _hoisted_12 = ["onClick"]
 
 import { ref } from 'vue'
 
@@ -112,6 +114,8 @@ function remove(i: number) {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", _hoisted_1, [
     _createElementVNode("div", {
       class: _normalizeClass(["wd-upload__zone", { 'wd-upload__zone--over': dragging.value }]),
@@ -120,9 +124,18 @@ return (_ctx: any,_cache: any) => {
       onDragleave: _cache[1] || (_cache[1] = ($event: any) => (dragging.value = false)),
       onDrop: onDrop
     }, [
-      _cache[2] || (_cache[2] = _createStaticVNode("<span class=\"wd-upload__icon\"><svg width=\"34\" height=\"34\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 16V4m0 0-4 4m4-4 4 4\"></path><path d=\"M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4\"></path></svg></span><span class=\"wd-upload__hint\"><strong>点击选择</strong> 或拖拽文件到这里</span>", 2)),
+      _createElementVNode("span", _hoisted_2, [
+        _createVNode(_component_wd_icon, {
+          name: "upload",
+          size: 30
+        })
+      ]),
+      _cache[2] || (_cache[2] = _createElementVNode("span", { class: "wd-upload__hint" }, [
+        _createElementVNode("strong", null, "点击选择"),
+        _createTextVNode(" 或拖拽文件到这里")
+      ], -1 /* CACHED */)),
       (__props.hint)
-        ? (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(__props.hint), 1 /* TEXT */))
+        ? (_openBlock(), _createElementBlock("span", _hoisted_3, _toDisplayString(__props.hint), 1 /* TEXT */))
         : _createCommentVNode("v-if", true),
       _cache[3] || (_cache[3] = _createElementVNode("span", { class: "wd-upload__browse" }, "浏览文件", -1 /* CACHED */)),
       _createElementVNode("input", {
@@ -133,33 +146,29 @@ return (_ctx: any,_cache: any) => {
         accept: __props.accept,
         multiple: __props.multiple,
         onChange: onPick
-      }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_3),
+      }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_4),
       (error.value)
-        ? (_openBlock(), _createElementBlock("span", _hoisted_4, _toDisplayString(error.value), 1 /* TEXT */))
+        ? (_openBlock(), _createElementBlock("span", _hoisted_5, _toDisplayString(error.value), 1 /* TEXT */))
         : _createCommentVNode("v-if", true)
     ], 34 /* CLASS, NEED_HYDRATION */),
     (__props.showList && files.value.length)
-      ? (_openBlock(), _createElementBlock("div", _hoisted_5, [
+      ? (_openBlock(), _createElementBlock("div", _hoisted_6, [
           (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(files.value, (f, i) => {
             return (_openBlock(), _createElementBlock("div", {
               key: i,
               class: "wd-upload__item"
             }, [
-              _cache[5] || (_cache[5] = _createElementVNode("span", { class: "wd-upload__file-icon" }, [
-                _createElementVNode("svg", {
-                  width: "16",
-                  height: "16",
-                  viewBox: "0 0 24 24",
-                  fill: "currentColor"
-                }, [
-                  _createElementVNode("path", { d: "M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z" })
-                ])
-              ], -1 /* CACHED */)),
-              _createElementVNode("div", _hoisted_6, [
-                _createElementVNode("div", _hoisted_7, _toDisplayString(f.name), 1 /* TEXT */),
-                _createElementVNode("div", _hoisted_8, _toDisplayString(fmtSize(f.size)) + " · " + _toDisplayString(f.percent >= 100 ? '已完成' : '上传中 ' + f.percent + '%'), 1 /* TEXT */),
+              _createElementVNode("span", _hoisted_7, [
+                _createVNode(_component_wd_icon, {
+                  name: "file",
+                  size: 16
+                })
+              ]),
+              _createElementVNode("div", _hoisted_8, [
+                _createElementVNode("div", _hoisted_9, _toDisplayString(f.name), 1 /* TEXT */),
+                _createElementVNode("div", _hoisted_10, _toDisplayString(fmtSize(f.size)) + " · " + _toDisplayString(f.percent >= 100 ? '已完成' : '上传中 ' + f.percent + '%'), 1 /* TEXT */),
                 (f.percent < 100)
-                  ? (_openBlock(), _createElementBlock("div", _hoisted_9, [
+                  ? (_openBlock(), _createElementBlock("div", _hoisted_11, [
                       _createElementVNode("span", {
                         class: "wd-upload__progress-bar",
                         style: _normalizeStyle({ width: f.percent + '%' })
@@ -172,19 +181,12 @@ return (_ctx: any,_cache: any) => {
                 class: "wd-upload__remove",
                 "aria-label": "移除",
                 onClick: _withModifiers(($event: any) => (remove(i)), ["stop"])
-              }, [...(_cache[4] || (_cache[4] = [
-                _createElementVNode("svg", {
-                  width: "13",
-                  height: "13",
-                  viewBox: "0 0 24 24",
-                  fill: "none",
-                  stroke: "currentColor",
-                  "stroke-width": "2.6",
-                  "stroke-linecap": "round"
-                }, [
-                  _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-                ], -1 /* CACHED */)
-              ]))], 8 /* PROPS */, _hoisted_10)
+              }, [
+                _createVNode(_component_wd_icon, {
+                  name: "close",
+                  size: 13
+                })
+              ], 8 /* PROPS */, _hoisted_12)
             ]))
           }), 128 /* KEYED_FRAGMENT */))
         ]))

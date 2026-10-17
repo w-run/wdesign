@@ -1,0 +1,51 @@
+// =============================================================
+//  WDesign — VirtualList（虚拟滚动列表）
+//  结构：视口(定高, overflow) > 幻影层(总高) > 窗口层(translateY) > 行
+//  幻影层撑出滚动条空间，窗口层用 transform 位移而不是 top，
+//  因为 transform 不触发重排，滚动时更省。
+// =============================================================
+.wd-vlist {
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  /* 滚动容器需要独立层，避免内部 transform 影响外部布局 */
+  contain: strict;
+  border-radius: var(--wd-radius-sm);
+}
+
+.wd-vlist--hide-scrollbar {
+  scrollbar-width: none;
+}
+.wd-vlist--hide-scrollbar::-webkit-scrollbar { display: none; }
+
+.wd-vlist__phantom {
+  position: relative;
+  width: 100%;
+}
+
+.wd-vlist__window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  will-change: transform;
+}
+
+.wd-vlist__item {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  /* 固定行高下不裁切内容会溢出到相邻行 */
+  overflow: hidden;
+}
+
+.wd-vlist__empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+}

@@ -179,7 +179,7 @@ watch(
 
       <div class="wd-command__panel" :style="{ maxHeight: maxHeight + 'px' }">
         <div class="wd-command__input-row">
-          <svg class="wd-command__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
+          <wd-icon class="wd-command__search-icon" name="search" :size="16" />
           <input
             ref="inputEl"
             v-model="q"

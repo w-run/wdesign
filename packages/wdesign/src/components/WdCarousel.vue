@@ -211,7 +211,7 @@ function detach() {
       class="wd-icon-btn wd-carousel__arrow wd-carousel__arrow--prev"
       aria-label="上一张" @pointerdown.stop @click="prev"
     >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+      <wd-icon name="chevron-left" :size="15" />
     </button>
     <button
       v-if="showArrows && items.length > 1"
@@ -219,7 +219,7 @@ function detach() {
       class="wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next"
       aria-label="下一张" @pointerdown.stop @click="next"
     >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+      <wd-icon name="chevron-right" :size="15" />
     </button>
 
     <div v-if="showDots && items.length > 1" class="wd-carousel__dots">

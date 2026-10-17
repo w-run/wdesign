@@ -123,8 +123,8 @@ const wrapStyle = computed(() =>
               aria-label="全选"
               @click="toggleAll"
             >
-              <svg v-if="someChecked && !allChecked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"><path d="M6 12h12"></path></svg>
-              <svg v-else-if="allChecked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"></path></svg>
+              <wd-icon v-if="someChecked && !allChecked" name="minus" :size="10" />
+              <wd-icon v-else-if="allChecked" name="check" :size="10" />
             </button>
           </th>
           <th
@@ -138,11 +138,7 @@ const wrapStyle = computed(() =>
           >
             {{ col.title }}
             <span v-if="col.sortable" class="wd-table__sort">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"
-                :style="{ color: sortKey === col.key ? 'var(--wd-red)' : 'var(--wd-ink-3)' }">
-                <path v-if="sortKey !== col.key || sortDir === 'asc'" d="M12 5l7 7H5l7-7z"></path>
-                <path v-else d="M12 19l-7-7h14l-7 7z"></path>
-              </svg>
+              <wd-icon :name="sortKey !== col.key || sortDir === 'asc' ? 'arrow-up' : 'arrow-down'" :size="12" :style="{ color: sortKey === col.key ? 'var(--wd-red)' : 'var(--wd-ink-3)' }" />
             </span>
           </th>
         </tr>
@@ -164,7 +160,7 @@ const wrapStyle = computed(() =>
               aria-label="选择此行"
               @click="toggleRow(row)"
             >
-              <svg v-if="selected.includes(row)" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"></path></svg>
+              <wd-icon v-if="selected.includes(row)" name="check" :size="10" />
             </button>
           </td>
           <td

@@ -97,7 +97,7 @@ defineExpose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
       aria-label="清除"
       @click.prevent="clear"
     >
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+      <wd-icon name="close" :size="13" />
     </button>
     <slot name="suffix" />
     <span v-if="count" class="wd-input__count">{{ count }}</span>

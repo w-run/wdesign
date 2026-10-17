@@ -148,7 +148,7 @@ const dropLineTop = computed(() => {
       @pointerdown="onPointerDown($event, i)"
     >
       <span class="wd-sortable__handle" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg>
+        <wd-icon name="dots-drag" :size="14" />
       </span>
       <span class="wd-sortable__label">{{ labelOf(it) }}</span>
     </div>
@@ -163,7 +163,7 @@ const dropLineTop = computed(() => {
       :style="{ top: ghost.top + 'px', left: ghost.left + 'px', width: ghost.width + 'px' }"
     >
       <span class="wd-sortable__handle" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"></circle><circle cx="15" cy="6" r="1.6"></circle><circle cx="9" cy="12" r="1.6"></circle><circle cx="15" cy="12" r="1.6"></circle><circle cx="9" cy="18" r="1.6"></circle><circle cx="15" cy="18" r="1.6"></circle></svg>
+        <wd-icon name="dots-drag" :size="14" />
       </span>
       <span class="wd-sortable__label">{{ ghost.label }}</span>
     </div>

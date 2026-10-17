@@ -218,9 +218,7 @@ watch(items, () =>
       >
         <span class="wd-segmented-picker__label">{{ activeLabel }}</span>
         <span class="wd-segmented-picker__meta">{{ items.length }} 项</span>
-        <svg class="wd-segmented-picker__caret" :class="{ 'is-open': dropdownOpen }" viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true">
-          <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
+        <wd-icon class="wd-segmented-picker__caret" :class="{ 'is-open': dropdownOpen }" name="chevron-down" :size="16" />
       </button>
       <div v-if="dropdownOpen" class="wd-segmented-picker__panel" role="listbox">
         <button
@@ -234,9 +232,7 @@ watch(items, () =>
           @click="pick(o.value)"
         >
           <span>{{ o.label }}</span>
-          <svg v-if="o.value === modelValue" viewBox="0 0 24 24" width="15" height="15" fill="none" aria-hidden="true">
-            <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <wd-icon v-if="o.value === modelValue" name="check" :size="15" />
         </button>
       </div>
     </div>

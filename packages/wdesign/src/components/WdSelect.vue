@@ -195,7 +195,7 @@ watch(visible, (list) => {
               :aria-label="`移除 ${o.label}`"
               @click="removeTag(o.value, $event)"
             >
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+              <wd-icon name="close" :size="10" />
             </button>
           </span>
           <span v-if="overflowCount" class="wd-select__tag wd-select__tag--more">+{{ overflowCount }}</span>
@@ -214,9 +214,9 @@ watch(visible, (list) => {
           aria-label="清除"
           @click="clear"
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          <wd-icon name="close" :size="12" />
         </button>
-        <svg class="wd-chevron" :class="{ 'wd-chevron--open': open }" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+        <wd-icon class="wd-chevron" :class="{ 'wd-chevron--open': open }" name="chevron-down" :size="14" />
       </span>
     </button>
 
@@ -250,7 +250,7 @@ watch(visible, (list) => {
           @mouseenter="activeIndex = i"
         >
           <span>{{ o.label }}</span>
-          <svg v-if="selected.includes(o.value)" class="wd-select__option-mark" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"></path></svg>
+          <wd-icon v-if="selected.includes(o.value)" class="wd-select__option-mark" name="check" :size="14" />
         </button>
 
         <div v-if="!visible.length" class="wd-select__empty">无匹配项</div>

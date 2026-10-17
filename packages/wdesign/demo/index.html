@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792255067">
+<link rel="stylesheet" href="demo.css?v=1792259946">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -753,6 +753,139 @@
       <span class="demo-cap" style="margin-top:10px">前缀匹配优先排序 · 分组 · 快捷键提示 · 上下键 + 回车 / Esc</span>
     </div>
 
+    <div class="demo-panel demo-panel--wide">
+      <h3>VIRTUALLIST 虚拟滚动</h3>
+      <div class="demo-row" style="gap:28px; align-items:flex-start; flex-wrap:wrap">
+        <div style="flex:1; min-width:320px">
+          <div class="demo-cap" style="margin-bottom:6px">
+            10,000 条 · 每项 40px · 实际渲染 {{ vlistRendered }} 个节点
+          </div>
+          <wd-virtual-list ref="vlist" :items="vlistItems" :item-height="40" :height="320"
+            :buffer="4" item-key="id" style="background: var(--wd-tint-1)">
+            <template #default="{ item, index }">
+              <div class="vlist-row">
+                <span class="vlist-row__idx">{{ index + 1 }}</span>
+                <span class="vlist-row__name">{{ item.name }}</span>
+                <span class="vlist-row__meta">{{ item.meta }}</span>
+              </div>
+            </template>
+          </wd-virtual-list>
+        </div>
+        <div class="demo-col" style="min-width:180px; gap:8px">
+          <div class="demo-cap">scrollToIndex()</div>
+          <wd-button variant="tint" size="sm" @click="jumpVlist(0)">第 1 项</wd-button>
+          <wd-button variant="tint" size="sm" @click="jumpVlist(5000)">第 5,001 项</wd-button>
+          <wd-button variant="tint" size="sm" @click="jumpVlist(9999, 'end')">最后一项</wd-button>
+          <wd-button variant="ghost" size="sm" @click="vlistTop">回到顶部</wd-button>
+          <span class="demo-cap" style="margin-top:8px">
+            固定行高 → 位置可精确计算，滚动中不会因测量重排而抖动。
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>VIDEOPLAYER 视频播放器</h3>
+      <div class="demo-row" style="gap:24px; align-items:flex-start; flex-wrap:wrap">
+        <div style="flex:1.4; min-width:340px">
+          <div class="demo-cap" style="margin-bottom:6px">点播 · 选集 · 倍速 · 上下集</div>
+          <wd-video-player
+            src="media/demo.mp4"
+            poster="media/poster.jpg"
+            title="示例影片 · WDesign Demo"
+            mode="vod"
+            :episodes="episodes"
+            :current-episode="currentEp"
+            @change-episode="onChangeEp"
+          >
+            <!-- 顶部右侧扩展：清晰度 -->
+            <template #top-right>
+              <button type="button" class="vp-chip" @click="quality = quality === '1080P' ? '720P' : '1080P'">
+                {{ quality }}
+              </button>
+            </template>
+            <!-- 覆盖层：水印 -->
+            <template #overlay>
+              <span class="vp-watermark">WDesign</span>
+            </template>
+            <!-- 控制条右侧扩展：弹幕开关 -->
+            <template #controls-end>
+              <button type="button" class="vp-btn-mini" :class="{ 'is-on': danmaku }" @click="danmaku = !danmaku">
+                弹
+              </button>
+            </template>
+          </wd-video-player>
+          <span class="demo-cap" style="margin-top:8px">
+            控件播放中 2.6s 后自动淡出，鼠标一动即回来；全屏时隐藏光标。
+          </span>
+        </div>
+
+        <div style="flex:1; min-width:300px">
+          <div class="demo-cap" style="margin-bottom:6px">直播模式（无进度条）</div>
+          <wd-video-player
+            src="http://204.12.221.218:8181/3m1080p/cctv1.m3u8"
+            title="CCTV-1 综合 · 直播"
+            mode="live"
+            :playlist="false"
+            :episode-nav="false"
+            :autoplay="false"
+            @error="liveErr = $event"
+          >
+            <template #top-right>
+              <button type="button" class="vp-chip" @click="switchChannel">
+                {{ channel }}
+              </button>
+            </template>
+          </wd-video-player>
+          <span class="demo-cap" style="margin-top:8px" v-if="liveErr">播放失败：{{ liveErr }}</span>
+          <span class="demo-cap" style="margin-top:8px">
+            直播不显示进度条，改为脉动实时线；时间显示"已直播"。
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>AUDIOPLAYER 音频播放条</h3>
+      <div class="demo-col" style="gap:18px">
+        <div>
+          <div class="demo-cap" style="margin-bottom:6px">标准形态 · 波形 · 下载</div>
+          <wd-audio-player
+            src="media/audio.mp3"
+            title="示例音频 · T-Rex Roar"
+            subtitle="CC0 · MDN 示例音频"
+            :cover="'media/poster.jpg'"
+            downloadable
+            :waveform="waveform"
+          >
+            <template #actions>
+              <button type="button" class="ap-btn" aria-label="收藏">☆</button>
+            </template>
+          </wd-audio-player>
+        </div>
+
+        <div>
+          <div class="demo-cap" style="margin-bottom:6px">进度线形态</div>
+          <wd-audio-player
+            src="media/audio.mp3"
+            title="细进度线版本"
+            subtitle="不给 waveform 时用细线"
+          ></wd-audio-player>
+        </div>
+
+        <div>
+          <div class="demo-cap" style="margin-bottom:6px">compact · 列表内嵌</div>
+          <div class="demo-col" style="gap:6px">
+            <wd-audio-player v-for="i in 3" :key="i" compact
+              src="media/audio.mp3"
+              :title="'第 ' + i + ' 段录音'"
+              :subtitle="'0' + i + ':2' + i"
+            ></wd-audio-player>
+          </div>
+        </div>
+      </div>
+    </div>
+
 <div class="demo-panel">
       <h3>TIMELINE 时间线</h3>
       <div class="demo-row" style="gap:40px; align-items:flex-start">
@@ -1085,11 +1218,12 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792255067"></script>
-<script src="icons.data.js?v=1792255067"></script>
-<script src="demo-extra.js?v=1792255067"></script>
-<script src="components.js?v=1792255067"></script>
-<script src="demo.js?v=1792255067"></script>
+<script src="icons.optical.js?v=1792259946"></script>
+<script src="hls.min.js"></script>
+<script src="icons.data.js?v=1792259946"></script>
+<script src="demo-extra.js?v=1792259946"></script>
+<script src="components.js?v=1792259946"></script>
+<script src="demo.js?v=1792259946"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

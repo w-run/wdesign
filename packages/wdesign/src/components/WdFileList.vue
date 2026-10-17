@@ -68,11 +68,11 @@ function fmtSize(n?: number) {
     >
       <!-- 箭头列始终占位：文件夹与文件的图标保持同列对齐 -->
       <span class="wd-file-list__chevron wd-chevron wd-chevron--right" :class="{ 'wd-chevron--open': openPaths.has(row.path) }">
-        <svg v-if="row.node.type === 'folder'" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+        <wd-icon v-if="row.node.type === 'folder'" name="chevron-down" :size="12" />
       </span>
       <span class="wd-file-list__icon">
-        <svg v-if="row.node.type === 'folder'" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 8a3 3 0 0 1 3-3h2.6c.5 0 1 .2 1.4.6l1 1c.4.4.9.6 1.4.6H18a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"></path></svg>
-        <svg v-else width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>
+        <wd-icon v-if="row.node.type === 'folder'" name="folder" :size="14" />
+        <wd-icon v-else name="file" :size="12" />
       </span>
       <span class="wd-file-list__name">{{ row.node.name }}</span>
       <span class="wd-file-list__size">{{ fmtSize(row.node.size) }}</span>

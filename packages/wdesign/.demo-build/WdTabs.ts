@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = ["aria-selected", "disabled", "tabindex", "onClick"]
 const _hoisted_2 = { class: "wd-tabs__label" }
@@ -68,6 +68,8 @@ function onKeydown(e: KeyboardEvent) {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     class: _normalizeClass(["wd-tabs", {
       'wd-tabs--block': __props.block,
@@ -101,19 +103,12 @@ return (_ctx: any,_cache: any) => {
               role: "button",
               "aria-label": `关闭 ${t.label}`,
               onClick: ($event: any) => (close(t, $event))
-            }, [...(_cache[1] || (_cache[1] = [
-              _createElementVNode("svg", {
-                width: "10",
-                height: "10",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                "stroke-width": "3",
-                "stroke-linecap": "round"
-              }, [
-                _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-              ], -1 /* CACHED */)
-            ]))], 8 /* PROPS */, _hoisted_3))
+            }, [
+              _createVNode(_component_wd_icon, {
+                name: "close",
+                size: 10
+              })
+            ], 8 /* PROPS */, _hoisted_3))
           : _createCommentVNode("v-if", true)
       ], 10 /* CLASS, PROPS */, _hoisted_1))
     }), 128 /* KEYED_FRAGMENT */)),
@@ -125,19 +120,12 @@ return (_ctx: any,_cache: any) => {
           "aria-label": "新建",
           "data-wd-hover": "",
           onClick: _cache[0] || (_cache[0] = ($event: any) => (emit('add')))
-        }, [...(_cache[2] || (_cache[2] = [
-          _createElementVNode("svg", {
-            width: "14",
-            height: "14",
-            viewBox: "0 0 24 24",
-            fill: "none",
-            stroke: "currentColor",
-            "stroke-width": "2.6",
-            "stroke-linecap": "round"
-          }, [
-            _createElementVNode("path", { d: "M12 5v14M5 12h14" })
-          ], -1 /* CACHED */)
-        ]))]))
+        }, [
+          _createVNode(_component_wd_icon, {
+            name: "plus",
+            size: 14
+          })
+        ]))
       : _createCommentVNode("v-if", true)
   ], 34 /* CLASS, NEED_HYDRATION */))
 }

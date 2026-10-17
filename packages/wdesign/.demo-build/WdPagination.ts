@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, Fragment as _Fragment, renderList as _renderList, normalizeClass as _normalizeClass } from "vue"
+import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, Fragment as _Fragment, renderList as _renderList, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = {
   key: 0,
@@ -90,6 +90,8 @@ const from = computed(() => (pageCount.value ? (props.modelValue - 1) * size.val
 const to = computed(() => Math.min(props.modelValue * size.value, props.total))
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("nav", {
     class: _normalizeClass(["wd-pagination", { 'wd-pagination--anim-ready': animReady.value, 'wd-pagination--simple': __props.simple }]),
     "aria-label": "分页"
@@ -107,20 +109,12 @@ return (_ctx: any,_cache: any) => {
             disabled: __props.modelValue <= 1,
             "aria-label": "上一页",
             onClick: _cache[0] || (_cache[0] = ($event: any) => (go(__props.modelValue - 1)))
-          }, [...(_cache[4] || (_cache[4] = [
-            _createElementVNode("svg", {
-              width: "14",
-              height: "14",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              "stroke-width": "2.6",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }, [
-              _createElementVNode("path", { d: "m15 18-6-6 6-6" })
-            ], -1 /* CACHED */)
-          ]))], 8 /* PROPS */, _hoisted_2),
+          }, [
+            _createVNode(_component_wd_icon, {
+              name: "chevron-left",
+              size: 14
+            })
+          ], 8 /* PROPS */, _hoisted_2),
           _createElementVNode("span", _hoisted_3, _toDisplayString(__props.modelValue) + " / " + _toDisplayString(pageCount.value), 1 /* TEXT */),
           _createElementVNode("button", {
             type: "button",
@@ -129,20 +123,12 @@ return (_ctx: any,_cache: any) => {
             disabled: __props.modelValue >= pageCount.value,
             "aria-label": "下一页",
             onClick: _cache[1] || (_cache[1] = ($event: any) => (go(__props.modelValue + 1)))
-          }, [...(_cache[5] || (_cache[5] = [
-            _createElementVNode("svg", {
-              width: "14",
-              height: "14",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              "stroke-width": "2.6",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }, [
-              _createElementVNode("path", { d: "m9 6 6 6-6 6" })
-            ], -1 /* CACHED */)
-          ]))], 8 /* PROPS */, _hoisted_4)
+          }, [
+            _createVNode(_component_wd_icon, {
+              name: "chevron-right",
+              size: 14
+            })
+          ], 8 /* PROPS */, _hoisted_4)
         ], 64 /* STABLE_FRAGMENT */))
       : (_openBlock(), _createElementBlock(_Fragment, { key: 2 }, [
           _createCommentVNode(" 完整模式 "),
@@ -153,20 +139,12 @@ return (_ctx: any,_cache: any) => {
             disabled: __props.modelValue <= 1,
             "aria-label": "上一页",
             onClick: _cache[2] || (_cache[2] = ($event: any) => (go(__props.modelValue - 1)))
-          }, [...(_cache[6] || (_cache[6] = [
-            _createElementVNode("svg", {
-              width: "14",
-              height: "14",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              "stroke-width": "2.6",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }, [
-              _createElementVNode("path", { d: "m15 18-6-6 6-6" })
-            ], -1 /* CACHED */)
-          ]))], 8 /* PROPS */, _hoisted_5),
+          }, [
+            _createVNode(_component_wd_icon, {
+              name: "chevron-left",
+              size: 14
+            })
+          ], 8 /* PROPS */, _hoisted_5),
           (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(range.value, (p, i) => {
             return (_openBlock(), _createElementBlock(_Fragment, { key: i }, [
               (p === '...')
@@ -188,20 +166,12 @@ return (_ctx: any,_cache: any) => {
             disabled: __props.modelValue >= pageCount.value,
             "aria-label": "下一页",
             onClick: _cache[3] || (_cache[3] = ($event: any) => (go(__props.modelValue + 1)))
-          }, [...(_cache[7] || (_cache[7] = [
-            _createElementVNode("svg", {
-              width: "14",
-              height: "14",
-              viewBox: "0 0 24 24",
-              fill: "none",
-              stroke: "currentColor",
-              "stroke-width": "2.6",
-              "stroke-linecap": "round",
-              "stroke-linejoin": "round"
-            }, [
-              _createElementVNode("path", { d: "m9 6 6 6-6 6" })
-            ], -1 /* CACHED */)
-          ]))], 8 /* PROPS */, _hoisted_8)
+          }, [
+            _createVNode(_component_wd_icon, {
+              name: "chevron-right",
+              size: 14
+            })
+          ], 8 /* PROPS */, _hoisted_8)
         ], 64 /* STABLE_FRAGMENT */)),
     (__props.showSizeChanger)
       ? (_openBlock(), _createElementBlock("label", _hoisted_9, [

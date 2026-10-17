@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, withModifiers as _withModifiers, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
+import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, withModifiers as _withModifiers, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = {
   key: 0,
@@ -67,6 +67,8 @@ function onKeydown(e: KeyboardEvent) {
 __expose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("label", {
     class: _normalizeClass(["wd-input", {
       'wd-input--rounded': __props.shape === 'rounded',
@@ -99,19 +101,12 @@ return (_ctx: any,_cache: any) => {
           class: "wd-input__clear",
           "aria-label": "清除",
           onClick: _withModifiers(clear, ["prevent"])
-        }, [...(_cache[0] || (_cache[0] = [
-          _createElementVNode("svg", {
-            width: "13",
-            height: "13",
-            viewBox: "0 0 24 24",
-            fill: "none",
-            stroke: "currentColor",
-            "stroke-width": "2.6",
-            "stroke-linecap": "round"
-          }, [
-            _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-          ], -1 /* CACHED */)
-        ]))]))
+        }, [
+          _createVNode(_component_wd_icon, {
+            name: "close",
+            size: 13
+          })
+        ]))
       : _createCommentVNode("v-if", true),
     _renderSlot(_ctx.$slots, "suffix"),
     (count.value)

@@ -68,8 +68,11 @@ for (const f of files) {
   writeFileSync(join(TMP, 'WdIcon.ts'), code)
   // optical.js 是纯 JS，转成 ts 便于 esbuild 处理
   writeFileSync(join(TMP, 'optical.ts'), readFileSync(ICON_OPT, 'utf8'))
+  // 图标注册表（缓存 / 预加载）
+  writeFileSync(join(TMP, 'registry.ts'), readFileSync(join(ROOT, '../wdesign-icons/src/registry.ts'), 'utf8'))
   names.push('WdIcon')
   entry.push("export { default as WdIcon } from './WdIcon'")
+  entry.push("export { preloadIcons, getIcon, getIconSync, injectIcons, registerLoaders, clearIconCache, cachedIconCount } from './registry'")
   console.log('   + WdIcon（来自 wdesign-icons）')
 }
 
@@ -122,6 +125,16 @@ ${bundle}
   ${JSON.stringify(names)}.forEach(function(n){
     if (M[n]) { window.WD_REAL[n] = M[n]; window.WD_REAL.ALL.push(M[n]); }
   });
+  // 暴露图标注册表 API（预加载 / 缓存），供页面在 mount 前预热
+  window.WdIcons = {
+    preloadIcons: M.preloadIcons,
+    getIcon: M.getIcon,
+    getIconSync: M.getIconSync,
+    injectIcons: M.injectIcons,
+    registerLoaders: M.registerLoaders,
+    cachedIconCount: M.cachedIconCount,
+    clearIconCache: M.clearIconCache,
+  };
 })();
 `)
 console.log(`✅ 生成 demo/components.js —— ${files.length} 个真实组件`)

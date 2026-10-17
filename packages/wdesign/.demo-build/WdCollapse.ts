@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass, renderSlot as _renderSlot, createTextVNode as _createTextVNode } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, normalizeClass as _normalizeClass, createVNode as _createVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode } from "vue"
 
 const _hoisted_1 = { class: "wd-collapse" }
 const _hoisted_2 = ["aria-expanded", "onClick"]
@@ -41,6 +41,8 @@ function toggle(i: number) {
 }
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", _hoisted_1, [
     (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(props.items, (item, i) => {
       return (_openBlock(), _createElementBlock("div", {
@@ -54,19 +56,11 @@ return (_ctx: any,_cache: any) => {
           onClick: ($event: any) => (toggle(i))
         }, [
           _createElementVNode("span", null, _toDisplayString(item.title), 1 /* TEXT */),
-          (_openBlock(), _createElementBlock("svg", {
+          _createVNode(_component_wd_icon, {
             class: _normalizeClass(["wd-chevron", { 'wd-chevron--open': openSet.value.has(i) }]),
-            width: "15",
-            height: "15",
-            viewBox: "0 0 24 24",
-            fill: "none",
-            stroke: "currentColor",
-            "stroke-width": "2.4",
-            "stroke-linecap": "round",
-            "stroke-linejoin": "round"
-          }, [...(_cache[0] || (_cache[0] = [
-            _createElementVNode("path", { d: "m6 9 6 6 6-6" }, null, -1 /* CACHED */)
-          ]))], 2 /* CLASS */))
+            name: "chevron-down",
+            size: 15
+          }, null, 8 /* PROPS */, ["class"])
         ], 8 /* PROPS */, _hoisted_2),
         _createElementVNode("div", _hoisted_3, [
           _createElementVNode("div", _hoisted_4, [

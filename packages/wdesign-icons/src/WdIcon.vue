@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
 import { opticalFactor } from './optical'
+import { getIcon, getIconSync } from './registry'
 
 defineOptions({ name: 'WdIcon' })
 
@@ -25,17 +26,6 @@ const props = withDefaults(
   { variant: 'outlined', size: 24, filled: false, optical: true },
 )
 
-/**
- * Vite 构建期收集全部图标（按需懒加载）。
- * ⚠️ `import.meta.glob` 是 Vite 专有 API —— 在普通浏览器或其他打包器里调用会
- * 直接抛错，导致整个组件渲染失败（表现就是「图标全没了」）。
- * 必须做能力检测，缺失时回退到 `window.WD_ICONS` 内联数据。
- */
-const loaders: Record<string, () => Promise<string>> =
-  typeof import.meta !== 'undefined' && typeof (import.meta as any).glob === 'function'
-    ? (import.meta as any).glob('../icons/*/*.svg', { query: '?raw', import: 'default' })
-    : {}
-
 const svg = ref('')
 const resolvedStyle = computed(() => (props.filled ? 'filled' : props.variant))
 
@@ -47,23 +37,31 @@ const sizePx = computed(() => {
   return `${Math.round(base * factor.value * 100) / 100}px`
 })
 
-watchEffect(async () => {
-  // 请求的风格不存在时自动回落另一风格（如 filled 未绘制 → 用 outlined）
-  const order = resolvedStyle.value === 'filled' ? ['filled', 'outlined'] : ['outlined', 'filled']
-  // 优先 Vite glob；非构建环境回退到 window.WD_ICONS（icons.data.js）
-  const inline = (globalThis as { WD_ICONS?: Record<string, string> }).WD_ICONS
-  for (const st of order) {
-    const key = `../icons/${st}/${props.name}.svg`
-    if (loaders[key]) {
-      svg.value = await loaders[key]()
-      return
-    }
-    if (inline?.[`${st}/${props.name}`]) {
-      svg.value = inline[`${st}/${props.name}`]
-      return
-    }
+/**
+ * 取图标：**先同步命中缓存，再异步加载**。
+ *
+ * 同步优先是为了消除"图标晚一拍"的闪烁 —— 配合 preloadIcons() 预热后，
+ * 首帧就能拿到内容。未预热时才退到异步，且结果会进缓存，
+ * 同一图标后续渲染全部同步命中。
+ */
+watchEffect(() => {
+  const name = props.name
+  const style = resolvedStyle.value
+
+  // 1) 同步命中（已预热 / 已渲染过）
+  const hit = getIconSync(name, style)
+  if (hit) {
+    svg.value = hit
+    return
   }
-  svg.value = ''
+
+  // 2) 异步加载（未命中）
+  let alive = true
+  getIcon(name, style).then((raw) => {
+    // 组件可能已卸载或 name 已变 —— 丢弃过期结果
+    if (alive) svg.value = raw ?? ''
+  })
+  return () => { alive = false }
 })
 </script>
 

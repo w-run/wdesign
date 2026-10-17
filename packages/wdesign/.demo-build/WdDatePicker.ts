@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, unref as _unref, renderList as _renderList, Fragment as _Fragment, normalizeClass as _normalizeClass, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode } from "vue"
+import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, unref as _unref, renderList as _renderList, Fragment as _Fragment, normalizeClass as _normalizeClass, Transition as _Transition, withCtx as _withCtx } from "vue"
 
 const _hoisted_1 = ["disabled"]
 const _hoisted_2 = {
@@ -16,9 +16,10 @@ const _hoisted_4 = {
 }
 const _hoisted_5 = { class: "wd-datepicker__head" }
 const _hoisted_6 = { class: "wd-datepicker__month" }
-const _hoisted_7 = { class: "wd-datepicker__week" }
-const _hoisted_8 = { class: "wd-datepicker__grid" }
-const _hoisted_9 = ["onClick"]
+const _hoisted_7 = { class: "wd-datepicker__nav" }
+const _hoisted_8 = { class: "wd-datepicker__week" }
+const _hoisted_9 = { class: "wd-datepicker__grid" }
+const _hoisted_10 = ["onClick"]
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
@@ -128,6 +129,8 @@ onBeforeUnmount(() => {
 })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     ref_key: "root",
     ref: root,
@@ -142,25 +145,11 @@ return (_ctx: any,_cache: any) => {
       (__props.modelValue)
         ? (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(__props.modelValue), 1 /* TEXT */))
         : (_openBlock(), _createElementBlock("span", _hoisted_3, _toDisplayString(__props.placeholder), 1 /* TEXT */)),
-      _cache[0] || (_cache[0] = _createElementVNode("svg", {
+      _createVNode(_component_wd_icon, {
         class: "wd-datepicker__icon",
-        width: "15",
-        height: "15",
-        viewBox: "0 0 24 24",
-        fill: "none",
-        stroke: "currentColor",
-        "stroke-width": "2",
-        "stroke-linecap": "round"
-      }, [
-        _createElementVNode("rect", {
-          x: "3.5",
-          y: "5",
-          width: "17",
-          height: "16",
-          rx: "4"
-        }),
-        _createElementVNode("path", { d: "M3.5 10h17M8 3v4M16 3v4" })
-      ], -1 /* CACHED */))
+        name: "calendar",
+        size: 15
+      })
     ], 8 /* PROPS */, _hoisted_1),
     _createVNode(_Transition, {
       name: "wd-pop",
@@ -171,53 +160,37 @@ return (_ctx: any,_cache: any) => {
           ? (_openBlock(), _createElementBlock("div", _hoisted_4, [
               _createElementVNode("div", _hoisted_5, [
                 _createElementVNode("span", _hoisted_6, _toDisplayString(monthLabel.value), 1 /* TEXT */),
-                _createElementVNode("span", { class: "wd-datepicker__nav" }, [
+                _createElementVNode("span", _hoisted_7, [
                   _createElementVNode("button", {
                     type: "button",
                     class: "wd-icon-btn wd-icon-btn--sm",
                     "aria-label": "上个月",
                     onClick: prevMonth
-                  }, [...(_cache[1] || (_cache[1] = [
-                    _createElementVNode("svg", {
-                      width: "14",
-                      height: "14",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      "stroke-width": "2.6",
-                      "stroke-linecap": "round",
-                      "stroke-linejoin": "round"
-                    }, [
-                      _createElementVNode("path", { d: "m15 18-6-6 6-6" })
-                    ], -1 /* CACHED */)
-                  ]))]),
+                  }, [
+                    _createVNode(_component_wd_icon, {
+                      name: "chevron-left",
+                      size: 14
+                    })
+                  ]),
                   _createElementVNode("button", {
                     type: "button",
                     class: "wd-icon-btn wd-icon-btn--sm",
                     "aria-label": "下个月",
                     onClick: nextMonth
-                  }, [...(_cache[2] || (_cache[2] = [
-                    _createElementVNode("svg", {
-                      width: "14",
-                      height: "14",
-                      viewBox: "0 0 24 24",
-                      fill: "none",
-                      stroke: "currentColor",
-                      "stroke-width": "2.6",
-                      "stroke-linecap": "round",
-                      "stroke-linejoin": "round"
-                    }, [
-                      _createElementVNode("path", { d: "m9 6 6 6-6 6" })
-                    ], -1 /* CACHED */)
-                  ]))])
+                  }, [
+                    _createVNode(_component_wd_icon, {
+                      name: "chevron-right",
+                      size: 14
+                    })
+                  ])
                 ])
               ]),
-              _createElementVNode("div", _hoisted_7, [
+              _createElementVNode("div", _hoisted_8, [
                 (_openBlock(), _createElementBlock(_Fragment, null, _renderList(WEEK, (w) => {
                   return _createElementVNode("span", { key: w }, _toDisplayString(w), 1 /* TEXT */)
                 }), 64 /* STABLE_FRAGMENT */))
               ]),
-              _createElementVNode("div", _hoisted_8, [
+              _createElementVNode("div", _hoisted_9, [
                 (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(days.value, (d) => {
                   return (_openBlock(), _createElementBlock("button", {
                     key: d.key,
@@ -228,7 +201,7 @@ return (_ctx: any,_cache: any) => {
               'wd-datepicker__day--selected': d.selected,
             }]),
                     onClick: ($event: any) => (pick(d.key))
-                  }, _toDisplayString(d.label), 11 /* TEXT, CLASS, PROPS */, _hoisted_9))
+                  }, _toDisplayString(d.label), 11 /* TEXT, CLASS, PROPS */, _hoisted_10))
                 }), 128 /* KEYED_FRAGMENT */))
               ]),
               _createElementVNode("div", { class: "wd-datepicker__foot" }, [

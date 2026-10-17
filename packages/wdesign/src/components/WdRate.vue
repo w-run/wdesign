@@ -93,7 +93,7 @@ function onKeydown(e: KeyboardEvent) {
       @pointerleave="onLeave($event)"
       @click="pick(i - 1)"
     >
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.7 5.7 6.3.8-4.6 4.3 1.2 6.2L12 16.9l-5.6 2.9 1.2-6.2L3 9.3l6.3-.8z"></path></svg>
+      <wd-icon name="star" :size="22" />
     </button>
   </div>
 </template>

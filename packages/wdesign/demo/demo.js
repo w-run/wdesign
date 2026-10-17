@@ -222,6 +222,16 @@ const WdIcon = {
   template: `<span class="wd-icon" :style="{ width: sizePx, height: sizePx }" v-html="svg"></span>`,
 }
 
+/**
+ * 图标预热：
+ * icons.data.js 提供的是**同步**的 window.WD_ICONS，直接灌进注册表缓存，
+ * 之后 WdIcon 全部走同步路径 —— 首帧就有图标，不会出现"先空后闪"。
+ * 真实项目里若图标是异步 chunk，则改用 `await preloadIcons([...])` 后再 mount。
+ */
+if (window.WD_ICONS && window.WdIcons && window.WdIcons.injectIcons) {
+  window.WdIcons.injectIcons(window.WD_ICONS)
+}
+
 const app = createApp({
   data() {
     return {
@@ -238,6 +248,28 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      liveErr: '',
+      channelIdx: 0,
+      channels: ['CCTV-1', 'CCTV-2', 'CCTV-13'],
+      quality: '1080P',
+      danmaku: true,
+      currentEp: 2,
+      episodes: Array.from({ length: 24 }, (_, i) => ({
+        key: i + 1,
+        label: '第 ' + (i + 1) + ' 集',
+        tag: i === 0 ? '免费' : i >= 20 ? 'VIP' : '',
+      })),
+      // 稳定的伪随机波形（固定种子，避免每次渲染抖动）
+      waveform: Array.from({ length: 64 }, (_, i) => {
+        const v = Math.abs(Math.sin(i * 0.7) * 0.6 + Math.sin(i * 0.23) * 0.4);
+        return 0.18 + v * 0.82;
+      }),
+      vlistItems: Array.from({ length: 10000 }, (_, i) => ({
+        id: i,
+        name: '记录 ' + String(i + 1).padStart(5, '0'),
+        meta: ['待处理', '进行中', '已完成'][i % 3] + ' · ' + ((i * 37) % 100) + '%',
+      })),
+      vlistRendered: 0,
       cmdOpen: false,
       cmdPicked: '',
       cmdItems: [
@@ -457,6 +489,16 @@ const app = createApp({
       ],
     }
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.syncVlistCount()
+      const el = this.$refs.vlist?.$el
+      if (el) el.addEventListener('scroll', () => this.syncVlistCount(), { passive: true })
+    })
+  },
+  computed: {
+    channel() { return this.channels[this.channelIdx] },
+  },
   methods: {
     closeTab(v) {
       const i = this.editableTabs.findIndex(t => t.value === v)
@@ -481,6 +523,23 @@ const app = createApp({
       console.log('check', node.label, checked)
     },
     onCmdPick(it) { this.cmdPicked = it.label },
+    jumpVlist(i, align) {
+      this.$refs.vlist?.scrollToIndex(i, align || 'start')
+    },
+    vlistTop() {
+      this.$refs.vlist?.scrollToTop()
+    },
+    /** 统计虚拟列表实际渲染了多少个 DOM 行 */
+    syncVlistCount() {
+      const el = this.$refs.vlist?.$el || this.$refs.vlist
+      const n = el?.querySelectorAll('.wd-vlist__item').length || 0
+      if (n !== this.vlistRendered) this.vlistRendered = n
+    },
+    onChangeEp(ep, i) { this.currentEp = ep.key },
+    switchChannel() {
+      this.channelIdx = (this.channelIdx + 1) % this.channels.length
+      this.liveErr = ''
+    },
     toggleTableLoading() {
       this.tableLoading = true
       setTimeout(() => { this.tableLoading = false }, 1600)

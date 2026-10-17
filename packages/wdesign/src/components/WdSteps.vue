@@ -29,7 +29,7 @@ function state(i: number) {
     <template v-for="(s, i) in items" :key="i">
       <div class="wd-steps__item" :class="`wd-steps__item--${state(i)}`">
         <span class="wd-steps__dot">
-          <svg v-if="state(i) === 'finish'" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"></path></svg>
+          <wd-icon v-if="state(i) === 'finish'" name="check" :size="13" />
           <template v-else>{{ i + 1 }}</template>
         </span>
         <span class="wd-steps__label">

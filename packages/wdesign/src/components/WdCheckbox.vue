@@ -28,7 +28,7 @@ function toggle() {
     @click="toggle"
   >
     <span class="wd-checkbox__box">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"></path></svg>
+      <wd-icon name="check" :size="13" />
     </span>
     <span v-if="label || $slots.default" class="wd-checkbox__label"><slot>{{ label }}</slot></span>
   </button>

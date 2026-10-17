@@ -18,6 +18,18 @@ export { OPTICAL_TALL, OPTICAL_LIGHT, OPTICAL_HEAVY } from './optical'
 
 export { WdIcon }
 
+// ---- 图标注册表：缓存 + 预加载 ----
+export {
+  preloadIcons,
+  getIcon,
+  getIconSync,
+  injectIcons,
+  registerLoaders,
+  clearIconCache,
+  cachedIconCount,
+} from './registry'
+export type { IconStyle } from './registry'
+
 const WdIcons: Plugin = {
   install(app: App) {
     app.component('WdIcon', WdIcon)

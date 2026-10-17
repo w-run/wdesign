@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createCommentVNode as _createCommentVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, createTextVNode as _createTextVNode, normalizeClass as _normalizeClass, unref as _unref, vModelText as _vModelText, withModifiers as _withModifiers, withDirectives as _withDirectives, Transition as _Transition, withCtx as _withCtx, createVNode as _createVNode } from "vue"
+import { createCommentVNode as _createCommentVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, createTextVNode as _createTextVNode, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass, unref as _unref, vModelText as _vModelText, withModifiers as _withModifiers, withDirectives as _withDirectives, createBlock as _createBlock, Transition as _Transition, withCtx as _withCtx } from "vue"
 
 const _hoisted_1 = ["disabled", "aria-expanded"]
 const _hoisted_2 = {
@@ -24,18 +24,6 @@ const _hoisted_9 = {
 }
 const _hoisted_10 = ["aria-selected", "disabled", "onClick", "onMouseenter"]
 const _hoisted_11 = {
-  key: 0,
-  class: "wd-select__option-mark",
-  width: "14",
-  height: "14",
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  "stroke-width": "3",
-  "stroke-linecap": "round",
-  "stroke-linejoin": "round"
-}
-const _hoisted_12 = {
   key: 1,
   class: "wd-select__empty"
 }
@@ -194,6 +182,8 @@ watch(visible, (list) => {
 })
 
 return (_ctx: any,_cache: any) => {
+  const _component_wd_icon = _resolveComponent("wd-icon")!
+
   return (_openBlock(), _createElementBlock("div", {
     ref_key: "root",
     ref: root,
@@ -224,19 +214,12 @@ return (_ctx: any,_cache: any) => {
                       class: "wd-select__tag-x",
                       "aria-label": `移除 ${o.label}`,
                       onClick: ($event: any) => (removeTag(o.value, $event))
-                    }, [...(_cache[2] || (_cache[2] = [
-                      _createElementVNode("svg", {
-                        width: "10",
-                        height: "10",
-                        viewBox: "0 0 24 24",
-                        fill: "none",
-                        stroke: "currentColor",
-                        "stroke-width": "3.2",
-                        "stroke-linecap": "round"
-                      }, [
-                        _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-                      ], -1 /* CACHED */)
-                    ]))], 8 /* PROPS */, _hoisted_3))
+                    }, [
+                      _createVNode(_component_wd_icon, {
+                        name: "close",
+                        size: 10
+                      })
+                    ], 8 /* PROPS */, _hoisted_3))
                   : _createCommentVNode("v-if", true)
               ]))
             }), 128 /* KEYED_FRAGMENT */)),
@@ -258,33 +241,18 @@ return (_ctx: any,_cache: any) => {
               class: "wd-select__clear",
               "aria-label": "清除",
               onClick: clear
-            }, [...(_cache[3] || (_cache[3] = [
-              _createElementVNode("svg", {
-                width: "12",
-                height: "12",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                "stroke-width": "3",
-                "stroke-linecap": "round"
-              }, [
-                _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
-              ], -1 /* CACHED */)
-            ]))]))
+            }, [
+              _createVNode(_component_wd_icon, {
+                name: "close",
+                size: 12
+              })
+            ]))
           : _createCommentVNode("v-if", true),
-        (_openBlock(), _createElementBlock("svg", {
+        _createVNode(_component_wd_icon, {
           class: _normalizeClass(["wd-chevron", { 'wd-chevron--open': open.value }]),
-          width: "14",
-          height: "14",
-          viewBox: "0 0 24 24",
-          fill: "none",
-          stroke: "currentColor",
-          "stroke-width": "2.4",
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round"
-        }, [...(_cache[4] || (_cache[4] = [
-          _createElementVNode("path", { d: "m6 9 6 6 6-6" }, null, -1 /* CACHED */)
-        ]))], 2 /* CLASS */))
+          name: "chevron-down",
+          size: 14
+        }, null, 8 /* PROPS */, ["class"])
       ])
     ], 10 /* CLASS, PROPS */, _hoisted_1),
     _createVNode(_Transition, {
@@ -331,14 +299,17 @@ return (_ctx: any,_cache: any) => {
                 }, [
                   _createElementVNode("span", null, _toDisplayString(o.label), 1 /* TEXT */),
                   (selected.value.includes(o.value))
-                    ? (_openBlock(), _createElementBlock("svg", _hoisted_11, [...(_cache[5] || (_cache[5] = [
-                        _createElementVNode("path", { d: "m4.5 12.5 5 5 10-11" }, null, -1 /* CACHED */)
-                      ]))]))
+                    ? (_openBlock(), _createBlock(_component_wd_icon, {
+                        key: 0,
+                        class: "wd-select__option-mark",
+                        name: "check",
+                        size: 14
+                      }))
                     : _createCommentVNode("v-if", true)
                 ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_10))
               }), 128 /* KEYED_FRAGMENT */)),
               (!visible.value.length)
-                ? (_openBlock(), _createElementBlock("div", _hoisted_12, "无匹配项"))
+                ? (_openBlock(), _createElementBlock("div", _hoisted_11, "无匹配项"))
                 : _createCommentVNode("v-if", true)
             ], 8 /* PROPS */, _hoisted_8))
           : _createCommentVNode("v-if", true)

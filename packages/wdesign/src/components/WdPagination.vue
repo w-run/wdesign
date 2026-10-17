@@ -93,18 +93,18 @@ const to = computed(() => Math.min(props.modelValue * size.value, props.total))
     <!-- 简洁模式 -->
     <template v-if="simple">
       <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue <= 1" aria-label="上一页" @click="go(modelValue - 1)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+        <wd-icon name="chevron-left" :size="14" />
       </button>
       <span class="wd-pagination__simple-text">{{ modelValue }} / {{ pageCount }}</span>
       <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue >= pageCount" aria-label="下一页" @click="go(modelValue + 1)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+        <wd-icon name="chevron-right" :size="14" />
       </button>
     </template>
 
     <!-- 完整模式 -->
     <template v-else>
       <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue <= 1" aria-label="上一页" @click="go(modelValue - 1)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+        <wd-icon name="chevron-left" :size="14" />
       </button>
 
       <template v-for="(p, i) in range" :key="i">
@@ -121,7 +121,7 @@ const to = computed(() => Math.min(props.modelValue * size.value, props.total))
       </template>
 
       <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue >= pageCount" aria-label="下一页" @click="go(modelValue + 1)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+        <wd-icon name="chevron-right" :size="14" />
       </button>
     </template>
 

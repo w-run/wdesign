@@ -139,7 +139,7 @@ const bubbleStyle = computed(() => ({
     >
       <div class="wd-popconfirm__title">
         <span v-if="variant === 'danger'" class="wd-popconfirm__icon" aria-hidden="true">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 8v5"></path><circle cx="12" cy="17" r=".6" fill="currentColor"></circle><circle cx="12" cy="12" r="9"></circle></svg>
+          <wd-icon name="warning-circle" :size="14" />
         </span>
         {{ title }}
       </div>
