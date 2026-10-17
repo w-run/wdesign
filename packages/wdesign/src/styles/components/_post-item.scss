@@ -42,12 +42,19 @@
 @media (hover: hover) {
   .wd-post-item:hover { transform: translateX(4px); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-post-item.is-hover { transform: translateX(4px); }
+
 @media (hover: hover) {
   .wd-post-item:hover::before { transform: scaleX(1); }
 }
+.wd-post-item.is-hover::before { transform: scaleX(1); }
+
 @media (hover: hover) {
   .wd-post-item:hover .wd-post-item__title { color: var(--wd-red-text); }
 }
+.wd-post-item.is-hover .wd-post-item__title { color: var(--wd-red-text); }
+
 .wd-post-item:active {
   transform: translateX(2px);
 }

@@ -38,7 +38,7 @@ function go(p: number) {
 
 <template>
   <nav class="wd-pagination" aria-label="分页">
-    <button type="button" class="wd-pagination__btn" :disabled="modelValue <= 1" aria-label="上一页" @click="go(modelValue - 1)">
+    <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue <= 1" aria-label="上一页" @click="go(modelValue - 1)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
     </button>
     <template v-for="(p, i) in range" :key="i">

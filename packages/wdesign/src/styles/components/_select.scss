@@ -23,6 +23,9 @@
 @media (hover: hover) {
   .wd-select__trigger:hover { background: var(--wd-field-hover); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-select__trigger.is-hover { background: var(--wd-field-hover); }
+
 .wd-select__trigger:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-select--open .wd-select__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
@@ -64,6 +67,8 @@
 @media (hover: hover) {
   .wd-select__option:hover { background: var(--wd-field); }
 }
+.wd-select__option.is-hover { background: var(--wd-field); }
+
 .wd-select__option--active { background: var(--wd-tint-2); color: var(--wd-red-text); font-weight: 600; }
 .wd-select__option-mark { flex: none; color: var(--wd-red-text); }
 

@@ -242,6 +242,12 @@ body {
     color: var(--wd-red-text);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-icon-btn.is-hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+}
+
 .wd-icon-btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
@@ -257,6 +263,11 @@ body {
     color: var(--wd-red-text);
   }
 }
+.wd-icon-btn--ghost.is-hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+}
+
 .wd-icon-btn--sm {
   width: 30px;
   height: 30px;
@@ -277,6 +288,10 @@ body {
     box-shadow: 0 0 0 6px var(--wd-tint-1);
   }
 }
+.wd-icon-btn.is-hover {
+  box-shadow: 0 0 0 6px var(--wd-tint-1);
+}
+
 .wd-icon-btn:active {
   box-shadow: 0 0 0 3px var(--wd-tint-2);
 }
@@ -564,6 +579,12 @@ body {
     background: var(--wd-red-hover);
   }
 }
+.wd-btn--primary {
+  /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+}
+.wd-btn--primary.is-hover:not(:disabled) {
+  background: var(--wd-red-hover);
+}
 .wd-btn--primary:active:not(:disabled) {
   background: var(--wd-red-active);
 }
@@ -580,6 +601,9 @@ body {
   .wd-btn--tint:hover:not(:disabled) {
     background: var(--wd-tint-3);
   }
+}
+.wd-btn--tint.is-hover:not(:disabled) {
+  background: var(--wd-tint-3);
 }
 .wd-btn--tint:active:not(:disabled) {
   background: var(--wd-tint-4);
@@ -598,6 +622,9 @@ body {
     background: var(--wd-dark-hover);
   }
 }
+.wd-btn--dark.is-hover:not(:disabled) {
+  background: var(--wd-dark-hover);
+}
 .wd-btn--dark:active:not(:disabled) {
   background: var(--wd-dark-active);
 }
@@ -614,6 +641,9 @@ body {
   .wd-btn--ghost:hover:not(:disabled) {
     background: var(--wd-field);
   }
+}
+.wd-btn--ghost.is-hover:not(:disabled) {
+  background: var(--wd-field);
 }
 .wd-btn--ghost:active:not(:disabled) {
   background: var(--wd-tint-2);
@@ -654,11 +684,19 @@ body {
     animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out);
   }
 }
+.wd-btn--primary:not(:disabled).is-hover::after, .wd-btn--dark:not(:disabled).is-hover::after {
+  animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out);
+}
+
 @media (hover: hover) {
   .wd-btn--tint:not(:disabled):hover {
     background: var(--wd-tint-3);
   }
 }
+.wd-btn--tint:not(:disabled).is-hover {
+  background: var(--wd-tint-3);
+}
+
 .wd-btn--tint:not(:disabled):active {
   background: var(--wd-tint-4);
 }
@@ -737,16 +775,29 @@ body {
     background: var(--wd-tint-3);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-tag--tint.is-hover {
+  background: var(--wd-tint-3);
+}
+
 @media (hover: hover) {
   .wd-tag--gray:hover {
     background: var(--wd-field-hover);
   }
 }
+.wd-tag--gray.is-hover {
+  background: var(--wd-field-hover);
+}
+
 @media (hover: hover) {
   .wd-tag--dark:hover {
     background: var(--wd-dark-2);
   }
 }
+.wd-tag--dark.is-hover {
+  background: var(--wd-dark-2);
+}
+
 .wd-card {
   background: var(--wd-card);
   border-radius: var(--wd-radius-lg);
@@ -784,6 +835,12 @@ body {
     transform: translateY(-2px);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-card--hoverable.is-hover {
+  box-shadow: var(--wd-shadow-hover);
+  transform: translateY(-2px);
+}
+
 .wd-card__title {
   font-size: 16px;
   font-weight: 700;
@@ -945,11 +1002,20 @@ body {
     box-shadow: 0 0 0 4px var(--wd-tint-2);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-switch:not(.wd-switch--off).is-hover {
+  box-shadow: 0 0 0 4px var(--wd-tint-2);
+}
+
 @media (hover: hover) {
   .wd-switch--off:hover {
     box-shadow: 0 0 0 4px var(--wd-ring-soft);
   }
 }
+.wd-switch--off.is-hover {
+  box-shadow: 0 0 0 4px var(--wd-ring-soft);
+}
+
 /* toggle 后外环脉冲 —— 通过两个不同名的动画随类切换重新触发 */
 .wd-switch::after {
   content: "";
@@ -1057,6 +1123,13 @@ body {
     z-index: 2;
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-avatars .wd-avatar.is-hover {
+  transform: translateY(-2px);
+  box-shadow: var(--wd-shadow-sm);
+  z-index: 2;
+}
+
 .wd-list {
   display: flex;
   flex-direction: column;
@@ -1081,6 +1154,11 @@ body {
     background: var(--wd-bg);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-list-item--clickable.is-hover {
+  background: var(--wd-bg);
+}
+
 /* 列表项前方图标：柔和浅色底 + 系统灰/主题色描边，避免"黑黢黢一小块" */
 .wd-list-item__icon {
   width: 38px;
@@ -1125,6 +1203,12 @@ body {
     color: var(--wd-red-text);
   }
 }
+.wd-list-item--clickable.is-hover .wd-list-item__icon {
+  transform: translateX(2px);
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+}
+
 .wd-checkbox {
   display: inline-flex;
   align-items: center;
@@ -1165,6 +1249,11 @@ body {
     background: var(--wd-tint-1);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-checkbox.is-hover .wd-checkbox__box {
+  background: var(--wd-tint-1);
+}
+
 .wd-checkbox--checked .wd-checkbox__box {
   background: var(--wd-red);
   color: #fff;
@@ -1175,6 +1264,10 @@ body {
     background: var(--wd-red-hover);
   }
 }
+.wd-checkbox--checked.is-hover .wd-checkbox__box {
+  background: var(--wd-red-hover);
+}
+
 .wd-checkbox__label {
   line-height: 1.4;
 }
@@ -1189,6 +1282,10 @@ body {
     background: var(--wd-field);
   }
 }
+.wd-checkbox--disabled.is-hover .wd-checkbox__box {
+  background: var(--wd-field);
+}
+
 .wd-checkbox--checked.wd-checkbox--disabled .wd-checkbox__box {
   background: var(--wd-tint-3);
   color: #fff;
@@ -1260,6 +1357,11 @@ body {
     background: var(--wd-tint-1);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-radio.is-hover .wd-radio__dot {
+  background: var(--wd-tint-1);
+}
+
 .wd-radio__inner {
   width: 11px;
   height: 11px;
@@ -1278,6 +1380,10 @@ body {
     background: var(--wd-red-hover);
   }
 }
+.wd-radio--checked.is-hover .wd-radio__dot {
+  background: var(--wd-red-hover);
+}
+
 .wd-radio--checked .wd-radio__inner {
   transform: scale(1);
 }
@@ -1292,6 +1398,10 @@ body {
     background: var(--wd-field);
   }
 }
+.wd-radio--disabled.is-hover .wd-radio__dot {
+  background: var(--wd-field);
+}
+
 .wd-radio--disabled .wd-radio__inner {
   background: var(--wd-ink-3);
 }
@@ -1355,6 +1465,11 @@ body {
     background: var(--wd-field-hover);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-select__trigger.is-hover {
+  background: var(--wd-field-hover);
+}
+
 .wd-select__trigger:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
@@ -1411,6 +1526,10 @@ body {
     background: var(--wd-field);
   }
 }
+.wd-select__option.is-hover {
+  background: var(--wd-field);
+}
+
 .wd-select__option--active {
   background: var(--wd-tint-2);
   color: var(--wd-red-text);
@@ -1463,6 +1582,11 @@ body {
     color: var(--wd-ink);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-tabs__item.is-hover {
+  color: var(--wd-ink);
+}
+
 .wd-tabs__item:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
@@ -1526,6 +1650,11 @@ body {
     color: var(--wd-ink);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-alert__close.is-hover {
+  color: var(--wd-ink);
+}
+
 .wd-alert--success {
   background: var(--wd-success-soft);
 }
@@ -1757,6 +1886,11 @@ body {
     background: var(--wd-field-hover);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-datepicker__trigger.is-hover {
+  background: var(--wd-field-hover);
+}
+
 .wd-datepicker--open .wd-datepicker__trigger {
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
@@ -1838,6 +1972,10 @@ body {
     background: var(--wd-tint-1);
   }
 }
+.wd-datepicker__day.is-hover {
+  background: var(--wd-tint-1);
+}
+
 .wd-datepicker__day--muted {
   color: var(--wd-ink-2);
 }
@@ -1858,6 +1996,10 @@ body {
     background: var(--wd-red-hover);
   }
 }
+.wd-datepicker__day--selected.is-hover {
+  background: var(--wd-red-hover);
+}
+
 .wd-datepicker__foot {
   display: flex;
   justify-content: center;
@@ -1881,6 +2023,10 @@ body {
     background: var(--wd-tint-2);
   }
 }
+.wd-datepicker__todaybtn.is-hover {
+  background: var(--wd-tint-2);
+}
+
 .wd-toasts {
   position: fixed;
   top: 24px;
@@ -2050,6 +2196,11 @@ body {
     background: var(--wd-bg);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-dropdown__item.is-hover {
+  background: var(--wd-bg);
+}
+
 .wd-dropdown__item--danger {
   color: var(--wd-red-text);
 }
@@ -2059,6 +2210,10 @@ body {
     background: var(--wd-tint-1);
   }
 }
+.wd-dropdown__item--danger.is-hover {
+  background: var(--wd-tint-1);
+}
+
 .wd-dropdown__item--disabled {
   color: var(--wd-ink-3);
   pointer-events: none;
@@ -2096,6 +2251,12 @@ body {
     color: var(--wd-ink);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-pagination__btn.is-hover:not(:disabled) {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
 .wd-pagination__btn:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
@@ -2117,6 +2278,11 @@ body {
     color: #fff;
   }
 }
+.wd-pagination__btn--active.is-hover:not(:disabled) {
+  background: var(--wd-red-hover);
+  color: #fff;
+}
+
 .wd-pagination__dots {
   color: var(--wd-ink-2);
   font-size: 13px;
@@ -2186,6 +2352,11 @@ body {
     box-shadow: 0 0 0 7px var(--wd-tint-2);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-slider input[type=range].is-hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 7px var(--wd-tint-2);
+}
+
 .wd-steps {
   display: flex;
   align-items: flex-start;
@@ -2347,6 +2518,13 @@ body {
     color: var(--wd-red-hover);
     text-decoration-color: var(--wd-red-hover);
   }
+}
+.wd-markdown {
+  /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+}
+.wd-markdown a.is-hover {
+  color: var(--wd-red-hover);
+  text-decoration-color: var(--wd-red-hover);
 }
 .wd-markdown strong, .wd-markdown b {
   font-weight: 700;
@@ -2514,6 +2692,9 @@ body {
     background: var(--wd-tint-1);
   }
 }
+.wd-markdown table tbody tr.is-hover {
+  background: var(--wd-tint-1);
+}
 .wd-markdown hr {
   border: 0;
   height: 3px;
@@ -2639,6 +2820,11 @@ body {
     background: var(--wd-tint-1);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-table tbody tr.is-hover {
+  background: var(--wd-tint-1);
+}
+
 .wd-table__th {
   cursor: default;
 }
@@ -2653,6 +2839,10 @@ body {
     color: var(--wd-red-text);
   }
 }
+.wd-table__th--sort.is-hover {
+  color: var(--wd-red-text);
+}
+
 .wd-table__sort {
   display: inline-flex;
   margin-left: 5px;
@@ -2691,6 +2881,12 @@ body {
     background: var(--wd-tint-1);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-breadcrumb__item.is-hover {
+  color: var(--wd-red-text);
+  background: var(--wd-tint-1);
+}
+
 .wd-breadcrumb__item--current {
   color: var(--wd-ink);
   font-weight: 700;
@@ -2703,6 +2899,11 @@ body {
     background: transparent;
   }
 }
+.wd-breadcrumb__item--current.is-hover {
+  color: var(--wd-ink);
+  background: transparent;
+}
+
 .wd-breadcrumb__sep {
   color: var(--wd-ink-2);
   font-size: 12px;
@@ -2745,6 +2946,11 @@ body {
     background: var(--wd-bg);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-collapse__head.is-hover {
+  background: var(--wd-bg);
+}
+
 .wd-collapse__body {
   display: grid;
   grid-template-rows: 0fr;
@@ -2953,6 +3159,11 @@ body {
     transform: scale(1.08);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-rate__item.is-hover {
+  transform: scale(1.08);
+}
+
 .wd-rate__item:focus-visible {
   outline: none;
   border-radius: var(--wd-radius-xs);
@@ -3011,6 +3222,11 @@ body {
     color: #fff;
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-segmented--dark .wd-segmented__item.is-hover {
+  color: #fff;
+}
+
 .wd-segmented--dark .wd-segmented__slider {
   background: var(--wd-dark);
   box-shadow: none;
@@ -3041,6 +3257,10 @@ body {
     color: var(--wd-ink);
   }
 }
+.wd-segmented__item.is-hover {
+  color: var(--wd-ink);
+}
+
 .wd-segmented__item:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
@@ -3059,6 +3279,10 @@ body {
     color: var(--wd-dark-text);
   }
 }
+.wd-segmented--dark .wd-segmented__item--active.is-hover {
+  color: var(--wd-dark-text);
+}
+
 /* =============================================================
  *  溢出模式：单行横向滚动（选项多时）
  *  · 隐藏滚动条
@@ -3165,6 +3389,10 @@ body {
     background: var(--wd-field-hover, #dfe4ea);
   }
 }
+.wd-segmented-picker__trigger.is-hover {
+  background: var(--wd-field-hover, #dfe4ea);
+}
+
 .wd-segmented-picker__trigger:focus-visible {
   outline: 2px solid var(--wd-red, #d62839);
   outline-offset: 2px;
@@ -3237,6 +3465,10 @@ body {
     background: var(--wd-field, #e9edf1);
   }
 }
+.wd-segmented-picker__option.is-hover {
+  background: var(--wd-field, #e9edf1);
+}
+
 .wd-segmented-picker__option--active {
   color: var(--wd-red, #d62839);
   font-weight: 700;
@@ -3273,6 +3505,12 @@ body {
     background: var(--wd-tint-1);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-upload__zone.is-hover {
+  border-color: var(--wd-red-soft);
+  background: var(--wd-tint-1);
+}
+
 .wd-upload__zone--over {
   border-color: var(--wd-red-soft);
   background: var(--wd-tint-1);
@@ -3381,6 +3619,11 @@ body {
     color: var(--wd-red-text);
   }
 }
+.wd-upload__remove.is-hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+}
+
 .wd-upload__progress {
   height: 4px;
   border-radius: 999px;
@@ -3499,6 +3742,11 @@ body {
     transform: translateY(-50%) scale(1.08);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-carousel__arrow.is-hover {
+  transform: translateY(-50%) scale(1.08);
+}
+
 .wd-carousel__arrow--prev {
   left: 16px;
 }
@@ -3780,6 +4028,11 @@ body {
     background: var(--wd-bg);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-file-list__row.is-hover {
+  background: var(--wd-bg);
+}
+
 .wd-file-list__row--folder {
   font-weight: 600;
 }
@@ -3893,6 +4146,12 @@ body {
     color: var(--wd-ink);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-explorer__folder.is-hover {
+  background: var(--wd-tint-1);
+  color: var(--wd-ink);
+}
+
 .wd-explorer__folder--active {
   background: var(--wd-card);
   color: var(--wd-red-text);
@@ -3943,6 +4202,10 @@ body {
     color: var(--wd-red-text);
   }
 }
+.wd-explorer__crumb.is-hover {
+  color: var(--wd-red-text);
+}
+
 .wd-explorer__crumb--cur {
   color: var(--wd-ink);
   font-weight: 700;
@@ -3981,6 +4244,10 @@ body {
     color: var(--wd-ink);
   }
 }
+.wd-explorer__view-btn.is-hover {
+  color: var(--wd-ink);
+}
+
 .wd-explorer__view-btn--active {
   background: var(--wd-card);
   color: var(--wd-red-text);
@@ -4029,6 +4296,10 @@ body {
     background: var(--wd-tint-1);
   }
 }
+.wd-explorer__table tbody tr.is-hover {
+  background: var(--wd-tint-1);
+}
+
 .wd-explorer__table .is-num {
   text-align: right;
   font-family: var(--wd-font-mono);
@@ -4088,6 +4359,10 @@ body {
     background: var(--wd-tint-1);
   }
 }
+.wd-explorer__tile.is-hover {
+  background: var(--wd-tint-1);
+}
+
 .wd-explorer__tile-icon {
   width: 48px;
   height: 48px;
@@ -4106,6 +4381,11 @@ body {
     color: var(--wd-red-text);
   }
 }
+.wd-explorer__tile.is-hover .wd-explorer__tile-icon {
+  background: var(--wd-card);
+  color: var(--wd-red-text);
+}
+
 .wd-explorer__tile-name {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -4285,6 +4565,11 @@ body {
     color: var(--wd-ink);
   }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-ai-msg__reasoning-head.is-hover {
+  color: var(--wd-ink);
+}
+
 .wd-ai-msg__reasoning-spark {
   color: var(--wd-red-text);
   flex: none;

@@ -31,6 +31,8 @@
 @media (hover: hover) {
   .wd-radio:hover .wd-radio__dot { background: var(--wd-tint-1); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-radio.is-hover .wd-radio__dot { background: var(--wd-tint-1); }
 
 .wd-radio__inner {
   width: 11px;
@@ -44,12 +46,16 @@
 @media (hover: hover) {
   .wd-radio--checked:hover .wd-radio__dot { background: var(--wd-red-hover); }
 }
+.wd-radio--checked.is-hover .wd-radio__dot { background: var(--wd-red-hover); }
+
 .wd-radio--checked .wd-radio__inner { transform: scale(1); }
 
 .wd-radio--disabled { cursor: default; color: var(--wd-ink-3); }
 @media (hover: hover) {
   .wd-radio--disabled:hover .wd-radio__dot { background: var(--wd-field); }
 }
+.wd-radio--disabled.is-hover .wd-radio__dot { background: var(--wd-field); }
+
 .wd-radio--disabled .wd-radio__inner { background: var(--wd-ink-3); }
 /* ---- 微交互（精致版）---- */
 .wd-radio--checked .wd-radio__inner {

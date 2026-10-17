@@ -175,3 +175,7 @@ export default WdUI
 
 // —— 图标库（独立包 @w-run/wdesign-icons）——
 export { WdIcon } from '@w-run/wdesign-icons'
+
+// —— 悬停状态增强（用 .is-hover 替代 :hover，见 styles/components/_hover.scss）——
+export { addHover } from './hover'
+export type { AddHoverOptions } from './hover'

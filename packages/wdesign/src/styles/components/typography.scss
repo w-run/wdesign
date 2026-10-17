@@ -29,6 +29,9 @@
 @media (hover: hover) {
   &:hover::after { opacity: 1; }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+&.is-hover::after { opacity: 1; }
+
 }
 
 // 主题感知图片：深色下自动压暗（配合 portfolio 等富图场景）

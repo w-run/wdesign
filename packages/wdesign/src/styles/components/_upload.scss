@@ -21,6 +21,9 @@
 @media (hover: hover) {
   .wd-upload__zone:hover { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-upload__zone.is-hover { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
+
 .wd-upload__zone--over { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
 .wd-upload__zone--over { animation: wd-upload-pulse .6s ease; }
 @keyframes wd-upload-pulse {
@@ -75,6 +78,7 @@
 @media (hover: hover) {
   .wd-upload__remove:hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
 }
+.wd-upload__remove.is-hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
 
 .wd-upload__progress {
   height: 4px;

@@ -26,6 +26,9 @@
 @media (hover: hover) {
   .wd-segmented--dark .wd-segmented__item:hover { color: #fff; }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-segmented--dark .wd-segmented__item.is-hover { color: #fff; }
+
 .wd-segmented--dark .wd-segmented__slider { background: var(--wd-dark); box-shadow: none; }
 
 .wd-segmented__item {
@@ -50,12 +53,15 @@
 @media (hover: hover) {
   .wd-segmented__item:hover { color: var(--wd-ink); }
 }
+.wd-segmented__item.is-hover { color: var(--wd-ink); }
+
 .wd-segmented__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-segmented__item--active { color: var(--wd-ink); }
 .wd-segmented--dark .wd-segmented__item--active { color: var(--wd-dark-text); }
 @media (hover: hover) {
   .wd-segmented--dark .wd-segmented__item--active:hover { color: var(--wd-dark-text); }
 }
+.wd-segmented--dark .wd-segmented__item--active.is-hover { color: var(--wd-dark-text); }
 
 /* =============================================================
  *  溢出模式：单行横向滚动（选项多时）
@@ -157,6 +163,8 @@
 @media (hover: hover) {
   .wd-segmented-picker__trigger:hover { background: var(--wd-field-hover, #dfe4ea); }
 }
+.wd-segmented-picker__trigger.is-hover { background: var(--wd-field-hover, #dfe4ea); }
+
 .wd-segmented-picker__trigger:focus-visible {
   outline: 2px solid var(--wd-red, #d62839);
   outline-offset: 2px;
@@ -223,6 +231,8 @@
 @media (hover: hover) {
   .wd-segmented-picker__option:hover { background: var(--wd-field, #e9edf1); }
 }
+.wd-segmented-picker__option.is-hover { background: var(--wd-field, #e9edf1); }
+
 .wd-segmented-picker__option--active {
   color: var(--wd-red, #d62839);
   font-weight: 700;

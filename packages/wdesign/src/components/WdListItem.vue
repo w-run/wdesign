@@ -15,6 +15,7 @@ const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
 
 <template>
   <div
+    data-wd-hover
     class="wd-list-item"
     :class="{ 'wd-list-item--clickable': clickable }"
     @click="clickable && emit('click', $event)"

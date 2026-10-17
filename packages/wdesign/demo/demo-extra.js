@@ -119,6 +119,7 @@ const WdTabs = {
   template: `
     <div class="wd-tabs" :class="{ 'wd-tabs--block': block }">
       <button v-for="t in items" :key="t.value" type="button" class="wd-tabs__item"
+        data-wd-hover
         :class="{ 'wd-tabs__item--active': t.value === modelValue }"
         @click="$emit('update:modelValue', t.value)">{{ t.label }}</button>
     </div>`,
@@ -462,6 +463,7 @@ const WdDropdown = {
       <transition name="wd-pop" :duration="{ enter: 200, leave: 140 }">
         <div v-if="open" class="wd-dropdown__menu">
           <button v-for="it in items" :key="it.value" type="button" class="wd-dropdown__item"
+          data-wd-hover
             :class="{ 'wd-dropdown__item--danger': it.danger, 'wd-dropdown__item--disabled': it.disabled }"
             @click="pick(it)">{{ it.label }}</button>
         </div>
@@ -507,14 +509,14 @@ const WdPagination = {
   },
   template: `
     <nav class="wd-pagination">
-      <button type="button" class="wd-pagination__btn" :disabled="modelValue <= 1" @click="go(modelValue - 1)">
+      <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue <= 1" @click="go(modelValue - 1)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
       </button>
       <template v-for="(p, i) in range" :key="i">
         <span v-if="p === '...'" class="wd-pagination__dots">…</span>
-        <button v-else type="button" class="wd-pagination__btn" :class="{ 'wd-pagination__btn--active': p === modelValue }" @click="go(p)">{{ p }}</button>
+        <button v-else type="button" class="wd-pagination__btn" data-wd-hover :class="{ 'wd-pagination__btn--active': p === modelValue }" @click="go(p)">{{ p }}</button>
       </template>
-      <button type="button" class="wd-pagination__btn" :disabled="modelValue >= pageCount" @click="go(modelValue + 1)">
+      <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue >= pageCount" @click="go(modelValue + 1)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
       </button>
     </nav>`,

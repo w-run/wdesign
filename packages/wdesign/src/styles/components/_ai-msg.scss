@@ -98,6 +98,9 @@
 @media (hover: hover) {
   .wd-ai-msg__reasoning-head:hover { color: var(--wd-ink); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-ai-msg__reasoning-head.is-hover { color: var(--wd-ink); }
+
 .wd-ai-msg__reasoning-spark { color: var(--wd-red-text); flex: none; }
 .wd-ai-msg__reasoning-title { color: var(--wd-ink); }
 .wd-ai-msg__reasoning-state { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--wd-ink-2); }

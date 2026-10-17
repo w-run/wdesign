@@ -51,4 +51,6 @@
 @media (hover: hover) {
   .wd-slider input[type='range']:hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-tint-2); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-slider input[type='range'].is-hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-tint-2); }
 

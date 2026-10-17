@@ -15,6 +15,9 @@
 @media (hover: hover) and (pointer: fine) {
   .wd-rate__item:hover { transform: scale(1.08); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-rate__item.is-hover { transform: scale(1.08); }
+
 .wd-rate__item:focus-visible {
   outline: none;
   border-radius: var(--wd-radius-xs);

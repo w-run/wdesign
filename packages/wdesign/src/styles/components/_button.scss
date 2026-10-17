@@ -42,6 +42,9 @@
 @media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-red-hover); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+&.is-hover:not(:disabled) { background: var(--wd-red-hover); }
+
   &:active:not(:disabled) { background: var(--wd-red-active); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
@@ -53,6 +56,8 @@
 @media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-tint-3); }
 }
+&.is-hover:not(:disabled) { background: var(--wd-tint-3); }
+
   &:active:not(:disabled) { background: var(--wd-tint-4); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
@@ -64,6 +69,8 @@
 @media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-dark-hover); }
 }
+&.is-hover:not(:disabled) { background: var(--wd-dark-hover); }
+
   &:active:not(:disabled) { background: var(--wd-dark-active); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
@@ -75,6 +82,8 @@
 @media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-field); }
 }
+&.is-hover:not(:disabled) { background: var(--wd-field); }
+
   &:active:not(:disabled) { background: var(--wd-tint-2); }
   &:disabled { background: transparent; color: var(--wd-ink-3); }
 }
@@ -105,8 +114,12 @@
 @media (hover: hover) {
   .wd-btn--primary:not(:disabled):hover::after, .wd-btn--dark:not(:disabled):hover::after { animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out); }
 }
+.wd-btn--primary:not(:disabled).is-hover::after, .wd-btn--dark:not(:disabled).is-hover::after { animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out); }
+
 @media (hover: hover) {
   .wd-btn--tint:not(:disabled):hover { background: var(--wd-tint-3); }
 }
+.wd-btn--tint:not(:disabled).is-hover { background: var(--wd-tint-3); }
+
 .wd-btn--tint:not(:disabled):active { background: var(--wd-tint-4); }
 

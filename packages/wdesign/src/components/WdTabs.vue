@@ -29,6 +29,7 @@ const items = computed(() =>
       type="button"
       role="tab"
       class="wd-tabs__item"
+      data-wd-hover
       :class="{ 'wd-tabs__item--active': t.value === modelValue }"
       :aria-selected="t.value === modelValue"
       @click="emit('update:modelValue', t.value)"

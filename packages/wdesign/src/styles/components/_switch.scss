@@ -32,9 +32,14 @@
 @media (hover: hover) {
   .wd-switch:not(.wd-switch--off):hover { box-shadow: 0 0 0 4px var(--wd-tint-2); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-switch:not(.wd-switch--off).is-hover { box-shadow: 0 0 0 4px var(--wd-tint-2); }
+
 @media (hover: hover) {
   .wd-switch--off:hover { box-shadow: 0 0 0 4px var(--wd-ring-soft); }
 }
+.wd-switch--off.is-hover { box-shadow: 0 0 0 4px var(--wd-ring-soft); }
+
 /* toggle 后外环脉冲 —— 通过两个不同名的动画随类切换重新触发 */
 .wd-switch::after {
   content: '';

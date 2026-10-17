@@ -29,6 +29,8 @@
 @media (hover: hover) {
   .wd-alert__close:hover { color: var(--wd-ink); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-alert__close.is-hover { color: var(--wd-ink); }
 
 .wd-alert--success { background: var(--wd-success-soft); }
 .wd-alert--warning { background: var(--wd-warning-soft); }

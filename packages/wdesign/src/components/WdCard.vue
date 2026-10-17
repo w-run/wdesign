@@ -21,7 +21,7 @@ const classes = computed(() => [
 </script>
 
 <template>
-  <div :class="classes">
+  <div :class="classes" data-wd-hover>
     <slot />
   </div>
 </template>

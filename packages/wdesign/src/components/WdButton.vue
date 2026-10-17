@@ -34,7 +34,7 @@ const classes = computed(() => [
 </script>
 
 <template>
-  <button :class="classes" type="button" :disabled="disabled" @click="emit('click', $event)">
+  <button data-wd-hover :class="classes" type="button" :disabled="disabled" @click="emit('click', $event)">
     <slot />
   </button>
 </template>

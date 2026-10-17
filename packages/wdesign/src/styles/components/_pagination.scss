@@ -21,6 +21,9 @@
 @media (hover: hover) {
   .wd-pagination__btn:hover:not(:disabled) { background: var(--wd-field); color: var(--wd-ink); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-pagination__btn.is-hover:not(:disabled) { background: var(--wd-field); color: var(--wd-ink); }
+
 .wd-pagination__btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-pagination__btn:disabled { color: var(--wd-ink-3); cursor: default; }
 
@@ -28,6 +31,7 @@
 @media (hover: hover) {
   .wd-pagination__btn--active:hover:not(:disabled) { background: var(--wd-red-hover); color: #fff; }
 }
+.wd-pagination__btn--active.is-hover:not(:disabled) { background: var(--wd-red-hover); color: #fff; }
 
 .wd-pagination__dots { color: var(--wd-ink-2); font-size: 13px; padding: 0 2px; }
 /* ---- 微交互（精致版）---- */

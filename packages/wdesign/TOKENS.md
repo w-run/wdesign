@@ -127,7 +127,34 @@ blog 的 `themes.scss` 也补了 `[data-theme="dark"]` 与 `:root:not(...)` 兼�
 6. **文字色红线**：`color:` 用 `ink` / `ink-2` / `red-text` / `success-ink` / `warning-ink`；
    `ink-3` 及以下只用于禁用态与纯装饰；红色文字**不要**直接用 `--wd-red`
 
-## 8. 回归检查
+## 8. 悬停状态（addHover）
+
+`:hover` 在触屏上 tap 之后会保持，直到点别处。库里的做法是**渐进增强**而不是替换：
+
+| 层 | 机制 | 适用 |
+|---|---|---|
+| 降级 | `@media (hover: hover) { .x:hover { … } }` | 纯 CSS / 纯 HTML 项目，桌面行为不变 |
+| 增强 | `.x.is-hover { … }`（同一份声明） | 装 `addHover()` 的项目，任何指针类型都可精确控制 |
+
+```ts
+import { addHover } from '@w-run/wdesign'
+const stop = addHover()   // 整页委托，一次即可；也可传 root 限定子树
+```
+
+`addHover` 的行为：
+- **桌面**：真实指针进入 → `.is-hover`；离开 → 移除。触摸不触发。
+- **触屏**：按下降亮约 120ms 后自动消失（相当于 `:active` 的视觉回授），不会粘住。
+- **滚动**：立即清除全部状态，并在滚动期间抑制（避免滚动途中沿途点亮）。
+- **窗口失焦 / 页面隐藏**：清除。
+
+组件根元素带 `data-wd-hover` 标记（`WdButton` / `WdTag` / `WdCard` / `WdListItem` /
+`WdTabs` / `WdPagination` / `WdDropdown`）；自己的元素也可以直接加
+`data-wd-hover` 或 class `wd-hoverable` 接入，不需要额外 JS。
+
+> ⚠️ `.is-hover` 选择器**必须留在 `@media (hover: hover)` 之外**——
+> 放进去会让触屏（媒体查询不成立）连 JS 增强也失效，整个改造等于白做。
+
+## 9. 回归检查
 
 ```sh
 python3 tools/design-audit.py          # 设计系统审计（含 11 组 WCAG 对比度断言）

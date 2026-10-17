@@ -46,6 +46,9 @@
 @media (hover: hover) {
   a:hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
+
   strong, b { font-weight: 700; }
   em { font-style: italic; }
   mark { padding: .05em .35em; border-radius: 6px; background: var(--wd-mark-bg); color: inherit; }
@@ -157,6 +160,8 @@
 @media (hover: hover) {
   tbody tr:hover { background: var(--wd-tint-1); }
 }
+tbody tr.is-hover { background: var(--wd-tint-1); }
+
   }
 
   // ---- 分隔线（色块短棒，不用线）

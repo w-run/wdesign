@@ -61,6 +61,7 @@ onBeforeUnmount(() => {
           type="button"
           role="menuitem"
           class="wd-dropdown__item"
+          data-wd-hover
           :class="{ 'wd-dropdown__item--danger': it.danger, 'wd-dropdown__item--disabled': it.disabled }"
           @click="pick(it)"
         >

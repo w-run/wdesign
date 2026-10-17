@@ -12,7 +12,7 @@ withDefaults(
 </script>
 
 <template>
-  <span class="wd-tag" :class="[`wd-tag--${variant}`, { 'wd-tag--lg': size === 'lg', 'wd-tag--sm': size === 'sm' }]">
+  <span class="wd-tag" data-wd-hover :class="[`wd-tag--${variant}`, { 'wd-tag--lg': size === 'lg', 'wd-tag--sm': size === 'sm' }]">
     <i v-if="dot" class="wd-tag__dot"></i>
     <slot />
   </span>

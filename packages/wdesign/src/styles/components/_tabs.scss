@@ -28,6 +28,9 @@
 @media (hover: hover) {
   .wd-tabs__item:hover { color: var(--wd-ink); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-tabs__item.is-hover { color: var(--wd-ink); }
+
 .wd-tabs__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-tabs__item--active {

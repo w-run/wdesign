@@ -25,7 +25,7 @@ const WdButton = {
       ]
     },
   },
-  template: `<button :class="classes" type="button" :disabled="disabled" @click="$emit('click', $event)"><slot></slot></button>`,
+  template: `<button data-wd-hover :class="classes" type="button" :disabled="disabled" @click="$emit('click', $event)"><slot></slot></button>`,
 }
 
 const WdTag = {
@@ -35,7 +35,7 @@ const WdTag = {
     dot: Boolean,
     size: { type: String, default: 'md' },
   },
-  template: `<span class="wd-tag" :class="['wd-tag--' + variant, { 'wd-tag--lg': size === 'lg', 'wd-tag--sm': size === 'sm' }]"><i v-if="dot" class="wd-tag__dot"></i><slot></slot></span>`,
+  template: `<span class="wd-tag" data-wd-hover :class="['wd-tag--' + variant, { 'wd-tag--lg': size === 'lg', 'wd-tag--sm': size === 'sm' }]"><i v-if="dot" class="wd-tag__dot"></i><slot></slot></span>`,
 }
 
 const WdCard = {
@@ -55,7 +55,7 @@ const WdCard = {
       ]
     },
   },
-  template: `<div :class="classes"><slot></slot></div>`,
+  template: `<div :class="classes" data-wd-hover><slot></slot></div>`,
 }
 
 const WdInput = {
@@ -175,7 +175,7 @@ const WdListItem = {
   },
   emits: ['click'],
   template: `
-    <div class="wd-list-item" :class="{ 'wd-list-item--clickable': clickable }"
+    <div class="wd-list-item" data-wd-hover :class="{ 'wd-list-item--clickable': clickable }"
          @click="clickable && $emit('click', $event)">
       <span v-if="$slots.icon" class="wd-list-item__icon"><slot name="icon"></slot></span>
       <span class="wd-list-item__title">{{ title }}</span>
@@ -377,3 +377,49 @@ for (const c of [WdIcon, WdButton, WdTag, WdCard, WdInput, WdSwitch, WdProgress,
 ;(window.WD_EXTRA_COMPONENTS || []).forEach((c) => app.component(c.name, c))
 
 app.mount('#app')
+
+// ---- 悬停状态增强（与库内 src/hover.ts 同源逻辑，此处内联以便离线演示）----
+;(function addHoverDemo() {
+  var CLASS = 'is-hover', SEL = '[data-wd-hover], .wd-hoverable'
+  var useHover = window.matchMedia('(hover: hover)').matches
+  var cur = null, timer = null, scrollTimer = null, scrolling = false
+  function clear(el) {
+    var node = el || cur
+    if (node) node.classList.remove(CLASS)
+    if (node === cur) cur = null
+  }
+  function clearAll() {
+    document.querySelectorAll('.' + CLASS).forEach(function (n) { n.classList.remove(CLASS) })
+    cur = null
+  }
+  document.addEventListener('pointerover', function (e) {
+    if (!useHover || scrolling || e.pointerType === 'touch') return
+    var el = e.target && e.target.closest && e.target.closest(SEL)
+    if (!el || el === cur || (cur && cur.contains(el))) return
+    clear(); cur = el; el.classList.add(CLASS)
+  }, { passive: true })
+  document.addEventListener('pointerout', function (e) {
+    if (!useHover) return
+    var el = e.target && e.target.closest && e.target.closest(SEL)
+    if (!el) return
+    var to = e.relatedTarget
+    if (to && el.contains(to)) return
+    clear(el)
+  }, { passive: true })
+  document.addEventListener('pointerdown', function (e) {
+    if (useHover || e.pointerType !== 'touch') return
+    var el = e.target && e.target.closest && e.target.closest(SEL)
+    if (!el) return
+    clear(); cur = el; el.classList.add(CLASS)
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(function () { clear(el) }, 120)
+  }, { passive: true })
+  window.addEventListener('scroll', function () {
+    scrolling = true; clearAll()
+    if (scrollTimer) clearTimeout(scrollTimer)
+    scrollTimer = setTimeout(function () { scrolling = false }, 160)
+  }, { passive: true, capture: true })
+  window.addEventListener('blur', clearAll)
+  window.__wdAddHover = function () { return function stop() { clearAll() } }
+})()
+

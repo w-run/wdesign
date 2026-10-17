@@ -42,6 +42,9 @@
 @media (hover: hover) {
   .wd-explorer__folder:hover { background: var(--wd-tint-1); color: var(--wd-ink); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-explorer__folder.is-hover { background: var(--wd-tint-1); color: var(--wd-ink); }
+
 .wd-explorer__folder--active {
   background: var(--wd-card);
   color: var(--wd-red-text);
@@ -63,6 +66,8 @@
 @media (hover: hover) {
   .wd-explorer__crumb:hover { color: var(--wd-red-text); }
 }
+.wd-explorer__crumb.is-hover { color: var(--wd-red-text); }
+
 .wd-explorer__crumb--cur { color: var(--wd-ink); font-weight: 700; cursor: default; }
 .wd-explorer__sep { color: var(--wd-ink-3); }
 
@@ -90,6 +95,8 @@
 @media (hover: hover) {
   .wd-explorer__view-btn:hover { color: var(--wd-ink); }
 }
+.wd-explorer__view-btn.is-hover { color: var(--wd-ink); }
+
 .wd-explorer__view-btn--active {
   background: var(--wd-card);
   color: var(--wd-red-text);
@@ -125,6 +132,7 @@
 @media (hover: hover) {
   .wd-explorer__table tbody tr:hover { background: var(--wd-tint-1); }
 }
+.wd-explorer__table tbody tr.is-hover { background: var(--wd-tint-1); }
 
 .wd-explorer__table .is-num {
   text-align: right;
@@ -171,6 +179,8 @@
 @media (hover: hover) {
   .wd-explorer__tile:hover { background: var(--wd-tint-1); }
 }
+.wd-explorer__tile.is-hover { background: var(--wd-tint-1); }
+
 .wd-explorer__tile-icon {
   width: 48px;
   height: 48px;
@@ -185,6 +195,8 @@
 @media (hover: hover) {
   .wd-explorer__tile:hover .wd-explorer__tile-icon { background: var(--wd-card); color: var(--wd-red-text); }
 }
+.wd-explorer__tile.is-hover .wd-explorer__tile-icon { background: var(--wd-card); color: var(--wd-red-text); }
+
 .wd-explorer__tile-name {
   display: -webkit-box;
   -webkit-line-clamp: 2;

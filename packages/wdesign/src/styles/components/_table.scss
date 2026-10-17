@@ -32,12 +32,16 @@
 @media (hover: hover) {
   .wd-table tbody tr:hover { background: var(--wd-tint-1); }
 }
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-table tbody tr.is-hover { background: var(--wd-tint-1); }
 
 .wd-table__th { cursor: default; }
 .wd-table__th--sort { cursor: pointer; user-select: none; }
 @media (hover: hover) {
   .wd-table__th--sort:hover { color: var(--wd-red-text); }
 }
+.wd-table__th--sort.is-hover { color: var(--wd-red-text); }
+
 .wd-table__sort { display: inline-flex; margin-left: 5px; vertical-align: middle; }
 
 .wd-table__empty {
