@@ -203,8 +203,20 @@ const WdIcon = {
       }
       return ''
     },
+    factor() {
+      // 光学补偿（与 wdesign-icons/src/optical.js 同源规则）
+      const TALL = window.__WD_OPTICAL_TALL
+      if (!TALL) return 1
+      if (TALL.has(this.name)) return 1.14
+      const ink = (window.__WD_INK || {})[this.name]
+      if (ink !== undefined && ink < 0.13) return 1.08
+      if (ink !== undefined && ink > 0.55) return 0.97
+      return 1
+    },
     sizePx() {
-      return typeof this.size === 'number' ? this.size + 'px' : this.size
+      const base = typeof this.size === 'number' ? this.size : parseFloat(this.size) || 24
+      const px = Math.round(base * this.factor * 100) / 100
+      return px + 'px'
     },
   },
   template: `<span class="wd-icon" :style="{ width: sizePx, height: sizePx }" v-html="svg"></span>`,

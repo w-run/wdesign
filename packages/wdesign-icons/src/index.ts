@@ -11,6 +11,10 @@
 // =============================================================
 import type { App, Plugin } from 'vue'
 import WdIcon from './WdIcon.vue'
+import { opticalFactor, DEFAULT_OPTICAL } from './optical'
+
+export { opticalFactor, DEFAULT_OPTICAL }
+export { OPTICAL_TALL, OPTICAL_LIGHT, OPTICAL_HEAVY } from './optical'
 
 export { WdIcon }
 
