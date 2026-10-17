@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792237591">
+<link rel="stylesheet" href="demo.css?v=1792239625">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -453,8 +453,18 @@
 
     <div class="demo-panel demo-panel--wide">
       <h3>TABLE 表格</h3>
-      <wd-table :columns="tableCols" :rows="tableRows" striped></wd-table>
-      <span class="demo-cap" style="margin-top:10px">striped 斑马纹 · 列可排序</span>
+      <wd-table :columns="tableCols" :rows="tableRows" striped>
+        <template #cell-status="{ value }">
+          <span class="wd-tag" :class="value === 'active' ? 'wd-tag--tint' : 'wd-tag--gray'">
+            <i class="wd-tag__dot" :style="{ background: value === 'active' ? 'var(--wd-success)' : 'var(--wd-ink-3)' }"></i>
+            {{ value === 'active' ? '活跃' : '归档' }}
+          </span>
+        </template>
+        <template #cell-name="{ value }">
+          <strong style="font-weight:700">{{ value }}</strong>
+        </template>
+      </wd-table>
+      <span class="demo-cap" style="margin-top:10px">striped 斑马纹 · 列可排序 · 支持 #cell-&lt;key&gt; 自定义单元格</span>
       <div style="margin-top:16px">
         <wd-table :columns="tableCols" :rows="[]" empty-text="暂无仓库数据"></wd-table>
         <span class="demo-cap">空数据 + 自定义 emptyText</span>
@@ -865,11 +875,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792237591"></script>
-<script src="icons.data.js?v=1792237591"></script>
-<script src="demo-extra.js?v=1792237591"></script>
-<script src="components.js?v=1792237591"></script>
-<script src="demo.js?v=1792237591"></script>
+<script src="icons.optical.js?v=1792239625"></script>
+<script src="icons.data.js?v=1792239625"></script>
+<script src="demo-extra.js?v=1792239625"></script>
+<script src="components.js?v=1792239625"></script>
+<script src="demo.js?v=1792239625"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

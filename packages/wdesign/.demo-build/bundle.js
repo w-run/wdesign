@@ -4022,30 +4022,25 @@ var WD_REAL_MODULE = (() => {
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const el = ref(null);
+      const live = ref(null);
+      const current = computed(() => live.value !== null ? live.value : props.modelValue);
       const percent = computed(() => {
         const span = props.max - props.min || 1;
-        return Math.max(0, Math.min(100, (props.modelValue - props.min) / span * 100));
+        return Math.max(0, Math.min(100, (current.value - props.min) / span * 100));
       });
       const trackStyle = computed(() => ({
         background: `linear-gradient(to right, var(--wd-red) 0%, var(--wd-red) ${percent.value}%, var(--wd-tint-2) ${percent.value}%, var(--wd-tint-2) 100%)`
       }));
-      const el = ref(null);
-      let dragging = false;
       function onInput(e) {
         const v = Number(e.target.value);
+        live.value = v;
         emit("update:modelValue", v);
-      }
-      function onPointerDown() {
-        dragging = true;
-      }
-      function onPointerUp() {
-        dragging = false;
       }
       watch(
         () => props.modelValue,
         (v) => {
-          if (dragging || !el.value) return;
-          if (Number(el.value.value) !== v) el.value.value = String(v);
+          if (live.value !== null && v !== live.value) live.value = null;
         }
       );
       return (_ctx, _cache) => {
@@ -4057,17 +4052,14 @@ var WD_REAL_MODULE = (() => {
             min: __props.min,
             max: __props.max,
             step: __props.step,
-            value: __props.modelValue,
+            value: current.value,
             style: normalizeStyle(trackStyle.value),
-            onInput,
-            onPointerdown: onPointerDown,
-            onPointerup: onPointerUp,
-            onPointercancel: onPointerUp
+            onInput
           }, null, 44, _hoisted_226),
           __props.showValue ? (openBlock(), createElementBlock(
             "span",
             _hoisted_322,
-            toDisplayString(__props.modelValue),
+            toDisplayString(current.value),
             1
             /* TEXT */
           )) : createCommentVNode("v-if", true)
