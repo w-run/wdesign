@@ -767,6 +767,7 @@ var WD_REAL_MODULE = (() => {
     class: "wd-carousel__dots"
   };
   var _hoisted_42 = ["aria-label", "onClick"];
+  var SETTLE_MS = 500;
   var THRESHOLD = 40;
   var WdCarousel_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdCarousel" },
@@ -776,29 +777,88 @@ var WD_REAL_MODULE = (() => {
       height: { type: Number, required: false, default: 260 },
       autoplay: { type: Number, required: false, default: 0 },
       showDots: { type: Boolean, required: false, default: true },
-      showArrows: { type: Boolean, required: false, default: true }
+      showArrows: { type: Boolean, required: false, default: true },
+      loop: { type: Boolean, required: false, default: true }
     },
     setup(__props) {
       const props = __props;
       const PALETTE = ["var(--wd-tint-2)", "var(--wd-success-soft)", "var(--wd-warning-soft)", "var(--wd-field)"];
-      const index = ref(0);
       const root = ref(null);
+      const n = () => props.items.length;
+      const looping = () => props.loop && n() > 1;
+      const slides = computed(() => {
+        const list = props.items;
+        if (!list.length) return [];
+        if (!looping()) return list.map((it, i) => ({ it, real: i, key: "r" + i }));
+        return [
+          { it: list[list.length - 1], real: list.length - 1, key: "c-head" },
+          ...list.map((it, i) => ({ it, real: i, key: "r" + i })),
+          { it: list[0], real: 0, key: "c-tail" }
+        ];
+      });
+      const pos = ref(looping() ? 1 : 0);
+      const animating = ref(true);
       const dragX = ref(0);
+      const current = computed(() => {
+        const total = n() || 1;
+        return ((pos.value - (looping() ? 1 : 0)) % total + total) % total;
+      });
       const trackStyle = computed(() => ({
-        transform: `translateX(calc(-${index.value * 100}% + ${dragX.value}px))`,
-        transition: dragX.value === 0 ? void 0 : "none"
+        transform: `translateX(calc(-${pos.value * 100}% + ${dragX.value}px))`,
+        transition: animating.value ? void 0 : "none"
       }));
       function go(i) {
-        const n = props.items.length;
-        if (!n) return;
-        index.value = (i % n + n) % n;
+        if (!n()) return;
+        animating.value = true;
+        pos.value = (looping() ? 1 : 0) + i;
+        scheduleSettle();
+        restart();
+      }
+      function next() {
+        if (!n()) return;
+        animating.value = true;
+        pos.value += 1;
+        if (!looping()) pos.value = pos.value % n();
+        scheduleSettle();
+        restart();
+      }
+      function prev() {
+        if (!n()) return;
+        animating.value = true;
+        pos.value -= 1;
+        if (!looping()) pos.value = (pos.value + n()) % n();
+        scheduleSettle();
+        restart();
+      }
+      let settleTimer = null;
+      function scheduleSettle() {
+        if (settleTimer) window.clearTimeout(settleTimer);
+        if (!looping()) return;
+        settleTimer = window.setTimeout(normalize, SETTLE_MS);
+      }
+      function normalize() {
+        if (!looping()) return;
+        if (pos.value === 0) jumpTo(n());
+        else if (pos.value === n() + 1) jumpTo(1);
+      }
+      function onTransitionEnd() {
+        if (settleTimer) {
+          window.clearTimeout(settleTimer);
+          settleTimer = null;
+        }
+        normalize();
+      }
+      function jumpTo(target) {
+        animating.value = false;
+        pos.value = target;
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          animating.value = true;
+        }));
       }
       let timer = null;
-      function start() {
+      function restart() {
         stop();
-        if (props.autoplay > 0 && props.items.length > 1) {
-          timer = window.setInterval(() => go(index.value + 1), props.autoplay);
-        }
+        if (props.autoplay > 0 && n() > 1) timer = window.setInterval(next, props.autoplay);
       }
       function stop() {
         if (timer) {
@@ -806,26 +866,24 @@ var WD_REAL_MODULE = (() => {
           timer = null;
         }
       }
-      onMounted(start);
+      onMounted(() => {
+        pos.value = looping() ? 1 : 0;
+        restart();
+      });
       onBeforeUnmount(() => {
         stop();
         detach();
+        if (settleTimer) window.clearTimeout(settleTimer);
       });
-      let startX = 0;
-      let startY = 0;
-      let swiping = false;
-      let decided = false;
-      let pid = -1;
+      let startX = 0, startY = 0, swiping = false, decided = false;
       function onDown(e) {
-        if (props.items.length < 2) return;
+        if (n() < 2) return;
         if (e.pointerType === "mouse" && e.button !== 0) return;
         swiping = true;
         decided = false;
         startX = e.clientX;
         startY = e.clientY;
-        pid = e.pointerId;
         try {
-          ;
           e.currentTarget.setPointerCapture?.(e.pointerId);
         } catch {
         }
@@ -835,8 +893,7 @@ var WD_REAL_MODULE = (() => {
       }
       function onMove(e) {
         if (!swiping) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+        const dx = e.clientX - startX, dy = e.clientY - startY;
         if (!decided) {
           if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
           if (Math.abs(dy) > Math.abs(dx)) {
@@ -847,23 +904,23 @@ var WD_REAL_MODULE = (() => {
           stop();
         }
         if (e.cancelable) e.preventDefault();
-        const atEdge = index.value === 0 && dx > 0 || index.value === props.items.length - 1 && dx < 0;
-        dragX.value = atEdge ? dx * 0.35 : dx;
+        dragX.value = dx;
       }
       function onUp(e) {
         if (!swiping) return;
         const dx = e.clientX - startX;
         if (decided && Math.abs(dx) > THRESHOLD) {
-          go(index.value + (dx < 0 ? 1 : -1));
+          if (dx < 0) next();
+          else prev();
         }
         end(true);
       }
-      function end(restart) {
+      function end(again) {
         swiping = false;
         decided = false;
         dragX.value = 0;
         detach();
-        if (restart) start();
+        if (again) restart();
       }
       function detach() {
         window.removeEventListener("pointermove", onMove);
@@ -879,7 +936,7 @@ var WD_REAL_MODULE = (() => {
             class: "wd-carousel",
             style: normalizeStyle({ height: __props.height + "px" }),
             onMouseenter: stop,
-            onMouseleave: start,
+            onMouseleave: restart,
             onPointerdown: onDown
           },
           [
@@ -887,35 +944,36 @@ var WD_REAL_MODULE = (() => {
               "div",
               {
                 class: "wd-carousel__track",
-                style: normalizeStyle(trackStyle.value)
+                style: normalizeStyle(trackStyle.value),
+                onTransitionend: onTransitionEnd
               },
               [
                 (openBlock(true), createElementBlock(
                   Fragment,
                   null,
-                  renderList(__props.items, (it, i) => {
+                  renderList(slides.value, (s) => {
                     return openBlock(), createElementBlock(
                       "div",
                       {
-                        key: i,
+                        key: s.key,
                         class: "wd-carousel__slide",
-                        style: normalizeStyle({ background: PALETTE[i % PALETTE.length] })
+                        style: normalizeStyle({ background: PALETTE[s.real % PALETTE.length] })
                       },
                       [
                         renderSlot(_ctx.$slots, "item", {
-                          item: it,
-                          index: i
+                          item: s.it,
+                          index: s.real
                         }, () => [
-                          it.src ? (openBlock(), createElementBlock("img", {
+                          s.it.src ? (openBlock(), createElementBlock("img", {
                             key: 0,
-                            src: it.src,
-                            alt: it.alt || "",
+                            src: s.it.src,
+                            alt: s.it.alt || "",
                             class: "wd-carousel__img",
                             draggable: "false"
                           }, null, 8, _hoisted_18)) : (openBlock(), createElementBlock(
                             "span",
                             _hoisted_25,
-                            toDisplayString(it.label || `Slide ${i + 1}`),
+                            toDisplayString(s.it.label || `Slide ${s.real + 1}`),
                             1
                             /* TEXT */
                           ))
@@ -929,8 +987,8 @@ var WD_REAL_MODULE = (() => {
                   /* KEYED_FRAGMENT */
                 ))
               ],
-              4
-              /* STYLE */
+              36
+              /* STYLE, NEED_HYDRATION */
             ),
             __props.showArrows && __props.items.length > 1 ? (openBlock(), createElementBlock(
               "button",
@@ -941,9 +999,9 @@ var WD_REAL_MODULE = (() => {
                 "aria-label": "\u4E0A\u4E00\u5F20",
                 onPointerdown: _cache[0] || (_cache[0] = withModifiers(() => {
                 }, ["stop"])),
-                onClick: _cache[1] || (_cache[1] = ($event) => go(index.value - 1))
+                onClick: prev
               },
-              [..._cache[5] || (_cache[5] = [
+              [..._cache[3] || (_cache[3] = [
                 createElementVNode(
                   "svg",
                   {
@@ -973,11 +1031,11 @@ var WD_REAL_MODULE = (() => {
                 type: "button",
                 class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next",
                 "aria-label": "\u4E0B\u4E00\u5F20",
-                onPointerdown: _cache[2] || (_cache[2] = withModifiers(() => {
+                onPointerdown: _cache[1] || (_cache[1] = withModifiers(() => {
                 }, ["stop"])),
-                onClick: _cache[3] || (_cache[3] = ($event) => go(index.value + 1))
+                onClick: next
               },
-              [..._cache[6] || (_cache[6] = [
+              [..._cache[4] || (_cache[4] = [
                 createElementVNode(
                   "svg",
                   {
@@ -1008,9 +1066,9 @@ var WD_REAL_MODULE = (() => {
                   return openBlock(), createElementBlock("button", {
                     key: i,
                     type: "button",
-                    class: normalizeClass(["wd-carousel__dot", { "wd-carousel__dot--active": i === index.value }]),
+                    class: normalizeClass(["wd-carousel__dot", { "wd-carousel__dot--active": i === current.value }]),
                     "aria-label": `\u7B2C ${i + 1} \u5F20`,
-                    onPointerdown: _cache[4] || (_cache[4] = withModifiers(() => {
+                    onPointerdown: _cache[2] || (_cache[2] = withModifiers(() => {
                     }, ["stop"])),
                     onClick: ($event) => go(i)
                   }, null, 42, _hoisted_42);
@@ -4351,20 +4409,32 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdSpinner" },
     __name: "WdSpinner",
     props: {
-      size: { type: String, required: false, default: "md" }
+      size: { type: [String, Number], required: false, default: "md" }
     },
     setup(__props) {
+      const props = __props;
+      const PRESET = { sm: "18px", md: "28px", lg: "40px" };
+      const style = computed(() => {
+        if (typeof props.size === "number") {
+          const px = Math.max(8, props.size);
+          const bw = Math.max(2, Math.round(px * 0.11 * 10) / 10);
+          return { width: `${px}px`, height: `${px}px`, borderWidth: `${bw}px` };
+        }
+        return {};
+      });
+      const cls = computed(() => typeof props.size === "string" && props.size !== "md" ? `wd-spinner--${props.size}` : "");
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock(
           "span",
           {
-            class: normalizeClass(["wd-spinner", __props.size !== "md" ? `wd-spinner--${__props.size}` : ""]),
+            class: normalizeClass(["wd-spinner", cls.value]),
+            style: normalizeStyle(style.value),
             role: "status",
             "aria-label": "\u52A0\u8F7D\u4E2D"
           },
           null,
-          2
-          /* CLASS */
+          6
+          /* CLASS, STYLE */
         );
       };
     }

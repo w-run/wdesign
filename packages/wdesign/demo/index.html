@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792240398">
+<link rel="stylesheet" href="demo.css?v=1792242032">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -392,10 +392,12 @@
     <div class="demo-panel">
       <h3>SPINNER 加载</h3>
       <div class="demo-row" style="gap:28px; align-items:center">
-        <div class="demo-col"><wd-spinner></wd-spinner><span class="demo-cap">默认</span></div>
-        <div class="demo-col"><wd-spinner :size="28"></wd-spinner><span class="demo-cap">28</span></div>
-        <div class="demo-col"><wd-spinner :size="40"></wd-spinner><span class="demo-cap">40</span></div>
+        <div class="demo-col"><wd-spinner></wd-spinner><span class="demo-cap">默认 28</span></div>
+        <div class="demo-col"><wd-spinner size="sm"></wd-spinner><span class="demo-cap">size=sm</span></div>
+        <div class="demo-col"><wd-spinner size="lg"></wd-spinner><span class="demo-cap">size=lg</span></div>
+        <div class="demo-col"><wd-spinner :size="52"></wd-spinner><span class="demo-cap">:size=52</span></div>
       </div>
+      <span class="demo-cap" style="margin-top:10px">支持档位（sm/md/lg）与数字像素；线宽随手径等比缩放</span>
     </div>
 
     <div class="demo-panel">
@@ -581,7 +583,7 @@
 
     <div class="demo-panel">
       <h3>POSTITEM 文章项</h3>
-      <div class="demo-col" style="width:100%; max-width:560px">
+      <div class="demo-col" style="width:100%">
         <wd-post-item title="WDesign v1.4 发布：视觉成熟度与查漏补缺"
           summary="修了深色主题对比度、锚点面令牌、图标视觉归一，并补上 tree-shaking 入口。"
           :tags="['设计系统','发布']" emoji="🎉" href="#"></wd-post-item>
@@ -875,11 +877,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792240398"></script>
-<script src="icons.data.js?v=1792240398"></script>
-<script src="demo-extra.js?v=1792240398"></script>
-<script src="components.js?v=1792240398"></script>
-<script src="demo.js?v=1792240398"></script>
+<script src="icons.optical.js?v=1792242032"></script>
+<script src="icons.data.js?v=1792242032"></script>
+<script src="demo-extra.js?v=1792242032"></script>
+<script src="components.js?v=1792242032"></script>
+<script src="demo.js?v=1792242032"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

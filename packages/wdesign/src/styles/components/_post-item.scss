@@ -3,19 +3,39 @@
 //  反向迭代（源：w-run/blog 的文章列表项）
 //  标题 + 摘要 + 标签的纵向排版；无日期（刻意）
 // =============================================================
+// 默认形态：**卡片**（内边距 + 圆角 + 单层阴影，符合 WDesign 无色块边界）
+// 需要博客式「列表项」时加 .wd-post-item--plain（仅分隔线、无卡片底）
 .wd-post-item {
   position: relative;
   display: block;
-  padding: 1.55rem 0;
+  /* 卡片形态需要占满容器：display:block 在 flex 父级里会按内容收缩，
+     导致同一列表里长短不一的卡片宽窄参差 */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.35rem 1.5rem;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
   transition:
     transform var(--wd-dur-slow) var(--wd-ease-spring-soft, cubic-bezier(.34, 1.3, .64, 1)),
+    box-shadow var(--wd-dur) var(--wd-ease-out),
     color var(--wd-dur-slow) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
   text-decoration: none;
   color: inherit;
 }
+.wd-post-item + .wd-post-item { margin-top: 12px; }
 
-/* 分隔线（常态灰） */
-.wd-post-item::after {
+/* 列表形态：无卡片底，只留底部细线 */
+.wd-post-item--plain {
+  padding: 1.55rem 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.wd-post-item--plain + .wd-post-item--plain { margin-top: 0; }
+
+/* 分隔线（仅 plain 形态） */
+.wd-post-item--plain::after {
   content: '';
   position: absolute;
   left: 0;
@@ -25,8 +45,8 @@
   background: var(--wd-ink-5);
 }
 
-/* 红线下划（hover 时从左绘制） */
-.wd-post-item::before {
+/* 红线下划（仅 plain 形态，hover 时从左绘制） */
+.wd-post-item--plain::before {
   content: '';
   position: absolute;
   left: 0;
@@ -40,10 +60,12 @@
   transition: transform var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1));
 }
 @media (hover: hover) {
-  .wd-post-item:hover { transform: translateX(4px); }
+  .wd-post-item:hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-hover); }
+  .wd-post-item--plain:hover { transform: translateX(4px); box-shadow: none; }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
-.wd-post-item.is-hover { transform: translateX(4px); }
+.wd-post-item.is-hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-hover); }
+.wd-post-item--plain.is-hover { transform: translateX(4px); box-shadow: none; }
 
 @media (hover: hover) {
   .wd-post-item:hover::before { transform: scaleX(1); }
@@ -60,30 +82,34 @@
 }
 
 .wd-post-item__title {
-  display: inline;
   margin: 0;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
+  line-height: 1.45;
   letter-spacing: -0.01em;
   color: var(--wd-ink);
   transition: color var(--wd-dur-slow) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
 
 .wd-post-item__emoji {
-  margin-right: 0.5rem;
-  font-size: 17px;
+  margin-right: 0.45rem;
+  font-size: 16px;
 }
 
 .wd-post-item__summary {
-  margin: 0.5rem 0 0;
-  font-size: 14px;
-  line-height: 1.7;
+  margin: 0.45rem 0 0;
+  font-size: 13.5px;
+  line-height: 1.68;
   color: var(--wd-ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .wd-post-item__tags {
   display: flex;
   gap: 0.4rem;
-  margin-top: 0.7rem;
+  margin-top: 0.75rem;
   flex-wrap: wrap;
 }

@@ -57,6 +57,9 @@
 @import '../src/styles/components/file-list';
 @import '../src/styles/components/explorer';
 @import '../src/styles/components/ai-msg';
+@import '../src/styles/components/post-item';
+@import '../src/styles/components/timeline';
+@import '../src/styles/components/typography';
 @import '../src/styles/dark';
 
 
@@ -353,7 +356,10 @@ body {
 // 需要整行宽度的：表格、步骤条、文件浏览器、图标墙
 .demo-panel--wide { width: 100%; }
 
-.demo-panel h3 {
+// ⚠️ 必须是直接子元素：`.demo-panel h3` 会命中组件内部的 h3
+// （如 WdPostItem 的文章标题、WdTimeline 的节点标题），把面板小标题的
+// 红杠装饰 / 大写字母 / 11.5px 字号泄漏进去。
+.demo-panel > h3 {
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: .12em;

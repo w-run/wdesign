@@ -20,7 +20,8 @@ export interface WdCarouselItem {
   alt?: string
 }
 
-const THRESHOLD = 40          // 超过这个位移才翻页
+const SETTLE_MS = 500
+const THRESHOLD = 40
 
 export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdCarousel' },
@@ -30,7 +31,8 @@ export default /*@__PURE__*/_defineComponent({
     height: { type: Number, required: false, default: 260 },
     autoplay: { type: Number, required: false, default: 0 },
     showDots: { type: Boolean, required: false, default: true },
-    showArrows: { type: Boolean, required: false, default: true }
+    showArrows: { type: Boolean, required: false, default: true },
+    loop: { type: Boolean, required: false, default: true }
   },
   setup(__props: any) {
 
@@ -40,65 +42,122 @@ const props = __props
 
 const PALETTE = ['var(--wd-tint-2)', 'var(--wd-success-soft)', 'var(--wd-warning-soft)', 'var(--wd-field)']
 
-const index = ref(0)
 const root = ref<HTMLElement | null>(null)
+const n = () => props.items.length
+const looping = () => props.loop && n() > 1
 
-/** 拖动中的水平位移（px），用于跟手反馈 */
+/**
+ * 无缝循环：在首尾各克隆一张 —— [末] 1 2 3 [首]
+ * 滑到克隆位后，等 transitionend 再**无动画**跳回真身，
+ * 于是末→首、首→末都看不出倒退。
+ */
+const slides = computed(() => {
+  const list = props.items
+  if (!list.length) return []
+  if (!looping()) return list.map((it, i) => ({ it, real: i, key: 'r' + i }))
+  return [
+    { it: list[list.length - 1], real: list.length - 1, key: 'c-head' },
+    ...list.map((it, i) => ({ it, real: i, key: 'r' + i })),
+    { it: list[0], real: 0, key: 'c-tail' },
+  ]
+})
+
+/** 轨道位置（有 loop 时整体右移一格，pos=1 对应急真实第 0 张） */
+const pos = ref(looping() ? 1 : 0)
+const animating = ref(true)
 const dragX = ref(0)
 
+const current = computed(() => {
+  const total = n() || 1
+  return ((pos.value - (looping() ? 1 : 0)) % total + total) % total
+})
+
 const trackStyle = computed(() => ({
-  transform: `translateX(calc(-${index.value * 100}% + ${dragX.value}px))`,
-  transition: dragX.value === 0 ? undefined : 'none',
+  transform: `translateX(calc(-${pos.value * 100}% + ${dragX.value}px))`,
+  transition: animating.value ? undefined : 'none',
 }))
 
 function go(i: number) {
-  const n = props.items.length
-  if (!n) return
-  index.value = ((i % n) + n) % n
+  if (!n()) return
+  animating.value = true
+  pos.value = (looping() ? 1 : 0) + i
+  scheduleSettle()
+  restart()
+}
+
+function next() {
+  if (!n()) return
+  animating.value = true
+  pos.value += 1
+  if (!looping()) pos.value = pos.value % n()
+  scheduleSettle()
+  restart()
+}
+
+function prev() {
+  if (!n()) return
+  animating.value = true
+  pos.value -= 1
+  if (!looping()) pos.value = (pos.value + n()) % n()
+  scheduleSettle()
+  restart()
+}
+
+/**
+ * 过渡结束：站在克隆位就无动画跳回真身。
+ * ⚠️ 不能只依赖 transitionend —— 动画时钟停摆（后台标签页、无头渲染、
+ * 系统「减弱动态效果」）时该事件不会来，位置会一路累积（-900%、-1200%…）。
+ * 因此另设一个兜底定时器，时长取 CSS 过渡的 0.45s + 余量。
+ */
+let settleTimer: number | null = null
+
+function scheduleSettle() {
+  if (settleTimer) window.clearTimeout(settleTimer)
+  if (!looping()) return
+  settleTimer = window.setTimeout(normalize, SETTLE_MS)
+}
+
+function normalize() {
+  if (!looping()) return
+  if (pos.value === 0) jumpTo(n())
+  else if (pos.value === n() + 1) jumpTo(1)
+}
+
+function onTransitionEnd() {
+  if (settleTimer) { window.clearTimeout(settleTimer); settleTimer = null }
+  normalize()
+}
+
+function jumpTo(target: number) {
+  animating.value = false
+  pos.value = target
+  // 两帧后恢复动画，确保「瞬时归位」不被合成到同一次绘制里
+  requestAnimationFrame(() => requestAnimationFrame(() => { animating.value = true }))
 }
 
 let timer: number | null = null
-function start() {
+function restart() {
   stop()
-  if (props.autoplay > 0 && props.items.length > 1) {
-    timer = window.setInterval(() => go(index.value + 1), props.autoplay)
-  }
+  if (props.autoplay > 0 && n() > 1) timer = window.setInterval(next, props.autoplay)
 }
 function stop() {
-  if (timer) {
-    window.clearInterval(timer)
-    timer = null
-  }
+  if (timer) { window.clearInterval(timer); timer = null }
 }
-onMounted(start)
-onBeforeUnmount(() => {
-  stop()
-  detach()
+onMounted(() => {
+  pos.value = looping() ? 1 : 0
+  restart()
 })
+onBeforeUnmount(() => { stop(); detach(); if (settleTimer) window.clearTimeout(settleTimer) })
 
-/* ---------------------------------------------------------------
- * 滑动切换：Pointer Events
- * `touch-action: pan-y` 已在样式里声明，横向手势由我们接管、
- * 纵向滚动仍交给浏览器。原先只有箭头和圆点，触屏滑不动。
- * --------------------------------------------------------------- */
-let startX = 0
-let startY = 0
-let swiping = false
-let decided = false
-let pid = -1
+/* ---------------- 滑动手势 ---------------- */
+let startX = 0, startY = 0, swiping = false, decided = false
 
 function onDown(e: PointerEvent) {
-  if (props.items.length < 2) return
+  if (n() < 2) return
   if (e.pointerType === 'mouse' && e.button !== 0) return
-  swiping = true
-  decided = false
-  startX = e.clientX
-  startY = e.clientY
-  pid = e.pointerId
-  // 同 WdSortableList：捕获失败不应中断手势
-  try {
-    ;(e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId)
-  } catch { /* ignore */ }
+  swiping = true; decided = false
+  startX = e.clientX; startY = e.clientY
+  try { (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId) } catch { /* ignore */ }
   window.addEventListener('pointermove', onMove, { passive: false })
   window.addEventListener('pointerup', onUp)
   window.addEventListener('pointercancel', onUp)
@@ -106,37 +165,30 @@ function onDown(e: PointerEvent) {
 
 function onMove(e: PointerEvent) {
   if (!swiping) return
-  const dx = e.clientX - startX
-  const dy = e.clientY - startY
+  const dx = e.clientX - startX, dy = e.clientY - startY
   if (!decided) {
     if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return
-    // 纵向优先 → 交还给页面滚动
     if (Math.abs(dy) > Math.abs(dx)) { end(false); return }
     decided = true
-    stop()                    // 手势开始后暂停自动播放
+    stop()
   }
   if (e.cancelable) e.preventDefault()
-  // 首尾加阻尼，避免拖出空白
-  const atEdge = (index.value === 0 && dx > 0) ||
-                 (index.value === props.items.length - 1 && dx < 0)
-  dragX.value = atEdge ? dx * 0.35 : dx
+  dragX.value = dx
 }
 
 function onUp(e: PointerEvent) {
   if (!swiping) return
   const dx = e.clientX - startX
   if (decided && Math.abs(dx) > THRESHOLD) {
-    go(index.value + (dx < 0 ? 1 : -1))
+    if (dx < 0) next(); else prev()
   }
   end(true)
 }
 
-function end(restart: boolean) {
-  swiping = false
-  decided = false
-  dragX.value = 0
+function end(again: boolean) {
+  swiping = false; decided = false; dragX.value = 0
   detach()
-  if (restart) start()
+  if (again) restart()
 }
 
 function detach() {
@@ -152,36 +204,37 @@ return (_ctx: any,_cache: any) => {
     class: "wd-carousel",
     style: _normalizeStyle({ height: __props.height + 'px' }),
     onMouseenter: stop,
-    onMouseleave: start,
+    onMouseleave: restart,
     onPointerdown: onDown
   }, [
     _createElementVNode("div", {
       class: "wd-carousel__track",
-      style: _normalizeStyle(trackStyle.value)
+      style: _normalizeStyle(trackStyle.value),
+      onTransitionend: onTransitionEnd
     }, [
-      (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(__props.items, (it, i) => {
+      (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(slides.value, (s) => {
         return (_openBlock(), _createElementBlock("div", {
-          key: i,
+          key: s.key,
           class: "wd-carousel__slide",
-          style: _normalizeStyle({ background: PALETTE[i % PALETTE.length] })
+          style: _normalizeStyle({ background: PALETTE[s.real % PALETTE.length] })
         }, [
           _renderSlot(_ctx.$slots, "item", {
-            item: it,
-            index: i
+            item: s.it,
+            index: s.real
           }, () => [
-            (it.src)
+            (s.it.src)
               ? (_openBlock(), _createElementBlock("img", {
                   key: 0,
-                  src: it.src,
-                  alt: it.alt || '',
+                  src: s.it.src,
+                  alt: s.it.alt || '',
                   class: "wd-carousel__img",
                   draggable: "false"
                 }, null, 8 /* PROPS */, _hoisted_1))
-              : (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(it.label || `Slide ${i + 1}`), 1 /* TEXT */))
+              : (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(s.it.label || `Slide ${s.real + 1}`), 1 /* TEXT */))
           ])
         ], 4 /* STYLE */))
       }), 128 /* KEYED_FRAGMENT */))
-    ], 4 /* STYLE */),
+    ], 36 /* STYLE, NEED_HYDRATION */),
     (__props.showArrows && __props.items.length > 1)
       ? (_openBlock(), _createElementBlock("button", {
           key: 0,
@@ -189,8 +242,8 @@ return (_ctx: any,_cache: any) => {
           class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--prev",
           "aria-label": "上一张",
           onPointerdown: _cache[0] || (_cache[0] = _withModifiers(() => {}, ["stop"])),
-          onClick: _cache[1] || (_cache[1] = ($event: any) => (go(index.value - 1)))
-        }, [...(_cache[5] || (_cache[5] = [
+          onClick: prev
+        }, [...(_cache[3] || (_cache[3] = [
           _createElementVNode("svg", {
             width: "15",
             height: "15",
@@ -211,9 +264,9 @@ return (_ctx: any,_cache: any) => {
           type: "button",
           class: "wd-icon-btn wd-carousel__arrow wd-carousel__arrow--next",
           "aria-label": "下一张",
-          onPointerdown: _cache[2] || (_cache[2] = _withModifiers(() => {}, ["stop"])),
-          onClick: _cache[3] || (_cache[3] = ($event: any) => (go(index.value + 1)))
-        }, [...(_cache[6] || (_cache[6] = [
+          onPointerdown: _cache[1] || (_cache[1] = _withModifiers(() => {}, ["stop"])),
+          onClick: next
+        }, [...(_cache[4] || (_cache[4] = [
           _createElementVNode("svg", {
             width: "15",
             height: "15",
@@ -234,9 +287,9 @@ return (_ctx: any,_cache: any) => {
             return (_openBlock(), _createElementBlock("button", {
               key: i,
               type: "button",
-              class: _normalizeClass(["wd-carousel__dot", { 'wd-carousel__dot--active': i === index.value }]),
+              class: _normalizeClass(["wd-carousel__dot", { 'wd-carousel__dot--active': i === current.value }]),
               "aria-label": `第 ${i + 1} 张`,
-              onPointerdown: _cache[4] || (_cache[4] = _withModifiers(() => {}, ["stop"])),
+              onPointerdown: _cache[2] || (_cache[2] = _withModifiers(() => {}, ["stop"])),
               onClick: ($event: any) => (go(i))
             }, null, 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_4))
           }), 128 /* KEYED_FRAGMENT */))
