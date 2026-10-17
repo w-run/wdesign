@@ -4978,15 +4978,10 @@ body {
 }
 
 .demo-grid {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   margin-top: 24px;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  align-items: start;
-}
-
-.demo-panel--wide {
-  grid-column: 1/-1;
 }
 
 .demo-panel {
