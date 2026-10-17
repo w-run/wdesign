@@ -1,0 +1,59 @@
+// =============================================================
+//  WDesign — Divider（分隔线）
+//  设计语言是「无边框 · 色块分层」，分隔线刻意做得很轻：
+//  用 --wd-ink-5 这种最弱色，只在确实需要时出现。
+// =============================================================
+.wd-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: 0;
+}
+
+/* ---- 水平：用伪元素画线，有文字时自动断开 ---- */
+.wd-divider--horizontal::before,
+.wd-divider--horizontal::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--wd-ink-5);
+}
+.wd-divider--dashed::before,
+.wd-divider--dashed::after {
+  background: none;
+  border-top: 1px dashed var(--wd-ink-5);
+  height: 0;
+}
+
+/* 无文字时只留一条线 */
+.wd-divider--horizontal:not(:has(.wd-divider__text))::before {
+  display: none;
+}
+
+.wd-divider__text {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  white-space: nowrap;
+}
+
+/* 文字对齐：left 时左侧线全收起，right 反之 */
+.wd-divider--left::before { flex: 0 0 0; }
+.wd-divider--right::after { flex: 0 0 0; }
+
+/* ---- 垂直：用在行内元素之间（如面包屑、工具栏） ---- */
+.wd-divider--vertical {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  flex: none;
+  align-self: center;
+  background: var(--wd-ink-5);
+  vertical-align: middle;
+}
+.wd-divider--vertical.wd-divider--dashed {
+  background: none;
+  border-left: 1px dashed var(--wd-ink-5);
+}

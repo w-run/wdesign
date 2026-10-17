@@ -33,6 +33,7 @@ var WD_REAL_MODULE = (() => {
     WdCollapse: () => WdCollapse_default,
     WdContainer: () => WdContainer_default,
     WdDatePicker: () => WdDatePicker_default,
+    WdDivider: () => WdDivider_default,
     WdDrawer: () => WdDrawer_default,
     WdDropdown: () => WdDropdown_default,
     WdEmpty: () => WdEmpty_default,
@@ -608,11 +609,15 @@ var WD_REAL_MODULE = (() => {
       const showCount = computed(
         () => !props.dot && props.value !== "" && props.value !== void 0 && props.value !== null
       );
+      const animReady = ref(false);
+      watch(() => props.value, () => {
+        animReady.value = true;
+      });
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock(
           "span",
           {
-            class: normalizeClass(["wd-badge", __props.tone === "gray" ? "wd-badge--gray" : ""])
+            class: normalizeClass(["wd-badge", [__props.tone === "gray" ? "wd-badge--gray" : "", { "wd-badge--anim-ready": animReady.value }]])
           },
           [
             renderSlot(_ctx.$slots, "default"),
@@ -1606,8 +1611,69 @@ var WD_REAL_MODULE = (() => {
     }
   });
 
+  // .demo-build/WdDivider.ts
+  var _hoisted_112 = {
+    key: 0,
+    class: "wd-divider__text"
+  };
+  var WdDivider_default = /* @__PURE__ */ defineComponent({
+    ...{ name: "WdDivider" },
+    __name: "WdDivider",
+    props: {
+      direction: { type: String, required: false, default: "horizontal" },
+      align: { type: String, required: false, default: "center" },
+      variant: { type: String, required: false, default: "solid" },
+      spacing: { type: Number, required: false, default: 16 }
+    },
+    setup(__props) {
+      const props = __props;
+      const isHorizontal = computed(() => props.direction === "horizontal");
+      const classes = computed(() => [
+        "wd-divider",
+        `wd-divider--${props.direction}`,
+        // ← 之前漏了这个，水平线的 ::before 规则因此从未命中
+        `wd-divider--${props.variant}`,
+        ...isHorizontal.value ? [`wd-divider--${props.align}`] : []
+      ]);
+      const style = computed(
+        () => isHorizontal.value ? { marginTop: `${props.spacing}px`, marginBottom: `${props.spacing}px` } : { marginLeft: `${props.spacing / 2}px`, marginRight: `${props.spacing / 2}px` }
+      );
+      return (_ctx, _cache) => {
+        return isHorizontal.value ? (openBlock(), createElementBlock(
+          "div",
+          {
+            key: 0,
+            class: normalizeClass(classes.value),
+            style: normalizeStyle(style.value),
+            role: "separator",
+            "aria-orientation": "horizontal"
+          },
+          [
+            _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_112, [
+              renderSlot(_ctx.$slots, "default")
+            ])) : createCommentVNode("v-if", true)
+          ],
+          6
+          /* CLASS, STYLE */
+        )) : (openBlock(), createElementBlock(
+          "span",
+          {
+            key: 1,
+            class: normalizeClass(classes.value),
+            style: normalizeStyle(style.value),
+            role: "separator",
+            "aria-orientation": "vertical"
+          },
+          null,
+          6
+          /* CLASS, STYLE */
+        ));
+      };
+    }
+  });
+
   // .demo-build/WdDrawer.ts
-  var _hoisted_112 = { class: "wd-drawer__panel" };
+  var _hoisted_113 = { class: "wd-drawer__panel" };
   var _hoisted_210 = { class: "wd-drawer__head" };
   var _hoisted_37 = { class: "wd-drawer__title" };
   var _hoisted_45 = { class: "wd-drawer__body" };
@@ -1657,7 +1723,7 @@ var WD_REAL_MODULE = (() => {
                     class: "wd-drawer__mask",
                     onClick: _cache[0] || (_cache[0] = ($event) => __props.closeOnMask && close())
                   }),
-                  createElementVNode("div", _hoisted_112, [
+                  createElementVNode("div", _hoisted_113, [
                     createElementVNode("div", _hoisted_210, [
                       createElementVNode(
                         "div",
@@ -1712,7 +1778,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdDropdown.ts
-  var _hoisted_113 = ["aria-expanded"];
+  var _hoisted_114 = ["aria-expanded"];
   var _hoisted_211 = {
     key: 0,
     class: "wd-dropdown__menu",
@@ -1773,7 +1839,7 @@ var WD_REAL_MODULE = (() => {
               onClick: _cache[2] || (_cache[2] = ($event) => open.value = !open.value)
             }, [
               renderSlot(_ctx.$slots, "default")
-            ], 40, _hoisted_113),
+            ], 40, _hoisted_114),
             createVNode(Transition, {
               name: "wd-pop",
               duration: unref(POP_DURATION)
@@ -1810,7 +1876,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdEmpty.ts
-  var _hoisted_114 = { class: "wd-empty" };
+  var _hoisted_115 = { class: "wd-empty" };
   var _hoisted_212 = { class: "wd-empty__icon" };
   var _hoisted_39 = {
     key: 0,
@@ -1833,7 +1899,7 @@ var WD_REAL_MODULE = (() => {
     },
     setup(__props) {
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_114, [
+        return openBlock(), createElementBlock("div", _hoisted_115, [
           createElementVNode("div", _hoisted_212, [
             renderSlot(_ctx.$slots, "icon", {}, () => [
               _cache[0] || (_cache[0] = createElementVNode(
@@ -1882,7 +1948,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdExplorer.ts
-  var _hoisted_115 = { class: "wd-explorer" };
+  var _hoisted_116 = { class: "wd-explorer" };
   var _hoisted_213 = { class: "wd-explorer__side" };
   var _hoisted_310 = ["onClick"];
   var _hoisted_47 = { class: "wd-explorer__folder-name" };
@@ -1892,7 +1958,7 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_83 = { class: "wd-explorer__path" };
   var _hoisted_93 = { class: "wd-explorer__crumb wd-explorer__crumb--cur" };
   var _hoisted_102 = { class: "wd-explorer__views" };
-  var _hoisted_116 = {
+  var _hoisted_117 = {
     key: 0,
     class: "wd-explorer__table"
   };
@@ -1933,7 +1999,7 @@ var WD_REAL_MODULE = (() => {
         return `${(n / 1048576).toFixed(1)} MB`;
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_115, [
+        return openBlock(), createElementBlock("div", _hoisted_116, [
           createElementVNode("div", _hoisted_213, [
             _cache[4] || (_cache[4] = createElementVNode(
               "div",
@@ -2055,7 +2121,7 @@ var WD_REAL_MODULE = (() => {
                 )
               ])
             ]),
-            mode.value === "details" ? (openBlock(), createElementBlock("table", _hoisted_116, [
+            mode.value === "details" ? (openBlock(), createElementBlock("table", _hoisted_117, [
               _cache[9] || (_cache[9] = createElementVNode(
                 "colgroup",
                 null,
@@ -2191,7 +2257,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdFileList.ts
-  var _hoisted_117 = { class: "wd-file-list" };
+  var _hoisted_118 = { class: "wd-file-list" };
   var _hoisted_214 = ["onClick"];
   var _hoisted_311 = {
     key: 0,
@@ -2263,7 +2329,7 @@ var WD_REAL_MODULE = (() => {
         return `${(n / 1048576).toFixed(1)} MB`;
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_117, [
+        return openBlock(), createElementBlock("div", _hoisted_118, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -2474,7 +2540,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdFormItem.ts
-  var _hoisted_118 = ["data-form-prop"];
+  var _hoisted_119 = ["data-form-prop"];
   var _hoisted_215 = {
     key: 0,
     class: "wd-form-item__req",
@@ -2610,7 +2676,7 @@ var WD_REAL_MODULE = (() => {
             32
             /* NEED_HYDRATION */
           )
-        ], 10, _hoisted_118);
+        ], 10, _hoisted_119);
       };
     }
   });
@@ -2653,7 +2719,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdImagePreview.ts
-  var _hoisted_119 = ["src", "alt"];
+  var _hoisted_120 = ["src", "alt"];
   var _hoisted_216 = {
     key: 0,
     class: "wd-preview"
@@ -2720,7 +2786,7 @@ var WD_REAL_MODULE = (() => {
                   src: __props.src || images.value[0],
                   alt: __props.alt,
                   class: "wd-image-preview__thumb"
-                }, null, 8, _hoisted_119)) : createCommentVNode("v-if", true)
+                }, null, 8, _hoisted_120)) : createCommentVNode("v-if", true)
               ])
             ]),
             (openBlock(), createBlock(Teleport, { to: "body" }, [
@@ -2834,7 +2900,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdInput.ts
-  var _hoisted_120 = {
+  var _hoisted_121 = {
     key: 0,
     class: "wd-input__icon"
   };
@@ -2895,7 +2961,7 @@ var WD_REAL_MODULE = (() => {
             }])
           },
           [
-            _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_120, [
+            _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_121, [
               renderSlot(_ctx.$slots, "icon")
             ])) : createCommentVNode("v-if", true),
             createElementVNode("input", {
@@ -2952,7 +3018,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdListItem.ts
-  var _hoisted_121 = {
+  var _hoisted_123 = {
     key: 0,
     class: "wd-list-item__icon"
   };
@@ -2981,7 +3047,7 @@ var WD_REAL_MODULE = (() => {
             onClick: _cache[0] || (_cache[0] = ($event) => __props.clickable && emit("click", $event))
           },
           [
-            _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_121, [
+            _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_123, [
               renderSlot(_ctx.$slots, "icon")
             ])) : createCommentVNode("v-if", true),
             createElementVNode(
@@ -3008,7 +3074,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdModal.ts
-  var _hoisted_123 = ["aria-label"];
+  var _hoisted_124 = ["aria-label"];
   var _hoisted_219 = { class: "wd-modal__head" };
   var _hoisted_316 = { class: "wd-modal__title" };
   var _hoisted_411 = { class: "wd-modal__body" };
@@ -3141,7 +3207,7 @@ var WD_REAL_MODULE = (() => {
                   4
                   /* STYLE */
                 )
-              ], 8, _hoisted_123)) : createCommentVNode("v-if", true)
+              ], 8, _hoisted_124)) : createCommentVNode("v-if", true)
             ]),
             _: 3
             /* FORWARDED */
@@ -3152,7 +3218,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdNotification.ts
-  var _hoisted_124 = { class: "wd-notification__body" };
+  var _hoisted_125 = { class: "wd-notification__body" };
   var _hoisted_220 = {
     key: 0,
     class: "wd-notification__title"
@@ -3206,7 +3272,7 @@ var WD_REAL_MODULE = (() => {
                     2
                     /* CLASS */
                   ),
-                  createElementVNode("div", _hoisted_124, [
+                  createElementVNode("div", _hoisted_125, [
                     __props.title ? (openBlock(), createElementBlock(
                       "div",
                       _hoisted_220,
@@ -3262,7 +3328,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdOtp.ts
-  var _hoisted_125 = ["value", "disabled", "onInput", "onKeydown"];
+  var _hoisted_126 = ["value", "disabled", "onInput", "onKeydown"];
   var WdOtp_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdOtp" },
     __name: "WdOtp",
@@ -3329,7 +3395,7 @@ var WD_REAL_MODULE = (() => {
                   autocomplete: "one-time-code",
                   onInput: ($event) => onInput(i - 1, $event),
                   onKeydown: ($event) => onKeydown(i - 1, $event)
-                }, null, 40, _hoisted_125);
+                }, null, 40, _hoisted_126);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -3343,17 +3409,13 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdPagination.ts
-  var _hoisted_126 = {
-    class: "wd-pagination",
-    "aria-label": "\u5206\u9875"
-  };
-  var _hoisted_221 = ["disabled"];
-  var _hoisted_318 = {
+  var _hoisted_127 = ["disabled"];
+  var _hoisted_221 = {
     key: 0,
     class: "wd-pagination__dots"
   };
-  var _hoisted_412 = ["onClick"];
-  var _hoisted_510 = ["disabled"];
+  var _hoisted_318 = ["onClick"];
+  var _hoisted_412 = ["disabled"];
   var WdPagination_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdPagination" },
     __name: "WdPagination",
@@ -3366,6 +3428,7 @@ var WD_REAL_MODULE = (() => {
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const animReady = ref(false);
       const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)));
       const range = computed(() => {
         const n = pageCount.value;
@@ -3381,93 +3444,103 @@ var WD_REAL_MODULE = (() => {
         return pages;
       });
       function go(p) {
+        animReady.value = true;
         const v = Math.min(Math.max(1, p), pageCount.value);
         if (v !== props.modelValue) emit("update:modelValue", v);
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("nav", _hoisted_126, [
-          createElementVNode("button", {
-            type: "button",
-            class: "wd-pagination__btn",
-            "data-wd-hover": "",
-            disabled: __props.modelValue <= 1,
-            "aria-label": "\u4E0A\u4E00\u9875",
-            onClick: _cache[0] || (_cache[0] = ($event) => go(__props.modelValue - 1))
-          }, [..._cache[2] || (_cache[2] = [
-            createElementVNode(
-              "svg",
-              {
-                width: "14",
-                height: "14",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                "stroke-width": "2.6",
-                "stroke-linecap": "round",
-                "stroke-linejoin": "round"
-              },
-              [
-                createElementVNode("path", { d: "m15 18-6-6 6-6" })
-              ],
-              -1
-              /* CACHED */
-            )
-          ])], 8, _hoisted_221),
-          (openBlock(true), createElementBlock(
-            Fragment,
-            null,
-            renderList(range.value, (p, i) => {
-              return openBlock(), createElementBlock(
-                Fragment,
-                { key: i },
+        return openBlock(), createElementBlock(
+          "nav",
+          {
+            class: normalizeClass(["wd-pagination", { "wd-pagination--anim-ready": animReady.value }]),
+            "aria-label": "\u5206\u9875"
+          },
+          [
+            createElementVNode("button", {
+              type: "button",
+              class: "wd-pagination__btn",
+              "data-wd-hover": "",
+              disabled: __props.modelValue <= 1,
+              "aria-label": "\u4E0A\u4E00\u9875",
+              onClick: _cache[0] || (_cache[0] = ($event) => go(__props.modelValue - 1))
+            }, [..._cache[2] || (_cache[2] = [
+              createElementVNode(
+                "svg",
+                {
+                  width: "14",
+                  height: "14",
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  "stroke-width": "2.6",
+                  "stroke-linecap": "round",
+                  "stroke-linejoin": "round"
+                },
                 [
-                  p === "..." ? (openBlock(), createElementBlock("span", _hoisted_318, "\u2026")) : (openBlock(), createElementBlock("button", {
-                    key: 1,
-                    type: "button",
-                    class: normalizeClass(["wd-pagination__btn", { "wd-pagination__btn--active": p === __props.modelValue }]),
-                    onClick: ($event) => go(p)
-                  }, toDisplayString(p), 11, _hoisted_412))
+                  createElementVNode("path", { d: "m15 18-6-6 6-6" })
                 ],
-                64
-                /* STABLE_FRAGMENT */
-              );
-            }),
-            128
-            /* KEYED_FRAGMENT */
-          )),
-          createElementVNode("button", {
-            type: "button",
-            class: "wd-pagination__btn",
-            disabled: __props.modelValue >= pageCount.value,
-            "aria-label": "\u4E0B\u4E00\u9875",
-            onClick: _cache[1] || (_cache[1] = ($event) => go(__props.modelValue + 1))
-          }, [..._cache[3] || (_cache[3] = [
-            createElementVNode(
-              "svg",
-              {
-                width: "14",
-                height: "14",
-                viewBox: "0 0 24 24",
-                fill: "none",
-                stroke: "currentColor",
-                "stroke-width": "2.6",
-                "stroke-linecap": "round",
-                "stroke-linejoin": "round"
-              },
-              [
-                createElementVNode("path", { d: "m9 6 6 6-6 6" })
-              ],
-              -1
-              /* CACHED */
-            )
-          ])], 8, _hoisted_510)
-        ]);
+                -1
+                /* CACHED */
+              )
+            ])], 8, _hoisted_127),
+            (openBlock(true), createElementBlock(
+              Fragment,
+              null,
+              renderList(range.value, (p, i) => {
+                return openBlock(), createElementBlock(
+                  Fragment,
+                  { key: i },
+                  [
+                    p === "..." ? (openBlock(), createElementBlock("span", _hoisted_221, "\u2026")) : (openBlock(), createElementBlock("button", {
+                      key: 1,
+                      type: "button",
+                      class: normalizeClass(["wd-pagination__btn", { "wd-pagination__btn--active": p === __props.modelValue }]),
+                      onClick: ($event) => go(p)
+                    }, toDisplayString(p), 11, _hoisted_318))
+                  ],
+                  64
+                  /* STABLE_FRAGMENT */
+                );
+              }),
+              128
+              /* KEYED_FRAGMENT */
+            )),
+            createElementVNode("button", {
+              type: "button",
+              class: "wd-pagination__btn",
+              disabled: __props.modelValue >= pageCount.value,
+              "aria-label": "\u4E0B\u4E00\u9875",
+              onClick: _cache[1] || (_cache[1] = ($event) => go(__props.modelValue + 1))
+            }, [..._cache[3] || (_cache[3] = [
+              createElementVNode(
+                "svg",
+                {
+                  width: "14",
+                  height: "14",
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  "stroke-width": "2.6",
+                  "stroke-linecap": "round",
+                  "stroke-linejoin": "round"
+                },
+                [
+                  createElementVNode("path", { d: "m9 6 6 6-6 6" })
+                ],
+                -1
+                /* CACHED */
+              )
+            ])], 8, _hoisted_412)
+          ],
+          2
+          /* CLASS */
+        );
       };
     }
   });
 
   // .demo-build/WdPostItem.ts
-  var _hoisted_127 = { class: "wd-post-item__title" };
+  var _hoisted_128 = { class: "wd-post-item__title" };
   var _hoisted_222 = {
     key: 0,
     class: "wd-post-item__emoji"
@@ -3497,7 +3570,7 @@ var WD_REAL_MODULE = (() => {
           class: "wd-post-item"
         }, {
           default: withCtx(() => [
-            createElementVNode("h3", _hoisted_127, [
+            createElementVNode("h3", _hoisted_128, [
               __props.emoji ? (openBlock(), createElementBlock(
                 "span",
                 _hoisted_222,
@@ -3547,7 +3620,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdProgress.ts
-  var _hoisted_128 = ["aria-valuenow"];
+  var _hoisted_129 = ["aria-valuenow"];
   var WdProgress_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdProgress" },
     __name: "WdProgress",
@@ -3582,13 +3655,13 @@ var WD_REAL_MODULE = (() => {
             4
             /* STYLE */
           )
-        ], 10, _hoisted_128);
+        ], 10, _hoisted_129);
       };
     }
   });
 
   // .demo-build/WdRadioGroup.ts
-  var _hoisted_129 = {
+  var _hoisted_130 = {
     class: "wd-radio-group",
     role: "radiogroup"
   };
@@ -3613,7 +3686,7 @@ var WD_REAL_MODULE = (() => {
         if (!props.disabled) emit("update:modelValue", value);
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_129, [
+        return openBlock(), createElementBlock("div", _hoisted_130, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -3654,7 +3727,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdRate.ts
-  var _hoisted_130 = ["aria-label", "aria-disabled"];
+  var _hoisted_131 = ["aria-label", "aria-disabled"];
   var _hoisted_224 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"];
   var WdRate_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdRate" },
@@ -3749,13 +3822,13 @@ var WD_REAL_MODULE = (() => {
             128
             /* KEYED_FRAGMENT */
           ))
-        ], 42, _hoisted_130);
+        ], 42, _hoisted_131);
       };
     }
   });
 
   // .demo-build/WdResult.ts
-  var _hoisted_131 = { class: "wd-result__icon" };
+  var _hoisted_133 = { class: "wd-result__icon" };
   var _hoisted_225 = {
     key: 0,
     width: "30",
@@ -3788,7 +3861,7 @@ var WD_REAL_MODULE = (() => {
     "stroke-width": "2.6",
     "stroke-linecap": "round"
   };
-  var _hoisted_511 = {
+  var _hoisted_510 = {
     key: 3,
     width: "30",
     height: "30",
@@ -3826,7 +3899,7 @@ var WD_REAL_MODULE = (() => {
             class: normalizeClass(["wd-result", `wd-result--${__props.status}`])
           },
           [
-            createElementVNode("div", _hoisted_131, [
+            createElementVNode("div", _hoisted_133, [
               renderSlot(_ctx.$slots, "icon", {}, () => [
                 __props.status === "success" ? (openBlock(), createElementBlock("svg", _hoisted_225, [..._cache[0] || (_cache[0] = [
                   createElementVNode(
@@ -3852,7 +3925,7 @@ var WD_REAL_MODULE = (() => {
                     -1
                     /* CACHED */
                   )
-                ])])) : (openBlock(), createElementBlock("svg", _hoisted_511, [..._cache[3] || (_cache[3] = [
+                ])])) : (openBlock(), createElementBlock("svg", _hoisted_510, [..._cache[3] || (_cache[3] = [
                   createElementVNode(
                     "path",
                     { d: "M12 11v6M12 7.5h.01" },
@@ -3902,14 +3975,14 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSegmented.ts
-  var _hoisted_133 = ["aria-hidden"];
+  var _hoisted_134 = ["aria-hidden"];
   var _hoisted_226 = ["aria-selected", "tabindex", "onClick"];
   var _hoisted_322 = {
     key: 0,
     class: "wd-segmented-picker"
   };
   var _hoisted_415 = ["aria-expanded"];
-  var _hoisted_512 = { class: "wd-segmented-picker__label" };
+  var _hoisted_511 = { class: "wd-segmented-picker__label" };
   var _hoisted_66 = { class: "wd-segmented-picker__meta" };
   var _hoisted_76 = {
     key: 0,
@@ -4108,7 +4181,7 @@ var WD_REAL_MODULE = (() => {
                 128
                 /* KEYED_FRAGMENT */
               ))
-            ], 42, _hoisted_133),
+            ], 42, _hoisted_134),
             createCommentVNode(" \u9009\u9879\u8FC7\u591A\uFF1A\u964D\u7EA7\u4E3A\u4E0B\u62C9\u7B5B\u9009 "),
             mode.value === "dropdown" ? (openBlock(), createElementBlock("div", _hoisted_322, [
               createElementVNode("button", {
@@ -4120,7 +4193,7 @@ var WD_REAL_MODULE = (() => {
               }, [
                 createElementVNode(
                   "span",
-                  _hoisted_512,
+                  _hoisted_511,
                   toDisplayString(activeLabel.value),
                   1
                   /* TEXT */
@@ -4212,7 +4285,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSelect.ts
-  var _hoisted_134 = ["disabled", "aria-expanded"];
+  var _hoisted_135 = ["disabled", "aria-expanded"];
   var _hoisted_227 = {
     key: 0,
     class: "wd-select__tags"
@@ -4222,7 +4295,7 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-select__tag wd-select__tag--more"
   };
-  var _hoisted_513 = { class: "wd-select__value" };
+  var _hoisted_512 = { class: "wd-select__value" };
   var _hoisted_67 = {
     key: 2,
     class: "wd-select__placeholder"
@@ -4445,7 +4518,7 @@ var WD_REAL_MODULE = (() => {
                   createCommentVNode(" \u5355\u9009 "),
                   createElementVNode(
                     "span",
-                    _hoisted_513,
+                    _hoisted_512,
                     toDisplayString(singleLabel.value),
                     1
                     /* TEXT */
@@ -4512,7 +4585,7 @@ var WD_REAL_MODULE = (() => {
                   /* CLASS */
                 ))
               ])
-            ], 10, _hoisted_134),
+            ], 10, _hoisted_135),
             createVNode(Transition, {
               name: "wd-pop",
               duration: unref(POP_DURATION)
@@ -4662,7 +4735,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSlider.ts
-  var _hoisted_135 = { class: "wd-slider" };
+  var _hoisted_136 = { class: "wd-slider" };
   var _hoisted_228 = ["min", "max", "step", "value"];
   var _hoisted_324 = {
     key: 0,
@@ -4704,7 +4777,7 @@ var WD_REAL_MODULE = (() => {
         }
       );
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_135, [
+        return openBlock(), createElementBlock("div", _hoisted_136, [
           createElementVNode("input", {
             ref_key: "el",
             ref: el,
@@ -4729,7 +4802,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSortableList.ts
-  var _hoisted_136 = ["onPointerdown"];
+  var _hoisted_137 = ["onPointerdown"];
   var _hoisted_229 = { class: "wd-sortable__label" };
   var _hoisted_325 = { class: "wd-sortable__label" };
   var DRAG_THRESHOLD = 4;
@@ -4868,7 +4941,7 @@ var WD_REAL_MODULE = (() => {
                         1
                         /* TEXT */
                       )
-                    ], 42, _hoisted_136);
+                    ], 42, _hoisted_137);
                   }),
                   128
                   /* KEYED_FRAGMENT */
@@ -5043,7 +5116,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSteps.ts
-  var _hoisted_137 = { class: "wd-steps" };
+  var _hoisted_138 = { class: "wd-steps" };
   var _hoisted_230 = { class: "wd-steps__dot" };
   var _hoisted_326 = {
     key: 0,
@@ -5057,7 +5130,7 @@ var WD_REAL_MODULE = (() => {
     "stroke-linejoin": "round"
   };
   var _hoisted_417 = { class: "wd-steps__label" };
-  var _hoisted_514 = {
+  var _hoisted_513 = {
     key: 0,
     class: "wd-steps__desc"
   };
@@ -5079,7 +5152,7 @@ var WD_REAL_MODULE = (() => {
         return "wait";
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_137, [
+        return openBlock(), createElementBlock("div", _hoisted_138, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -5125,7 +5198,7 @@ var WD_REAL_MODULE = (() => {
                         ),
                         s.desc ? (openBlock(), createElementBlock(
                           "em",
-                          _hoisted_514,
+                          _hoisted_513,
                           toDisplayString(s.desc),
                           1
                           /* TEXT */
@@ -5159,7 +5232,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSwitch.ts
-  var _hoisted_138 = ["aria-checked", "disabled"];
+  var _hoisted_139 = ["aria-checked", "disabled"];
   var WdSwitch_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSwitch" },
     __name: "WdSwitch",
@@ -5186,29 +5259,71 @@ var WD_REAL_MODULE = (() => {
             -1
             /* CACHED */
           )
-        ])], 10, _hoisted_138);
+        ])], 10, _hoisted_139);
       };
     }
   });
 
   // .demo-build/WdTable.ts
-  var _hoisted_139 = { class: "wd-table-wrap" };
-  var _hoisted_231 = ["aria-sort", "onClick"];
+  var _hoisted_140 = {
+    key: 0,
+    class: "wd-table__th wd-table__th--check"
+  };
+  var _hoisted_231 = ["aria-checked"];
   var _hoisted_327 = {
+    key: 0,
+    width: "10",
+    height: "10",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    "stroke-width": "3.6",
+    "stroke-linecap": "round"
+  };
+  var _hoisted_418 = {
+    key: 1,
+    width: "10",
+    height: "10",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    "stroke-width": "3.6",
+    "stroke-linecap": "round",
+    "stroke-linejoin": "round"
+  };
+  var _hoisted_514 = ["aria-sort", "onClick"];
+  var _hoisted_68 = {
     key: 0,
     class: "wd-table__sort"
   };
-  var _hoisted_418 = {
+  var _hoisted_78 = {
     key: 0,
     d: "M12 5l7 7H5l7-7z"
   };
-  var _hoisted_515 = {
+  var _hoisted_88 = {
     key: 1,
     d: "M12 19l-7-7h14l-7 7z"
   };
-  var _hoisted_68 = {
+  var _hoisted_96 = ["onClick"];
+  var _hoisted_104 = ["aria-checked", "onClick"];
+  var _hoisted_1111 = {
+    key: 0,
+    width: "10",
+    height: "10",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    "stroke-width": "3.6",
+    "stroke-linecap": "round",
+    "stroke-linejoin": "round"
+  };
+  var _hoisted_1211 = {
     key: 1,
     class: "wd-table__empty"
+  };
+  var _hoisted_1310 = {
+    key: 2,
+    class: "wd-table__loading"
   };
   var WdTable_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdTable" },
@@ -5217,10 +5332,18 @@ var WD_REAL_MODULE = (() => {
       columns: { type: Array, required: false, default: () => [] },
       rows: { type: Array, required: false, default: () => [] },
       striped: { type: Boolean, required: false, default: true },
-      emptyText: { type: String, required: false, default: "\u6682\u65E0\u6570\u636E" }
+      emptyText: { type: String, required: false, default: "\u6682\u65E0\u6570\u636E" },
+      loading: { type: Boolean, required: false, default: false },
+      loadingText: { type: String, required: false, default: "\u52A0\u8F7D\u4E2D\u2026" },
+      selectable: { type: Boolean, required: false, default: false },
+      selected: { type: Array, required: false, default: () => [] },
+      rowKey: { type: String, required: false, default: "" },
+      maxHeight: { type: [Number, String], required: false, default: "" }
     },
-    setup(__props) {
+    emits: ["update:selected", "change", "rowClick"],
+    setup(__props, { emit: __emit }) {
       const props = __props;
+      const emit = __emit;
       const sortKey = ref("");
       const sortDir = ref("asc");
       const sorted = computed(() => {
@@ -5231,6 +5354,26 @@ var WD_REAL_MODULE = (() => {
           return sortDir.value === "asc" ? cmp : -cmp;
         });
       });
+      function keyOf(row, i) {
+        const k = props.rowKey;
+        return k && row[k] !== void 0 ? String(row[k]) : String(i);
+      }
+      const selectedKeys = computed(() => new Set(props.selected.map((r, i) => keyOf(r, i))));
+      const isChecked = (row, i) => props.selected.some((r) => keyOf(r, 0) === keyOf(row, i) || r === row);
+      const allChecked = computed(
+        () => props.rows.length > 0 && props.rows.every((r, i) => props.selected.some((s) => s === r || keyOf(s, 0) === keyOf(r, i)))
+      );
+      const someChecked = computed(() => props.selected.length > 0 && !allChecked.value);
+      function toggleRow(row) {
+        const next = props.selected.includes(row) ? props.selected.filter((r) => r !== row) : [...props.selected, row];
+        emit("update:selected", next);
+        emit("change", next);
+      }
+      function toggleAll() {
+        const next = allChecked.value ? [] : [...props.rows];
+        emit("update:selected", next);
+        emit("change", next);
+      }
       function toggleSort(key, col) {
         if (!col.sortable) return;
         if (sortKey.value === key) {
@@ -5240,115 +5383,201 @@ var WD_REAL_MODULE = (() => {
           sortDir.value = "asc";
         }
       }
+      const wrapStyle = computed(
+        () => props.maxHeight ? { maxHeight: typeof props.maxHeight === "number" ? `${props.maxHeight}px` : props.maxHeight } : void 0
+      );
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_139, [
-          props.rows.length ? (openBlock(), createElementBlock(
-            "table",
-            {
-              key: 0,
-              class: normalizeClass(["wd-table", { "wd-table--striped": __props.striped }])
-            },
-            [
-              createElementVNode("thead", null, [
-                createElementVNode("tr", null, [
+        return openBlock(), createElementBlock(
+          "div",
+          {
+            class: normalizeClass(["wd-table-wrap", { "wd-table-wrap--loading": __props.loading }]),
+            style: normalizeStyle(wrapStyle.value)
+          },
+          [
+            props.rows.length ? (openBlock(), createElementBlock(
+              "table",
+              {
+                key: 0,
+                class: normalizeClass(["wd-table", { "wd-table--striped": __props.striped }])
+              },
+              [
+                createElementVNode("thead", null, [
+                  createElementVNode("tr", null, [
+                    __props.selectable ? (openBlock(), createElementBlock("th", _hoisted_140, [
+                      createElementVNode("button", {
+                        type: "button",
+                        class: normalizeClass(["wd-table__check", { "wd-table__check--on": allChecked.value, "wd-table__check--part": someChecked.value }]),
+                        "aria-checked": allChecked.value ? "true" : someChecked.value ? "mixed" : "false",
+                        role: "checkbox",
+                        "aria-label": "\u5168\u9009",
+                        onClick: toggleAll
+                      }, [
+                        someChecked.value && !allChecked.value ? (openBlock(), createElementBlock("svg", _hoisted_327, [..._cache[1] || (_cache[1] = [
+                          createElementVNode(
+                            "path",
+                            { d: "M6 12h12" },
+                            null,
+                            -1
+                            /* CACHED */
+                          )
+                        ])])) : allChecked.value ? (openBlock(), createElementBlock("svg", _hoisted_418, [..._cache[2] || (_cache[2] = [
+                          createElementVNode(
+                            "path",
+                            { d: "m4.5 12.5 5 5 10-11" },
+                            null,
+                            -1
+                            /* CACHED */
+                          )
+                        ])])) : createCommentVNode("v-if", true)
+                      ], 10, _hoisted_231)
+                    ])) : createCommentVNode("v-if", true),
+                    (openBlock(true), createElementBlock(
+                      Fragment,
+                      null,
+                      renderList(props.columns, (col) => {
+                        return openBlock(), createElementBlock("th", {
+                          key: col.key,
+                          style: normalizeStyle(col.width ? { width: col.width } : void 0),
+                          class: normalizeClass(["wd-table__th", { "wd-table__th--sort": col.sortable }]),
+                          "aria-sort": sortKey.value === col.key ? sortDir.value === "asc" ? "ascending" : "descending" : "none",
+                          onClick: ($event) => toggleSort(col.key, col)
+                        }, [
+                          createTextVNode(
+                            toDisplayString(col.title) + " ",
+                            1
+                            /* TEXT */
+                          ),
+                          col.sortable ? (openBlock(), createElementBlock("span", _hoisted_68, [
+                            (openBlock(), createElementBlock(
+                              "svg",
+                              {
+                                width: "12",
+                                height: "12",
+                                viewBox: "0 0 24 24",
+                                fill: "currentColor",
+                                style: normalizeStyle({ color: sortKey.value === col.key ? "var(--wd-red)" : "var(--wd-ink-3)" })
+                              },
+                              [
+                                sortKey.value !== col.key || sortDir.value === "asc" ? (openBlock(), createElementBlock("path", _hoisted_78)) : (openBlock(), createElementBlock("path", _hoisted_88))
+                              ],
+                              4
+                              /* STYLE */
+                            ))
+                          ])) : createCommentVNode("v-if", true)
+                        ], 14, _hoisted_514);
+                      }),
+                      128
+                      /* KEYED_FRAGMENT */
+                    ))
+                  ])
+                ]),
+                createElementVNode("tbody", null, [
                   (openBlock(true), createElementBlock(
                     Fragment,
                     null,
-                    renderList(props.columns, (col) => {
-                      return openBlock(), createElementBlock("th", {
-                        key: col.key,
-                        style: normalizeStyle(col.width ? { width: col.width } : void 0),
-                        class: normalizeClass(["wd-table__th", { "wd-table__th--sort": col.sortable }]),
-                        "aria-sort": sortKey.value === col.key ? sortDir.value === "asc" ? "ascending" : "descending" : "none",
-                        onClick: ($event) => toggleSort(col.key, col)
+                    renderList(sorted.value, (row, i) => {
+                      return openBlock(), createElementBlock("tr", {
+                        key: keyOf(row, i),
+                        class: normalizeClass({ "wd-table__row--checked": __props.selectable && __props.selected.includes(row) }),
+                        onClick: ($event) => emit("rowClick", row, i)
                       }, [
-                        createTextVNode(
-                          toDisplayString(col.title) + " ",
-                          1
-                          /* TEXT */
-                        ),
-                        col.sortable ? (openBlock(), createElementBlock("span", _hoisted_327, [
-                          (openBlock(), createElementBlock(
-                            "svg",
-                            {
-                              width: "12",
-                              height: "12",
-                              viewBox: "0 0 24 24",
-                              fill: "currentColor",
-                              style: normalizeStyle({ color: sortKey.value === col.key ? "var(--wd-red)" : "var(--wd-ink-3)" })
-                            },
-                            [
-                              sortKey.value !== col.key || sortDir.value === "asc" ? (openBlock(), createElementBlock("path", _hoisted_418)) : (openBlock(), createElementBlock("path", _hoisted_515))
-                            ],
-                            4
-                            /* STYLE */
-                          ))
-                        ])) : createCommentVNode("v-if", true)
-                      ], 14, _hoisted_231);
+                        __props.selectable ? (openBlock(), createElementBlock("td", {
+                          key: 0,
+                          class: "wd-table__td--check",
+                          onClick: _cache[0] || (_cache[0] = withModifiers(() => {
+                          }, ["stop"]))
+                        }, [
+                          createElementVNode("button", {
+                            type: "button",
+                            class: normalizeClass(["wd-table__check", { "wd-table__check--on": __props.selected.includes(row) }]),
+                            "aria-checked": __props.selected.includes(row) ? "true" : "false",
+                            role: "checkbox",
+                            "aria-label": "\u9009\u62E9\u6B64\u884C",
+                            onClick: ($event) => toggleRow(row)
+                          }, [
+                            __props.selected.includes(row) ? (openBlock(), createElementBlock("svg", _hoisted_1111, [..._cache[3] || (_cache[3] = [
+                              createElementVNode(
+                                "path",
+                                { d: "m4.5 12.5 5 5 10-11" },
+                                null,
+                                -1
+                                /* CACHED */
+                              )
+                            ])])) : createCommentVNode("v-if", true)
+                          ], 10, _hoisted_104)
+                        ])) : createCommentVNode("v-if", true),
+                        (openBlock(true), createElementBlock(
+                          Fragment,
+                          null,
+                          renderList(props.columns, (col) => {
+                            return openBlock(), createElementBlock(
+                              "td",
+                              {
+                                key: col.key,
+                                style: normalizeStyle(col.align ? { textAlign: col.align } : void 0)
+                              },
+                              [
+                                renderSlot(_ctx.$slots, `cell-${col.key}`, {
+                                  row,
+                                  value: row[col.key]
+                                }, () => [
+                                  createTextVNode(
+                                    toDisplayString(row[col.key]),
+                                    1
+                                    /* TEXT */
+                                  )
+                                ])
+                              ],
+                              4
+                              /* STYLE */
+                            );
+                          }),
+                          128
+                          /* KEYED_FRAGMENT */
+                        ))
+                      ], 10, _hoisted_96);
                     }),
                     128
                     /* KEYED_FRAGMENT */
                   ))
                 ])
-              ]),
-              createElementVNode("tbody", null, [
-                (openBlock(true), createElementBlock(
-                  Fragment,
-                  null,
-                  renderList(sorted.value, (row, i) => {
-                    return openBlock(), createElementBlock("tr", { key: i }, [
-                      (openBlock(true), createElementBlock(
-                        Fragment,
-                        null,
-                        renderList(props.columns, (col) => {
-                          return openBlock(), createElementBlock(
-                            "td",
-                            {
-                              key: col.key,
-                              style: normalizeStyle(col.align ? { textAlign: col.align } : void 0)
-                            },
-                            [
-                              renderSlot(_ctx.$slots, `cell-${col.key}`, {
-                                row,
-                                value: row[col.key]
-                              }, () => [
-                                createTextVNode(
-                                  toDisplayString(row[col.key]),
-                                  1
-                                  /* TEXT */
-                                )
-                              ])
-                            ],
-                            4
-                            /* STYLE */
-                          );
-                        }),
-                        128
-                        /* KEYED_FRAGMENT */
-                      ))
-                    ]);
-                  }),
-                  128
-                  /* KEYED_FRAGMENT */
-                ))
-              ])
-            ],
-            2
-            /* CLASS */
-          )) : (openBlock(), createElementBlock(
-            "div",
-            _hoisted_68,
-            toDisplayString(__props.emptyText),
-            1
-            /* TEXT */
-          ))
-        ]);
+              ],
+              2
+              /* CLASS */
+            )) : !__props.loading ? (openBlock(), createElementBlock(
+              "div",
+              _hoisted_1211,
+              toDisplayString(__props.emptyText),
+              1
+              /* TEXT */
+            )) : createCommentVNode("v-if", true),
+            createCommentVNode(" \u52A0\u8F7D\u4E2D\uFF1A\u76D6\u4E00\u5C42\u534A\u900F\u660E\u906E\u7F69 + \u8F6C\u5708\uFF0C\u4FDD\u7559\u8868\u5934\u7ED3\u6784 "),
+            __props.loading ? (openBlock(), createElementBlock("div", _hoisted_1310, [
+              _cache[4] || (_cache[4] = createElementVNode(
+                "span",
+                { class: "wd-spinner" },
+                null,
+                -1
+                /* CACHED */
+              )),
+              createElementVNode(
+                "span",
+                null,
+                toDisplayString(__props.loadingText),
+                1
+                /* TEXT */
+              )
+            ])) : createCommentVNode("v-if", true)
+          ],
+          6
+          /* CLASS, STYLE */
+        );
       };
     }
   });
 
   // .demo-build/WdTabs.ts
-  var _hoisted_140 = ["aria-selected", "onClick"];
+  var _hoisted_141 = ["aria-selected", "onClick"];
   var WdTabs_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdTabs" },
     __name: "WdTabs",
@@ -5361,6 +5590,11 @@ var WD_REAL_MODULE = (() => {
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const animReady = ref(false);
+      function select(v) {
+        animReady.value = true;
+        emit("update:modelValue", v);
+      }
       const items = computed(
         () => props.tabs.map((t) => typeof t === "string" ? { label: t, value: t } : t)
       );
@@ -5368,7 +5602,7 @@ var WD_REAL_MODULE = (() => {
         return openBlock(), createElementBlock(
           "div",
           {
-            class: normalizeClass(["wd-tabs", { "wd-tabs--block": __props.block }]),
+            class: normalizeClass(["wd-tabs", { "wd-tabs--block": __props.block, "wd-tabs--anim-ready": animReady.value }]),
             role: "tablist"
           },
           [
@@ -5383,8 +5617,8 @@ var WD_REAL_MODULE = (() => {
                   class: normalizeClass(["wd-tabs__item", { "wd-tabs__item--active": t.value === __props.modelValue }]),
                   "data-wd-hover": "",
                   "aria-selected": t.value === __props.modelValue,
-                  onClick: ($event) => emit("update:modelValue", t.value)
-                }, toDisplayString(t.label), 11, _hoisted_140);
+                  onClick: ($event) => select(t.value)
+                }, toDisplayString(t.label), 11, _hoisted_141);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -5398,7 +5632,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTag.ts
-  var _hoisted_141 = {
+  var _hoisted_143 = {
     key: 0,
     class: "wd-tag__dot"
   };
@@ -5419,7 +5653,7 @@ var WD_REAL_MODULE = (() => {
             "data-wd-hover": ""
           },
           [
-            __props.dot ? (openBlock(), createElementBlock("i", _hoisted_141)) : createCommentVNode("v-if", true),
+            __props.dot ? (openBlock(), createElementBlock("i", _hoisted_143)) : createCommentVNode("v-if", true),
             renderSlot(_ctx.$slots, "default")
           ],
           2
@@ -5430,7 +5664,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTimeline.ts
-  var _hoisted_143 = {
+  var _hoisted_144 = {
     key: 0,
     class: "wd-timeline__period"
   };
@@ -5465,7 +5699,7 @@ var WD_REAL_MODULE = (() => {
                 }, [
                   it.period ? (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_143,
+                    _hoisted_144,
                     toDisplayString(it.period),
                     1
                     /* TEXT */
@@ -5500,7 +5734,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTooltip.ts
-  var _hoisted_144 = {
+  var _hoisted_145 = {
     key: 0,
     class: "wd-tooltip__bubble",
     role: "tooltip"
@@ -5530,7 +5764,7 @@ var WD_REAL_MODULE = (() => {
               default: withCtx(() => [
                 open.value ? (openBlock(), createElementBlock(
                   "span",
-                  _hoisted_144,
+                  _hoisted_145,
                   toDisplayString(__props.content),
                   1
                   /* TEXT */
@@ -5548,7 +5782,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdUpload.ts
-  var _hoisted_145 = { class: "wd-upload" };
+  var _hoisted_146 = { class: "wd-upload" };
   var _hoisted_233 = {
     key: 0,
     class: "wd-upload__hint"
@@ -5558,14 +5792,14 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-upload__list"
   };
-  var _hoisted_516 = { class: "wd-upload__info" };
+  var _hoisted_515 = { class: "wd-upload__info" };
   var _hoisted_69 = { class: "wd-upload__name" };
-  var _hoisted_78 = { class: "wd-upload__meta" };
-  var _hoisted_88 = {
+  var _hoisted_79 = { class: "wd-upload__meta" };
+  var _hoisted_89 = {
     key: 0,
     class: "wd-upload__progress"
   };
-  var _hoisted_96 = ["onClick"];
+  var _hoisted_97 = ["onClick"];
   var WdUpload_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdUpload" },
     __name: "WdUpload",
@@ -5616,7 +5850,7 @@ var WD_REAL_MODULE = (() => {
         emit("change", files.value);
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_145, [
+        return openBlock(), createElementBlock("div", _hoisted_146, [
           createElementVNode(
             "div",
             {
@@ -5680,7 +5914,7 @@ var WD_REAL_MODULE = (() => {
                     -1
                     /* CACHED */
                   )),
-                  createElementVNode("div", _hoisted_516, [
+                  createElementVNode("div", _hoisted_515, [
                     createElementVNode(
                       "div",
                       _hoisted_69,
@@ -5690,12 +5924,12 @@ var WD_REAL_MODULE = (() => {
                     ),
                     createElementVNode(
                       "div",
-                      _hoisted_78,
+                      _hoisted_79,
                       toDisplayString(fmtSize(f.size)) + " \xB7 " + toDisplayString(f.percent >= 100 ? "\u5DF2\u5B8C\u6210" : "\u4E0A\u4F20\u4E2D " + f.percent + "%"),
                       1
                       /* TEXT */
                     ),
-                    f.percent < 100 ? (openBlock(), createElementBlock("div", _hoisted_88, [
+                    f.percent < 100 ? (openBlock(), createElementBlock("div", _hoisted_89, [
                       createElementVNode(
                         "span",
                         {
@@ -5731,7 +5965,7 @@ var WD_REAL_MODULE = (() => {
                       -1
                       /* CACHED */
                     )
-                  ])], 8, _hoisted_96)
+                  ])], 8, _hoisted_97)
                 ]);
               }),
               128
@@ -5871,7 +6105,7 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdIcon.ts
   var import_meta = {};
-  var _hoisted_146 = ["innerHTML"];
+  var _hoisted_147 = ["innerHTML"];
   var WdIcon_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdIcon" },
     __name: "WdIcon",
@@ -5913,7 +6147,7 @@ var WD_REAL_MODULE = (() => {
           class: normalizeClass(["wd-icon", { "wd-icon--optical": factor.value !== 1 }]),
           style: normalizeStyle({ width: sizePx.value, height: sizePx.value }),
           innerHTML: svg.value
-        }, null, 14, _hoisted_146);
+        }, null, 14, _hoisted_147);
       };
     }
   });

@@ -50,3 +50,42 @@
   font-size: 13.5px;
   color: var(--wd-ink-2);
 }
+
+/* ---- 勾选列 ---- */
+.wd-table__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--wd-field);
+  color: #fff;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+}
+.wd-table__check:hover { background: var(--wd-field-hover); }
+.wd-table__check--on,
+.wd-table__check--part { background: var(--wd-red); }
+.wd-table__row--checked { background: var(--wd-tint-1); }
+.wd-table__row--checked:hover { background: var(--wd-tint-2); }
+
+/* ---- 加载遮罩 ---- */
+.wd-table-wrap { position: relative; }
+.wd-table-wrap--loading { min-height: 120px; }
+.wd-table-wrap--loading .wd-table { opacity: .45; pointer-events: none; }
+.wd-table__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+  background: color-mix(in srgb, var(--wd-card) 55%, transparent);
+  border-radius: inherit;
+}

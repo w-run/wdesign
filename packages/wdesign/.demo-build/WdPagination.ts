@@ -1,19 +1,15 @@
 import { defineComponent as _defineComponent } from 'vue'
 import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, renderList as _renderList, Fragment as _Fragment, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
 
-const _hoisted_1 = {
-  class: "wd-pagination",
-  "aria-label": "分页"
-}
-const _hoisted_2 = ["disabled"]
-const _hoisted_3 = {
+const _hoisted_1 = ["disabled"]
+const _hoisted_2 = {
   key: 0,
   class: "wd-pagination__dots"
 }
-const _hoisted_4 = ["onClick"]
-const _hoisted_5 = ["disabled"]
+const _hoisted_3 = ["onClick"]
+const _hoisted_4 = ["disabled"]
 
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 
 export default /*@__PURE__*/_defineComponent({
@@ -33,6 +29,9 @@ const props = __props
 
 const emit = __emit
 
+/** 首次交互后才播放激活项动画（避免首屏渲染时抖动） */
+const animReady = ref(false)
+
 const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
 
 const range = computed<(number | '...')[]>(() => {
@@ -50,12 +49,16 @@ const range = computed<(number | '...')[]>(() => {
 })
 
 function go(p: number) {
+  animReady.value = true
   const v = Math.min(Math.max(1, p), pageCount.value)
   if (v !== props.modelValue) emit('update:modelValue', v)
 }
 
 return (_ctx: any,_cache: any) => {
-  return (_openBlock(), _createElementBlock("nav", _hoisted_1, [
+  return (_openBlock(), _createElementBlock("nav", {
+    class: _normalizeClass(["wd-pagination", { 'wd-pagination--anim-ready': animReady.value }]),
+    "aria-label": "分页"
+  }, [
     _createElementVNode("button", {
       type: "button",
       class: "wd-pagination__btn",
@@ -76,17 +79,17 @@ return (_ctx: any,_cache: any) => {
       }, [
         _createElementVNode("path", { d: "m15 18-6-6 6-6" })
       ], -1 /* CACHED */)
-    ]))], 8 /* PROPS */, _hoisted_2),
+    ]))], 8 /* PROPS */, _hoisted_1),
     (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(range.value, (p, i) => {
       return (_openBlock(), _createElementBlock(_Fragment, { key: i }, [
         (p === '...')
-          ? (_openBlock(), _createElementBlock("span", _hoisted_3, "…"))
+          ? (_openBlock(), _createElementBlock("span", _hoisted_2, "…"))
           : (_openBlock(), _createElementBlock("button", {
               key: 1,
               type: "button",
               class: _normalizeClass(["wd-pagination__btn", { 'wd-pagination__btn--active': p === __props.modelValue }]),
               onClick: ($event: any) => (go(p as number))
-            }, _toDisplayString(p), 11 /* TEXT, CLASS, PROPS */, _hoisted_4))
+            }, _toDisplayString(p), 11 /* TEXT, CLASS, PROPS */, _hoisted_3))
       ], 64 /* STABLE_FRAGMENT */))
     }), 128 /* KEYED_FRAGMENT */)),
     _createElementVNode("button", {
@@ -108,8 +111,8 @@ return (_ctx: any,_cache: any) => {
       }, [
         _createElementVNode("path", { d: "m9 6 6 6-6 6" })
       ], -1 /* CACHED */)
-    ]))], 8 /* PROPS */, _hoisted_5)
-  ]))
+    ]))], 8 /* PROPS */, _hoisted_4)
+  ], 2 /* CLASS */))
 }
 }
 

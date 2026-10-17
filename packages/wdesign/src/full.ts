@@ -21,6 +21,7 @@ import WdCheckbox from './components/WdCheckbox.vue'
 import WdCollapse from './components/WdCollapse.vue'
 import WdContainer from './components/WdContainer.vue'
 import WdDatePicker from './components/WdDatePicker.vue'
+import WdDivider from './components/WdDivider.vue'
 import WdDrawer from './components/WdDrawer.vue'
 import WdDropdown from './components/WdDropdown.vue'
 import WdEmpty from './components/WdEmpty.vue'
@@ -71,6 +72,7 @@ const components = [
   WdCollapse,
   WdContainer,
   WdDatePicker,
+  WdDivider,
   WdDrawer,
   WdDropdown,
   WdEmpty,

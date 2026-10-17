@@ -39,6 +39,8 @@
 .wd-badge--gray .wd-badge__dot,
 .wd-badge--gray .wd-badge__count { background: var(--wd-ink-3); }
 /* ---- 微交互（精致版）---- */
-.wd-badge__dot,
-.wd-badge__count { animation: wd-bloom var(--wd-dur) var(--wd-ease-out) forwards; }
+.wd-badge--anim-ready .wd-badge__dot,
+.wd-badge--anim-ready .wd-badge__count {
+  animation: wd-bloom var(--wd-dur) var(--wd-ease-out) forwards;
+}
 

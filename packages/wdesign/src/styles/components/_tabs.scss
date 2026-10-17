@@ -39,5 +39,9 @@
   box-shadow: var(--wd-shadow-sm);
 }
 /* ---- 微交互（精致版）---- */
-.wd-tabs__item--active { animation: wd-bloom var(--wd-dur-fast) var(--wd-ease-out) forwards; }
+/* 激活项弹入：只在「已就绪」后播放。
+   首屏渲染时激活项本就在位，再弹一次会让人觉得页面在抖。 */
+.wd-tabs--anim-ready .wd-tabs__item--active {
+  animation: wd-bloom var(--wd-dur-fast) var(--wd-ease-out) forwards;
+}
 

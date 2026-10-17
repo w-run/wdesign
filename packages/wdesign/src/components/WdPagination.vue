@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 defineOptions({ name: 'WdPagination' })
 
@@ -13,6 +13,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{ (e: 'update:modelValue', page: number): void }>()
+
+/** 首次交互后才播放激活项动画（避免首屏渲染时抖动） */
+const animReady = ref(false)
 
 const pageCount = computed(() => Math.max(1, Math.ceil(props.total / props.pageSize)))
 
@@ -31,13 +34,14 @@ const range = computed<(number | '...')[]>(() => {
 })
 
 function go(p: number) {
+  animReady.value = true
   const v = Math.min(Math.max(1, p), pageCount.value)
   if (v !== props.modelValue) emit('update:modelValue', v)
 }
 </script>
 
 <template>
-  <nav class="wd-pagination" aria-label="分页">
+  <nav class="wd-pagination" :class="{ 'wd-pagination--anim-ready': animReady }" aria-label="分页">
     <button type="button" class="wd-pagination__btn" data-wd-hover :disabled="modelValue <= 1" aria-label="上一页" @click="go(modelValue - 1)">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
     </button>

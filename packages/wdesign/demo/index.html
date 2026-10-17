@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792245577">
+<link rel="stylesheet" href="demo.css?v=1792247140">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -501,19 +501,31 @@
 
     <div class="demo-panel demo-panel--wide">
       <h3>TABLE 表格</h3>
-      <wd-table :columns="tableCols" :rows="tableRows" striped>
-        <template #cell-status="{ value }">
-          <span class="wd-tag" :class="value === 'active' ? 'wd-tag--tint' : 'wd-tag--gray'">
-            <i class="wd-tag__dot" :style="{ background: value === 'active' ? 'var(--wd-success)' : 'var(--wd-ink-3)' }"></i>
-            {{ value === 'active' ? '活跃' : '归档' }}
-          </span>
-        </template>
-        <template #cell-name="{ value }">
-          <strong style="font-weight:700">{{ value }}</strong>
-        </template>
-      </wd-table>
-      <span class="demo-cap" style="margin-top:10px">striped 斑马纹 · 列可排序 · 支持 #cell-&lt;key&gt; 自定义单元格</span>
-      <div style="margin-top:16px">
+      <div class="demo-col" style="width:100%; gap:14px">
+        <wd-table :columns="tableCols" :rows="tableRows" striped selectable row-key="name"
+          :selected="tableSel" @update:selected="v => tableSel = v">
+          <template #cell-status="{ value }">
+            <span class="wd-tag" :class="value === 'active' ? 'wd-tag--tint' : 'wd-tag--gray'">
+              <i class="wd-tag__dot" :style="{ background: value === 'active' ? 'var(--wd-success)' : 'var(--wd-ink-3)' }"></i>
+              {{ value === 'active' ? '活跃' : '归档' }}
+            </span>
+          </template>
+          <template #cell-name="{ value }">
+            <strong style="font-weight:700">{{ value }}</strong>
+          </template>
+        </wd-table>
+        <span class="demo-cap">striped · 可排序 · selectable（已选 {{ tableSel.length }} 行）· #cell-&lt;key&gt; 自定义单元格</span>
+
+        <wd-divider spacing="6"></wd-divider>
+
+        <wd-table :columns="tableCols" :rows="tableRows" :loading="tableLoading"></wd-table>
+        <div class="demo-row" style="gap:10px; align-items:center">
+          <wd-button variant="tint" size="sm" @click="toggleTableLoading">切换 loading</wd-button>
+          <span class="demo-cap">{{ tableLoading ? '加载中…' : '已就绪' }}</span>
+        </div>
+
+        <wd-divider spacing="6"></wd-divider>
+
         <wd-table :columns="tableCols" :rows="[]" empty-text="暂无仓库数据"></wd-table>
         <span class="demo-cap">空数据 + 自定义 emptyText</span>
       </div>
@@ -697,7 +709,34 @@
     <p class="hint">Space · Grid · Container —— 无边框，用间距与留白组织；再附组件尺寸档位演示。</p>
 
     <div class="demo-grid">
-    <div class="demo-panel demo-panel--wide">
+        <div class="demo-panel demo-panel--wide">
+      <h3>DIVIDER 分隔线</h3>
+      <div class="demo-col" style="width:100%; max-width:520px">
+        <span class="demo-cap">无文字</span>
+        <wd-divider></wd-divider>
+
+        <span class="demo-cap">带文字（居中）</span>
+        <wd-divider>分组标题</wd-divider>
+
+        <span class="demo-cap">align=left / right</span>
+        <wd-divider align="left">左对齐</wd-divider>
+        <wd-divider align="right">右对齐</wd-divider>
+
+        <span class="demo-cap">虚线</span>
+        <wd-divider variant="dashed"></wd-divider>
+
+        <span class="demo-cap">垂直（行内分隔）</span>
+        <div style="display:flex; align-items:center; gap:10px; font-size:13px">
+          <span>编辑</span>
+          <wd-divider direction="vertical"></wd-divider>
+          <span>复制</span>
+          <wd-divider direction="vertical"></wd-divider>
+          <span>删除</span>
+        </div>
+      </div>
+    </div>
+
+<div class="demo-panel demo-panel--wide">
       <h3>SPACE 间距</h3>
       <div class="demo-col" style="width:100%; max-width:640px">
         <wd-space size="sm"><wd-tag>sm</wd-tag><wd-tag>间距</wd-tag><wd-tag>8px</wd-tag></wd-space>
@@ -923,11 +962,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792245577"></script>
-<script src="icons.data.js?v=1792245577"></script>
-<script src="demo-extra.js?v=1792245577"></script>
-<script src="components.js?v=1792245577"></script>
-<script src="demo.js?v=1792245577"></script>
+<script src="icons.optical.js?v=1792247140"></script>
+<script src="icons.data.js?v=1792247140"></script>
+<script src="demo-extra.js?v=1792247140"></script>
+<script src="components.js?v=1792247140"></script>
+<script src="demo.js?v=1792247140"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

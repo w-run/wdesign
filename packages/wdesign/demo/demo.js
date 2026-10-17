@@ -238,6 +238,8 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      tableSel: [],
+      tableLoading: false,
       city: '',
       cityOptions: ['北京','上海','广州','深圳','杭州','成都','武汉','西安','南京','重庆'],
       tagsPick: ['Vue'],
@@ -391,6 +393,10 @@ const app = createApp({
     }
   },
   methods: {
+    toggleTableLoading() {
+      this.tableLoading = true
+      setTimeout(() => { this.tableLoading = false }, 1600)
+    },
     fakeSubmit() {
       this.btnLoading = true
       setTimeout(() => { this.btnLoading = false }, 1500)

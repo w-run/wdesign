@@ -35,5 +35,7 @@
 
 .wd-pagination__dots { color: var(--wd-ink-2); font-size: 13px; padding: 0 2px; }
 /* ---- 微交互（精致版）---- */
-.wd-pagination__btn--active { animation: wd-bloom var(--wd-dur) var(--wd-ease-out) forwards; }
+.wd-pagination--anim-ready .wd-pagination__btn--active {
+  animation: wd-bloom var(--wd-dur) var(--wd-ease-out) forwards;
+}
 

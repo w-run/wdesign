@@ -10,7 +10,7 @@ const _hoisted_2 = {
   class: "wd-badge__count"
 }
 
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 
 export default /*@__PURE__*/_defineComponent({
@@ -39,9 +39,16 @@ const showCount = computed(
   () => !props.dot && props.value !== '' && props.value !== undefined && props.value !== null,
 )
 
+/**
+ * 仅在数值**变化**时播放弹入动画。
+ * 首屏渲染时徽标本来就该静止呈现，一加载就弹会显得页面在抖。
+ */
+const animReady = ref(false)
+watch(() => props.value, () => { animReady.value = true })
+
 return (_ctx: any,_cache: any) => {
   return (_openBlock(), _createElementBlock("span", {
-    class: _normalizeClass(["wd-badge", __props.tone === 'gray' ? 'wd-badge--gray' : ''])
+    class: _normalizeClass(["wd-badge", [__props.tone === 'gray' ? 'wd-badge--gray' : '', { 'wd-badge--anim-ready': animReady.value }]])
   }, [
     _renderSlot(_ctx.$slots, "default"),
     (__props.dot)
