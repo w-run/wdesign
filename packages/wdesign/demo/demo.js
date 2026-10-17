@@ -238,6 +238,25 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      btnLoading: false,
+      kw: '',
+      bio: '',
+      formModel: { name: '', email: '', role: '', agree: false },
+      formRules: {
+        name: [
+          { required: true, message: '请填写姓名' },
+          { min: 2, max: 12, message: '姓名需 2–12 个字符' },
+        ],
+        email: [
+          { required: true, message: '请填写邮箱' },
+          { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: '邮箱格式不正确' },
+        ],
+        role: [{ required: true, message: '请选择角色' }],
+        agree: [
+          { validator: (v) => (v === true ? true : '请先同意条款'), message: '请先同意条款' },
+        ],
+      },
+
       email: '',
       pwd: '',
       sliderFine: 3.5,
@@ -368,6 +387,16 @@ const app = createApp({
     }
   },
   methods: {
+    fakeSubmit() {
+      this.btnLoading = true
+      setTimeout(() => { this.btnLoading = false }, 1500)
+    },
+    onFormSubmit(model) {
+      this.formSubmitted = JSON.stringify(model)
+      this.$nextTick(() => {
+        if (window.WD_TOAST) window.WD_TOAST.success('校验通过，已提交')
+      })
+    },
     onMenu(v) {
       window.WD_TOAST.info('选择：' + v)
     },

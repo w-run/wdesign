@@ -29,6 +29,8 @@ rmSync(TMP, { recursive: true, force: true })
 mkdirSync(TMP, { recursive: true })
 
 const files = readdirSync(COMP).filter(f => f.endsWith('.vue')).sort()
+// 组件共用的辅助模块（如 form-context.ts）也要一并带上
+const helpers = readdirSync(COMP).filter(f => f.endsWith('.ts'))
 // 图标组件在独立包里，也要一并编译（demo 用 window.WD_ICONS 内联数据）
 const ICON_SRC = join(ROOT, '../wdesign-icons/src/WdIcon.vue')
 const ICON_OPT = join(ROOT, '../wdesign-icons/src/optical.js')
@@ -69,6 +71,11 @@ for (const f of files) {
   names.push('WdIcon')
   entry.push("export { default as WdIcon } from './WdIcon'")
   console.log('   + WdIcon（来自 wdesign-icons）')
+}
+
+// 复制 .ts 辅助模块
+for (const h of helpers) {
+  writeFileSync(join(TMP, h), readFileSync(join(COMP, h), 'utf8'))
 }
 
 writeFileSync(join(TMP, 'entry.ts'), entry.join('\n') + '\n')

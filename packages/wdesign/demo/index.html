@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792242032">
+<link rel="stylesheet" href="demo.css?v=1792243160">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -80,7 +80,13 @@
       <div style="margin-top:14px; max-width:320px">
         <wd-button variant="primary" block>block 通栏按钮</wd-button>
       </div>
-      <span class="demo-cap" style="margin-top:10px">4 种 variant × 3 档尺寸 × 禁用／图标／通栏</span>
+      <div class="demo-row" style="margin-top:14px; align-items:center">
+        <wd-button variant="primary" loading>提交中</wd-button>
+        <wd-button variant="tint" loading loading-text="保存中…">保存</wd-button>
+        <wd-button variant="dark" :loading="btnLoading" @click="fakeSubmit">点我加载 1.5s</wd-button>
+        <span class="demo-cap">loading 时自动禁用点击，防重复提交</span>
+      </div>
+      <span class="demo-cap" style="margin-top:10px">4 种 variant × 3 档尺寸 × 禁用／图标／通栏／loading</span>
     </div>
 
     <div class="demo-panel">
@@ -122,7 +128,11 @@
         <wd-input placeholder="md" style="width:140px"></wd-input>
         <wd-input size="lg" placeholder="lg" style="width:160px"></wd-input>
       </div>
-      <span class="demo-cap" style="margin-top:10px">pill／rounded 形状 · type · 3 档尺寸 · 禁用</span>
+      <div class="demo-row" style="margin-top:12px; align-items:center; flex-wrap:wrap">
+        <wd-input v-model="kw" clearable placeholder="可清除（clearable）" style="width:220px"></wd-input>
+        <wd-input v-model="bio" :maxlength="20" show-count placeholder="最多 20 字（showCount）" style="width:240px"></wd-input>
+      </div>
+      <span class="demo-cap" style="margin-top:10px">pill／rounded · type · 3 档尺寸 · 禁用 · clearable · showCount</span>
     </div>
 
     <div class="demo-panel">
@@ -247,7 +257,35 @@
         <wd-tabs v-model="tab" block :tabs="['概览','活动','设置']" style="margin-top:12px"></wd-tabs>
         <span class="demo-cap">block 等宽铺满</span>
       </div>
+    </div>    <div class="demo-panel demo-panel--wide">
+      <h3>FORM 表单校验</h3>
+      <wd-form ref="demoForm" :model-value="formModel" :rules="formRules" label-position="left" label-width="84px"
+        @update:model-value="v => formModel = v" @submit="onFormSubmit">
+        <wd-form-item prop="name" label="姓名" hint="2–12 个字符">
+          <wd-input :model-value="formModel.name" placeholder="请输入姓名"
+            @update:model-value="v => formModel = { ...formModel, name: v }"></wd-input>
+        </wd-form-item>
+        <wd-form-item prop="email" label="邮箱">
+          <wd-input :model-value="formModel.email" type="email" placeholder="name@example.com"
+            @update:model-value="v => formModel = { ...formModel, email: v }"></wd-input>
+        </wd-form-item>
+        <wd-form-item prop="role" label="角色">
+          <wd-select :model-value="formModel.role" :options="['前端','后端','设计']"
+            @update:model-value="v => formModel = { ...formModel, role: v }"></wd-select>
+        </wd-form-item>
+        <wd-form-item prop="agree" label="协议">
+          <wd-checkbox :model-value="formModel.agree" label="我已阅读并同意条款"
+            @update:model-value="v => formModel = { ...formModel, agree: v }"></wd-checkbox>
+        </wd-form-item>
+        <div class="demo-row" style="gap:12px; margin-left:98px">
+          <wd-button variant="primary" type="submit">提交</wd-button>
+          <wd-button variant="tint" @click="$refs.demoForm.resetFields()">重置</wd-button>
+        </div>
+      </wd-form>
+      <span class="demo-cap" style="margin-top:12px">必需 / 长度 / 正则 / 自定义校验；提交前统一校验并聚焦首个错误</span>
     </div>
+
+
 
     <div class="demo-panel">
       <h3>BADGE 角标</h3>
@@ -877,11 +915,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792242032"></script>
-<script src="icons.data.js?v=1792242032"></script>
-<script src="demo-extra.js?v=1792242032"></script>
-<script src="components.js?v=1792242032"></script>
-<script src="demo.js?v=1792242032"></script>
+<script src="icons.optical.js?v=1792243160"></script>
+<script src="icons.data.js?v=1792243160"></script>
+<script src="demo-extra.js?v=1792243160"></script>
+<script src="components.js?v=1792243160"></script>
+<script src="demo.js?v=1792243160"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

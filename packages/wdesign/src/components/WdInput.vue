@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
 defineOptions({ name: 'WdInput' })
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modelValue?: string
     placeholder?: string
@@ -9,27 +11,95 @@ withDefaults(
     type?: string
     disabled?: boolean
     size?: 'lg' | 'md' | 'sm'
+    /** 有内容时显示清除按钮 */
+    clearable?: boolean
+    /** 最大长度 */
+    maxlength?: number
+    /** 显示「当前/上限」字数（需同时给 maxlength） */
+    showCount?: boolean
+    /** 只读 */
+    readonly?: boolean
   }>(),
-  { modelValue: '', placeholder: '', shape: 'pill', type: 'text', disabled: false, size: 'md' },
+  {
+    modelValue: '',
+    placeholder: '',
+    shape: 'pill',
+    type: 'text',
+    disabled: false,
+    size: 'md',
+    clearable: false,
+    showCount: false,
+    readonly: false,
+  },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void
+  (e: 'clear'): void
+  (e: 'enter', value: string): void
+}>()
+
+const el = ref<HTMLInputElement | null>(null)
+
+const hasValue = computed(() => props.modelValue.length > 0)
+const showClear = computed(() => props.clearable && hasValue.value && !props.disabled && !props.readonly)
+const count = computed(() => (props.showCount && props.maxlength ? `${props.modelValue.length}/${props.maxlength}` : ''))
 
 function onInput(event: Event) {
-  emit('update:modelValue', (event.target as HTMLInputElement).value)
+  let v = (event.target as HTMLInputElement).value
+  // 浏览器原生 maxlength 已限制输入，这里再兜一层（粘贴/程序化赋值）
+  if (props.maxlength && v.length > props.maxlength) {
+    v = v.slice(0, props.maxlength)
+    ;(event.target as HTMLInputElement).value = v
+  }
+  emit('update:modelValue', v)
 }
+
+function clear() {
+  emit('update:modelValue', '')
+  emit('clear')
+  el.value?.focus()
+}
+
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter') emit('enter', props.modelValue)
+}
+
+defineExpose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
 </script>
 
 <template>
-  <label class="wd-input" :class="{ 'wd-input--rounded': shape === 'rounded', 'wd-input--lg': size === 'lg', 'wd-input--sm': size === 'sm' }">
+  <label
+    class="wd-input"
+    :class="{
+      'wd-input--rounded': shape === 'rounded',
+      'wd-input--lg': size === 'lg',
+      'wd-input--sm': size === 'sm',
+      'wd-input--has-count': !!count,
+    }"
+  >
     <span v-if="$slots.icon" class="wd-input__icon"><slot name="icon" /></span>
     <input
+      ref="el"
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"
       :disabled="disabled"
+      :readonly="readonly"
+      :maxlength="maxlength"
       @input="onInput"
+      @keydown="onKeydown"
     />
+    <button
+      v-if="showClear"
+      type="button"
+      class="wd-input__clear"
+      aria-label="清除"
+      @click.prevent="clear"
+    >
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+    </button>
     <slot name="suffix" />
+    <span v-if="count" class="wd-input__count">{{ count }}</span>
   </label>
 </template>

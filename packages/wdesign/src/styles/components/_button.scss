@@ -123,3 +123,23 @@
 
 .wd-btn--tint:not(:disabled):active { background: var(--wd-tint-4); }
 
+
+/* ---- 加载态 ---- */
+.wd-btn--loading {
+  cursor: default;
+  /* 保留原色，只降低一点存在感；禁用态用的是褪色，二者要能区分 */
+  opacity: .82;
+}
+.wd-btn__spinner {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  border-radius: 50%;
+  /* 用 currentColor 描边，自动适配任何 variant 的文字色 */
+  border: 2px solid color-mix(in srgb, currentColor 26%, transparent);
+  border-top-color: currentColor;
+  animation: wd-spinner-rotate .7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-btn__spinner { animation-duration: 2s; }
+}

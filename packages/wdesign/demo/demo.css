@@ -701,6 +701,29 @@ body {
   background: var(--wd-tint-4);
 }
 
+/* ---- 加载态 ---- */
+.wd-btn--loading {
+  cursor: default;
+  /* 保留原色，只降低一点存在感；禁用态用的是褪色，二者要能区分 */
+  opacity: 0.82;
+}
+
+.wd-btn__spinner {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  border-radius: 50%;
+  /* 用 currentColor 描边，自动适配任何 variant 的文字色 */
+  border: 2px solid color-mix(in srgb, currentColor 26%, transparent);
+  border-top-color: currentColor;
+  animation: wd-spinner-rotate 0.7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-btn__spinner {
+    animation-duration: 2s;
+  }
+}
 .wd-tag {
   display: inline-flex;
   align-items: center;
@@ -951,6 +974,40 @@ body {
 
 .wd-input:focus-within .wd-input__icon {
   color: var(--wd-red-text);
+}
+
+/* ---- 清除按钮 ---- */
+.wd-input__clear {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: var(--wd-ink-3);
+  color: var(--wd-card);
+  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-input__clear:hover {
+  background: var(--wd-ink-2);
+}
+
+/* ---- 字数统计 ---- */
+.wd-input__count {
+  flex: none;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--wd-ink-2);
+  font-family: var(--wd-font-mono);
+}
+
+.wd-input--has-count {
+  padding-right: 14px;
 }
 
 .wd-switch {
@@ -4905,6 +4962,102 @@ img.wd-theme-invert {
     transition: none !important;
   }
 }
+.wd-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.wd-form--disabled {
+  opacity: 0.6;
+}
+
+.wd-form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* 标签在左侧：横向排布 */
+.wd-form--label-left .wd-form-item {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.wd-form--label-left .wd-form-item__label {
+  flex: none;
+  padding-top: 12px; /* 与控件首行文字对齐 */
+  text-align: right;
+}
+
+.wd-form-item__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.wd-form-item__req {
+  color: var(--wd-red-text);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.wd-form-item__control {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ---- 状态：错误 ---- */
+.wd-form-item--error :is(.wd-input, .wd-select__trigger, .wd-datepicker__trigger) {
+  box-shadow: 0 0 0 2px var(--wd-red-text);
+}
+
+.wd-form-item__error {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--wd-red-text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wd-form-item__error::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--wd-red-text);
+}
+
+.wd-form-item__hint {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--wd-ink-2);
+}
+
+/* ---- 状态：校验中 ---- */
+.wd-form-item--validating .wd-form-item__control {
+  opacity: 0.75;
+}
+
+/* ---- 状态：通过（轻微标识，不喧宾夺主）---- */
+.wd-form-item--success :is(.wd-input, .wd-select__trigger) {
+  box-shadow: 0 0 0 1px var(--wd-success-ink);
+}
+
 /* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
 /* =============================================================
  *  WDesign — 深色主题（data-theme="dark" 或 .dark-theme，两种机制均支持）

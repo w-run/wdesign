@@ -8,100 +8,104 @@
 //     按需引入请用：import { WdButton } from "@w-run/wdesign"
 // =============================================================
 import type { App, Plugin } from 'vue'
+import WdAiMessage from './components/WdAiMessage.vue'
+import WdAlert from './components/WdAlert.vue'
 import WdAvatar from './components/WdAvatar.vue'
 import WdAvatarGroup from './components/WdAvatarGroup.vue'
+import WdBadge from './components/WdBadge.vue'
+import WdBreadcrumb from './components/WdBreadcrumb.vue'
 import WdButton from './components/WdButton.vue'
 import WdCard from './components/WdCard.vue'
-import WdInput from './components/WdInput.vue'
-import WdListItem from './components/WdListItem.vue'
-import WdProgress from './components/WdProgress.vue'
-import WdSwitch from './components/WdSwitch.vue'
-import WdTag from './components/WdTag.vue'
-import WdAlert from './components/WdAlert.vue'
-import WdBadge from './components/WdBadge.vue'
+import WdCarousel from './components/WdCarousel.vue'
 import WdCheckbox from './components/WdCheckbox.vue'
+import WdCollapse from './components/WdCollapse.vue'
+import WdContainer from './components/WdContainer.vue'
 import WdDatePicker from './components/WdDatePicker.vue'
+import WdDrawer from './components/WdDrawer.vue'
 import WdDropdown from './components/WdDropdown.vue'
 import WdEmpty from './components/WdEmpty.vue'
+import WdExplorer from './components/WdExplorer.vue'
+import WdFileList from './components/WdFileList.vue'
+import WdForm from './components/WdForm.vue'
+import WdFormItem from './components/WdFormItem.vue'
+import WdGrid from './components/WdGrid.vue'
+import WdImagePreview from './components/WdImagePreview.vue'
+import WdInput from './components/WdInput.vue'
+import WdListItem from './components/WdListItem.vue'
 import WdModal from './components/WdModal.vue'
+import WdNotification from './components/WdNotification.vue'
+import WdOtp from './components/WdOtp.vue'
 import WdPagination from './components/WdPagination.vue'
+import WdPostItem from './components/WdPostItem.vue'
+import WdProgress from './components/WdProgress.vue'
 import WdRadioGroup from './components/WdRadioGroup.vue'
+import WdRate from './components/WdRate.vue'
+import WdResult from './components/WdResult.vue'
+import WdSegmented from './components/WdSegmented.vue'
 import WdSelect from './components/WdSelect.vue'
 import WdSkeleton from './components/WdSkeleton.vue'
 import WdSlider from './components/WdSlider.vue'
+import WdSortableList from './components/WdSortableList.vue'
+import WdSpace from './components/WdSpace.vue'
 import WdSpinner from './components/WdSpinner.vue'
 import WdSteps from './components/WdSteps.vue'
-import WdTabs from './components/WdTabs.vue'
-import WdTooltip from './components/WdTooltip.vue'
-import WdBreadcrumb from './components/WdBreadcrumb.vue'
-import WdCollapse from './components/WdCollapse.vue'
-import WdDrawer from './components/WdDrawer.vue'
-import WdRate from './components/WdRate.vue'
-import WdResult from './components/WdResult.vue'
+import WdSwitch from './components/WdSwitch.vue'
 import WdTable from './components/WdTable.vue'
-import WdNotification from './components/WdNotification.vue'
-import WdSegmented from './components/WdSegmented.vue'
-import WdUpload from './components/WdUpload.vue'
-import WdAiMessage from './components/WdAiMessage.vue'
-import WdCarousel from './components/WdCarousel.vue'
-import WdExplorer from './components/WdExplorer.vue'
-import WdFileList from './components/WdFileList.vue'
-import WdImagePreview from './components/WdImagePreview.vue'
-import WdOtp from './components/WdOtp.vue'
-import WdSortableList from './components/WdSortableList.vue'
-import WdPostItem from './components/WdPostItem.vue'
+import WdTabs from './components/WdTabs.vue'
+import WdTag from './components/WdTag.vue'
 import WdTimeline from './components/WdTimeline.vue'
-import WdContainer from './components/WdContainer.vue'
-import WdGrid from './components/WdGrid.vue'
-import WdSpace from './components/WdSpace.vue'
+import WdTooltip from './components/WdTooltip.vue'
+import WdUpload from './components/WdUpload.vue'
 
 const components = [
+  WdAiMessage,
+  WdAlert,
   WdAvatar,
   WdAvatarGroup,
+  WdBadge,
+  WdBreadcrumb,
   WdButton,
   WdCard,
-  WdInput,
-  WdListItem,
-  WdProgress,
-  WdSwitch,
-  WdTag,
-  WdAlert,
-  WdBadge,
+  WdCarousel,
   WdCheckbox,
+  WdCollapse,
+  WdContainer,
   WdDatePicker,
+  WdDrawer,
   WdDropdown,
   WdEmpty,
+  WdExplorer,
+  WdFileList,
+  WdForm,
+  WdFormItem,
+  WdGrid,
+  WdImagePreview,
+  WdInput,
+  WdListItem,
   WdModal,
+  WdNotification,
+  WdOtp,
   WdPagination,
+  WdPostItem,
+  WdProgress,
   WdRadioGroup,
+  WdRate,
+  WdResult,
+  WdSegmented,
   WdSelect,
   WdSkeleton,
   WdSlider,
+  WdSortableList,
+  WdSpace,
   WdSpinner,
   WdSteps,
-  WdTabs,
-  WdTooltip,
-  WdBreadcrumb,
-  WdCollapse,
-  WdDrawer,
-  WdRate,
-  WdResult,
+  WdSwitch,
   WdTable,
-  WdNotification,
-  WdSegmented,
-  WdUpload,
-  WdAiMessage,
-  WdCarousel,
-  WdExplorer,
-  WdFileList,
-  WdImagePreview,
-  WdOtp,
-  WdSortableList,
-  WdPostItem,
+  WdTabs,
+  WdTag,
   WdTimeline,
-  WdContainer,
-  WdGrid,
-  WdSpace,
+  WdTooltip,
+  WdUpload,
 ]
 
 export const WdUI: Plugin = {
