@@ -238,6 +238,8 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      statValue: 86400,
+      lastAction: '',
       tab2: '标签一',
       editableTabs: [
         { label: '标签一', value: '标签一' },
@@ -415,6 +417,11 @@ const app = createApp({
       this.editableTabs.push({ label, value: label })
       this.tab2 = label
     },
+    bumpStat() {
+      this.statValue += 1000
+    },
+    onDeleted() { this.lastAction = '已确认删除（危险操作）' },
+    onPublished() { this.lastAction = '已确认发布' },
     toggleTableLoading() {
       this.tableLoading = true
       setTimeout(() => { this.tableLoading = false }, 1600)

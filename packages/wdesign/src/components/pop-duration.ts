@@ -14,7 +14,13 @@ const reduce = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-/** 取当前环境适用的过渡时长（毫秒） */
+/**
+ * 取当前环境适用的过渡时长（毫秒）。
+ *
+ * ⚠️ reduced-motion 下用 1ms 而不是 0：Vue 内部对 duration 为 0 的处理是
+ * 「不等待，立即 finish」，但在某些渲染时序下会与 CSS 的 0.01ms 过渡
+ * 抢跑，导致 enter 类残留、元素卡在半透明状态。给 1ms 让它走正常收尾路径。
+ */
 export function popDuration(enter = 200, leave = 140) {
-  return reduce() ? { enter: 0, leave: 0 } : { enter, leave }
+  return reduce() ? { enter: 1, leave: 1 } : { enter, leave }
 }

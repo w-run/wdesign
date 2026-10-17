@@ -5449,6 +5449,138 @@ img.wd-theme-invert {
   border-left: 1px dashed var(--wd-ink-5);
 }
 
+.wd-popconfirm {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.wd-popconfirm__bubble {
+  position: fixed;
+  z-index: 1100;
+  padding: 14px 16px 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  /*
+    可见性用 display 控制，不依赖 transition / animation：
+    气泡是「按需出现的交互层」，如果过渡因任何原因没跑完
+    （时钟停摆、样式缺失、宿主覆盖），用 opacity/visibility 会出现
+    「节点在但看不见 / 已关闭却仍挡住点击」这类难查的问题。
+    过渡留给入场时的 scale + opacity，但可见性始终由 display 兜住。
+  */
+  display: none;
+  opacity: 0;
+  scale: 0.97;
+  transform-origin: center bottom;
+}
+
+.wd-popconfirm__bubble.is-open {
+  display: block;
+  opacity: 1;
+  scale: 1;
+  animation: wd-popconfirm-in var(--wd-dur-pop) var(--wd-ease-out) both;
+}
+
+@keyframes wd-popconfirm-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-popconfirm__bubble.is-open {
+    animation: none;
+  }
+}
+.wd-popconfirm__title {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--wd-ink);
+}
+
+.wd-popconfirm__icon {
+  flex: none;
+  display: inline-flex;
+  margin-top: 1px;
+  color: var(--wd-red-text);
+}
+
+.wd-popconfirm__desc {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--wd-ink-2);
+}
+
+.wd-popconfirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* 危险确认：改用更深的红，与普通主按钮区分 */
+.wd-popconfirm__ok--danger {
+  background: var(--wd-red-active);
+}
+
+.wd-popconfirm__ok--danger:hover:not(:disabled) {
+  background: #8F1A25;
+}
+
+.wd-statistic {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.wd-statistic__title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  letter-spacing: 0.01em;
+}
+
+.wd-statistic__value {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.wd-statistic__num {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--wd-ink);
+}
+
+.wd-statistic__affix {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wd-ink-2);
+}
+
+.wd-statistic__affix--suffix {
+  margin-left: 2px;
+}
+
+.wd-statistic__footer {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--wd-ink-2);
+}
+
 /* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
 /* =============================================================
  *  WDesign — 深色主题（data-theme="dark" 或 .dark-theme，两种机制均支持）

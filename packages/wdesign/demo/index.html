@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792248326">
+<link rel="stylesheet" href="demo.css?v=1792253456">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -645,7 +645,42 @@
       <div class="demo-col" style="width:100%">
         <wd-sortable-list v-model="sortItems"></wd-sortable-list>
       </div>
-    </div>    <div class="demo-panel">
+    </div>        <div class="demo-panel demo-panel--wide">
+      <h3>STATISTIC 数值统计</h3>
+      <div class="demo-row" style="gap:44px; flex-wrap:wrap">
+        <wd-statistic title="总访问量" :value="1284560"></wd-statistic>
+        <wd-statistic title="营收" :value="286400" prefix="¥" suffix="/月" :precision="2"></wd-statistic>
+        <wd-statistic title="转化率" :value="32.7" suffix="%" :precision="1"></wd-statistic>
+        <div class="demo-col">
+          <wd-statistic title="可动态更新" :value="statValue"></wd-statistic>
+          <wd-button variant="tint" size="sm" @click="bumpStat" style="margin-top:8px">+1000</wd-button>
+        </div>
+      </div>
+      <span class="demo-cap" style="margin-top:12px">进场滚动 · 千分位 · 前后缀 · 小数位 · 值变化自动重播</span>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>POPCONFIRM 二次确认</h3>
+      <div class="demo-row" style="gap:20px; align-items:center; flex-wrap:wrap">
+        <wd-popconfirm title="确定删除这条记录？" description="删除后无法恢复。"
+          variant="danger" ok-text="删除" @confirm="onDeleted">
+          <wd-button variant="tint" size="sm">删除（危险）</wd-button>
+        </wd-popconfirm>
+
+        <wd-popconfirm title="要发布新版本吗？" ok-text="发布" @confirm="onPublished">
+          <wd-button variant="primary" size="sm">发布</wd-button>
+        </wd-popconfirm>
+
+        <wd-popconfirm title="当前位置在下方" placement="bottom" ok-text="知道了" cancel-text="关闭">
+          <wd-button variant="ghost" size="sm">placement=bottom</wd-button>
+        </wd-popconfirm>
+
+        <span class="demo-cap">点击后需确认才执行 · Esc 或点空白取消</span>
+      </div>
+      <span class="demo-cap" style="margin-top:10px" v-if="lastAction">最近操作：{{ lastAction }}</span>
+    </div>
+
+<div class="demo-panel">
       <h3>TIMELINE 时间线</h3>
       <div class="demo-row" style="gap:40px; align-items:flex-start">
         <wd-timeline :items="timelineItems"></wd-timeline>
@@ -977,11 +1012,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792248326"></script>
-<script src="icons.data.js?v=1792248326"></script>
-<script src="demo-extra.js?v=1792248326"></script>
-<script src="components.js?v=1792248326"></script>
-<script src="demo.js?v=1792248326"></script>
+<script src="icons.optical.js?v=1792253456"></script>
+<script src="icons.data.js?v=1792253456"></script>
+<script src="demo-extra.js?v=1792253456"></script>
+<script src="components.js?v=1792253456"></script>
+<script src="demo.js?v=1792253456"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

@@ -37,6 +37,7 @@ import WdModal from './components/WdModal.vue'
 import WdNotification from './components/WdNotification.vue'
 import WdOtp from './components/WdOtp.vue'
 import WdPagination from './components/WdPagination.vue'
+import WdPopconfirm from './components/WdPopconfirm.vue'
 import WdPostItem from './components/WdPostItem.vue'
 import WdProgress from './components/WdProgress.vue'
 import WdRadioGroup from './components/WdRadioGroup.vue'
@@ -49,6 +50,7 @@ import WdSlider from './components/WdSlider.vue'
 import WdSortableList from './components/WdSortableList.vue'
 import WdSpace from './components/WdSpace.vue'
 import WdSpinner from './components/WdSpinner.vue'
+import WdStatistic from './components/WdStatistic.vue'
 import WdSteps from './components/WdSteps.vue'
 import WdSwitch from './components/WdSwitch.vue'
 import WdTable from './components/WdTable.vue'
@@ -88,6 +90,7 @@ const components = [
   WdNotification,
   WdOtp,
   WdPagination,
+  WdPopconfirm,
   WdPostItem,
   WdProgress,
   WdRadioGroup,
@@ -100,6 +103,7 @@ const components = [
   WdSortableList,
   WdSpace,
   WdSpinner,
+  WdStatistic,
   WdSteps,
   WdSwitch,
   WdTable,
