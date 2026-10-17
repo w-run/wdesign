@@ -8,17 +8,21 @@ const _hoisted_2 = {
 }
 const _hoisted_3 = ["accept", "multiple"]
 const _hoisted_4 = {
+  key: 1,
+  class: "wd-upload__error"
+}
+const _hoisted_5 = {
   key: 0,
   class: "wd-upload__list"
 }
-const _hoisted_5 = { class: "wd-upload__info" }
-const _hoisted_6 = { class: "wd-upload__name" }
-const _hoisted_7 = { class: "wd-upload__meta" }
-const _hoisted_8 = {
+const _hoisted_6 = { class: "wd-upload__info" }
+const _hoisted_7 = { class: "wd-upload__name" }
+const _hoisted_8 = { class: "wd-upload__meta" }
+const _hoisted_9 = {
   key: 0,
   class: "wd-upload__progress"
 }
-const _hoisted_9 = ["onClick"]
+const _hoisted_10 = ["onClick"]
 
 import { ref } from 'vue'
 
@@ -35,9 +39,12 @@ export default /*@__PURE__*/_defineComponent({
   props: {
     accept: { type: String, required: false, default: '*' },
     multiple: { type: Boolean, required: false, default: false },
-    hint: { type: String, required: false, default: '' }
+    hint: { type: String, required: false, default: '' },
+    maxCount: { type: Number, required: false, default: 0 },
+    maxSize: { type: Number, required: false, default: 0 },
+    showList: { type: Boolean, required: false, default: true }
   },
-  emits: ["change"],
+  emits: ["change", "exceed"],
   setup(__props: any, { emit: __emit }) {
 
 
@@ -45,6 +52,9 @@ export default /*@__PURE__*/_defineComponent({
 const props = __props
 
 const emit = __emit
+
+/** 校验失败等提示 */
+const error = ref('')
 
 const files = ref<WdUploadFile[]>([])
 const dragging = ref(false)
@@ -57,7 +67,20 @@ function fmtSize(n: number) {
 }
 
 function addFiles(list: FileList | File[]) {
+  error.value = ''
   for (const f of Array.from(list)) {
+    // 数量上限：超出直接拒收并提示
+    if (props.maxCount > 0 && files.value.length >= props.maxCount) {
+      error.value = `最多上传 ${props.maxCount} 个文件`
+      emit('exceed', 'count', f)
+      break
+    }
+    // 体积上限
+    if (props.maxSize > 0 && f.size > props.maxSize) {
+      error.value = `${f.name} 超过 ${fmtSize(props.maxSize)} 上限`
+      emit('exceed', 'size', f)
+      continue
+    }
     if (!props.multiple && files.value.length >= 1) files.value = []
     const item: WdUploadFile = { name: f.name, size: f.size, percent: 0 }
     files.value.push(item)
@@ -110,10 +133,13 @@ return (_ctx: any,_cache: any) => {
         accept: __props.accept,
         multiple: __props.multiple,
         onChange: onPick
-      }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_3)
+      }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_3),
+      (error.value)
+        ? (_openBlock(), _createElementBlock("span", _hoisted_4, _toDisplayString(error.value), 1 /* TEXT */))
+        : _createCommentVNode("v-if", true)
     ], 34 /* CLASS, NEED_HYDRATION */),
-    (files.value.length)
-      ? (_openBlock(), _createElementBlock("div", _hoisted_4, [
+    (__props.showList && files.value.length)
+      ? (_openBlock(), _createElementBlock("div", _hoisted_5, [
           (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(files.value, (f, i) => {
             return (_openBlock(), _createElementBlock("div", {
               key: i,
@@ -129,11 +155,11 @@ return (_ctx: any,_cache: any) => {
                   _createElementVNode("path", { d: "M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z" })
                 ])
               ], -1 /* CACHED */)),
-              _createElementVNode("div", _hoisted_5, [
-                _createElementVNode("div", _hoisted_6, _toDisplayString(f.name), 1 /* TEXT */),
-                _createElementVNode("div", _hoisted_7, _toDisplayString(fmtSize(f.size)) + " · " + _toDisplayString(f.percent >= 100 ? '已完成' : '上传中 ' + f.percent + '%'), 1 /* TEXT */),
+              _createElementVNode("div", _hoisted_6, [
+                _createElementVNode("div", _hoisted_7, _toDisplayString(f.name), 1 /* TEXT */),
+                _createElementVNode("div", _hoisted_8, _toDisplayString(fmtSize(f.size)) + " · " + _toDisplayString(f.percent >= 100 ? '已完成' : '上传中 ' + f.percent + '%'), 1 /* TEXT */),
                 (f.percent < 100)
-                  ? (_openBlock(), _createElementBlock("div", _hoisted_8, [
+                  ? (_openBlock(), _createElementBlock("div", _hoisted_9, [
                       _createElementVNode("span", {
                         class: "wd-upload__progress-bar",
                         style: _normalizeStyle({ width: f.percent + '%' })
@@ -158,7 +184,7 @@ return (_ctx: any,_cache: any) => {
                 }, [
                   _createElementVNode("path", { d: "M6 6l12 12M18 6 6 18" })
                 ], -1 /* CACHED */)
-              ]))], 8 /* PROPS */, _hoisted_9)
+              ]))], 8 /* PROPS */, _hoisted_10)
             ]))
           }), 128 /* KEYED_FRAGMENT */))
         ]))

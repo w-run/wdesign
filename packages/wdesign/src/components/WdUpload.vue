@@ -14,11 +14,23 @@ const props = withDefaults(
     accept?: string
     multiple?: boolean
     hint?: string
+    /** 最多几个文件（0 = 不限） */
+    maxCount?: number
+    /** 单文件大小上限（字节，0 = 不限） */
+    maxSize?: number
+    /** 是否显示文件列表 */
+    showList?: boolean
   }>(),
-  { accept: '*', multiple: false, hint: '' },
+  { accept: '*', multiple: false, hint: '', maxCount: 0, maxSize: 0, showList: true },
 )
 
-const emit = defineEmits<{ (e: 'change', files: WdUploadFile[]): void }>()
+const emit = defineEmits<{
+  (e: 'change', files: WdUploadFile[]): void
+  (e: 'exceed', reason: 'count' | 'size', file: File): void
+}>()
+
+/** 校验失败等提示 */
+const error = ref('')
 
 const files = ref<WdUploadFile[]>([])
 const dragging = ref(false)
@@ -31,7 +43,20 @@ function fmtSize(n: number) {
 }
 
 function addFiles(list: FileList | File[]) {
+  error.value = ''
   for (const f of Array.from(list)) {
+    // 数量上限：超出直接拒收并提示
+    if (props.maxCount > 0 && files.value.length >= props.maxCount) {
+      error.value = `最多上传 ${props.maxCount} 个文件`
+      emit('exceed', 'count', f)
+      break
+    }
+    // 体积上限
+    if (props.maxSize > 0 && f.size > props.maxSize) {
+      error.value = `${f.name} 超过 ${fmtSize(props.maxSize)} 上限`
+      emit('exceed', 'size', f)
+      continue
+    }
     if (!props.multiple && files.value.length >= 1) files.value = []
     const item: WdUploadFile = { name: f.name, size: f.size, percent: 0 }
     files.value.push(item)
@@ -80,9 +105,10 @@ function remove(i: number) {
       <span v-if="hint" class="wd-upload__hint">{{ hint }}</span>
       <span class="wd-upload__browse">浏览文件</span>
       <input ref="input" class="wd-upload__input" type="file" :accept="accept" :multiple="multiple" @change="onPick" />
+      <span v-if="error" class="wd-upload__error">{{ error }}</span>
     </div>
 
-    <div v-if="files.length" class="wd-upload__list">
+    <div v-if="showList && files.length" class="wd-upload__list">
       <div v-for="(f, i) in files" :key="i" class="wd-upload__item">
         <span class="wd-upload__file-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>

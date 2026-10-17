@@ -45,3 +45,52 @@
   animation: wd-bloom var(--wd-dur-fast) var(--wd-ease-out) forwards;
 }
 
+
+/* ---- 可关闭 / 可新建 / 可滚动 ---- */
+.wd-tabs--scrollable {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wd-tabs--scrollable::-webkit-scrollbar { display: none; }
+
+.wd-tabs__item { position: relative; }
+.wd-tabs--closable .wd-tabs__item { padding-right: 10px; }
+.wd-tabs__label { white-space: nowrap; }
+
+.wd-tabs__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border-radius: 50%;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+.wd-tabs__close:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+}
+
+.wd-tabs__add {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: transparent;
+  color: var(--wd-ink-2);
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+.wd-tabs__add:hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
+
+.wd-tabs__item--disabled { opacity: .45; cursor: default; pointer-events: none; }

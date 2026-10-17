@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792247140">
+<link rel="stylesheet" href="demo.css?v=1792248326">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -264,6 +264,10 @@
         <span class="demo-cap">行内宽度 · 当前：{{ tab }}</span>
         <wd-tabs v-model="tab" block :tabs="['概览','活动','设置']" style="margin-top:12px"></wd-tabs>
         <span class="demo-cap">block 等宽铺满</span>
+
+        <wd-tabs v-model="tab2" :tabs="editableTabs" closable addable
+          @close="closeTab" @add="addTab" style="margin-top:16px"></wd-tabs>
+        <span class="demo-cap">closable · addable · 当前：{{ tab2 }}（可关闭、可新建）</span>
       </div>
     </div>    <div class="demo-panel demo-panel--wide">
       <h3>FORM 表单校验</h3>
@@ -383,6 +387,13 @@
         <span class="demo-cap">total=120 / pageSize=10 → {{ Math.ceil(120/10) }} 页，当前第 {{ page }} 页</span>
         <wd-pagination :model-value="1" :total="50" :page-size="20" style="margin-top:10px"></wd-pagination>
         <span class="demo-cap">pageSize=20 → 3 页</span>
+
+        <wd-pagination v-model="page2" :total="486" :page-size="10" show-total show-size-changer
+          style="margin-top:16px"></wd-pagination>
+        <span class="demo-cap">showTotal · showSizeChanger（486 条，切页长自动夹回）</span>
+
+        <wd-pagination v-model="page3" :total="486" :page-size="10" simple style="margin-top:16px"></wd-pagination>
+        <span class="demo-cap">simple 简洁模式</span>
       </div>
     </div>
 
@@ -593,6 +604,10 @@
       <div class="demo-col" style="max-width:440px; margin-top:16px">
         <wd-upload multiple accept="image/*" hint="可多选图片（multiple）"></wd-upload>
         <span class="demo-cap" style="margin-top:8px">multiple</span>
+      </div>
+      <div class="demo-col" style="max-width:440px; margin-top:16px">
+        <wd-upload multiple :max-count="3" :max-size="1048576" hint="最多 3 个，单个不超过 1 MB"></wd-upload>
+        <span class="demo-cap" style="margin-top:8px">maxCount=3 · maxSize=1MB（超限会提示并拒收）</span>
       </div>
     </div>
 
@@ -962,11 +977,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792247140"></script>
-<script src="icons.data.js?v=1792247140"></script>
-<script src="demo-extra.js?v=1792247140"></script>
-<script src="components.js?v=1792247140"></script>
-<script src="demo.js?v=1792247140"></script>
+<script src="icons.optical.js?v=1792248326"></script>
+<script src="icons.data.js?v=1792248326"></script>
+<script src="demo-extra.js?v=1792248326"></script>
+<script src="components.js?v=1792248326"></script>
+<script src="demo.js?v=1792248326"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

@@ -88,3 +88,12 @@
   overflow: hidden;
 }
 .wd-upload__progress-bar { height: 100%; border-radius: 999px; background: var(--wd-red); transition: width var(--wd-dur) ease; }
+
+/* ---- 超限提示 ---- */
+.wd-upload__error {
+  display: block;
+  margin-top: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wd-red-text);
+}

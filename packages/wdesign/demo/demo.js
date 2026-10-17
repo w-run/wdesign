@@ -238,6 +238,14 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      tab2: '标签一',
+      editableTabs: [
+        { label: '标签一', value: '标签一' },
+        { label: '标签二', value: '标签二' },
+        { label: '固定', value: '固定', closable: false },
+      ],
+      page2: 5,
+      page3: 12,
       tableSel: [],
       tableLoading: false,
       city: '',
@@ -393,6 +401,20 @@ const app = createApp({
     }
   },
   methods: {
+    closeTab(v) {
+      const i = this.editableTabs.findIndex(t => t.value === v)
+      if (i < 0) return
+      this.editableTabs.splice(i, 1)
+      if (this.tab2 === v && this.editableTabs.length) {
+        this.tab2 = this.editableTabs[Math.max(0, i - 1)].value
+      }
+    },
+    addTab() {
+      const n = this.editableTabs.length + 1
+      const label = '新标签 ' + n
+      this.editableTabs.push({ label, value: label })
+      this.tab2 = label
+    },
     toggleTableLoading() {
       this.tableLoading = true
       setTimeout(() => { this.tableLoading = false }, 1600)

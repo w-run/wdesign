@@ -39,3 +39,38 @@
   animation: wd-bloom var(--wd-dur) var(--wd-ease-out) forwards;
 }
 
+
+/* ---- 总条数 / 简洁模式 / 每页条数 ---- */
+.wd-pagination { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+.wd-pagination__total {
+  margin-right: 6px;
+  font-size: 12.5px;
+  color: var(--wd-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-pagination__simple-text {
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wd-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-pagination__size {
+  margin-left: 6px;
+}
+.wd-pagination__size select {
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  outline: none;
+}
+.wd-pagination__size select:hover { background: var(--wd-field-hover); }
