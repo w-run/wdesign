@@ -278,10 +278,14 @@ body {
 // ── Section ────────────────────────────────────────────────────
 .demo-sec {
   background: transparent;
-  margin-top: 72px;
-  padding: 0;
+  /* 用 padding 而非 margin：sticky 导航会「吃掉」margin，
+     导致锚点跳转后标题被导航压住。scroll-margin 再兜一层。 */
+  margin-top: 0;
+  padding-top: 72px;
   scroll-margin-top: 80px;
 }
+/* 首屏 Hero 之后的第一个 section 不需要额外顶部留白 */
+.demo-sec:first-of-type { padding-top: 56px; }
 .sec-head {
   display: flex;
   align-items: baseline;

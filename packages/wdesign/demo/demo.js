@@ -249,9 +249,9 @@ const app = createApp({
         { title: '联系方式', content: 'dev@w-run.net' },
       ],
       timelineItems: [
-        { title: '创建仓库', time: '10-08 09:12', desc: '初始化 WDesign 设计系统' },
-        { title: '发布 v1.0', time: '10-12 16:40', desc: '46 个组件全部就绪' },
-        { title: '视觉迭代', time: '10-17 11:20', desc: '对比度、图标光学归一' },
+        { period: '10-08', title: '创建仓库', desc: '初始化 WDesign 设计系统' },
+        { period: '10-12', title: '发布 v1.0', desc: '46 个组件全部就绪' },
+        { period: '10-17', title: '视觉迭代', desc: '对比度修复、图标光学归一' },
       ],
       manyTags: ['全部','设计','前端','后端','运维','产品','测试','数据','安全','文档'],
       segVal3: '全部',
