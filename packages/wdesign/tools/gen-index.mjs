@@ -1,10 +1,21 @@
 #!/usr/bin/env node
 /**
- * gen-index.mjs — 由 src/components/*.vue 重新生成 src/index.ts
+ * gen-index.mjs — 生成三个入口文件
  *
- * 为什么需要它：组件是手工新增的，但 index.ts 的 import / export / 插件注册
- * 三张清单容易漏（历史上就漏过 WdContainer / WdGrid / WdSpace 三个导出，
- * 以及 15 个组件没进 app.use(WdUI) 的全局注册）。
+ * 为什么拆成三个：
+ *
+ *   index.ts        只做**具名导出**，不含默认导出。
+ *                   没有 `export default` 指向组件数组，打包器才能按引用裁剪；
+ *                   只要引用到 `WdButton`，其余 45 个组件不进包。
+ *
+ *   full.ts         默认导出全量注册插件（app.use(WdUI)）。
+ *                   被单独一个路径引用 —— 想要「一次全注册」的人明确地
+ *                   选择承担全部体积，而不是被默认入口强加。
+ *
+ *   components/*    已可被直接引用（`@w-run/wdesign/components/WdButton.vue`），
+ *                   配合包 `exports` 的 `./components/*` 通配。
+ *
+ * 样式按需见 styles/components/*.scss 与 styles/index.scss（全量）。
  *
  * 用法：node tools/gen-index.mjs
  */
@@ -14,12 +25,13 @@ import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const compDir = join(root, 'src/components')
-const outFile = join(root, 'src/index.ts')
+const outIndex = join(root, 'src/index.ts')
+const outFull = join(root, 'src/full.ts')
 
 const files = readdirSync(compDir).filter((f) => f.endsWith('.vue'))
 const comps = files.map((f) => f.replace(/\.vue$/, '')).sort()
 
-// 校验：每个 SFC 必须自带 defineOptions({ name: 'WdXxx' })，否则全局注册拿不到名字
+// 规范检查：每个 SFC 必须自带 defineOptions({ name })
 const problems = []
 for (const name of comps) {
   const src = readFileSync(join(compDir, `${name}.vue`), 'utf8')
@@ -33,60 +45,74 @@ if (problems.length) {
   process.exit(1)
 }
 
-// 保留既有顺序（减少 diff），新组件追加在末尾
+// 保留既有顺序（减少 diff），新组件追加
 let order = comps
 try {
-  const old = readFileSync(outFile, 'utf8')
+  const old = readFileSync(outIndex, 'utf8')
   const prev = [...old.matchAll(/^import (Wd\w+) from '\.\/components\/\w+\.vue'/gm)].map((m) => m[1])
   const keep = prev.filter((n) => comps.includes(n))
-  const added = comps.filter((n) => !keep.includes(n))
-  order = [...keep, ...added]
+  order = [...keep, ...comps.filter((n) => !keep.includes(n))]
 } catch { /* 首次生成 */ }
 
+// ---------------- index.ts：纯具名导出，无默认导出 ----------------
 const L = []
 L.push('// =============================================================')
-L.push('//  wdesign · Soft Bento · Red')
-L.push('//  入口：导出全部组件 + 全量注册插件')
+L.push('//  wdesign · Soft Bento · Red — 具名导出入口')
 L.push('//')
-L.push('//  全量注册：')
-L.push('//    import WdUI from \'./wdesign/src\'')
+L.push('//  按需引入（推荐，可 tree-shake）：')
+L.push("//    import { WdButton, WdCard } from '@w-run/wdesign'")
+L.push('//')
+L.push('//  全量注册（会引入全部组件，慎用）：')
+L.push("//    import WdUI from '@w-run/wdesign/full'")
 L.push('//    app.use(WdUI)')
 L.push('//')
-L.push('//  按需引入：')
-L.push('//    import { WdButton, WdCard } from \'./wdesign/src\'')
-L.push('//')
-L.push('//  ⚠️ 本文件由 tools/gen-index.mjs 生成，请勿手工编辑；')
-L.push('//     新增组件后运行 `node tools/gen-index.mjs` 重建。')
+L.push('//  ⚠️ 本文件由 tools/gen-index.mjs 生成，请勿手工编辑。')
+L.push('//     这里**故意没有 export default** —— 有默认导出就必须把 46 个组件')
+L.push('//     全部列入数组，打包器的 tree-shaking 会因此失效。')
 L.push('// =============================================================')
-L.push("import type { App, Plugin } from 'vue'")
-L.push('')
-for (const c of order) L.push(`import ${c} from './components/${c}.vue'`)
-L.push("import { toast } from './components/toast'")
-L.push('')
-L.push('export {')
-L.push('  toast,')
-for (const c of order) L.push(`  ${c},`)
-L.push('}')
-L.push('')
-L.push('// 全量注册（app.use(WdUI)）：与 export 列表严格一致，避免半注册状态')
-L.push('const components = [')
-for (const c of order) L.push(`  ${c},`)
-L.push(']')
-L.push('')
-L.push('const WdUI: Plugin = {')
-L.push('  install(app: App) {')
-L.push('    for (const component of components) {')
-L.push('      const name = (component as { name?: string }).name')
-L.push('      if (name) app.component(name, component)')
-L.push('    }')
-L.push('  },')
-L.push('}')
-L.push('')
-L.push('export default WdUI')
-L.push('')
-L.push('// —— 图标库（独立包 @w-run/wdesign-icons）——')
+for (const c of order) L.push(`export { default as ${c} } from './components/${c}.vue'`)
+L.push("export { toast } from './components/toast'")
+L.push("export type { WdToastOptions } from './components/toast'")
+L.push("export { addHover } from './hover'")
+L.push("export type { AddHoverOptions } from './hover'")
 L.push("export { WdIcon } from '@w-run/wdesign-icons'")
+L.push("export { opticalFactor, DEFAULT_OPTICAL } from '@w-run/wdesign-icons'")
 L.push('')
+writeFileSync(outIndex, L.join('\n'))
 
-writeFileSync(outFile, L.join('\n'))
-console.log(`✅ 已生成 src/index.ts —— ${order.length} 个组件全部 import / export / 注册`)
+// ---------------- full.ts：全量注册插件 ----------------
+const F = []
+F.push('// =============================================================')
+F.push('//  wdesign — 全量注册插件')
+F.push('//')
+F.push("//    import WdUI from '@w-run/wdesign/full'")
+F.push('//    app.use(WdUI)')
+F.push('//')
+F.push('//  ⚠️ 这个入口会引入全部组件（体积最大），只在确实用到大部分组件时选择。')
+F.push('//     按需引入请用：import { WdButton } from "@w-run/wdesign"')
+F.push('// =============================================================')
+F.push("import type { App, Plugin } from 'vue'")
+for (const c of order) F.push(`import ${c} from './components/${c}.vue'`)
+F.push('')
+F.push('const components = [')
+for (const c of order) F.push(`  ${c},`)
+F.push(']')
+F.push('')
+F.push('export const WdUI: Plugin = {')
+F.push('  install(app: App) {')
+F.push('    for (const component of components) {')
+F.push('      const name = (component as { name?: string }).name')
+F.push('      if (name) app.component(name, component)')
+F.push('    }')
+F.push('  },')
+F.push('}')
+F.push('')
+F.push('export default WdUI')
+F.push('')
+F.push('// 同时透出具名导出，方便 `import WdUI, { WdButton } from "@w-run/wdesign/full"`')
+F.push("export * from './index'")
+F.push('')
+writeFileSync(outFull, F.join('\n'))
+
+console.log(`✅ 生成入口：index.ts（${order.length} 个具名导出，无默认导出）`)
+console.log(`            full.ts（全量注册插件）`)

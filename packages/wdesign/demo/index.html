@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792213770">
+<link rel="stylesheet" href="demo.css?v=1792230964">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -56,6 +56,7 @@
     </div>
     <p class="hint">以下均为真实 Vue3 组件（离线运行；输入框和开关可交互）。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
       <h3>BUTTON 按钮</h3>
       <div class="demo-row">
@@ -81,34 +82,50 @@
     </div>
 
     <div class="demo-panel">
-      <h3>INPUT 输入 · SWITCH 开关（可交互）</h3>
-      <div class="demo-row">
-        <wd-input v-model="search" placeholder="搜索项目…" style="min-width: 240px">
+      <h3>INPUT 输入</h3>
+      <div class="demo-col">
+        <wd-input v-model="search" placeholder="搜索项目…">
           <template #icon>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.2-3.2"></path></svg>
           </template>
         </wd-input>
-        <wd-input v-model="name" shape="rounded" style="min-width: 200px"></wd-input>
-        <wd-switch v-model="on"></wd-switch>
-        <span class="demo-cap">开关状态：{{ on ? '已开启' : '已关闭' }} / 输入：{{ search || '（空）' }}</span>
+        <wd-input v-model="name" shape="rounded"></wd-input>
+        <span class="demo-cap">输入：{{ search || '（空）' }}</span>
       </div>
     </div>
 
     <div class="demo-panel">
-      <h3>PROGRESS 进度 · AVATAR 头像</h3>
-      <div class="demo-row" style="gap: 34px; align-items: flex-start;">
-        <div class="demo-col" style="width: 260px">
-          <wd-progress :value="75"></wd-progress>
-          <span class="demo-cap">默认 · 75%</span>
+      <h3>SWITCH 开关</h3>
+      <div class="demo-col">
+        <div class="demo-row" style="gap:18px">
+          <wd-switch v-model="on"></wd-switch>
+          <wd-switch :model-value="false" disabled></wd-switch>
         </div>
-        <div class="demo-col" style="width: 180px">
-          <wd-progress :value="45" thin></wd-progress>
-          <span class="demo-cap">细进度条</span>
+        <span class="demo-cap">开关状态：{{ on ? '已开启' : '已关闭' }}</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>PROGRESS 进度</h3>
+      <div class="demo-col">
+        <wd-progress :value="75"></wd-progress>
+        <span class="demo-cap">默认 · 75%</span>
+        <wd-progress :value="45" thin></wd-progress>
+        <span class="demo-cap">细进度条 · 45%</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>AVATAR 头像</h3>
+      <div class="demo-col">
+        <wd-avatar-group :names="['林小满', '王一舟', '周可', '李默', '赵雪']" :max="3"></wd-avatar-group>
+        <span class="demo-cap">头像堆叠 +2</span>
+        <div class="demo-row" style="gap:12px">
+          <wd-avatar name="林小满" :size="36"></wd-avatar>
+          <wd-avatar name="王一舟" :size="44"></wd-avatar>
+          <wd-avatar name="周可" :size="52"></wd-avatar>
         </div>
-        <div class="demo-col">
-          <wd-avatar-group :names="['林小满', '王一舟', '周可', '李默', '赵雪']" :max="3"></wd-avatar-group>
-          <span class="demo-cap">头像堆叠 +2</span>
-        </div>
+        <span class="demo-cap">尺寸档位</span>
       </div>
     </div>
 
@@ -122,6 +139,7 @@
         </wd-list-item>
       </div>
     </div>
+    </div>
   </section>
 
   <section class="demo-sec" id="sec-02">
@@ -131,45 +149,50 @@
     </div>
     <p class="hint">表单 / 导航 / 反馈 / 弹窗 —— 全部无边框、色块分层。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
-      <h3>CHECKBOX · RADIO · SELECT</h3>
-      <div class="demo-board">
-        <div class="demo-row" style="gap: 44px; align-items: flex-start;">
-        <div class="demo-col">
-          <wd-checkbox v-model="agree" label="同意条款"></wd-checkbox>
-          <wd-checkbox :model-value="true" label="默认选中"></wd-checkbox>
-          <wd-checkbox disabled label="禁用"></wd-checkbox>
-          <span class="demo-cap">checkbox · {{ agree ? '已同意' : '未同意' }}</span>
-        </div>
-        <div class="demo-col">
-          <wd-radio-group v-model="plan" :options="['基础版', '专业版', '团队版']"></wd-radio-group>
-          <span class="demo-cap">radio · {{ plan }}</span>
-        </div>
-        <div class="demo-col">
-          <wd-select v-model="sortBy" :options="['最近更新', '最早创建', '名称排序']" style="min-width: 180px;"></wd-select>
-          <span class="demo-cap">select · {{ sortBy }}</span>
-        </div>
-      </div>
+      <h3>CHECKBOX 复选框</h3>
+      <div class="demo-col">
+        <wd-checkbox v-model="agree" label="同意条款"></wd-checkbox>
+        <wd-checkbox :model-value="true" label="默认选中"></wd-checkbox>
+        <wd-checkbox disabled label="禁用"></wd-checkbox>
+        <span class="demo-cap">checkbox · {{ agree ? '已同意' : '未同意' }}</span>
       </div>
     </div>
 
     <div class="demo-panel">
-      <h3>TABS · BADGE</h3>
-      <div class="demo-board">
-        <div class="demo-row" style="gap: 44px; align-items: flex-start;">
-        <div class="demo-col" style="width: 320px;">
-          <wd-tabs v-model="tab" block :tabs="['概览', '活动', '设置']"></wd-tabs>
-          <span class="demo-cap">当前页签：{{ tab }}</span>
-        </div>
-        <div class="demo-col">
-          <div class="demo-row" style="gap: 26px;">
-            <wd-badge :value="5"><wd-avatar name="林小满"></wd-avatar></wd-badge>
-            <wd-badge dot><wd-avatar name="王一舟"></wd-avatar></wd-badge>
-            <wd-badge :value="120" :max="99"><wd-avatar name="周可"></wd-avatar></wd-badge>
-          </div>
-          <span class="demo-cap">badge · 数字 / 小点 / 封顶 99+</span>
-        </div>
+      <h3>RADIO 单选</h3>
+      <div class="demo-col">
+        <wd-radio-group v-model="plan" :options="['基础版', '专业版', '团队版']"></wd-radio-group>
+        <span class="demo-cap">radio · {{ plan }}</span>
       </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>SELECT 下拉</h3>
+      <div class="demo-col">
+        <wd-select v-model="sortBy" :options="['最近更新', '最早创建', '名称排序']" style="min-width: 180px;"></wd-select>
+        <span class="demo-cap">select · {{ sortBy }}</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>TABS 页签</h3>
+      <div class="demo-col">
+        <wd-tabs v-model="tab" block :tabs="['概览', '活动', '设置']"></wd-tabs>
+        <span class="demo-cap">当前页签：{{ tab }}</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>BADGE 角标</h3>
+      <div class="demo-col">
+        <div class="demo-row" style="gap: 26px;">
+          <wd-badge :value="5"><wd-avatar name="林小满"></wd-avatar></wd-badge>
+          <wd-badge dot><wd-avatar name="王一舟"></wd-avatar></wd-badge>
+          <wd-badge :value="120" :max="99"><wd-avatar name="周可"></wd-avatar></wd-badge>
+        </div>
+        <span class="demo-cap">数字 / 小点 / 封顶 99+</span>
       </div>
     </div>
 
@@ -184,29 +207,16 @@
     </div>
 
     <div class="demo-panel">
-      <h3>SKELETON · EMPTY</h3>
-      <div class="demo-row" style="gap: 44px; align-items: flex-start;">
-        <div class="demo-col" style="width: 300px;">
-          <wd-skeleton :count="3"></wd-skeleton>
-          <span class="demo-cap">骨架屏 · 文本 ×3</span>
-        </div>
-        <div class="demo-col">
-          <div class="demo-row" style="gap: 16px;">
-            <wd-skeleton variant="circle" :width="48" :height="48" :count="1"></wd-skeleton>
-            <wd-skeleton variant="rect" :width="120" :height="48" :count="1"></wd-skeleton>
-          </div>
-          <span class="demo-cap">圆形 / 矩形</span>
-        </div>
-        <div class="demo-col" style="flex: 1; min-width: 260px;">
-          <div style="background: var(--wd-card); border-radius: 20px;">
-            <wd-empty title="暂无数据" description="创建第一个项目后会显示在这里">
-              <template #action>
-                <wd-button variant="tint" size="sm">新建项目</wd-button>
-              </template>
-            </wd-empty>
-          </div>
-          <span class="demo-cap">空状态</span>
-        </div>
+      <h3>SKELETON 骨架屏</h3>
+      <div class="demo-col" style="width:100%">
+        <wd-skeleton :rows="3"></wd-skeleton>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>EMPTY 空状态</h3>
+      <div class="demo-col">
+        <wd-empty description="暂无数据"></wd-empty>
       </div>
     </div>
 
@@ -224,6 +234,7 @@
         </template>
       </wd-modal>
     </div>
+    </div>
   </section>
 
   <section class="demo-sec" id="sec-03">
@@ -233,52 +244,59 @@
     </div>
     <p class="hint">日期选择 · 下拉菜单 · 提示 · 分页 · 滑杆 · 步骤 · 加载 · Toast。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
-      <h3>DATEPICKER · PAGINATION</h3>
-      <div class="demo-row" style="gap: 48px; align-items: flex-start;">
-        <div class="demo-col">
-          <wd-date-picker v-model="date" style="min-width: 220px;"></wd-date-picker>
-          <span class="demo-cap">date-picker · {{ date || '未选择' }}</span>
-        </div>
-        <div class="demo-col">
-          <wd-pagination v-model="page" :total="88" :page-size="10"></wd-pagination>
-          <span class="demo-cap">pagination · 第 {{ page }} 页 / 共 9 页</span>
-        </div>
+      <h3>DATEPICKER 日期</h3>
+      <div class="demo-col">
+        <wd-date-picker v-model="date"></wd-date-picker>
+        <span class="demo-cap">选择日期：{{ date || '（未选）' }}</span>
       </div>
     </div>
 
     <div class="demo-panel">
-      <h3>DROPDOWN · TOOLTIP · SLIDER</h3>
-      <div class="demo-row" style="gap: 48px; align-items: center;">
-        <div class="demo-col">
-          <wd-dropdown :items="menu" @select="onMenu">
-            <wd-button variant="tint" size="sm">更多操作</wd-button>
-          </wd-dropdown>
-          <span class="demo-cap">dropdown · 点击选择</span>
-        </div>
-        <div class="demo-col">
-          <wd-tooltip content="这里是提示内容">
-            <wd-button variant="ghost">悬浮查看提示</wd-button>
-          </wd-tooltip>
-          <span class="demo-cap">tooltip · 顶部气泡</span>
-        </div>
-        <div class="demo-col" style="width: 280px;">
-          <wd-slider v-model="volume"></wd-slider>
-          <span class="demo-cap">slider · 音量 {{ volume }}</span>
-        </div>
+      <h3>PAGINATION 分页</h3>
+      <div class="demo-col">
+        <wd-pagination v-model="page" :total="120" :page-size="10"></wd-pagination>
+        <span class="demo-cap">第 {{ page }} 页</span>
       </div>
     </div>
 
     <div class="demo-panel">
-      <h3>STEPS · SPINNER</h3>
-      <div class="demo-col" style="width: 100%;">
-        <wd-steps :steps="stepItems" :current="1" style="max-width: 560px;"></wd-steps>
-        <div class="demo-row" style="margin-top: 24px; gap: 28px; align-items: center;">
-          <wd-spinner size="sm"></wd-spinner>
-          <wd-spinner></wd-spinner>
-          <wd-spinner size="lg"></wd-spinner>
-          <span class="demo-cap">spinner · sm / md / lg</span>
-        </div>
+      <h3>DROPDOWN 下拉菜单</h3>
+      <div class="demo-col">
+        <wd-dropdown :items="[{label:'编辑',value:'edit'},{label:'复制',value:'copy'},{label:'删除',value:'del',danger:true}]" @select="onDrop"></wd-dropdown>
+        <span class="demo-cap">选择：{{ dropPick || '（无）' }}</span>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>TOOLTIP 提示</h3>
+      <div class="demo-col">
+        <wd-tooltip content="这是一条提示"><wd-button variant="tint" size="sm">悬停查看</wd-button></wd-tooltip>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>SLIDER 滑块</h3>
+      <div class="demo-col">
+        <wd-slider v-model="sliderVal" :max="100"></wd-slider>
+        <span class="demo-cap">值：{{ sliderVal }}</span>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>STEPS 步骤条</h3>
+      <div class="demo-col" style="width:100%">
+        <wd-steps :current="1" :steps="[{title:'创建'},{title:'配置'},{title:'完成'}]"></wd-steps>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>SPINNER 加载</h3>
+      <div class="demo-row" style="gap:24px">
+        <wd-spinner></wd-spinner>
+        <wd-spinner :size="28"></wd-spinner>
+        <wd-spinner :size="36"></wd-spinner>
       </div>
     </div>
 
@@ -292,6 +310,7 @@
         <span class="demo-cap">顶部深色胶囊 · 2.4s 自动消失</span>
       </div>
     </div>
+    </div>
   </section>
 
   <section class="demo-sec" id="sec-04">
@@ -301,17 +320,19 @@
     </div>
     <p class="hint">表格 / 面包屑 / 折叠 / 抽屉 / 结果页 / 评分 —— 组件总数来到 32。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
-      <h3>BREADCRUMB · RATE</h3>
-      <div class="demo-row" style="gap: 48px; align-items: center;">
-        <div class="demo-col">
-          <wd-breadcrumb :items="crumbItems" @select="onCrumb"></wd-breadcrumb>
-          <span class="demo-cap">breadcrumb · 点击回退</span>
-        </div>
-        <div class="demo-col">
-          <wd-rate v-model="rateVal"></wd-rate>
-          <span class="demo-cap">rate · {{ rateVal }} 星（再次点击清空）</span>
-        </div>
+      <h3>BREADCRUMB 面包屑</h3>
+      <div class="demo-col">
+        <wd-breadcrumb :items="['首页','项目','设置']"></wd-breadcrumb>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>RATE 评分</h3>
+      <div class="demo-col">
+        <wd-rate v-model="rate"></wd-rate>
+        <span class="demo-cap">评分：{{ rate }} 星（再次点击同一颗星可清空）</span>
       </div>
     </div>
 
@@ -325,24 +346,17 @@
     </div>
 
     <div class="demo-panel">
-      <h3>COLLAPSE · DRAWER</h3>
-      <div class="demo-row" style="gap: 48px; align-items: flex-start;">
-        <div class="demo-col" style="flex: 1; min-width: 340px;">
-          <wd-collapse v-model="openItems" :items="collapseItems"></wd-collapse>
-          <span class="demo-cap">collapse · grid-rows 平滑展开</span>
-        </div>
-        <div class="demo-col">
-          <wd-button @click="drawerOpen = true">打开抽屉</wd-button>
-          <span class="demo-cap">drawer · 右侧滑入 · Esc / 遮罩关闭</span>
-          <wd-drawer v-model="drawerOpen" title="筛选">
-            <p style="margin: 0 0 12px;">这里是抽屉内容，可以放任意控件组合。</p>
-            <wd-select v-model="sortBy" :options="['最近更新', '最早创建', '名称排序']"></wd-select>
-            <template #footer>
-              <wd-button variant="ghost" @click="drawerOpen = false">取消</wd-button>
-              <wd-button variant="primary" @click="drawerOpen = false">应用</wd-button>
-            </template>
-          </wd-drawer>
-        </div>
+      <h3>COLLAPSE 折叠面板</h3>
+      <div class="demo-col" style="width:100%">
+        <wd-collapse :items="[{title:'常见问题',content:'这里是回答内容。'},{title:'更新日志',content:'v1.4 修复了若干视觉问题。'}]"></wd-collapse>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>DRAWER 抽屉</h3>
+      <div class="demo-col">
+        <wd-button variant="tint" size="sm" @click="drawer = true">打开抽屉</wd-button>
+        <wd-drawer v-model="drawer" title="抽屉标题">抽屉内容</wd-drawer>
       </div>
     </div>
 
@@ -361,6 +375,7 @@
         </div>
       </div>
     </div>
+    </div>
   </section>
 
   <section class="demo-sec" id="sec-05">
@@ -370,6 +385,7 @@
     </div>
     <p class="hint">分段控制 · 文件上传 · 通知横幅；页面右上角按钮可切换深浅模式（主题红 #D62839 不变）。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
       <h3>SEGMENTED 分段控制</h3>
       <div class="demo-board">
@@ -403,6 +419,7 @@
       </div>
       <wd-notification v-model="noticeOpen" :title="noticeTitle" :description="noticeDesc" :variant="noticeVariant"></wd-notification>
     </div>
+    </div>
   </section>
 
   <section class="demo-sec" id="sec-06">
@@ -412,6 +429,7 @@
     </div>
     <p class="hint">轮播 · 拖动排序 · 验证码 · 图片预览 · 文件列表 · 资源管理器 · AI 消息。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
       <h3>CAROUSEL 轮播</h3>
       <div style="max-width: 560px;">
@@ -421,16 +439,17 @@
     </div>
 
     <div class="demo-panel">
-      <h3>SORTABLE 拖动排序 · OTP 验证码</h3>
-      <div class="demo-row" style="gap: 48px; align-items: flex-start;">
-        <div class="demo-col" style="width: 300px;">
-          <wd-sortable-list v-model="sortableItems"></wd-sortable-list>
-          <span class="demo-cap">拖动行即可排序</span>
-        </div>
-        <div class="demo-col">
-          <wd-otp v-model="otpVal"></wd-otp>
-          <span class="demo-cap">otp · 自动前进 / 回退 / 粘贴</span>
-        </div>
+      <h3>SORTABLE 拖动排序</h3>
+      <div class="demo-col" style="width:100%">
+        <wd-sortable-list v-model="sortItems"></wd-sortable-list>
+      </div>
+    </div>
+
+    <div class="demo-panel">
+      <h3>OTP 验证码</h3>
+      <div class="demo-col">
+        <wd-otp v-model="otp" :length="6"></wd-otp>
+        <span class="demo-cap">已输入：{{ otp || '（空）' }}</span>
       </div>
     </div>
 
@@ -442,20 +461,14 @@
       </div>
     </div>
 
-    <div class="demo-panel">
-      <h3>FILELIST · EXPLORER</h3>
-      <div class="demo-row" style="gap: 32px; align-items: flex-start;">
-        <div class="demo-col" style="flex: 1; min-width: 300px;">
-          <div style="background: var(--wd-card); border-radius: 16px; padding: 10px; box-shadow: var(--wd-shadow);">
-            <wd-file-list :items="fileTree" @select="onFileSelect"></wd-file-list>
-          </div>
-          <span class="demo-cap">文件列表 · 文件夹下拉展开</span>
-        </div>
-        <div class="demo-col" style="flex: 1.4; min-width: 380px;">
-          <wd-explorer :folders="explorerFolders" @select="onExplorerSelect"></wd-explorer>
-          <span class="demo-cap">模拟资源管理器</span>
-        </div>
-      </div>
+    <div class="demo-panel demo-panel--wide">
+      <h3>FILELIST 文件列表</h3>
+      <wd-file-list :items="fileNodes"></wd-file-list>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>EXPLORER 文件浏览器</h3>
+      <wd-explorer :files="fileTree"></wd-explorer>
     </div>
 
     <div class="demo-panel">
@@ -471,6 +484,7 @@
         </div>
       </div>
     </div>
+    </div>
   </section>
 
   <section class="demo-sec" id="sec-07">
@@ -480,6 +494,7 @@
     </div>
     <p class="hint">Space · Grid · Container —— 无边框，用间距与留白组织；再附组件尺寸档位演示。</p>
 
+    <div class="demo-grid">
     <div class="demo-panel">
       <h3>Space · 水平间距（sm · md · lg）</h3>
       <wd-space size="sm"><wd-tag variant="tint">标签 A</wd-tag><wd-tag variant="gray">标签 B</wd-tag><wd-tag variant="dark">标签 C</wd-tag></wd-space>
@@ -520,6 +535,7 @@
         <wd-tag size="md" variant="gray">中标签</wd-tag>
         <wd-tag size="sm" variant="dark">小标签</wd-tag>
       </wd-space>
+    </div>
     </div>
   </section>
 
@@ -583,6 +599,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
       <h2>ICONS 图标库</h2>
     </div>
     <p class="hint">由 wdesign-icons 提供 · WdIcon 渲染 —— 256×256 · currentColor（颜色交给 CSS color）</p>
+    <div class="demo-grid">
     <div class="demo-panel" style="margin-top: 0;">
       <h3>WDICON 用法</h3>
       <div class="demo-row" style="align-items: center; gap: 22px;">
@@ -606,6 +623,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
           <span>{{ n }}</span>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
@@ -672,10 +690,10 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792209617"></script>
-<script src="icons.data.js?v=1792220320"></script>
-<script src="demo-extra.js?v=1792213770"></script>
-<script src="demo.js?v=1792213770"></script>
+<script src="icons.optical.js?v=1792230964"></script>
+<script src="icons.data.js?v=1792230964"></script>
+<script src="demo-extra.js?v=1792230964"></script>
+<script src="demo.js?v=1792230964"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

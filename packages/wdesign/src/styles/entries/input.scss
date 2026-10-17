@@ -1,0 +1,7 @@
+// WDesign — input 样式（按需引入）
+//
+//   @use 'wdesign/styles/index.tokens' as wd;     // 必须先引（全站一次）
+//   @use 'wdesign/styles/entries/input';     // 再引本组件
+//
+// 本文件只转发原子件，不重复发射令牌。
+@use '../components/input';

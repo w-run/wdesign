@@ -4977,13 +4977,25 @@ body {
   max-width: 560px;
 }
 
+.demo-grid {
+  display: grid;
+  gap: 20px;
+  margin-top: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  align-items: start;
+}
+
+.demo-panel--wide {
+  grid-column: 1/-1;
+}
+
 .demo-panel {
   background: var(--wd-card);
   border-radius: 28px;
-  padding: 28px 32px;
-  margin-top: 20px;
+  padding: 26px 28px;
   box-shadow: var(--wd-shadow-sm);
   transition: box-shadow var(--wd-dur) var(--wd-ease-out);
+  min-width: 0;
 }
 .demo-panel:hover {
   box-shadow: var(--wd-shadow-hover);

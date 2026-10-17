@@ -8,7 +8,12 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./styles": "./src/styles/index.scss"
+    "./full": "./src/full.ts",
+    "./components/*": "./src/components/*",
+    "./styles": "./src/styles/index.scss",
+    "./styles/*": "./src/styles/*",
+    "./tokens.json": "./tokens.json",
+    "./hover": "./src/hover.ts"
   },
   "files": [
     "src",
@@ -21,8 +26,8 @@
     "hover:check": "python3 tools/hover-js.py --check"
   },
   "sideEffects": [
-    "*.scss",
-    "*.css"
+    "**/*.scss",
+    "**/*.css"
   ],
   "keywords": [
     "vue3",
