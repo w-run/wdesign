@@ -29,8 +29,12 @@
 .wd-switch--off .wd-switch__knob { transform: translateX(0); }
 /* ---- 微交互（精致版）---- */
 .wd-switch__knob { transition: transform var(--wd-dur) var(--wd-ease-spring); }
-.wd-switch:not(.wd-switch--off):hover { box-shadow: 0 0 0 4px var(--wd-tint-2); }
-.wd-switch--off:hover { box-shadow: 0 0 0 4px var(--wd-ring-soft); }
+@media (hover: hover) {
+  .wd-switch:not(.wd-switch--off):hover { box-shadow: 0 0 0 4px var(--wd-tint-2); }
+}
+@media (hover: hover) {
+  .wd-switch--off:hover { box-shadow: 0 0 0 4px var(--wd-ring-soft); }
+}
 /* toggle 后外环脉冲 —— 通过两个不同名的动画随类切换重新触发 */
 .wd-switch::after {
   content: '';

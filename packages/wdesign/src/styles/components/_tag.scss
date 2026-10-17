@@ -30,7 +30,13 @@
 .wd-tag__dot--gray { background: var(--wd-ink-3); }
 /* ---- 微交互（精致版）---- */
 .wd-tag { transition: background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out); }
-.wd-tag--tint:hover { background: var(--wd-tint-3); }
-.wd-tag--gray:hover { background: var(--wd-field-hover); }
-.wd-tag--dark:hover { background: var(--wd-dark-2); }
+@media (hover: hover) {
+  .wd-tag--tint:hover { background: var(--wd-tint-3); }
+}
+@media (hover: hover) {
+  .wd-tag--gray:hover { background: var(--wd-field-hover); }
+}
+@media (hover: hover) {
+  .wd-tag--dark:hover { background: var(--wd-dark-2); }
+}
 

@@ -39,7 +39,9 @@
   text-align: left;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-explorer__folder:hover { background: var(--wd-tint-1); color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-explorer__folder:hover { background: var(--wd-tint-1); color: var(--wd-ink); }
+}
 .wd-explorer__folder--active {
   background: var(--wd-card);
   color: var(--wd-red-text);
@@ -58,7 +60,9 @@
 .wd-explorer__bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .wd-explorer__path { display: flex; align-items: center; gap: 6px; min-width: 0; font-size: 13px; }
 .wd-explorer__crumb { color: var(--wd-ink-2); cursor: pointer; white-space: nowrap; }
-.wd-explorer__crumb:hover { color: var(--wd-red-text); }
+@media (hover: hover) {
+  .wd-explorer__crumb:hover { color: var(--wd-red-text); }
+}
 .wd-explorer__crumb--cur { color: var(--wd-ink); font-weight: 700; cursor: default; }
 .wd-explorer__sep { color: var(--wd-ink-3); }
 
@@ -83,7 +87,9 @@
   justify-content: center;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
-.wd-explorer__view-btn:hover { color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-explorer__view-btn:hover { color: var(--wd-ink); }
+}
 .wd-explorer__view-btn--active {
   background: var(--wd-card);
   color: var(--wd-red-text);
@@ -116,7 +122,9 @@
   border-top: 4px solid transparent;   // 行间留白（视觉分隔，不画线）
 }
 .wd-explorer__table tbody tr { cursor: pointer; transition: background var(--wd-dur-fast) ease; }
-.wd-explorer__table tbody tr:hover { background: var(--wd-tint-1); }
+@media (hover: hover) {
+  .wd-explorer__table tbody tr:hover { background: var(--wd-tint-1); }
+}
 
 .wd-explorer__table .is-num {
   text-align: right;
@@ -160,7 +168,9 @@
   font: inherit;
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-explorer__tile:hover { background: var(--wd-tint-1); }
+@media (hover: hover) {
+  .wd-explorer__tile:hover { background: var(--wd-tint-1); }
+}
 .wd-explorer__tile-icon {
   width: 48px;
   height: 48px;
@@ -172,7 +182,9 @@
   justify-content: center;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-explorer__tile:hover .wd-explorer__tile-icon { background: var(--wd-card); color: var(--wd-red-text); }
+@media (hover: hover) {
+  .wd-explorer__tile:hover .wd-explorer__tile-icon { background: var(--wd-card); color: var(--wd-red-text); }
+}
 .wd-explorer__tile-name {
   display: -webkit-box;
   -webkit-line-clamp: 2;

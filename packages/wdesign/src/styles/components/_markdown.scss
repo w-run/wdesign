@@ -43,7 +43,9 @@
     text-underline-offset: 3px;
     transition: color var(--wd-dur-fast) ease, text-decoration-color var(--wd-dur-fast) ease;
   }
+@media (hover: hover) {
   a:hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
+}
   strong, b { font-weight: 700; }
   em { font-style: italic; }
   mark { padding: .05em .35em; border-radius: 6px; background: var(--wd-mark-bg); color: inherit; }
@@ -152,7 +154,9 @@
     th, td { padding: 11px 16px; text-align: left; }
     thead th { background: var(--wd-field); font-size: 13px; font-weight: 700; color: var(--wd-ink); }
     tbody tr:nth-child(even) { background: var(--wd-bg); }
-    tbody tr:hover { background: var(--wd-tint-1); }
+@media (hover: hover) {
+  tbody tr:hover { background: var(--wd-tint-1); }
+}
   }
 
   // ---- 分隔线（色块短棒，不用线）

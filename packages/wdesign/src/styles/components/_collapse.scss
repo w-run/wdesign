@@ -25,7 +25,9 @@
   text-align: left;
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-collapse__head:hover { background: var(--wd-bg); }
+@media (hover: hover) {
+  .wd-collapse__head:hover { background: var(--wd-bg); }
+}
 
 
 .wd-collapse__body {

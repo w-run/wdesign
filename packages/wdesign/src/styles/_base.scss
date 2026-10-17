@@ -43,7 +43,9 @@ body {
   border: 2px solid transparent;
   background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: var(--wd-ink-2); background-clip: content-box; }
+@media (hover: hover) {
+  ::-webkit-scrollbar-thumb:hover { background: var(--wd-ink-2); background-clip: content-box; }
+}
 ::-webkit-scrollbar-corner { background: transparent; }
 * { scrollbar-width: thin; scrollbar-color: var(--wd-ink-3) transparent; }
 

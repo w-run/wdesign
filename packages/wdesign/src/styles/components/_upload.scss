@@ -18,11 +18,10 @@
   transition: border-color var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
   text-align: center;
 }
-.wd-upload__zone:hover,
-.wd-upload__zone--over {
-  border-color: var(--wd-red-soft);
-  background: var(--wd-tint-1);
+@media (hover: hover) {
+  .wd-upload__zone:hover { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
 }
+.wd-upload__zone--over { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
 .wd-upload__zone--over { animation: wd-upload-pulse .6s ease; }
 @keyframes wd-upload-pulse {
   0%, 100% { transform: scale(1); }
@@ -73,7 +72,9 @@
   justify-content: center;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-upload__remove:hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
+@media (hover: hover) {
+  .wd-upload__remove:hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
+}
 
 .wd-upload__progress {
   height: 4px;

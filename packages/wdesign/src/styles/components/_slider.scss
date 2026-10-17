@@ -48,5 +48,7 @@
 .wd-slider input[type='range']::-webkit-slider-thumb {
   transition: box-shadow var(--wd-dur) var(--wd-ease-out), transform var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-slider input[type='range']:hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-tint-2); }
+@media (hover: hover) {
+  .wd-slider input[type='range']:hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-tint-2); }
+}
 

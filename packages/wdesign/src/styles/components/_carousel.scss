@@ -14,7 +14,9 @@
   box-shadow: var(--wd-shadow-pop);
   transition: transform var(--wd-dur) ease;
 }
-.wd-carousel__arrow:hover { transform: translateY(-50%) scale(1.08); }
+@media (hover: hover) {
+  .wd-carousel__arrow:hover { transform: translateY(-50%) scale(1.08); }
+}
 .wd-carousel__arrow--prev { left: 16px; }
 .wd-carousel__arrow--next { right: 16px; }
 

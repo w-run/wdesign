@@ -133,7 +133,38 @@ for p in walk():
                 errors.append('%s:%d 入场动画用了 fill-mode `both`（%s）→ 时钟停摆时元素永久隐藏'
                               % (os.path.relpath(p, ROOT), i, a))
 
-# ── 7. 对比度 ────────────────────────────────────────────────
+# ── 7. hover 守卫（触屏 tap 后 :hover 会粘住）─────────────────
+# 所有 :hover 规则都应位于 @media (hover: hover) 内，否则触摸设备上
+# 点一下按钮它就停在悬停态（变色/放大/阴影），看起来像卡住。
+hover_bare = []
+for p in walk():
+    if not p.endswith('.scss') or os.path.basename(p) in ('_vars.scss', '_dark.scss', '_tokens.scss'):
+        continue
+    src = rd(p)
+    spans = []
+    for m in re.finditer(r'@media[^{]*hover[^{]*\{', src):
+        d = 0
+        for i in range(m.end() - 1, len(src)):
+            if src[i] == '{':
+                d += 1
+            elif src[i] == '}':
+                d -= 1
+                if d == 0:
+                    spans.append((m.start(), i))
+                    break
+    for i, line in enumerate(src.splitlines(), 1):
+        if ':hover' not in line or line.lstrip().startswith('//'):
+            continue
+        pos = sum(len(l) + 1 for l in src.splitlines()[:i - 1])
+        if not any(a <= pos <= b for a, b in spans):
+            # 已含 :active/:focus 的组不强制（它们需要共同作用）
+            if ':active' not in line and ':focus' not in line:
+                hover_bare.append('%s:%d %s' % (os.path.relpath(p, ROOT), i, line.strip()[:60]))
+if hover_bare:
+    warns.append('hover 未受 `@media (hover: hover)` 保护 %d 处（触屏上会粘住）：\n      %s'
+                 % (len(hover_bare), '\n      '.join(hover_bare[:8])))
+
+# ── 8. 对比度 ────────────────────────────────────────────────
 def _lum(rgb):
     def f(c):
         c /= 255

@@ -13,7 +13,9 @@
   transition: background var(--wd-dur-fast) ease;
 }
 .wd-list-item--clickable { cursor: pointer; }
-.wd-list-item--clickable:hover { background: var(--wd-bg); }
+@media (hover: hover) {
+  .wd-list-item--clickable:hover { background: var(--wd-bg); }
+}
 
 /* 列表项前方图标：柔和浅色底 + 系统灰/主题色描边，避免"黑黢黢一小块" */
 .wd-list-item__icon {
@@ -44,5 +46,7 @@
 .wd-list-item__icon {
   transition: transform var(--wd-dur) var(--wd-ease-out), background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-list-item--clickable:hover .wd-list-item__icon { transform: translateX(2px); background: var(--wd-tint-2); color: var(--wd-red-text); }
+@media (hover: hover) {
+  .wd-list-item--clickable:hover .wd-list-item__icon { transform: translateX(2px); background: var(--wd-tint-2); color: var(--wd-red-text); }
+}
 

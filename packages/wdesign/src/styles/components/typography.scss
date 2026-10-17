@@ -26,10 +26,9 @@
     margin-top: 0.5em;
     transition: opacity $wd-dur-slow ease;
   }
-
-  &:hover::after {
-    opacity: 1;
-  }
+@media (hover: hover) {
+  &:hover::after { opacity: 1; }
+}
 }
 
 // 主题感知图片：深色下自动压暗（配合 portfolio 等富图场景）

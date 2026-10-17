@@ -18,12 +18,16 @@
   justify-content: center;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-pagination__btn:hover:not(:disabled) { background: var(--wd-field); color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-pagination__btn:hover:not(:disabled) { background: var(--wd-field); color: var(--wd-ink); }
+}
 .wd-pagination__btn:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-pagination__btn:disabled { color: var(--wd-ink-3); cursor: default; }
 
 .wd-pagination__btn--active { background: var(--wd-red); color: #fff; }
-.wd-pagination__btn--active:hover:not(:disabled) { background: var(--wd-red-hover); color: #fff; }
+@media (hover: hover) {
+  .wd-pagination__btn--active:hover:not(:disabled) { background: var(--wd-red-hover); color: #fff; }
+}
 
 .wd-pagination__dots { color: var(--wd-ink-2); font-size: 13px; padding: 0 2px; }
 /* ---- 微交互（精致版）---- */

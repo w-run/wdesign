@@ -68,7 +68,7 @@
     margin-top: .5em;
     transition: opacity $wd-dur-slow ease;
   }
-  &:hover::after {
-    opacity: 1;
-  }
+@media (hover: hover) {
+  &:hover::after { opacity: 1; }
+}
 }

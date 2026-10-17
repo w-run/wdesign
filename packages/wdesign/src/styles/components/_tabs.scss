@@ -25,7 +25,9 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
   white-space: nowrap;
 }
-.wd-tabs__item:hover { color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-tabs__item:hover { color: var(--wd-ink); }
+}
 .wd-tabs__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
 .wd-tabs__item--active {

@@ -11,7 +11,9 @@
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-file-list__row:hover { background: var(--wd-bg); }
+@media (hover: hover) {
+  .wd-file-list__row:hover { background: var(--wd-bg); }
+}
 .wd-file-list__row--folder { font-weight: 600; }
 
 /* 展开箭头：所有行都占位（保证文件夹/文件图标对齐在同一列） */

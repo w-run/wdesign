@@ -17,7 +17,9 @@
   color: var(--wd-ink);
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
-.wd-datepicker__trigger:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-datepicker__trigger:hover { background: var(--wd-field-hover); }
+}
 .wd-datepicker--open .wd-datepicker__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-datepicker__placeholder { color: var(--wd-ink-2); }
 .wd-datepicker__icon { flex: none; color: var(--wd-ink-3); }
@@ -61,11 +63,15 @@
   justify-content: center;
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-datepicker__day:hover { background: var(--wd-tint-1); }
+@media (hover: hover) {
+  .wd-datepicker__day:hover { background: var(--wd-tint-1); }
+}
 .wd-datepicker__day--muted { color: var(--wd-ink-2); }
 .wd-datepicker__day--today { color: var(--wd-red-text); font-weight: 700; }
 .wd-datepicker__day--selected { background: var(--wd-red); color: #fff; font-weight: 700; }
-.wd-datepicker__day--selected:hover { background: var(--wd-red-hover); }
+@media (hover: hover) {
+  .wd-datepicker__day--selected:hover { background: var(--wd-red-hover); }
+}
 
 .wd-datepicker__foot { display: flex; justify-content: center; margin-top: 10px; }
 .wd-datepicker__todaybtn {
@@ -79,5 +85,7 @@
   border-radius: var(--wd-radius-pill);
   cursor: pointer;
 }
-.wd-datepicker__todaybtn:hover { background: var(--wd-tint-2); }
+@media (hover: hover) {
+  .wd-datepicker__todaybtn:hover { background: var(--wd-tint-2); }
+}
 

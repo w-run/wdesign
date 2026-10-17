@@ -39,7 +39,9 @@
 .wd-btn--primary {
   background: var(--wd-red);
   color: #fff;
+@media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-red-hover); }
+}
   &:active:not(:disabled) { background: var(--wd-red-active); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
@@ -48,7 +50,9 @@
 .wd-btn--tint {
   background: var(--wd-tint-2);
   color: var(--wd-red-text);
+@media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-tint-3); }
+}
   &:active:not(:disabled) { background: var(--wd-tint-4); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
@@ -57,7 +61,9 @@
 .wd-btn--dark {
   background: var(--wd-dark);
   color: var(--wd-dark-text);
+@media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-dark-hover); }
+}
   &:active:not(:disabled) { background: var(--wd-dark-active); }
   &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
 }
@@ -66,7 +72,9 @@
 .wd-btn--ghost {
   background: transparent;
   color: var(--wd-ink);
+@media (hover: hover) {
   &:hover:not(:disabled) { background: var(--wd-field); }
+}
   &:active:not(:disabled) { background: var(--wd-tint-2); }
   &:disabled { background: transparent; color: var(--wd-ink-3); }
 }
@@ -94,9 +102,11 @@
   opacity: 0;
   pointer-events: none;
 }
-.wd-btn--primary:not(:disabled):hover::after,
-.wd-btn--dark:not(:disabled):hover::after { animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out); }
-
-.wd-btn--tint:not(:disabled):hover { background: var(--wd-tint-3); }
+@media (hover: hover) {
+  .wd-btn--primary:not(:disabled):hover::after, .wd-btn--dark:not(:disabled):hover::after { animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out); }
+}
+@media (hover: hover) {
+  .wd-btn--tint:not(:disabled):hover { background: var(--wd-tint-3); }
+}
 .wd-btn--tint:not(:disabled):active { background: var(--wd-tint-4); }
 

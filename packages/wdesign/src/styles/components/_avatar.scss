@@ -25,9 +25,7 @@
 .wd-avatars .wd-avatar {
   transition: transform var(--wd-dur) var(--wd-ease-out), box-shadow var(--wd-dur) var(--wd-ease-out);
 }
-.wd-avatars .wd-avatar:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--wd-shadow-sm);
-  z-index: 2;
+@media (hover: hover) {
+  .wd-avatars .wd-avatar:hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-sm); z-index: 2; }
 }
 

@@ -23,7 +23,9 @@
 }
 .wd-segmented--dark { background: var(--wd-dark-2); }
 .wd-segmented--dark .wd-segmented__item { color: var(--wd-on-dark); }
-.wd-segmented--dark .wd-segmented__item:hover { color: #fff; }
+@media (hover: hover) {
+  .wd-segmented--dark .wd-segmented__item:hover { color: #fff; }
+}
 .wd-segmented--dark .wd-segmented__slider { background: var(--wd-dark); box-shadow: none; }
 
 .wd-segmented__item {
@@ -45,11 +47,15 @@
   transition: color var(--wd-dur-fast) ease;
   white-space: nowrap;
 }
-.wd-segmented__item:hover { color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-segmented__item:hover { color: var(--wd-ink); }
+}
 .wd-segmented__item:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 .wd-segmented__item--active { color: var(--wd-ink); }
 .wd-segmented--dark .wd-segmented__item--active { color: var(--wd-dark-text); }
-.wd-segmented--dark .wd-segmented__item--active:hover { color: var(--wd-dark-text); }
+@media (hover: hover) {
+  .wd-segmented--dark .wd-segmented__item--active:hover { color: var(--wd-dark-text); }
+}
 
 /* =============================================================
  *  溢出模式：单行横向滚动（选项多时）
@@ -148,8 +154,8 @@
   -webkit-tap-highlight-color: transparent;
   transition: background-color var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
-.wd-segmented-picker__trigger:hover {
-  background: var(--wd-field-hover, #dfe4ea);
+@media (hover: hover) {
+  .wd-segmented-picker__trigger:hover { background: var(--wd-field-hover, #dfe4ea); }
 }
 .wd-segmented-picker__trigger:focus-visible {
   outline: 2px solid var(--wd-red, #d62839);
@@ -214,8 +220,8 @@
   -webkit-tap-highlight-color: transparent;
   transition: background-color var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
-.wd-segmented-picker__option:hover {
-  background: var(--wd-field, #e9edf1);
+@media (hover: hover) {
+  .wd-segmented-picker__option:hover { background: var(--wd-field, #e9edf1); }
 }
 .wd-segmented-picker__option--active {
   color: var(--wd-red, #d62839);

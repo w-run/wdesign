@@ -39,15 +39,14 @@
   transform-origin: left center;
   transition: transform var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1));
 }
-
-.wd-post-item:hover {
-  transform: translateX(4px);
+@media (hover: hover) {
+  .wd-post-item:hover { transform: translateX(4px); }
 }
-.wd-post-item:hover::before {
-  transform: scaleX(1);
+@media (hover: hover) {
+  .wd-post-item:hover::before { transform: scaleX(1); }
 }
-.wd-post-item:hover .wd-post-item__title {
-  color: var(--wd-red-text);
+@media (hover: hover) {
+  .wd-post-item:hover .wd-post-item__title { color: var(--wd-red-text); }
 }
 .wd-post-item:active {
   transform: translateX(2px);
