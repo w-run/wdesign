@@ -1,0 +1,31 @@
+const G: any = (globalThis as any).Vue
+const named: any = new Proxy({}, { get: (_t, k) => (G as any)[String(k)] })
+export default named
+export const defineComponent: any = (G as any).defineComponent
+export const toDisplayString: any = (G as any).toDisplayString
+export const createElementVNode: any = (G as any).createElementVNode
+export const createCommentVNode: any = (G as any).createCommentVNode
+export const createTextVNode: any = (G as any).createTextVNode
+export const openBlock: any = (G as any).openBlock
+export const createElementBlock: any = (G as any).createElementBlock
+export const normalizeClass: any = (G as any).normalizeClass
+export const renderList: any = (G as any).renderList
+export const Fragment: any = (G as any).Fragment
+export const onBeforeUnmount: any = (G as any).onBeforeUnmount
+export const ref: any = (G as any).ref
+export const watch: any = (G as any).watch
+export const renderSlot: any = (G as any).renderSlot
+export const computed: any = (G as any).computed
+export const createBlock: any = (G as any).createBlock
+export const normalizeStyle: any = (G as any).normalizeStyle
+export const onMounted: any = (G as any).onMounted
+export const Transition: any = (G as any).Transition
+export const withCtx: any = (G as any).withCtx
+export const createVNode: any = (G as any).createVNode
+export const Teleport: any = (G as any).Teleport
+export const watchEffect: any = (G as any).watchEffect
+export const withModifiers: any = (G as any).withModifiers
+export const withKeys: any = (G as any).withKeys
+export const createStaticVNode: any = (G as any).createStaticVNode
+export const resolveDynamicComponent: any = (G as any).resolveDynamicComponent
+export const nextTick: any = (G as any).nextTick

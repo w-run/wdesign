@@ -238,6 +238,30 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      email: '',
+      pwd: '',
+      sliderFine: 3.5,
+      rate10: 7,
+      collapseOpen: [0],
+      collapseItems: [
+        { title: '常见问题', content: '这里是回答内容。' },
+        { title: '更新日志', content: 'v1.4 修复了若干视觉问题。' },
+        { title: '联系方式', content: 'dev@w-run.net' },
+      ],
+      timelineItems: [
+        { title: '创建仓库', time: '10-08 09:12', desc: '初始化 WDesign 设计系统' },
+        { title: '发布 v1.0', time: '10-12 16:40', desc: '46 个组件全部就绪' },
+        { title: '视觉迭代', time: '10-17 11:20', desc: '对比度、图标光学归一' },
+      ],
+      manyTags: ['全部','设计','前端','后端','运维','产品','测试','数据','安全','文档'],
+      segVal3: '全部',
+      segVal4: '全部',
+      drawerRight: false,
+      drawerLeft: false,
+      modalWide: false,
+      previewSrc: '',
+      previewList: [],
+
       sliderVal: 56,
       rate: 3,
       otp: '',
@@ -402,12 +426,21 @@ const app = createApp({
   },
 })
 
-for (const c of [WdIcon, WdButton, WdTag, WdCard, WdInput, WdSwitch, WdProgress, WdAvatar, WdAvatarGroup, WdListItem]) {
-  app.component(c.name, c)
+// 优先注册**真实组件**（components.js，由 src/components/*.vue 编译而来）；
+// 镜像只在真实组件缺失时兜底 —— 镜像漏了 props 会让人误以为组件本身坏了。
+const REAL = window.WD_REAL || { ALL: [] }
+if (REAL.ALL.length) {
+  for (const c of REAL.ALL) if (c && c.name) app.component(c.name, c)
+  console.log('[demo] 真实组件', REAL.ALL.length, '个')
+} else {
+  for (const c of [WdIcon, WdButton, WdTag, WdCard, WdInput, WdSwitch, WdProgress, WdAvatar, WdAvatarGroup, WdListItem]) {
+    app.component(c.name, c)
+  }
+  ;(window.WD_EXTRA_COMPONENTS || []).forEach((c) => app.component(c.name, c))
+  console.warn('[demo] 未找到 components.js，回退到镜像组件')
 }
 
-;(window.WD_EXTRA_COMPONENTS || []).forEach((c) => app.component(c.name, c))
-
+window.__WD_APP__ = app
 app.mount('#app')
 
 // ---- 悬停状态增强（与库内 src/hover.ts 同源逻辑，此处内联以便离线演示）----
