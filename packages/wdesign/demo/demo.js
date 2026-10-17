@@ -238,6 +238,61 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      cmdOpen: false,
+      cmdPicked: '',
+      cmdItems: [
+        { key: 'new-file', label: '新建文件', group: '文件', icon: '📄', shortcut: '⌘N' },
+        { key: 'new-folder', label: '新建文件夹', group: '文件', icon: '📁' },
+        { key: 'open', label: '打开…', group: '文件', icon: '📂', shortcut: '⌘O' },
+        { key: 'save', label: '保存', group: '文件', icon: '💾', shortcut: '⌘S' },
+        { key: 'delete', label: '删除', group: '编辑', icon: '🗑', hint: '不可撤销', keywords: ['remove', 'del'] },
+        { key: 'undo', label: '撤销', group: '编辑', icon: '↩', shortcut: '⌘Z', keywords: ['undo'] },
+        { key: 'redo', label: '重做', group: '编辑', icon: '↪', shortcut: '⇧⌘Z' },
+        { key: 'theme', label: '切换主题', group: '视图', icon: '🌗', keywords: ['dark', 'light'] },
+        { key: 'side', label: '切换侧边栏', group: '视图', icon: '◧', shortcut: '⌘B' },
+        { key: 'legacy', label: '旧版导出（已停用）', group: '视图', icon: '⏳', disabled: true },
+      ],
+      descItems: [
+        { label: '订单号', value: 'WD-20261017-0042' },
+        { label: '状态', value: '已发货' },
+        { label: '下单时间', value: '2026-10-17 09:32' },
+        { label: '客户', value: '林小满' },
+        { label: '联系电话', value: '138****6621' },
+        { label: '收货地址', value: '浙江省杭州市余杭区未来科技城 8 号楼', span: 1 },
+        { label: '金额', value: '¥ 1,286.00' },
+        { label: '支付方式', value: '微信支付' },
+        { label: '备注', value: '工作日送达，请提前电话联系', span: 1 },
+      ],
+      descSpanItems: [
+        { label: '项目名', value: 'WDesign' },
+        { label: '版本', value: 'v1.4.2' },
+        { label: '许可证', value: 'MIT' },
+        { label: '技术栈', value: '', key: 'tags', span: 3 },
+        { label: '仓库', value: 'github.com/w-run/wdesign', span: 2 },
+        { label: '星标', value: '1.2k' },
+      ],
+      treeSelected: 'App.vue',
+      treeExpanded: ['src', 'components'],
+      treeChecked: ['components'],
+      treeNodes: [
+        { key: 'src', label: 'src', children: [
+          { key: 'App.vue', label: 'App.vue' },
+          { key: 'main.ts', label: 'main.ts' },
+          { key: 'components', label: 'components', children: [
+            { key: 'WdButton.vue', label: 'WdButton.vue' },
+            { key: 'WdTree.vue', label: 'WdTree.vue' },
+            { key: 'WdCommand.vue', label: 'WdCommand.vue' },
+          ] },
+          { key: 'styles', label: 'styles', children: [
+            { key: '_tokens.scss', label: '_tokens.scss' },
+            { key: '_vars.scss', label: '_vars.scss' },
+          ] },
+        ] },
+        { key: 'package.json', label: 'package.json' },
+        { key: 'README.md', label: 'README.md' },
+        { key: 'legacy', label: 'legacy（只读）', disabled: true },
+      ],
+
       statValue: 86400,
       lastAction: '',
       tab2: '标签一',
@@ -422,6 +477,10 @@ const app = createApp({
     },
     onDeleted() { this.lastAction = '已确认删除（危险操作）' },
     onPublished() { this.lastAction = '已确认发布' },
+    onTreeCheck(node, checked) {
+      console.log('check', node.label, checked)
+    },
+    onCmdPick(it) { this.cmdPicked = it.label },
     toggleTableLoading() {
       this.tableLoading = true
       setTimeout(() => { this.tableLoading = false }, 1600)

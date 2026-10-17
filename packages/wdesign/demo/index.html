@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.css?v=1792253456">
+<link rel="stylesheet" href="demo.css?v=1792254406">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -680,6 +680,60 @@
       <span class="demo-cap" style="margin-top:10px" v-if="lastAction">最近操作：{{ lastAction }}</span>
     </div>
 
+    <div class="demo-panel demo-panel--wide">
+      <h3>DESCRIPTIONS 详情列表</h3>
+      <div class="demo-row" style="gap:36px; align-items:flex-start; flex-wrap:wrap">
+        <div style="flex:1; min-width:340px">
+          <div class="demo-cap" style="margin-bottom:6px">横向 · 3 列</div>
+          <wd-descriptions :columns="3" :items="descItems"></wd-descriptions>
+        </div>
+        <div style="flex:1; min-width:300px">
+          <div class="demo-cap" style="margin-bottom:6px">竖排 · 斑马纹 · 2 列</div>
+          <wd-descriptions vertical striped :columns="2" :items="descItems.slice(0,4)"></wd-descriptions>
+        </div>
+      </div>
+      <div style="margin-top:20px; max-width:620px">
+        <div class="demo-cap" style="margin-bottom:6px">span=2 占两列 · 自定义插槽</div>
+        <wd-descriptions :columns="3" colon :items="descSpanItems">
+          <template #tags>
+            <wd-tag v-for="t in ['Vue','TypeScript','SCSS']" :key="t" size="sm" style="margin-right:6px">{{ t }}</wd-tag>
+          </template>
+        </wd-descriptions>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>TREE 通用树</h3>
+      <div class="demo-row" style="gap:32px; align-items:flex-start; flex-wrap:wrap">
+        <div style="flex:1; min-width:260px">
+          <div class="demo-cap" style="margin-bottom:6px">勾选级联（半选态）· 选中：{{ treeSelected }}</div>
+          <wd-tree v-model:expanded-keys="treeExpanded" v-model:checked-keys="treeChecked"
+            v-model:selected-key="treeSelected" :nodes="treeNodes" checkable show-line
+            @check="onTreeCheck"></wd-tree>
+        </div>
+        <div style="flex:1; min-width:240px">
+          <div class="demo-cap" style="margin-bottom:6px">单选 + 图标 + 悬停操作</div>
+          <wd-tree :nodes="treeNodes" :expanded-keys="['src']" :selected-key="'App.vue'">
+            <template #icon="{ node }">{{ node.children ? '📁' : '📄' }}</template>
+            <template #extra><span class="demo-cap" style="margin:0">···</span></template>
+          </wd-tree>
+          <span class="demo-cap" style="margin-top:10px">↑↓ 移动 · → 展开 · ← 收起/回到父级 · Enter 选中</span>
+        </div>
+      </div>
+      <div class="demo-cap" style="margin-top:12px">已勾选 {{ treeChecked.length }} 项</div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>COMMAND 命令面板</h3>
+      <div class="demo-row" style="gap:16px; align-items:center; flex-wrap:wrap">
+        <wd-button variant="primary" size="sm" @click="cmdOpen = true">打开命令面板</wd-button>
+        <span class="demo-cap">或按 <kbd style="padding:1px 5px;border-radius:4px;background:var(--wd-field);font-family:var(--wd-font-mono);font-size:11px">⌘K</kbd> / Ctrl+K</span>
+        <span class="demo-cap" v-if="cmdPicked">已选择：{{ cmdPicked }}</span>
+      </div>
+      <wd-command v-model="cmdOpen" :items="cmdItems" @select="onCmdPick"></wd-command>
+      <span class="demo-cap" style="margin-top:10px">前缀匹配优先排序 · 分组 · 快捷键提示 · 上下键 + 回车 / Esc</span>
+    </div>
+
 <div class="demo-panel">
       <h3>TIMELINE 时间线</h3>
       <div class="demo-row" style="gap:40px; align-items:flex-start">
@@ -1012,11 +1066,11 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
 </div>
 <script src="vue.global.prod.js"></script>
-<script src="icons.optical.js?v=1792253456"></script>
-<script src="icons.data.js?v=1792253456"></script>
-<script src="demo-extra.js?v=1792253456"></script>
-<script src="components.js?v=1792253456"></script>
-<script src="demo.js?v=1792253456"></script>
+<script src="icons.optical.js?v=1792254406"></script>
+<script src="icons.data.js?v=1792254406"></script>
+<script src="demo-extra.js?v=1792254406"></script>
+<script src="components.js?v=1792254406"></script>
+<script src="demo.js?v=1792254406"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

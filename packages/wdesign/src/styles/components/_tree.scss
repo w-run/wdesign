@@ -1,0 +1,125 @@
+// =============================================================
+//  WDesign — Tree（通用树）
+//  用扁平渲染（flat computed）而非递归组件：节点多时不必为每层
+//  创建组件实例，键盘导航也能直接按下标移动。
+// =============================================================
+.wd-tree {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  user-select: none;
+}
+
+.wd-tree__node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  min-height: 32px;
+  padding-right: 10px;
+  border-radius: var(--wd-radius-xs);
+  color: var(--wd-ink);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--wd-dur-fast) ease;
+}
+.wd-tree__node:hover { background: var(--wd-tint-1); }
+.wd-tree__node:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--wd-focus-ring);
+}
+
+.wd-tree__node--selected {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+  font-weight: 600;
+}
+.wd-tree__node--selected:hover { background: var(--wd-tint-3); }
+
+/*
+  禁用态用 .6 而非 .45：.45 在浅色底上对比度约 3:1，标签几乎读不出来。
+  禁用需要「看起来不可用」，但不能牺牲可读性。
+*/
+.wd-tree__node--disabled {
+  opacity: .6;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---- 展开箭头 ---- */
+.wd-tree__arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--wd-ink-2);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+.wd-tree__arrow--open { transform: rotate(90deg); }
+.wd-tree__arrow--leaf { visibility: hidden; }
+.wd-tree__arrow:hover { color: var(--wd-ink); }
+
+/* ---- 复选框 ---- */
+.wd-tree__check {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 2px;
+}
+.wd-tree__check input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--wd-red);
+  cursor: pointer;
+}
+
+.wd-tree__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  color: var(--wd-ink-2);
+  font-size: 13px;
+}
+
+.wd-tree__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-tree__extra {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease;
+}
+.wd-tree__node:hover .wd-tree__extra,
+.wd-tree__node--selected .wd-tree__extra { opacity: 1; }
+
+/*
+  ---- 引导线 ----
+  原来画在 left:0，每行一条，深一点的行也只会得到「贴着容器左边」的线，
+  看起来像表格边框而不是层级引导。改为用 CSS 变量传深度偏移，
+  从父级箭头中心处往下连，视觉上才成为「树的骨架」。
+*/
+.wd-tree--line .wd-tree__node::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--wd-tree-line-x, 0px));
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--wd-ink-5);
+}
+
+.wd-tree__empty {
+  padding: 18px 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--wd-ink-2);
+}

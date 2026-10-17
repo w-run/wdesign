@@ -5581,6 +5581,457 @@ img.wd-theme-invert {
   color: var(--wd-ink-2);
 }
 
+.wd-command {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+}
+
+.wd-command__mask {
+  position: absolute;
+  inset: 0;
+  background: var(--wd-mask);
+  backdrop-filter: blur(3px);
+}
+
+.wd-command__panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(620px, 100vw - 32px);
+  max-width: 100%;
+  border-radius: var(--wd-radius-lg);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-lg);
+  overflow: hidden;
+  animation: wd-command-in var(--wd-dur-pop) var(--wd-ease-out) both;
+}
+
+@keyframes wd-command-in {
+  from {
+    opacity: 0;
+    scale: 0.97;
+    translate: 0 -6px;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-command__panel {
+    animation: none;
+  }
+}
+/* ---- 搜索行 ---- */
+.wd-command__input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--wd-ink-5);
+}
+
+.wd-command__search-icon {
+  flex: none;
+  color: var(--wd-ink-2);
+}
+
+.wd-command__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.wd-command__input::placeholder {
+  color: var(--wd-ink-2);
+}
+
+.wd-command__esc {
+  flex: none;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
+  font-family: var(--wd-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+
+/* ---- 结果列表 ---- */
+.wd-command__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px;
+  overscroll-behavior: contain;
+}
+
+.wd-command__group {
+  padding: 8px 8px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wd-ink-3);
+}
+
+.wd-command__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.wd-command__item--active {
+  background: var(--wd-tint-2);
+}
+
+.wd-command__item--disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.wd-command__item-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  font-size: 15px;
+}
+
+.wd-command__item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.wd-command__item-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-command__item-hint {
+  font-size: 11.5px;
+  color: var(--wd-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-command__item-shortcut,
+.wd-command__footer kbd {
+  flex: none;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
+  font-family: var(--wd-font-mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.wd-command__empty {
+  padding: 28px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+}
+
+/* ---- 底部提示 ---- */
+.wd-command__footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--wd-ink-5);
+  background: var(--wd-tint-1);
+  font-size: 11.5px;
+  color: var(--wd-ink-2);
+}
+
+.wd-command__footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wd-descriptions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: var(--wd-radius-sm);
+  overflow: hidden;
+}
+
+.wd-descriptions__row {
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.wd-descriptions__item {
+  display: flex;
+  flex: var(--wd-desc-span) 1 0;
+  min-width: 0;
+  gap: 10px;
+  align-items: baseline;
+}
+
+/*
+  ⚠️ 标签宽度不能写死（原来固定 96px）：
+  三列布局且容器偏窄时，每个单元格只有 ~127px，标签独占 96px 后
+  值区只剩 21px —— 中文字符逐字竖排，完全不可读（实测复现）。
+  改为「按内容自适应 + 上限 40%」，窄容器下标签让位给值。
+*/
+.wd-descriptions__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  line-height: 1.6;
+  /* 标签本身也该换行，而不是被压成一条竖线 */
+  overflow-wrap: break-word;
+}
+
+.wd-descriptions__value {
+  flex: 1 1 0;
+  /* 保证值区至少有可读宽度，否则宁可整行变窄 */
+  min-width: 3.5em;
+  font-size: 13px;
+  color: var(--wd-ink);
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+.wd-descriptions__hint {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+  color: var(--wd-ink-2);
+}
+
+.wd-descriptions__colon {
+  color: var(--wd-ink-3);
+}
+
+/* ---- 尺寸 ---- */
+.wd-descriptions--md .wd-descriptions__row {
+  padding: 9px 0;
+}
+
+.wd-descriptions--sm .wd-descriptions__row {
+  padding: 6px 0;
+}
+
+.wd-descriptions--sm .wd-descriptions__label,
+.wd-descriptions--sm .wd-descriptions__value {
+  font-size: 12.5px;
+}
+
+/* ---- 竖排：标签在上 ---- */
+.wd-descriptions--vertical .wd-descriptions__item {
+  flex-direction: column;
+  gap: 3px;
+  padding-right: 18px;
+}
+
+.wd-descriptions--vertical .wd-descriptions__label {
+  max-width: none;
+  font-size: 12px;
+  color: var(--wd-ink-2);
+}
+
+.wd-descriptions--vertical .wd-descriptions__value {
+  font-weight: 600;
+}
+
+/* ---- 斑马纹：按行交替 ---- */
+.wd-descriptions--striped .wd-descriptions__row:nth-child(odd) {
+  background: var(--wd-tint-1);
+}
+
+.wd-descriptions--striped .wd-descriptions__row {
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: var(--wd-radius-xs);
+}
+
+.wd-descriptions__empty {
+  padding: 18px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+}
+
+.wd-tree {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  user-select: none;
+}
+
+.wd-tree__node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  min-height: 32px;
+  padding-right: 10px;
+  border-radius: var(--wd-radius-xs);
+  color: var(--wd-ink);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-tree__node:hover {
+  background: var(--wd-tint-1);
+}
+
+.wd-tree__node:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--wd-focus-ring);
+}
+
+.wd-tree__node--selected {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+  font-weight: 600;
+}
+
+.wd-tree__node--selected:hover {
+  background: var(--wd-tint-3);
+}
+
+/*
+  禁用态用 .6 而非 .45：.45 在浅色底上对比度约 3:1，标签几乎读不出来。
+  禁用需要「看起来不可用」，但不能牺牲可读性。
+*/
+.wd-tree__node--disabled {
+  opacity: 0.6;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---- 展开箭头 ---- */
+.wd-tree__arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--wd-ink-2);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-tree__arrow--open {
+  transform: rotate(90deg);
+}
+
+.wd-tree__arrow--leaf {
+  visibility: hidden;
+}
+
+.wd-tree__arrow:hover {
+  color: var(--wd-ink);
+}
+
+/* ---- 复选框 ---- */
+.wd-tree__check {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 2px;
+}
+
+.wd-tree__check input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--wd-red);
+  cursor: pointer;
+}
+
+.wd-tree__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  color: var(--wd-ink-2);
+  font-size: 13px;
+}
+
+.wd-tree__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-tree__extra {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease;
+}
+
+.wd-tree__node:hover .wd-tree__extra,
+.wd-tree__node--selected .wd-tree__extra {
+  opacity: 1;
+}
+
+/*
+  ---- 引导线 ----
+  原来画在 left:0，每行一条，深一点的行也只会得到「贴着容器左边」的线，
+  看起来像表格边框而不是层级引导。改为用 CSS 变量传深度偏移，
+  从父级箭头中心处往下连，视觉上才成为「树的骨架」。
+*/
+.wd-tree--line .wd-tree__node::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--wd-tree-line-x, 0px));
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--wd-ink-5);
+}
+
+.wd-tree__empty {
+  padding: 18px 0;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--wd-ink-2);
+}
+
 /* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
 /* =============================================================
  *  WDesign — 深色主题（data-theme="dark" 或 .dark-theme，两种机制均支持）

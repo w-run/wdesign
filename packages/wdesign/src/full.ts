@@ -19,8 +19,10 @@ import WdCard from './components/WdCard.vue'
 import WdCarousel from './components/WdCarousel.vue'
 import WdCheckbox from './components/WdCheckbox.vue'
 import WdCollapse from './components/WdCollapse.vue'
+import WdCommand from './components/WdCommand.vue'
 import WdContainer from './components/WdContainer.vue'
 import WdDatePicker from './components/WdDatePicker.vue'
+import WdDescriptions from './components/WdDescriptions.vue'
 import WdDivider from './components/WdDivider.vue'
 import WdDrawer from './components/WdDrawer.vue'
 import WdDropdown from './components/WdDropdown.vue'
@@ -58,6 +60,7 @@ import WdTabs from './components/WdTabs.vue'
 import WdTag from './components/WdTag.vue'
 import WdTimeline from './components/WdTimeline.vue'
 import WdTooltip from './components/WdTooltip.vue'
+import WdTree from './components/WdTree.vue'
 import WdUpload from './components/WdUpload.vue'
 
 const components = [
@@ -72,8 +75,10 @@ const components = [
   WdCarousel,
   WdCheckbox,
   WdCollapse,
+  WdCommand,
   WdContainer,
   WdDatePicker,
+  WdDescriptions,
   WdDivider,
   WdDrawer,
   WdDropdown,
@@ -111,6 +116,7 @@ const components = [
   WdTag,
   WdTimeline,
   WdTooltip,
+  WdTree,
   WdUpload,
 ]
 
