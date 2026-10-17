@@ -25,6 +25,6 @@
 .wd-notification-fade-leave-active { transition: opacity var(--wd-dur-slow) ease, transform var(--wd-dur-slow) ease; }
 .wd-notification-fade-enter-from,
 .wd-notification-fade-leave-to { opacity: 0; transform: translateY(12px); }
-/* ---- 微交互（精致版）---- */
-.wd-notification-fade-enter-active { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards; }
+/* 入场完全交给上方的 Transition（transition: opacity + transform），
+   不再叠加 animation —— 否则会先绘制最终态再回弹。 */
 

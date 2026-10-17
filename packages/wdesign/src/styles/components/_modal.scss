@@ -23,16 +23,41 @@
   background: var(--wd-card);
   border-radius: var(--wd-radius-xl);
   box-shadow: var(--wd-shadow-lg);
-  animation: wd-modal-in var(--wd-dur-slow) ease;
-}
-@keyframes wd-modal-in {
-  from { opacity: 0; transform: translateY(14px) scale(.98); }
+  /* ⚠️ 面板入场**不要**在这里挂 animation。
+     元素一插入 animation 就无条件播放，与 <Transition> 的 enter 阶段
+     交叉作用 → 出现「先闪到最终位置再回弹」。
+     入场状态统一由下方 .wd-modal-fade-enter-from .wd-modal__panel 控制。 */
 }
 
+/* 遮罩：只做透明度过渡 */
 .wd-modal-fade-enter-active,
 .wd-modal-fade-leave-active { transition: opacity var(--wd-dur) ease; }
 .wd-modal-fade-enter-from,
 .wd-modal-fade-leave-to { opacity: 0; }
+
+/* 面板：位移 + 缩放。
+   ⚠️ 不能再用 `animation: wd-settle` —— 它与外层的 <Transition> 竞争：
+   元素插入后先按最终样式绘制一帧，动画才从首帧开始，表现为
+   「先闪到最终位置再弹回」。
+   改用同一套 Transition 的 enter-from 控制面板自身状态，时机严格一致。 */
+.wd-modal-fade-enter-active .wd-modal__panel {
+  transition:
+    opacity var(--wd-dur-slow) var(--wd-ease-out),
+    transform var(--wd-dur-slow) var(--wd-ease-out);
+}
+.wd-modal-fade-enter-from .wd-modal__panel {
+  opacity: 0;
+  transform: translateY(-6px) scale(.97);
+}
+.wd-modal-fade-leave-active .wd-modal__panel {
+  transition:
+    opacity var(--wd-dur) var(--wd-ease-sharp),
+    transform var(--wd-dur) var(--wd-ease-sharp);
+}
+.wd-modal-fade-leave-to .wd-modal__panel {
+  opacity: 0;
+  transform: scale(.98);
+}
 
 .wd-modal__head {
   display: flex;
@@ -51,6 +76,4 @@
   gap: 10px;
   margin-top: 24px;
 }
-/* ---- 微交互（精致版）---- */
-.wd-modal-fade-enter-active .wd-modal__panel { animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards; }
 

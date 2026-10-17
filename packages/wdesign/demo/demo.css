@@ -1955,15 +1955,13 @@ body {
   background: var(--wd-card);
   border-radius: var(--wd-radius-xl);
   box-shadow: var(--wd-shadow-lg);
-  animation: wd-modal-in var(--wd-dur-slow) ease;
+  /* ⚠️ 面板入场**不要**在这里挂 animation。
+     元素一插入 animation 就无条件播放，与 <Transition> 的 enter 阶段
+     交叉作用 → 出现「先闪到最终位置再回弹」。
+     入场状态统一由下方 .wd-modal-fade-enter-from .wd-modal__panel 控制。 */
 }
 
-@keyframes wd-modal-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px) scale(0.98);
-  }
-}
+/* 遮罩：只做透明度过渡 */
 .wd-modal-fade-enter-active,
 .wd-modal-fade-leave-active {
   transition: opacity var(--wd-dur) ease;
@@ -1972,6 +1970,29 @@ body {
 .wd-modal-fade-enter-from,
 .wd-modal-fade-leave-to {
   opacity: 0;
+}
+
+/* 面板：位移 + 缩放。
+   ⚠️ 不能再用 `animation: wd-settle` —— 它与外层的 <Transition> 竞争：
+   元素插入后先按最终样式绘制一帧，动画才从首帧开始，表现为
+   「先闪到最终位置再弹回」。
+   改用同一套 Transition 的 enter-from 控制面板自身状态，时机严格一致。 */
+.wd-modal-fade-enter-active .wd-modal__panel {
+  transition: opacity var(--wd-dur-slow) var(--wd-ease-out), transform var(--wd-dur-slow) var(--wd-ease-out);
+}
+
+.wd-modal-fade-enter-from .wd-modal__panel {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+}
+
+.wd-modal-fade-leave-active .wd-modal__panel {
+  transition: opacity var(--wd-dur) var(--wd-ease-sharp), transform var(--wd-dur) var(--wd-ease-sharp);
+}
+
+.wd-modal-fade-leave-to .wd-modal__panel {
+  opacity: 0;
+  transform: scale(0.98);
 }
 
 .wd-modal__head {
@@ -1999,11 +2020,6 @@ body {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 24px;
-}
-
-/* ---- 微交互（精致版）---- */
-.wd-modal-fade-enter-active .wd-modal__panel {
-  animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards;
 }
 
 .wd-badge {
@@ -3244,37 +3260,29 @@ body {
   opacity: 0;
 }
 
+/* 面板滑入：由同一套 Transition 控制，不叠加 animation
+   （animation 与 Transition 竞争会导致先闪到最终位置再弹回） */
 .wd-drawer-fade-enter-active .wd-drawer__panel {
-  animation: wd-drawer-in var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1);
+  transition: transform var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), opacity var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1);
+}
+
+.wd-drawer-fade-enter-from .wd-drawer__panel {
+  transform: translateX(24px);
+  opacity: 0.6;
+}
+
+.wd-drawer--left .wd-drawer-fade-enter-from .wd-drawer__panel,
+.wd-drawer-fade-enter-from .wd-drawer--left .wd-drawer__panel {
+  transform: translateX(-24px);
 }
 
 .wd-drawer-fade-leave-active .wd-drawer__panel {
-  animation: wd-drawer-out var(--wd-dur) ease forwards;
+  transition: transform var(--wd-dur) ease, opacity var(--wd-dur) ease;
 }
 
-@keyframes wd-drawer-in {
-  from {
-    transform: translateX(24px);
-    opacity: 0.6;
-  }
-  to {
-    transform: none;
-    opacity: 1;
-  }
-}
-@keyframes wd-drawer-out {
-  from {
-    transform: none;
-    opacity: 1;
-  }
-  to {
-    transform: translateX(24px);
-    opacity: 0;
-  }
-}
-/* ---- 微交互（精致版）---- */
-.wd-drawer-fade-enter-active .wd-drawer__panel {
-  animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards;
+.wd-drawer-fade-leave-to .wd-drawer__panel {
+  transform: translateX(24px);
+  opacity: 0;
 }
 
 .wd-result {
@@ -3884,11 +3892,8 @@ body {
   transform: translateY(12px);
 }
 
-/* ---- 微交互（精致版）---- */
-.wd-notification-fade-enter-active {
-  animation: wd-settle var(--wd-dur-slow) var(--wd-ease-out) forwards;
-}
-
+/* 入场完全交给上方的 Transition（transition: opacity + transform），
+   不再叠加 animation —— 否则会先绘制最终态再回弹。 */
 .wd-carousel {
   position: relative;
   overflow: hidden;
