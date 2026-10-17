@@ -38,6 +38,10 @@
   --wd-dur-slow: 0.24s;
   --wd-dur-fast: 0.12s;
   --wd-dur-theme: 0.3s;
+  /* 浮层（popover）动效：比 dur-fast 长一档，位移也明显——
+     0.12s/4px 在真机上几乎无法感知（曾因此被报「弹出层毫无动效」） */
+  --wd-dur-pop: .2s;
+  --wd-dur-pop-out: .14s;
   --wd-dur-reveal: 0.45s;
   --wd-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --wd-ease-sharp: cubic-bezier(0.6, 0, 0.8, 0.2);
@@ -480,6 +484,7 @@ body {
   max-width: 1200px;
   margin-inline: auto;
   padding-inline: var(--wd-space-4);
+  padding-block: var(--wd-space-4);
 }
 
 .wd-btn {
@@ -1387,24 +1392,8 @@ body {
   color: var(--wd-red-text);
 }
 
-.wd-select-pop-enter-active {
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
-}
-
-.wd-select-pop-enter-from, .wd-select-pop-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.wd-select-pop-leave-active {
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
-}
-
 /* ---- 微交互（精致版）---- */
-.wd-select__menu {
-  animation: wd-settle var(--wd-dur-fast) var(--wd-ease-out) forwards;
-}
-
+/* 入场交给 <Transition name="wd-pop">（_popover.scss）；不要再叠 animation，否则会压掉过渡 */
 .wd-tabs {
   display: inline-flex;
   gap: 4px;
@@ -1856,19 +1845,6 @@ body {
   background: var(--wd-tint-2);
 }
 
-.wd-datepicker-pop-enter-active {
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
-}
-
-.wd-datepicker-pop-enter-from, .wd-datepicker-pop-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.wd-datepicker-pop-leave-active {
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
-}
-
 .wd-toasts {
   position: fixed;
   top: 24px;
@@ -1907,6 +1883,49 @@ body {
   transform: translateY(-8px);
 }
 
+.wd-pop-enter-active {
+  transition: opacity var(--wd-dur-pop) var(--wd-ease-out), transform var(--wd-dur-pop) var(--wd-ease-out);
+}
+
+.wd-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+}
+
+.wd-pop-leave-active {
+  transition: opacity var(--wd-dur-pop-out) var(--wd-ease-sharp), transform var(--wd-dur-pop-out) var(--wd-ease-sharp);
+  /* 退场时不再需要交互，避免残留遮挡 */
+  pointer-events: none;
+}
+
+.wd-pop-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.99);
+}
+
+.wd-pop--up.wd-pop-enter-from,
+.wd-pop--up.wd-pop-leave-to {
+  transform: translateY(8px) scale(0.97);
+}
+
+.wd-pop--scale.wd-pop-enter-from {
+  transform: scale(0.94);
+}
+
+.wd-pop--scale.wd-pop-leave-to {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-pop-enter-from,
+  .wd-pop-leave-to,
+  .wd-pop--up.wd-pop-enter-from,
+  .wd-pop--up.wd-pop-leave-to,
+  .wd-pop--scale.wd-pop-enter-from,
+  .wd-pop--scale.wd-pop-leave-to {
+    transform: none;
+  }
+}
 .wd-tooltip {
   position: relative;
   display: inline-flex;
@@ -1926,9 +1945,7 @@ body {
   border-radius: var(--wd-radius-sm);
   white-space: nowrap;
   box-shadow: var(--wd-shadow-pop);
-  opacity: 0;
   pointer-events: none;
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
 }
 
 .wd-tooltip--top .wd-tooltip__bubble {
@@ -1939,18 +1956,12 @@ body {
   top: calc(100% + 10px);
 }
 
-.wd-tooltip--open .wd-tooltip__bubble {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ---- 微交互（精致版）---- */
-.wd-tooltip__bubble {
-  transition: opacity var(--wd-dur-fast) var(--wd-ease-out), transform var(--wd-dur-fast) var(--wd-ease-out);
-}
-
-.wd-tooltip--open .wd-tooltip__bubble {
-  animation: wd-settle var(--wd-dur) var(--wd-ease-out) forwards;
+/* 入场/退场由 <Transition name="wd-pop"> 负责（_popover.scss）。
+   ⚠️ 这里不要再挂 animation：它的 transform 会覆盖上面的 translateX(-50%) 居中，
+      导致气泡水平错位（历史 bug）。 */
+.wd-tooltip .wd-pop-enter-from,
+.wd-tooltip .wd-pop-leave-to {
+  transform: translateX(-50%) translateY(4px);
 }
 
 .wd-dropdown {
@@ -2015,24 +2026,8 @@ body {
   pointer-events: none;
 }
 
-.wd-dropdown-pop-enter-active {
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
-}
-
-.wd-dropdown-pop-enter-from, .wd-dropdown-pop-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
-}
-
-.wd-dropdown-pop-leave-active {
-  transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
-}
-
 /* ---- 微交互（精致版）---- */
-.wd-dropdown__menu {
-  animation: wd-settle var(--wd-dur-fast) var(--wd-ease-out) forwards;
-}
-
+/* 入场交给 <Transition name="wd-pop">（_popover.scss）；不要再叠 animation，否则会压掉过渡 */
 .wd-pagination {
   display: inline-flex;
   align-items: center;
@@ -2898,11 +2893,20 @@ body {
   cursor: pointer;
   display: inline-flex;
   color: var(--wd-field-hover);
-  transition: transform var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-rate__item:hover {
-  transform: scale(1.15);
+/* 悬停放大只对支持悬停的设备生效——触屏上 pointerenter 不会随手指离开复位，
+   放大态会粘住（移动端「点一下星就一直是放大的」的观感问题）。 */
+@media (hover: hover) and (pointer: fine) {
+  .wd-rate__item:hover {
+    transform: scale(1.08);
+  }
+}
+.wd-rate__item:focus-visible {
+  outline: none;
+  border-radius: var(--wd-radius-xs);
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
 }
 
 .wd-rate__item--on {
@@ -2912,15 +2916,6 @@ body {
 .wd-rate--disabled {
   pointer-events: none;
   opacity: 0.6;
-}
-
-/* ---- 微交互（精致版）---- */
-.wd-rate__item {
-  transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
-}
-
-.wd-rate__item:hover {
-  transform: scale(1.08);
 }
 
 .wd-segmented {
@@ -4609,7 +4604,10 @@ body {
   flex-shrink: 0;
 }
 
-.demo-sec h2 {
+/* ⚠️ 收敛到 .sec-head 作用域：原先的 `.demo-sec h2` 与 `.wd-markdown h2` 特异性同为 (0,1,1)，
+   且 demo.css 中它排在后面 → 把演示页的 32px/margin:0 泄漏进 Markdown 标题，
+   导致文档标题字号错误、上下间距全为 0。 */
+.sec-head h2 {
   font-size: 32px;
   font-weight: 900;
   letter-spacing: -0.03em;

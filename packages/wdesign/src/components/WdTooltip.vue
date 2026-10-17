@@ -24,6 +24,8 @@ const open = ref(false)
     @focusout="open = false"
   >
     <slot />
-    <span class="wd-tooltip__bubble" role="tooltip">{{ content }}</span>
+    <Transition name="wd-pop">
+      <span v-if="open" class="wd-tooltip__bubble" role="tooltip">{{ content }}</span>
+    </Transition>
   </span>
 </template>

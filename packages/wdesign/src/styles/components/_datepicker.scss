@@ -81,6 +81,3 @@
 }
 .wd-datepicker__todaybtn:hover { background: var(--wd-tint-2); }
 
-.wd-datepicker-pop-enter-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }
-.wd-datepicker-pop-enter-from, .wd-datepicker-pop-leave-to { opacity: 0; transform: translateY(-4px); }
-.wd-datepicker-pop-leave-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }

@@ -1,0 +1,59 @@
+// =============================================================
+//  WDesign — 浮层动效（Popover Motion）
+//  下拉 / 选择 / 日期面板 / 工具提示 共用一套入场退场语言。
+//
+//  ⚠️ 两个历史坑（务必别回退）：
+//   1. 元素上同时挂 `animation` 和 Vue 的 `<Transition>` → 两者都写
+//      opacity/transform，进入时 animation 还会直接把 transition 压掉，
+//      表现为「点了没动效」。**浮层只用 Transition，不再叠 animation**。
+//   2. `animation` 的 transform 会整体覆盖元素自身的 transform，
+//      例如 tooltip 的 translateX(-50%) 居中会丢失 → 气泡水平错位。
+//
+//  用法：
+//    <Transition name="wd-pop"> … </Transition>
+//    需要不同的进场方向时，用修饰符单覆盖：.wd-pop--up / .wd-pop--scale
+// =============================================================
+
+// ---- 默认：自上而下轻微沉降（下拉、选择、日期面板）----
+.wd-pop-enter-active {
+  transition:
+    opacity var(--wd-dur-pop) var(--wd-ease-out),
+    transform var(--wd-dur-pop) var(--wd-ease-out);
+}
+.wd-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-8px) scale(.97);
+}
+.wd-pop-leave-active {
+  transition:
+    opacity var(--wd-dur-pop-out) var(--wd-ease-sharp),
+    transform var(--wd-dur-pop-out) var(--wd-ease-sharp);
+  /* 退场时不再需要交互，避免残留遮挡 */
+  pointer-events: none;
+}
+.wd-pop-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(.99);
+}
+
+// ---- 变体：向上出场（底部对齐的菜单）----
+.wd-pop--up.wd-pop-enter-from,
+.wd-pop--up.wd-pop-leave-to {
+  transform: translateY(8px) scale(.97);
+}
+
+// ---- 变体：仅缩放（居中的面板）----
+.wd-pop--scale.wd-pop-enter-from { transform: scale(.94); }
+.wd-pop--scale.wd-pop-leave-to { transform: scale(.97); }
+
+// 尊重系统「减弱动态效果」：只保留透明度渐变，不做位移
+@media (prefers-reduced-motion: reduce) {
+  .wd-pop-enter-from,
+  .wd-pop-leave-to,
+  .wd-pop--up.wd-pop-enter-from,
+  .wd-pop--up.wd-pop-leave-to,
+  .wd-pop--scale.wd-pop-enter-from,
+  .wd-pop--scale.wd-pop-leave-to {
+    transform: none;
+  }
+}

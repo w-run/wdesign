@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
+// 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
+// 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
+// 给出 duration 让 Vue 用定时器兜底，动画时钟停摆也不会卡在首帧。
+const POP_DURATION = { enter: 200, leave: 140 }
+
+
 defineOptions({ name: 'WdSelect' })
 
 type Option = string | { label: string; value: string | number }
@@ -58,7 +64,7 @@ onBeforeUnmount(() => {
       <svg class="wd-chevron" :class="{ 'wd-chevron--open': open }" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
     </button>
 
-    <Transition name="wd-select-pop">
+    <Transition name="wd-pop" :duration="POP_DURATION">
       <div v-if="open" class="wd-select__menu" role="listbox">
         <button
           v-for="o in items"

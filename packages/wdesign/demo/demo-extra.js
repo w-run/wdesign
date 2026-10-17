@@ -91,7 +91,7 @@ const WdSelect = {
         <span v-else class="wd-select__placeholder">{{ placeholder }}</span>
         <svg class="wd-chevron" :class="{ 'wd-chevron--open': open }" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
       </button>
-      <transition name="wd-select-pop">
+      <transition name="wd-pop" :duration="{ enter: 200, leave: 140 }">
         <div v-if="open" class="wd-select__menu">
           <button v-for="o in items" :key="o.value" type="button" class="wd-select__option"
             :class="{ 'wd-select__option--active': o.value === modelValue }" @click="pick(o.value)">
@@ -384,7 +384,7 @@ const WdDatePicker = {
         <span v-else class="wd-datepicker__placeholder">{{ placeholder }}</span>
         <svg class="wd-datepicker__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="4"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>
       </button>
-      <transition name="wd-datepicker-pop">
+      <transition name="wd-pop" :duration="{ enter: 200, leave: 140 }">
         <div v-if="open" class="wd-datepicker__panel">
           <div class="wd-datepicker__head">
             <span class="wd-datepicker__month">{{ monthLabel }}</span>
@@ -459,7 +459,7 @@ const WdDropdown = {
   template: `
     <span class="wd-dropdown">
       <span class="wd-dropdown__trigger" role="button" tabindex="0" :aria-haspopup="true" :aria-expanded="open" @keydown.enter.prevent="open = !open" @keydown.space.prevent="open = !open" @click="open = !open"><slot></slot></span>
-      <transition name="wd-dropdown-pop">
+      <transition name="wd-pop" :duration="{ enter: 200, leave: 140 }">
         <div v-if="open" class="wd-dropdown__menu">
           <button v-for="it in items" :key="it.value" type="button" class="wd-dropdown__item"
             :class="{ 'wd-dropdown__item--danger': it.danger, 'wd-dropdown__item--disabled': it.disabled }"
@@ -853,26 +853,59 @@ const WdRate = {
     modelValue: { type: Number, default: 0 },
     count: { type: Number, default: 5 },
     disabled: Boolean,
+    clearable: { type: Boolean, default: true },
   },
   emits: ['update:modelValue'],
   data() {
     return { hover: -1 }
   },
+  computed: {
+    shown() {
+      return this.hover >= 0 ? this.hover + 1 : this.modelValue
+    },
+  },
   methods: {
-    isOn(i) {
-      const n = this.hover >= 0 ? this.hover + 1 : this.modelValue
-      return i <= n
+    isHoverPointer(e) {
+      return e.pointerType === 'mouse' || e.pointerType === 'pen'
+    },
+    onEnter(i, e) {
+      if (this.disabled || !this.isHoverPointer(e)) return
+      this.hover = i
+    },
+    onLeave(e) {
+      if (!this.isHoverPointer(e)) return
+      this.hover = -1
     },
     pick(i) {
       if (this.disabled) return
-      this.$emit('update:modelValue', this.modelValue === i + 1 ? 0 : i + 1)
+      this.hover = -1
+      const next = this.modelValue === i + 1 ? (this.clearable ? 0 : i + 1) : i + 1
+      this.$emit('update:modelValue', next)
+    },
+    onKeydown(e) {
+      if (this.disabled) return
+      const cur = this.modelValue
+      let next = null
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next = Math.min(this.count, cur + 1)
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next = Math.max(0, cur - 1)
+      else if (e.key === 'Home') next = 1
+      else if (e.key === 'End') next = this.count
+      else if (e.key === 'Delete' || e.key === 'Backspace') next = 0
+      if (next === null) return
+      e.preventDefault()
+      this.$emit('update:modelValue', next)
     },
   },
   template: `
-    <div class="wd-rate" :class="{ 'wd-rate--disabled': disabled }" @mouseleave="hover = -1">
+    <div class="wd-rate" :class="{ 'wd-rate--disabled': disabled }" role="radiogroup"
+      :aria-label="'评分，共 ' + count + ' 星，当前 ' + modelValue + ' 星'"
+      :aria-disabled="disabled || undefined"
+      @mouseleave="hover = -1" @keydown="onKeydown">
       <button v-for="i in count" :key="i" type="button" class="wd-rate__item"
-        :class="{ 'wd-rate__item--on': isOn(i) }"
-        @mouseenter="hover = i - 1" @click="pick(i - 1)">
+        :class="{ 'wd-rate__item--on': i <= shown }"
+        role="radio" :aria-checked="i === modelValue" :aria-label="i + ' 星'"
+        :disabled="disabled"
+        @pointerenter="onEnter(i - 1, $event)" @pointerleave="onLeave($event)" @click="pick(i - 1)">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.7 5.7 6.3.8-4.6 4.3 1.2 6.2L12 16.9l-5.6 2.9 1.2-6.2L3 9.3l6.3-.8z"></path></svg>
       </button>
     </div>`,

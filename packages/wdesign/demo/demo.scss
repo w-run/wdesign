@@ -33,6 +33,7 @@
 @import '../src/styles/components/badge';
 @import '../src/styles/components/datepicker';
 @import '../src/styles/components/toast';
+@import '../src/styles/components/popover';
 @import '../src/styles/components/tooltip';
 @import '../src/styles/components/dropdown';
 @import '../src/styles/components/pagination';
@@ -299,7 +300,10 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.demo-sec h2 {
+/* ⚠️ 收敛到 .sec-head 作用域：原先的 `.demo-sec h2` 与 `.wd-markdown h2` 特异性同为 (0,1,1)，
+   且 demo.css 中它排在后面 → 把演示页的 32px/margin:0 泄漏进 Markdown 标题，
+   导致文档标题字号错误、上下间距全为 0。 */
+.sec-head h2 {
   font-size: 32px;
   font-weight: 900;
   letter-spacing: -.03em;

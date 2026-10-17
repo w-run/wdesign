@@ -64,6 +64,8 @@ $wd-ease-spring-soft: cubic-bezier(.34, 1.3, .64, 1) !default; // 克制弹性�
 $wd-ease-smooth:      cubic-bezier(.4, 0, .2, 1) !default;     // 平滑无感（颜色 / 背景 / 面板）
 $wd-ease-sharp:       cubic-bezier(.6, 0, .8, .2) !default;    // 干脆收场（退出 / 按下）
 $wd-dur-reveal: .45s !default; // 揭示 / 入场（比 dur-slow 更长，给沉降留空间）
+$wd-dur-pop: .2s !default;      // 浮层入场（菜单 / 下拉 / 日期面板）
+$wd-dur-pop-out: .14s !default; // 浮层退场（比入场快，避免拖沓）
 // --- 深色主题值（SCSS 形式，供编译期引用；_dark.scss 以此发射 CSS 变量）---
 // 反向迭代（源：w-run/blog）：深色值此前只有 CSS 变量、缺 SCSS 变量，
 // 导致消费方在编译期需要深色值时只能硬编码颜色。

@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
+// 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
+// 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
+// 给出 duration 让 Vue 用定时器兜底，动画时钟停摆也不会卡在首帧。
+const POP_DURATION = { enter: 200, leave: 140 }
+
+
 defineOptions({ name: 'WdDatePicker' })
 
 const props = withDefaults(
@@ -102,7 +108,7 @@ onBeforeUnmount(() => {
       <svg class="wd-datepicker__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="16" rx="4"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>
     </button>
 
-    <Transition name="wd-datepicker-pop">
+    <Transition name="wd-pop" :duration="POP_DURATION">
       <div v-if="open" class="wd-datepicker__panel">
         <div class="wd-datepicker__head">
           <span class="wd-datepicker__month">{{ monthLabel }}</span>

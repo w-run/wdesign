@@ -8,13 +8,19 @@
   cursor: pointer;
   display: inline-flex;
   color: var(--wd-field-hover);
-  transition: transform var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-rate__item:hover { transform: scale(1.15); }
+/* 悬停放大只对支持悬停的设备生效——触屏上 pointerenter 不会随手指离开复位，
+   放大态会粘住（移动端「点一下星就一直是放大的」的观感问题）。 */
+@media (hover: hover) and (pointer: fine) {
+  .wd-rate__item:hover { transform: scale(1.08); }
+}
+.wd-rate__item:focus-visible {
+  outline: none;
+  border-radius: var(--wd-radius-xs);
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
 .wd-rate__item--on { color: var(--wd-red-text); }
 
 .wd-rate--disabled { pointer-events: none; opacity: .6; }
-/* ---- 微交互（精致版）---- */
-.wd-rate__item { transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out); }
-.wd-rate__item:hover { transform: scale(1.08); }
 

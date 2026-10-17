@@ -48,6 +48,10 @@
   --wd-dur-slow: #{$wd-dur-slow};
   --wd-dur-fast: #{$wd-dur-fast};
   --wd-dur-theme: #{$wd-dur-theme};
+  /* 浮层（popover）动效：比 dur-fast 长一档，位移也明显——
+     0.12s/4px 在真机上几乎无法感知（曾因此被报「弹出层毫无动效」） */
+  --wd-dur-pop: .2s;
+  --wd-dur-pop-out: .14s;
   --wd-dur-reveal: #{$wd-dur-reveal};
   --wd-ease-smooth: #{$wd-ease-smooth};
   --wd-ease-sharp:  #{$wd-ease-sharp};

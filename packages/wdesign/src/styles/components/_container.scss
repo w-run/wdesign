@@ -1,7 +1,11 @@
 // WDesign — Container（页面容器 · 布局）
+// 名称虽是「页面容器」，但内部若直接放内容，上下必须有呼吸——
+// 否则内容会与容器边界/相邻区块贴死。垂直间距由组件按 pad 档位内联设置
+// （见 WdContainer.vue），此处只留一个不依赖变量的兜底值。
 .wd-container {
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
   padding-inline: var(--wd-space-4);
+  padding-block: var(--wd-space-4);
 }
