@@ -672,3 +672,29 @@ html { scroll-behavior: smooth; }
 .wd-nav--vertical.is-collapsed .demo-nav-foot-item span {
   display: none;
 }
+
+/* =============================================================
+ *  白底组件的展示槽
+ *
+ *  .demo-panel 本身就是白底卡片。里面再放白底组件（wd-card /
+ *  wd-nav / wd-collapse / wd-modal 预览 …）时，两层白叠在一起
+ *  边界完全消失，看不出组件自身的圆角和阴影。
+ *
+ *  解决：给这类展示区套一层 --wd-bg 的浅灰底，
+ *  白卡浮在灰底上，边界立刻清晰 —— 这也正是组件在真实页面里的处境。
+ * ============================================================= */
+.demo-stage {
+  background: var(--wd-bg);
+  border-radius: var(--wd-radius-lg);
+  padding: 22px;
+}
+
+.demo-stage--tight { padding: 14px; }
+
+/* 竖栏舞台：给足高度让侧栏能撑开 */
+.demo-stage--tall {
+  height: 400px;
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+}

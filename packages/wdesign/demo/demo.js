@@ -534,6 +534,7 @@ import { WdMarkdown } from '@w-run/wdesign'
       sliderFine: 3.5,
       rate10: 7,
       collapseOpen: [0],
+      stepOpen: [0],
       collapseItems: [
         { title: '常见问题', content: '这里是回答内容。' },
         { title: '更新日志', content: 'v1.4 修复了若干视觉问题。' },

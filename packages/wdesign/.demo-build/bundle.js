@@ -1049,7 +1049,8 @@ var WD_REAL_MODULE = (() => {
                     /* KEYED_FRAGMENT */
                   ))
                 ], 42, _hoisted_102),
-                __props.showTime ? (openBlock(), createElementBlock("div", _hoisted_112, [
+                createCommentVNode("\n        \u26A0\uFE0F \u65F6\u957F\u672A\u77E5\u65F6\u6574\u884C\u9690\u85CF\uFF0C\u800C\u4E0D\u662F\u53EA\u7559\u5F53\u524D\u65F6\u95F4\u3002\n        mp3 \u672A\u52A0\u8F7D / \u6D41\u5A92\u4F53\u672A\u5C31\u7EEA\u65F6 duration \u4E3A 0\uFF0C\n        \u82E5\u53EA\u6E32\u67D3 `0:00`\uFF0C\u53F3\u4FA7\u4F1A\u7A7A\u51FA\u4E00\u5927\u7247\uFF0C\u770B\u8D77\u6765\u50CF\u5E03\u5C40\u574F\u4E86\u3002\n        \u884C\u9690\u85CF\u540E\u5361\u7247\u81EA\u7136\u6536\u7D27\uFF0C\u89C6\u89C9\u4E0A\u66F4\u6574\u3002\n      "),
+                __props.showTime && duration.value > 0 ? (openBlock(), createElementBlock("div", _hoisted_112, [
                   createElementVNode(
                     "span",
                     null,

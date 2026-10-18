@@ -323,7 +323,13 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
         ></span>
       </div>
 
-      <div v-if="showTime" class="wd-audio__times">
+      <!--
+        ⚠️ 时长未知时整行隐藏，而不是只留当前时间。
+        mp3 未加载 / 流媒体未就绪时 duration 为 0，
+        若只渲染 `0:00`，右侧会空出一大片，看起来像布局坏了。
+        行隐藏后卡片自然收紧，视觉上更整。
+      -->
+      <div v-if="showTime && duration > 0" class="wd-audio__times">
         <span>{{ formatDuration(current) }}</span>
         <span class="wd-audio__remain">{{ remainText }}</span>
       </div>
