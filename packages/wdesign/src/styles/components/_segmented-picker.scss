@@ -4,7 +4,7 @@
 //  从 _segmented.scss 拆出来：一个文件里塞两套独立组件，
 //  改 A 时容易误伤 B，按需引入时也没法单独取。
 //
-//  ⚠️ 这个文件里的颜色都带了 fallback（var(--wd-field, #e9edf1)），
+//  ⚠️ 这个文件里的颜色都带了 fallback（var(--wd-field)），
 //  是早期写的。新增样式请直接用令牌，不要再加 fallback ——
 //  fallback 会掩盖「令牌名写错」的问题（静默失效的常见来源）。
 // =============================================================
@@ -24,21 +24,21 @@
   font: inherit;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--wd-ink, #191b1f);
-  background: var(--wd-field, #e9edf1);
+  color: var(--wd-ink);
+  background: var(--wd-field);
   border: none;
-  border-radius: var(--wd-radius-pill, 999px);
+  border-radius: var(--wd-radius-pill);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background-color var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
 @media (hover: hover) {
-  .wd-segmented-picker__trigger:hover { background: var(--wd-field-hover, #dfe4ea); }
+  .wd-segmented-picker__trigger:hover { background: var(--wd-field-hover); }
 }
-.wd-segmented-picker__trigger.is-hover { background: var(--wd-field-hover, #dfe4ea); }
+.wd-segmented-picker__trigger.is-hover { background: var(--wd-field-hover); }
 
 .wd-segmented-picker__trigger:focus-visible {
-  outline: 2px solid var(--wd-red, #d62839);
+  outline: 2px solid var(--wd-red);
   outline-offset: 2px;
 }
 
@@ -50,12 +50,12 @@
 .wd-segmented-picker__meta {
   font-size: 11px;
   font-weight: 700;
-  color: var(--wd-ink-2, #636A73);
+  color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
 }
 .wd-segmented-picker__caret {
   margin-left: auto;
-  color: var(--wd-ink-2, #636A73);
+  color: var(--wd-ink-2);
   transition: transform var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
   flex: none;
 }
@@ -74,7 +74,7 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 8px;
-  background: var(--wd-card, #fff);
+  background: var(--wd-card);
   border-radius: var(--wd-radius-md, 14px);
   box-shadow: var(--wd-shadow-hover, 0 12px 32px rgba(14, 15, 19, .14));
   z-index: 60;
@@ -92,7 +92,7 @@
   font-size: 13.5px;
   font-weight: 500;
   text-align: left;
-  color: var(--wd-ink, #191b1f);
+  color: var(--wd-ink);
   background: none;
   border: none;
   border-radius: var(--wd-radius-xs);
@@ -101,15 +101,15 @@
   transition: background-color var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
 @media (hover: hover) {
-  .wd-segmented-picker__option:hover { background: var(--wd-field, #e9edf1); }
+  .wd-segmented-picker__option:hover { background: var(--wd-field); }
 }
-.wd-segmented-picker__option.is-hover { background: var(--wd-field, #e9edf1); }
+.wd-segmented-picker__option.is-hover { background: var(--wd-field); }
 
 .wd-segmented-picker__option--active {
-  color: var(--wd-red, #d62839);
+  color: var(--wd-red);
   font-weight: 700;
 }
 .wd-segmented-picker__option--active svg {
-  color: var(--wd-red, #d62839);
+  color: var(--wd-red);
   flex: none;
 }
