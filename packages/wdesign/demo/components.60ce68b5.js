@@ -4145,7 +4145,6 @@ var WD_REAL_MODULE = (() => {
     props: {
       variant: { type: String, required: false, default: "capsule" },
       direction: { type: String, required: false, default: "row" },
-      divided: { type: Boolean, required: false, default: true },
       size: { type: String, required: false, default: "md" },
       block: { type: Boolean, required: false, default: false },
       disabled: { type: Boolean, required: false, default: false },
@@ -4180,7 +4179,6 @@ var WD_REAL_MODULE = (() => {
         `wd-group--${props.direction}`,
         `wd-group--${props.size}`,
         {
-          "wd-group--divided": props.divided,
           "wd-group--block": props.block,
           "wd-group--disabled": props.disabled,
           "wd-group--equal": props.equal,

@@ -376,11 +376,22 @@
 }
 
 /* ---------------- 控件行 ---------------- */
+/*
+ * 控件行。
+ *
+ * ⚠️ 曾经溢出：5 个控件 34+34+56+34+34 = 192px，加 4×6px 间隔 = 216px，
+ * 而 251px 宽的卡片内宽只有 199px —— 溢出 17px。
+ * `space-between` 在溢出时首项贴左、末项冲出右边界，
+ * 表现为「整排控件偏右」（末位右留白 8.7px，本该 26px，和左侧不对称）。
+ *
+ * 修法：把尺寸收到能装下 —— 32×4 + 52 = 180，加 4×4px = 196 ≤ 199。
+ * 并保留 space-between 做均分，两侧留白自然对称。
+ */
 .wd-audio__controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 4px;
   margin-top: 2px;
 }
 
@@ -389,8 +400,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -404,7 +415,11 @@
 }
 .wd-audio__ctl:hover { background: var(--wd-tint-2); color: var(--wd-ink); }
 .wd-audio__ctl--text { font-variant-numeric: tabular-nums; }
-.wd-audio__ctl-spacer { width: 34px; flex: none; }
+/*
+ * 占位符必须和 .wd-audio__ctl 同宽，否则缺失控件的行会重新错位。
+ * ⚠️ 改 .wd-audio__ctl 的宽高时，这里要同步。
+ */
+.wd-audio__ctl-spacer { width: 32px; height: 32px; flex: none; }
 
 /*
  * 播放键：视觉主体，但用 web 的尺度。
@@ -416,8 +431,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -884,7 +899,7 @@
 
 /* 窄容器：card 的音量键让位 */
 @media (max-width: 320px) {
-  .wd-audio--card .wd-audio__ctl { width: 32px; }
-  .wd-audio--card .wd-audio__ctl-spacer { width: 32px; }
+  .wd-audio--card .wd-audio__ctl { width: 30px; height: 30px; }
+  .wd-audio--card .wd-audio__ctl-spacer { width: 30px; height: 30px; }
   .wd-audio__main-btn { width: 46px; height: 46px; }
 }

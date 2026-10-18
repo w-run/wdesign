@@ -403,6 +403,26 @@ body {
   gap: 8px;
   align-items: flex-start;
 }
+
+/*
+ * 单列堆叠：每个示例占满一行。
+ * 用于宽度敏感、并排会互相挤压的组件（如音频卡片）。
+ */
+.demo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+/*
+ * 每个示例占一行，但**限宽居中**。
+ *
+ * ⚠️ 直接 width:100% 会让音频卡片撑到 800px：
+ *    · 控件行 5 个按钮用 space-between 均分到 748px 内宽 →
+ *      1× 在最左、音量在最右，中间空得离谱
+ *    · 波形 64 根柱子被拉开成稀疏的栅栏
+ * 卡片本身是「手机宽度」的组件原型，420px 附近才是它的自然尺寸。
+ */
+.demo-stack > * { width: 100%; max-width: 420px; margin: 0 auto; }
 .demo-cap {
   font-size: 11px;
   color: var(--wd-ink-2);

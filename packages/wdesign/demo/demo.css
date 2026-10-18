@@ -6441,11 +6441,22 @@ img.wd-theme-invert {
 }
 
 /* ---------------- 控件行 ---------------- */
+/*
+ * 控件行。
+ *
+ * ⚠️ 曾经溢出：5 个控件 34+34+56+34+34 = 192px，加 4×6px 间隔 = 216px，
+ * 而 251px 宽的卡片内宽只有 199px —— 溢出 17px。
+ * `space-between` 在溢出时首项贴左、末项冲出右边界，
+ * 表现为「整排控件偏右」（末位右留白 8.7px，本该 26px，和左侧不对称）。
+ *
+ * 修法：把尺寸收到能装下 —— 32×4 + 52 = 180，加 4×4px = 196 ≤ 199。
+ * 并保留 space-between 做均分，两侧留白自然对称。
+ */
 .wd-audio__controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 4px;
   margin-top: 2px;
 }
 
@@ -6454,8 +6465,8 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -6477,8 +6488,13 @@ img.wd-theme-invert {
   font-variant-numeric: tabular-nums;
 }
 
+/*
+ * 占位符必须和 .wd-audio__ctl 同宽，否则缺失控件的行会重新错位。
+ * ⚠️ 改 .wd-audio__ctl 的宽高时，这里要同步。
+ */
 .wd-audio__ctl-spacer {
-  width: 34px;
+  width: 32px;
+  height: 32px;
   flex: none;
 }
 
@@ -6492,8 +6508,8 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -7055,10 +7071,12 @@ img.wd-theme-invert {
 /* 窄容器：card 的音量键让位 */
 @media (max-width: 320px) {
   .wd-audio--card .wd-audio__ctl {
-    width: 32px;
+    width: 30px;
+    height: 30px;
   }
   .wd-audio--card .wd-audio__ctl-spacer {
-    width: 32px;
+    width: 30px;
+    height: 30px;
   }
   .wd-audio__main-btn {
     width: 46px;
@@ -7941,41 +7959,15 @@ img.wd-theme-invert {
 }
 
 /*
- * 分隔线用伪元素画，不用 border ——
- * border 会参与盒模型，导致每多一段宽度就差 1px，拼合处对不齐。
- */
-.wd-group--joined.wd-group--divided > .wd-group__item {
-  position: relative;
-}
-
-.wd-group--joined.wd-group--divided > .wd-group__item:not(.wd-group__item--first)::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  /* 46% 在 44px 高的按钮里约 20px，克制且能暗示分段 */
-  height: 40%;
-  background: var(--wd-ink-5);
-  pointer-events: none;
-}
-
-/*
- * 纵向分隔线：只画中间一小段。
+ * 分段之间**不画任何分隔线**。
  *
- * ⚠️ 之前 `calc(100% - 28px)` 在 220px 宽的组里是 192px ——
- * 横跨几乎整行，视觉上像表格横线，和「分段拼接」的语义不符。
- * 分段之间的分隔应该短而克制：40px 足够暗示，又不会切断视线。
+ * 设计语言是「无边框 · 色块分层」，分隔靠**底色差 + 留白 + 外缘圆角**表达。
+ * 曾经用 ::before 画 1px 线（横 40% / 纵 40px），问题在于：
+ *   · 灰线在白底上永远是"多出来的东西"，纵向时像一条莫名其妙的竖杠
+ *   · 线宽在不同缩放下会取整成 2px，比背景还显眼
+ *   · 每个 variant × direction 都要单独调位置，容易漏
+ * 去掉后拼合仍然成立 —— 圆角 + 相邻底色已经足够暗示分段。
  */
-.wd-group--joined.wd-group--col.wd-group--divided > .wd-group__item:not(.wd-group__item--first)::before {
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 1px;
-}
-
 /* ---------------- 变体：内嵌 ---------------- */
 /*
  * 容器是「底色凹槽」，子项浮在上面。
@@ -8022,35 +8014,6 @@ img.wd-theme-invert {
 }
 
 /* inset 靠间距区分，不画分隔线 */
-/* ---------------- 分隔线（胶囊形态） ---------------- */
-/*
- * 胶囊是「连成一片」的，用伪元素画 1px 竖线。
- * 画在 ::before 而不是 border 上：不影响布局尺寸，也不会与圆角冲突。
- */
-.wd-group--capsule.wd-group--divided > .wd-group__item + .wd-group__item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  height: 52%;
-  background: var(--wd-ink-5);
-  pointer-events: none;
-}
-
-.wd-group--capsule.wd-group--divided > .wd-group__item {
-  position: relative;
-}
-
-.wd-group--capsule.wd-group--col.wd-group--divided > .wd-group__item + .wd-group__item::before {
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 52%;
-  height: 1px;
-}
-
 /* 纵向：每一项都要撑满宽度，否则会各自缩成一团 */
 .wd-group--col > .wd-group__item {
   width: 100%;
@@ -8648,6 +8611,31 @@ body {
   flex-direction: column;
   gap: 8px;
   align-items: flex-start;
+}
+
+/*
+ * 单列堆叠：每个示例占满一行。
+ * 用于宽度敏感、并排会互相挤压的组件（如音频卡片）。
+ */
+.demo-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/*
+ * 每个示例占一行，但**限宽居中**。
+ *
+ * ⚠️ 直接 width:100% 会让音频卡片撑到 800px：
+ *    · 控件行 5 个按钮用 space-between 均分到 748px 内宽 →
+ *      1× 在最左、音量在最右，中间空得离谱
+ *    · 波形 64 根柱子被拉开成稀疏的栅栏
+ * 卡片本身是「手机宽度」的组件原型，420px 附近才是它的自然尺寸。
+ */
+.demo-stack > * {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .demo-cap {

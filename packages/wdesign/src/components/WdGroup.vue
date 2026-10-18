@@ -14,8 +14,6 @@ const props = withDefaults(
     variant?: 'capsule' | 'joined' | 'inset'
     /** 排列方向 */
     direction?: 'row' | 'col'
-    /** 段与段之间画分隔线 */
-    divided?: boolean
     /** 整体尺寸（影响高度与内距，子项可覆盖） */
     size?: 'sm' | 'md' | 'lg'
     /** 撑满容器 */
@@ -36,7 +34,6 @@ const props = withDefaults(
   {
     variant: 'capsule',
     direction: 'row',
-    divided: true,
     size: 'md',
     block: false,
     disabled: false,
@@ -85,7 +82,6 @@ const classes = computed(() => [
   `wd-group--${props.direction}`,
   `wd-group--${props.size}`,
   {
-    'wd-group--divided': props.divided,
     'wd-group--block': props.block,
     'wd-group--disabled': props.disabled,
     'wd-group--equal': props.equal,
