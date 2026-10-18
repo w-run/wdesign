@@ -57,13 +57,16 @@
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  gap: 16px;
+  gap: 18px;
   /*
-   * 内距：标题离上/左要更远一点。
-   * 20/22 时标题几乎贴边（标题字重 800、字号大，视觉上更"顶"），
-   * 撑到 24/26 才有呼吸感；底部略收，避免下方控件离边缘太远。
+   * 内距：卡片是「留白型」组件，四周必须给足。
+   *
+   * 演进过程：18/20 → 24/26 → **32/34**。
+   * 24/26 时在 420px 宽卡里看仍然贴边 —— 因为卡内元素本身就有 16px 的间距，
+   * 元素与边框之间的留白必须明显大于元素彼此的间距，卡片才「透气」。
+   * 底部 30 略小于顶部 32：视觉重心稍上移，与标题居中的光学习惯一致。
    */
-  padding: 24px 26px 22px;
+  padding: 32px 34px 30px;
   border-radius: var(--wd-radius-xl);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow);
