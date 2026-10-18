@@ -6453,9 +6453,9 @@ img.wd-theme-invert {
  * `space-between` 在溢出时首项贴左、末项冲出右边界，
  * 表现为「整排控件偏右」（末位右留白 8.7px，本该 26px，和左侧不对称）。
  *
- * 修法：先让内容能装下 —— 44×4 + 66 = 242，内宽 300px 有余量。
+ * 修法：先让内容能装下 —— 46×4 + 64 = 248，内宽 300px 有余量。
  * 保留 space-between：间隙按剩余空间均分 ——
- *   (300 - 242) / 4 = **14.5px**，控件紧凑不散。
+ *   (300 - 248) / 4 = **13px**，控件紧凑不散。
  */
 .wd-audio__controls {
   display: flex;
@@ -6470,15 +6470,25 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   padding: 0;
   border: 0;
   border-radius: 50%;
+  /*
+   * 不加背景（设计语言是「无边框」，控件底会引入新色阶）。
+   *
+   * ⚠️ 由此带来的关键认知：**无底控件的「视觉尺寸」= 图标尺寸，不是盒子尺寸**。
+   * 之前写 44px 盒子配 19px 图标，算出 44/66=66.7%，
+   * 但用户看到的只有 19px 图标 → 19/66 = **29%**，所以"看着像 1/3"。
+   * 要放大观感，唯一有效的旋钮是**图标**，盒子只负责点击热区。
+   *
+   * 现在：盒子 46px（热区舒适），图标 22px（相对主键 64px 圆的观感明显提升）。
+   */
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
@@ -6498,8 +6508,8 @@ img.wd-theme-invert {
  * ⚠️ 改 .wd-audio__ctl 的宽高时，这里要同步。
  */
 .wd-audio__ctl-spacer {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   flex: none;
 }
 
@@ -6514,12 +6524,18 @@ img.wd-theme-invert {
   align-items: center;
   justify-content: center;
   /*
-   * 主键 66px / 次级 44px = **精确 2/3**。
-   * 播放键是绝对视觉主体，其余控件必须明显退一档；
-   * 之前 62/42 = 67.7% 虽接近，但图标占比 80%（25 vs 20）把层级拉平了。
+   * 主键 64px / 次级 38px = **59.4% ≈ 60%**。
+   *
+   * ⚠️ 关键教训：之前写 44/66 算出 66.7%，"数字上"接近 2/3，
+   * 但截图里看着像 1/3 —— 因为次级控件是 **background: transparent**，
+   * 用户看到的不是 44px 的圆，而是里面 19px 的图标。
+   * 图标/主键 = 19/66 = 29%，正是"差不多 1/3"的来源。
+   *
+   * 所以比例必须按**可见尺寸**算：给次级控件加浅底，
+   * 让它有真实边界，38px 才会被读成 38px 而不是 19px。
    */
-  width: 66px;
-  height: 66px;
+  width: 64px;
+  height: 64px;
   padding: 0;
   border: 0;
   border-radius: 50%;
