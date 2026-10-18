@@ -1,4 +1,4 @@
-// Soft Bento · Red — Button
+// WDesign UI — Button
 // 无边框；状态变化全部靠底色深浅
 .wd-btn {
   display: inline-flex;
@@ -46,20 +46,29 @@
 &.is-hover:not(:disabled) { background: var(--wd-red-hover); }
 
   &:active:not(:disabled) { background: var(--wd-red-active); }
-  &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
+  &:disabled { background: var(--wd-field); color: var(--wd-ink-3); }
 }
 
-// 次级按钮 · 浅色块底
+/*
+ * 次级按钮 · 中性灰块底。
+ *
+ * ⚠️ 原来是 `--wd-tint-2`（淡红底）+ 红字。
+ * 问题：tint 是"次级"语义 —— 它表达"这是个可选操作"，
+ * 不表达"注意/危险/品牌"。用淡红底会让页面上每个次级按钮
+ * 都像警告，与 danger 语义混淆。
+ * 极简黑白灰体系里，层级靠**明度**建立：primary 深底、tint 浅灰底、
+ * ghost 透明底 —— 颜色只留给真正的强调点。
+ */
 .wd-btn--tint {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink);
 @media (hover: hover) {
-  &:hover:not(:disabled) { background: var(--wd-tint-3); }
+  &:hover:not(:disabled) { background: var(--wd-field-hover); }
 }
-&.is-hover:not(:disabled) { background: var(--wd-tint-3); }
+&.is-hover:not(:disabled) { background: var(--wd-field-hover); }
 
   &:active:not(:disabled) { background: var(--wd-tint-4); }
-  &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
+  &:disabled { background: var(--wd-field); color: var(--wd-ink-3); }
 }
 
 // 深色按钮 · 画面锚点
@@ -72,7 +81,7 @@
 &.is-hover:not(:disabled) { background: var(--wd-dark-hover); }
 
   &:active:not(:disabled) { background: var(--wd-dark-active); }
-  &:disabled { background: var(--wd-tint-1); color: var(--wd-ink-3); }
+  &:disabled { background: var(--wd-field); color: var(--wd-ink-3); }
 }
 
 // 幽灵按钮
@@ -84,7 +93,7 @@
 }
 &.is-hover:not(:disabled) { background: var(--wd-field); }
 
-  &:active:not(:disabled) { background: var(--wd-tint-2); }
+  &:active:not(:disabled) { background: var(--wd-field-hover); }
   &:disabled { background: transparent; color: var(--wd-ink-3); }
 }
 /* ---- 微交互（精致版）---- */
@@ -117,11 +126,12 @@
 .wd-btn--primary:not(:disabled).is-hover::after, .wd-btn--dark:not(:disabled).is-hover::after { animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out); }
 
 @media (hover: hover) {
-  .wd-btn--tint:not(:disabled):hover { background: var(--wd-tint-3); }
+  .wd-btn--tint:not(:disabled):hover { background: var(--wd-field-hover); }
 }
-.wd-btn--tint:not(:disabled).is-hover { background: var(--wd-tint-3); }
+.wd-btn--tint:not(:disabled).is-hover { background: var(--wd-field-hover); }
 
-.wd-btn--tint:not(:disabled):active { background: var(--wd-tint-4); }
+/* active 比 hover 再深一档，仍在中性灰范围内 */
+.wd-btn--tint:not(:disabled):active { background: var(--wd-tint-3); }
 
 
 /* ---- 加载态 ---- */

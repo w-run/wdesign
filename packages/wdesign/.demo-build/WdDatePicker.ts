@@ -33,7 +33,8 @@ export default /*@__PURE__*/_defineComponent({
   props: {
     modelValue: { type: String, required: false, default: '' },
     placeholder: { type: String, required: false, default: '选择日期' },
-    disabled: { type: Boolean, required: false, default: false }
+    disabled: { type: Boolean, required: false, default: false },
+    size: { type: String, required: false, default: 'md' }
   },
   emits: ["update:modelValue"],
   setup(__props: any, { emit: __emit }) {

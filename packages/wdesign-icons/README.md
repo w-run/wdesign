@@ -1,6 +1,6 @@
 # wdesign-icons
 
-**WDesign 图标库** — Soft Bento · Red 配套。
+**WDesign 图标库** — WDesign UI 配套。
 595 个 SVG 文件（filled 164 / outlined 431），431 个唯一名称；全部 **256×256 · currentColor · kebab-case**。
 
 ## 目录

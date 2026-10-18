@@ -84,7 +84,7 @@
  * 所以永远只有一个高亮项，不会出现双高亮。
  */
 .wd-mentions__option.is-active {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-mentions__avatar {
@@ -111,7 +111,7 @@
   color: var(--wd-red-text);
   font-size: 11.5px;
   font-weight: 800;
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
 }
 
 .wd-mentions__label {

@@ -23,7 +23,15 @@
   color: var(--wd-ink-2);
 }
 .wd-steps__item--process .wd-steps__dot { background: var(--wd-red); color: #fff; }
-.wd-steps__item--finish .wd-steps__dot { background: var(--wd-tint-2); color: var(--wd-red-text); }
+/*
+ * 已完成步骤：中性灰底 + 勾选。
+ * 红色只留给 --process（当前进行中）——那是唯一需要"看这里"的状态。
+ * 全部步骤都染红时，"当前在哪一步"反而失去了视觉焦点。
+ */
+.wd-steps__item--finish .wd-steps__dot {
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
+}
 
 .wd-steps__label {
   font-size: 12.5px;

@@ -71,7 +71,7 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 .wd-tabs__close:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
 }
 
@@ -91,6 +91,6 @@
   color: var(--wd-ink-2);
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-tabs__add:hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
+.wd-tabs__add:hover { background: var(--wd-field-hover); color: var(--wd-red-text); }
 
 .wd-tabs__item--disabled { opacity: .45; cursor: default; pointer-events: none; }

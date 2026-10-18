@@ -102,7 +102,7 @@
 /* 高亮节点：主色实心 */
 .wd-timeline__item.is-active .wd-timeline__node {
   background: var(--tl-color, var(--wd-red));
-  box-shadow: 0 0 0 3px var(--wd-tint-2);
+  box-shadow: 0 0 0 3px var(--wd-ink-5);
   color: #fff;
 }
 .wd-timeline__item.is-active .wd-timeline__dot {
@@ -143,12 +143,14 @@
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: .02em;
-  color: var(--wd-red-text);
+  /* 时间标签用中灰：只提供上下文，不抢视线 */
+  color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
 }
 
+/* 只有 active 节点的时间标签才用主色 —— 这是"点睛"的位置 */
 .wd-timeline__item.is-active .wd-timeline__period {
-  color: var(--tl-color, var(--wd-red-text));
+  color: var(--tl-color, var(--wd-red));
 }
 
 .wd-timeline__title {

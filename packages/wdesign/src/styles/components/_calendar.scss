@@ -67,7 +67,7 @@
 }
 
 .wd-calendar__nav:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -121,7 +121,7 @@
 .wd-calendar--sm .wd-calendar__cell { font-size: 11.5px; }
 
 .wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 /*
@@ -199,7 +199,7 @@
 }
 
 .wd-calendar__action:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 

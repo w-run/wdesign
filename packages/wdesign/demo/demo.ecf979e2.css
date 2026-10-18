@@ -238,14 +238,14 @@ body {
 
 @media (hover: hover) {
   .wd-icon-btn:hover {
-    background: var(--wd-tint-2);
-    color: var(--wd-red-text);
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
   }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-icon-btn.is-hover {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field-hover);
+  color: var(--wd-ink);
 }
 
 .wd-icon-btn:focus-visible {
@@ -259,13 +259,13 @@ body {
 
 @media (hover: hover) {
   .wd-icon-btn--ghost:hover {
-    background: var(--wd-tint-2);
-    color: var(--wd-red-text);
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
   }
 }
 .wd-icon-btn--ghost.is-hover {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field-hover);
+  color: var(--wd-ink);
 }
 
 .wd-icon-btn--sm {
@@ -293,7 +293,7 @@ body {
 }
 
 .wd-icon-btn:active {
-  box-shadow: 0 0 0 3px var(--wd-tint-2);
+  box-shadow: 0 0 0 3px var(--wd-ink-5);
 }
 
 .wd-chevron {
@@ -589,27 +589,37 @@ body {
   background: var(--wd-red-active);
 }
 .wd-btn--primary:disabled {
-  background: var(--wd-tint-1);
+  background: var(--wd-field);
   color: var(--wd-ink-3);
 }
 
+/*
+ * 次级按钮 · 中性灰块底。
+ *
+ * ⚠️ 原来是 `--wd-tint-2`（淡红底）+ 红字。
+ * 问题：tint 是"次级"语义 —— 它表达"这是个可选操作"，
+ * 不表达"注意/危险/品牌"。用淡红底会让页面上每个次级按钮
+ * 都像警告，与 danger 语义混淆。
+ * 极简黑白灰体系里，层级靠**明度**建立：primary 深底、tint 浅灰底、
+ * ghost 透明底 —— 颜色只留给真正的强调点。
+ */
 .wd-btn--tint {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink);
 }
 @media (hover: hover) {
   .wd-btn--tint:hover:not(:disabled) {
-    background: var(--wd-tint-3);
+    background: var(--wd-field-hover);
   }
 }
 .wd-btn--tint.is-hover:not(:disabled) {
-  background: var(--wd-tint-3);
+  background: var(--wd-field-hover);
 }
 .wd-btn--tint:active:not(:disabled) {
   background: var(--wd-tint-4);
 }
 .wd-btn--tint:disabled {
-  background: var(--wd-tint-1);
+  background: var(--wd-field);
   color: var(--wd-ink-3);
 }
 
@@ -629,7 +639,7 @@ body {
   background: var(--wd-dark-active);
 }
 .wd-btn--dark:disabled {
-  background: var(--wd-tint-1);
+  background: var(--wd-field);
   color: var(--wd-ink-3);
 }
 
@@ -646,7 +656,7 @@ body {
   background: var(--wd-field);
 }
 .wd-btn--ghost:active:not(:disabled) {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 .wd-btn--ghost:disabled {
   background: transparent;
@@ -690,15 +700,16 @@ body {
 
 @media (hover: hover) {
   .wd-btn--tint:not(:disabled):hover {
-    background: var(--wd-tint-3);
+    background: var(--wd-field-hover);
   }
 }
 .wd-btn--tint:not(:disabled).is-hover {
-  background: var(--wd-tint-3);
+  background: var(--wd-field-hover);
 }
 
+/* active 比 hover 再深一档，仍在中性灰范围内 */
 .wd-btn--tint:not(:disabled):active {
-  background: var(--wd-tint-4);
+  background: var(--wd-tint-3);
 }
 
 /* ---- 加载态 ---- */
@@ -1056,12 +1067,12 @@ body {
 
 @media (hover: hover) {
   .wd-switch:not(.wd-switch--off):hover {
-    box-shadow: 0 0 0 4px var(--wd-tint-2);
+    box-shadow: 0 0 0 4px var(--wd-ink-5);
   }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-switch:not(.wd-switch--off).is-hover {
-  box-shadow: 0 0 0 4px var(--wd-tint-2);
+  box-shadow: 0 0 0 4px var(--wd-ink-5);
 }
 
 @media (hover: hover) {
@@ -1094,7 +1105,7 @@ body {
   height: 10px;
   width: 100%;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-2);
+  background: var(--wd-ink-5);
   overflow: hidden;
 }
 
@@ -1130,17 +1141,17 @@ body {
   font-weight: 700;
   user-select: none;
   background: var(--wd-tint-3);
-  color: var(--wd-red-text);
+  color: var(--wd-ink-2);
 }
 
 .wd-avatar--tone-1 {
   background: var(--wd-tint-4);
-  color: var(--wd-red-text);
+  color: var(--wd-ink-2);
 }
 
 .wd-avatar--tone-2 {
   background: var(--wd-tint-3);
-  color: var(--wd-red-text);
+  color: var(--wd-ink-2);
 }
 
 .wd-avatar--tone-3 {
@@ -1232,7 +1243,7 @@ body {
   justify-content: center;
   border-radius: var(--wd-radius-sm);
   background: var(--wd-tint-1);
-  color: var(--wd-red-text);
+  color: var(--wd-ink-2);
 }
 
 .wd-list-item__icon svg {
@@ -1262,14 +1273,14 @@ body {
 @media (hover: hover) {
   .wd-list-item--clickable:hover .wd-list-item__icon {
     transform: translateX(2px);
-    background: var(--wd-tint-2);
-    color: var(--wd-red-text);
+    background: var(--wd-field-hover);
+    color: var(--wd-ink-2);
   }
 }
 .wd-list-item--clickable.is-hover .wd-list-item__icon {
   transform: translateX(2px);
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field-hover);
+  color: var(--wd-ink-2);
 }
 
 .wd-checkbox {
@@ -1595,10 +1606,18 @@ body {
   background: var(--wd-field);
 }
 
+/*
+ * 选中项用**中性底 + 加粗 + 勾选标记**表达，不用红色底。
+ *
+ * ⚠️ 本库主色是红色，而红色同时承载 danger 语义。
+ * 每次打开下拉选一项就看到整块红底，会让普通选择操作读起来像警告。
+ * 主题色的正确用法：少而精 —— 只出现在"必须引导视线"的位置
+ * （主按钮、当前步骤、错误态、进度），不在高频日常操作里铺底。
+ */
 .wd-select__option--active {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
-  font-weight: 600;
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font-weight: 700;
 }
 
 .wd-select__option-mark {
@@ -1633,7 +1652,7 @@ body {
   max-width: 160px;
   padding: 3px 6px 3px 9px;
   border-radius: var(--wd-radius-xs);
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
   font-size: 12.5px;
   font-weight: 600;
@@ -1955,7 +1974,7 @@ body {
 }
 
 .wd-calendar__nav:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -2011,7 +2030,7 @@ body {
 }
 
 .wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 /*
@@ -2089,7 +2108,7 @@ body {
 }
 
 .wd-calendar__action:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -2184,7 +2203,7 @@ body {
  * 所以永远只有一个高亮项，不会出现双高亮。
  */
 .wd-mentions__option.is-active {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-mentions__avatar {
@@ -2211,7 +2230,7 @@ body {
   color: var(--wd-red-text);
   font-size: 11.5px;
   font-weight: 800;
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
 }
 
 .wd-mentions__label {
@@ -2257,7 +2276,7 @@ body {
 }
 
 .wd-colorpicker:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-colorpicker.is-open {
@@ -2280,11 +2299,19 @@ body {
 }
 
 /* ---------------- 色块 ---------------- */
+/*
+ * 当前颜色用**圆形**指示器。
+ *
+ * 语义上它是一个"颜色点"，不是一块"待填充区域"：
+ *   · 圆形表示"这是一个色值"，与色板里的方形格子形成区分
+ *   · 方形色块更像"缩略图/预览区"，会让人以为可点击编辑
+ * 与预设色板（方形格子）刻意保持形状差异，避免混淆。
+ */
 .wd-colorpicker__swatch {
   position: relative;
   display: inline-block;
   flex: none;
-  border-radius: var(--wd-radius-xs);
+  border-radius: 50%;
   box-shadow: var(--wd-shadow-sm);
   overflow: hidden;
 }
@@ -2502,7 +2529,7 @@ body {
 
 .wd-qrcode__skeleton {
   border-radius: var(--wd-radius-sm);
-  background: linear-gradient(100deg, var(--wd-tint-1) 30%, var(--wd-tint-2) 50%, var(--wd-tint-1) 70%);
+  background: linear-gradient(100deg, var(--wd-tint-1) 30%, var(--wd-ink-5) 50%, var(--wd-tint-1) 70%);
   background-size: 200% 100%;
   animation: wd-qrcode-shimmer 1.4s ease-in-out infinite;
 }
@@ -2551,8 +2578,9 @@ body {
   gap: 8px;
   min-width: 180px;
   max-width: 100%;
-  padding: 0 12px;
-  border-radius: var(--wd-radius-sm);
+  /* 胶囊：与 Input / Select 的触发器一致。本库约定可点击控件优先用 pill */
+  padding: 0 16px;
+  border-radius: var(--wd-radius-pill);
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
@@ -2562,22 +2590,30 @@ body {
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 
+/*
+ * 尺寸必须用 --wd-size-* 令牌，不能硬编码。
+ *
+ * ⚠️ 之前写的是 32/40/48px，而令牌定义是 34/44/56px ——
+ * Input / Select 走的都是令牌，于是 Cascader 和它们在页面上并排时
+ * 高度差 4~8px，肉眼能直接看出来。
+ * 本库约定：控件尺寸以 `--wd-size-{sm,md,lg}` 为唯一来源，消费方不自建。
+ */
 .wd-cascader--sm {
-  height: 32px;
-  font-size: 13px;
+  height: var(--wd-size-sm);
+  font-size: var(--wd-font-size-sm);
 }
 
 .wd-cascader--md {
-  height: 40px;
+  height: var(--wd-size-md);
 }
 
 .wd-cascader--lg {
-  height: 48px;
-  font-size: 14.5px;
+  height: var(--wd-size-lg);
+  font-size: var(--wd-font-size-lg);
 }
 
 .wd-cascader:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-cascader.is-open {
@@ -2692,7 +2728,7 @@ body {
   top: 4px;
   bottom: 4px;
   width: 1px;
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-cascader__option {
@@ -2718,7 +2754,7 @@ body {
 
 /* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
 .wd-cascader__option.is-active {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   font-weight: 600;
 }
 
@@ -2869,7 +2905,7 @@ body {
 }
 
 .wd-tabs__close:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
 }
 
@@ -2891,7 +2927,7 @@ body {
 }
 
 .wd-tabs__add:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
 }
 
@@ -3156,21 +3192,43 @@ body {
   min-width: 220px;
 }
 
+/*
+ * 触发器尺寸走 --wd-size-* 令牌，与 Input / Select / Cascader 对齐。
+ *
+ * ⚠️ 原来是 `padding: 13px 20px` + `border-radius: pill`：
+ *   · 高度靠 padding 撑出来（约 46px），与 --wd-size-md 的 44px 差 2px
+ *   · 圆角是胶囊，而其他输入类是 --wd-radius-sm
+ * 两者叠加导致 DatePicker 和别的输入框并排时明显不像同一套控件。
+ */
 .wd-datepicker__trigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 13px 20px;
+  height: var(--wd-size-md);
+  padding: 0 18px;
   border: 0;
   cursor: pointer;
   background: var(--wd-field);
+  /* 胶囊：与 Input / Select 一致（本库可点击控件优先 pill） */
   border-radius: var(--wd-radius-pill);
   font: inherit;
-  font-size: 14.5px;
+  font-size: 14px;
   color: var(--wd-ink);
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-datepicker--sm .wd-datepicker__trigger {
+  height: var(--wd-size-sm);
+  padding: 0 14px;
+  font-size: var(--wd-font-size-sm);
+}
+
+.wd-datepicker--lg .wd-datepicker__trigger {
+  height: var(--wd-size-lg);
+  padding: 0 22px;
+  font-size: var(--wd-font-size-lg);
 }
 
 @media (hover: hover) {
@@ -3316,11 +3374,11 @@ body {
 
 @media (hover: hover) {
   .wd-datepicker__todaybtn:hover {
-    background: var(--wd-tint-2);
+    background: var(--wd-field-hover);
   }
 }
 .wd-datepicker__todaybtn.is-hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-toasts {
@@ -3384,7 +3442,7 @@ body {
 }
 
 .wd-popover__default-trigger:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-popover__panel {
@@ -3697,10 +3755,11 @@ body {
 }
 
 .wd-pagination__size select {
-  height: 32px;
-  padding: 0 8px;
+  /* 可点击控件优先胶囊；尺寸走 sm 令牌 */
+  height: var(--wd-size-sm);
+  padding: 0 12px;
   border: 0;
-  border-radius: var(--wd-radius-xs);
+  border-radius: var(--wd-radius-pill);
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
@@ -3728,7 +3787,7 @@ body {
   height: 8px;
   margin: 0;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-2);
+  background: var(--wd-tint-3);
   outline: none;
 }
 
@@ -3768,12 +3827,12 @@ body {
 
 @media (hover: hover) {
   .wd-slider input[type=range]:hover::-webkit-slider-thumb {
-    box-shadow: 0 0 0 7px var(--wd-tint-2);
+    box-shadow: 0 0 0 7px var(--wd-ink-5);
   }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-slider input[type=range].is-hover::-webkit-slider-thumb {
-  box-shadow: 0 0 0 7px var(--wd-tint-2);
+  box-shadow: 0 0 0 7px var(--wd-ink-5);
 }
 
 .wd-steps {
@@ -3809,9 +3868,14 @@ body {
   color: #fff;
 }
 
+/*
+ * 已完成步骤：中性灰底 + 勾选。
+ * 红色只留给 --process（当前进行中）——那是唯一需要"看这里"的状态。
+ * 全部步骤都染红时，"当前在哪一步"反而失去了视觉焦点。
+ */
 .wd-steps__item--finish .wd-steps__dot {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
 }
 
 .wd-steps__label {
@@ -3860,7 +3924,7 @@ body {
   height: 28px;
   flex: none;
   border-radius: 50%;
-  border: 3px solid var(--wd-tint-2);
+  border: 3px solid var(--wd-ink-5);
   border-top-color: var(--wd-red);
   animation: wd-spinner-rotate 0.8s linear infinite;
 }
@@ -4045,7 +4109,7 @@ body {
 }
 .wd-markdown blockquote blockquote blockquote {
   margin-bottom: 0;
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   box-shadow: none;
 }
 .wd-markdown blockquote blockquote blockquote::before {
@@ -4313,7 +4377,7 @@ body {
 }
 
 .wd-table__row--checked:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 /* ---- 加载遮罩 ---- */
@@ -4474,7 +4538,7 @@ body {
 }
 
 .wd-table__tree-toggle:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -4510,7 +4574,7 @@ body {
 }
 
 .wd-table__expander:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -4756,7 +4820,7 @@ body {
 }
 
 .wd-transfer__item.is-checked {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-transfer__item.is-disabled {
@@ -4824,7 +4888,7 @@ body {
 }
 
 .wd-transfer__op:hover:not(:disabled) {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -5655,7 +5719,7 @@ body {
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
   display: flex;
   align-items: center;
@@ -5698,12 +5762,12 @@ body {
 
 @media (hover: hover) {
   .wd-upload__remove:hover {
-    background: var(--wd-tint-2);
+    background: var(--wd-field-hover);
     color: var(--wd-red-text);
   }
 }
 .wd-upload__remove.is-hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
 }
 
@@ -6544,8 +6608,8 @@ body {
   height: 34px;
   flex: none;
   border-radius: 50%;
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
   font-size: 12px;
   font-weight: 800;
   display: flex;
@@ -6568,7 +6632,7 @@ body {
 }
 
 .wd-ai-msg--self .wd-ai-msg__bubble {
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
   border-top-left-radius: 18px;
   border-top-right-radius: 6px;
   color: var(--wd-red-text);
@@ -6619,7 +6683,7 @@ body {
 
 .wd-ai-msg__cursor {
   display: inline-block;
-  color: var(--wd-red-text);
+  color: var(--wd-ink-3);
   animation: wd-ai-blink 1s step-end infinite;
 }
 
@@ -6677,7 +6741,7 @@ body {
 }
 
 .wd-ai-msg__reasoning-spark {
-  color: var(--wd-red-text);
+  color: var(--wd-ink-3);
   flex: none;
 }
 
@@ -6936,7 +7000,7 @@ body {
 /* 高亮节点：主色实心 */
 .wd-timeline__item.is-active .wd-timeline__node {
   background: var(--tl-color, var(--wd-red));
-  box-shadow: 0 0 0 3px var(--wd-tint-2);
+  box-shadow: 0 0 0 3px var(--wd-ink-5);
   color: #fff;
 }
 
@@ -6980,12 +7044,14 @@ body {
   font-size: 11.5px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  color: var(--wd-red-text);
+  /* 时间标签用中灰：只提供上下文，不抢视线 */
+  color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
 }
 
+/* 只有 active 节点的时间标签才用主色 —— 这是"点睛"的位置 */
 .wd-timeline__item.is-active .wd-timeline__period {
-  color: var(--tl-color, var(--wd-red-text));
+  color: var(--tl-color, var(--wd-red));
 }
 
 .wd-timeline__title {
@@ -7700,7 +7766,7 @@ img.wd-theme-invert {
 }
 
 .wd-command__item--active {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-command__item--disabled {
@@ -7926,7 +7992,7 @@ img.wd-theme-invert {
 }
 
 .wd-tree__node--selected {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
   font-weight: 600;
 }
@@ -8569,7 +8635,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio__ctl:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -8683,7 +8749,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio__rate-menu--card button:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-audio__rate-menu--card button.is-on {
@@ -8990,7 +9056,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio__ibtn:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 
@@ -9056,7 +9122,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio__rate-menu button:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-audio__rate-menu button.is-on {
@@ -10117,7 +10183,7 @@ img.wd-theme-invert {
 }
 
 .wd-group--inset > .wd-group__item:hover {
-  background-color: var(--wd-tint-2);
+  background-color: var(--wd-field-hover);
 }
 
 .wd-group--inset > .wd-group__item > .wd-btn--primary {
@@ -10131,7 +10197,7 @@ img.wd-theme-invert {
 }
 
 .wd-group--inset > .wd-group__item:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 /* inset 靠间距区分，不画分隔线 */
@@ -10511,35 +10577,54 @@ body {
   transform: scale(1.08);
 }
 
+/*
+ * Hero 用**左对齐 + 撑满内容宽度**。
+ *
+ * ⚠️ 之前是 `justify-content: center` + `max-width: 760px` + 居中文本：
+ *   在 1440px 屏上两侧各空 340px，中间挤成一柱，观感局促。
+ *   大标题居中还会让读者的视线来回跳跃（每行行首位置都不同）。
+ *
+ * 现在的版式：左对齐、占满容器、用留白建立呼吸 ——
+ * 这是编辑类版式（杂志/文档站）的通行做法，比居中更"大气"。
+ */
 .demo-hero {
-  padding: 96px 0 72px;
+  padding: 120px 0 96px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
   position: relative;
+  max-width: none;
 }
 
+/*
+ * 背景：中性灰径向渐变，不用淡红。
+ *
+ * 极简黑白灰体系里，页面底色上的大面积色晕会和内容抢注意力；
+ * 红色尤其危险 —— 它会被读成"这里有警报"。
+ * 用中性灰做同一种柔和铺底，观感一致但完全不抢色。
+ */
 .demo-hero::before {
   content: "";
   position: absolute;
-  left: 10%;
+  left: 8%;
   top: 0;
-  width: 48%;
+  width: 52%;
   height: 100%;
-  background: radial-gradient(circle at 30% 40%, var(--wd-tint-2) 0%, transparent 70%);
+  background: radial-gradient(circle at 30% 40%, var(--wd-field) 0%, rgba(233, 237, 241, 0.35) 45%, transparent 72%);
   pointer-events: none;
-  opacity: 0.65;
+  opacity: 0.8;
 }
 
 .hero-inner {
   position: relative;
   z-index: 1;
-  max-width: 760px;
+  width: 100%;
+  max-width: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 18px;
+  align-items: flex-start;
+  gap: 22px;
 }
 
 .hero-eyebrow {
@@ -10550,7 +10635,8 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--wd-red-text);
+  /* eyebrow 是辅助信息，用中灰；红色留给标题强调词与主按钮 */
+  color: var(--wd-ink-2);
 }
 
 .hero-dot {
@@ -10561,25 +10647,37 @@ body {
   display: inline-block;
 }
 
+/*
+ * Slogan：两行短句，字距收紧、行高略松。
+ * 比原来的产品名（一个词 + 分隔点）更接近"宣言"的气质 ——
+ * 短句需要呼吸，不然两行会挤成一块。
+ */
 .hero-inner h1 {
-  font-size: 64px;
+  font-size: clamp(56px, 7.4vw, 104px);
   font-weight: 900;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  letter-spacing: -0.042em;
+  line-height: 1.02;
   margin: 0;
   color: var(--wd-ink);
 }
 
+/* 第二行用中灰，制造"主句 → 续句"的层次，不靠颜色抢眼 */
+.hero-second {
+  color: var(--wd-ink-2);
+}
+
+/* hero-accent 仍保留给未来需要点睛的强调词 */
 .hero-accent {
-  color: var(--wd-red-text);
+  color: var(--wd-red);
 }
 
 .hero-lead {
   font-size: 17px;
   line-height: 1.65;
   color: var(--wd-ink-2);
-  /* 24ch 级宽 + 中文两端对齐：避免「简」这类单字被挤成孤行 */
-  max-width: 34em;
+  /* 宽版式下正文也不必挤在窄栏里；40em 仍保证单行长度可读 */
+  max-width: 40em;
+  font-size: 18px;
   margin: 0;
   text-wrap: pretty;
 }
@@ -10596,23 +10694,32 @@ body {
   gap: 14px;
 }
 
+/* 统计块左对齐，与标题同一条左基线 */
 .hero-stats {
   display: flex;
-  gap: 36px;
-  margin-top: 10px;
+  gap: 52px;
+  margin-top: 18px;
+  padding-top: 26px;
+  /*
+   * 用一条极淡的上分隔线把"数据"与"文案"分开。
+   * 无边框原则里这属于"结构分隔"，所以用 ink-5 的极浅灰，
+   * 不用任何强调色。
+   */
+  border-top: 1px solid var(--wd-ink-5);
+  width: 100%;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .stat b {
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   color: var(--wd-ink);
   line-height: 1;
 }
@@ -10651,9 +10758,14 @@ body {
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--wd-red-text);
+  /*
+   * 区块编号用中性灰，不用主题红。
+   * 极简黑白灰的底色上，红色只留给"点睛"（主按钮 / 当前态 / 错误）。
+   * 每个区块标题都染红，会让整页看起像警报面板。
+   */
+  color: var(--wd-ink-2);
   padding: 6px 12px;
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
   border-radius: 999px;
   white-space: nowrap;
   flex-shrink: 0;
@@ -10705,7 +10817,12 @@ body {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--wd-red-text);
+  /*
+   * 面板标题用深灰 + 深灰短杠。
+   * 全站 73 个面板，每个标题都染红的话页面上会有 73 处红字 ——
+   * 红色就彻底失去"强调"的意义了。极简风里，层级靠字重和字号建立。
+   */
+  color: var(--wd-ink-2);
   margin: 0 0 20px;
   display: flex;
   align-items: center;
@@ -10716,7 +10833,7 @@ body {
   width: 18px;
   height: 2px;
   border-radius: 999px;
-  background: var(--wd-red);
+  background: var(--wd-ink-4);
   display: inline-block;
 }
 

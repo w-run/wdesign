@@ -18,8 +18,10 @@ const props = withDefaults(
     modelValue?: string
     placeholder?: string
     disabled?: boolean
+    /** 尺寸，与 Input / Select / Cascader 一致 */
+    size?: 'sm' | 'md' | 'lg'
   }>(),
-  { modelValue: '', placeholder: '选择日期', disabled: false },
+  { modelValue: '', placeholder: '选择日期', disabled: false, size: 'md' },
 )
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()

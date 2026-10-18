@@ -14,7 +14,7 @@
   height: 8px;
   margin: 0;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-2);
+  background: var(--wd-tint-3);
   outline: none;
 }
 
@@ -49,8 +49,8 @@
   transition: box-shadow var(--wd-dur) var(--wd-ease-out), transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 @media (hover: hover) {
-  .wd-slider input[type='range']:hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-tint-2); }
+  .wd-slider input[type='range']:hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-ink-5); }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
-.wd-slider input[type='range'].is-hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-tint-2); }
+.wd-slider input[type='range'].is-hover::-webkit-slider-thumb { box-shadow: 0 0 0 7px var(--wd-ink-5); }
 

@@ -1,21 +1,43 @@
 // WDesign — DatePicker
 .wd-datepicker { position: relative; display: inline-block; min-width: 220px; }
 
+/*
+ * 触发器尺寸走 --wd-size-* 令牌，与 Input / Select / Cascader 对齐。
+ *
+ * ⚠️ 原来是 `padding: 13px 20px` + `border-radius: pill`：
+ *   · 高度靠 padding 撑出来（约 46px），与 --wd-size-md 的 44px 差 2px
+ *   · 圆角是胶囊，而其他输入类是 --wd-radius-sm
+ * 两者叠加导致 DatePicker 和别的输入框并排时明显不像同一套控件。
+ */
 .wd-datepicker__trigger {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   width: 100%;
-  padding: 13px 20px;
+  height: var(--wd-size-md);
+  padding: 0 18px;
   border: 0;
   cursor: pointer;
   background: var(--wd-field);
+  /* 胶囊：与 Input / Select 一致（本库可点击控件优先 pill） */
   border-radius: var(--wd-radius-pill);
   font: inherit;
-  font-size: 14.5px;
+  font-size: 14px;
   color: var(--wd-ink);
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-datepicker--sm .wd-datepicker__trigger {
+  height: var(--wd-size-sm);
+  padding: 0 14px;
+  font-size: var(--wd-font-size-sm);
+}
+
+.wd-datepicker--lg .wd-datepicker__trigger {
+  height: var(--wd-size-lg);
+  padding: 0 22px;
+  font-size: var(--wd-font-size-lg);
 }
 @media (hover: hover) {
   .wd-datepicker__trigger:hover { background: var(--wd-field-hover); }
@@ -93,7 +115,7 @@
   cursor: pointer;
 }
 @media (hover: hover) {
-  .wd-datepicker__todaybtn:hover { background: var(--wd-tint-2); }
+  .wd-datepicker__todaybtn:hover { background: var(--wd-field-hover); }
 }
-.wd-datepicker__todaybtn.is-hover { background: var(--wd-tint-2); }
+.wd-datepicker__todaybtn.is-hover { background: var(--wd-field-hover); }
 

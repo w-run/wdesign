@@ -14,8 +14,9 @@
   gap: 8px;
   min-width: 180px;
   max-width: 100%;
-  padding: 0 12px;
-  border-radius: var(--wd-radius-sm);
+  /* 胶囊：与 Input / Select 的触发器一致。本库约定可点击控件优先用 pill */
+  padding: 0 16px;
+  border-radius: var(--wd-radius-pill);
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
@@ -25,11 +26,19 @@
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 
-.wd-cascader--sm { height: 32px; font-size: 13px; }
-.wd-cascader--md { height: 40px; }
-.wd-cascader--lg { height: 48px; font-size: 14.5px; }
+/*
+ * 尺寸必须用 --wd-size-* 令牌，不能硬编码。
+ *
+ * ⚠️ 之前写的是 32/40/48px，而令牌定义是 34/44/56px ——
+ * Input / Select 走的都是令牌，于是 Cascader 和它们在页面上并排时
+ * 高度差 4~8px，肉眼能直接看出来。
+ * 本库约定：控件尺寸以 `--wd-size-{sm,md,lg}` 为唯一来源，消费方不自建。
+ */
+.wd-cascader--sm { height: var(--wd-size-sm); font-size: var(--wd-font-size-sm); }
+.wd-cascader--md { height: var(--wd-size-md); }
+.wd-cascader--lg { height: var(--wd-size-lg); font-size: var(--wd-font-size-lg); }
 
-.wd-cascader:hover { background: var(--wd-tint-2); }
+.wd-cascader:hover { background: var(--wd-field-hover); }
 
 .wd-cascader.is-open {
   background: var(--wd-card);
@@ -131,7 +140,7 @@
   top: 4px;
   bottom: 4px;
   width: 1px;
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-cascader__option {
@@ -155,7 +164,7 @@
 
 /* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
 .wd-cascader__option.is-active {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   font-weight: 600;
 }
 

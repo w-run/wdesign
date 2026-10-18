@@ -20,7 +20,7 @@
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 
-.wd-colorpicker:hover { background: var(--wd-tint-2); }
+.wd-colorpicker:hover { background: var(--wd-field-hover); }
 
 .wd-colorpicker.is-open {
   background: var(--wd-card);
@@ -39,11 +39,19 @@
 .wd-colorpicker.is-disabled:hover { background: var(--wd-field); }
 
 /* ---------------- 色块 ---------------- */
+/*
+ * 当前颜色用**圆形**指示器。
+ *
+ * 语义上它是一个"颜色点"，不是一块"待填充区域"：
+ *   · 圆形表示"这是一个色值"，与色板里的方形格子形成区分
+ *   · 方形色块更像"缩略图/预览区"，会让人以为可点击编辑
+ * 与预设色板（方形格子）刻意保持形状差异，避免混淆。
+ */
 .wd-colorpicker__swatch {
   position: relative;
   display: inline-block;
   flex: none;
-  border-radius: var(--wd-radius-xs);
+  border-radius: 50%;
   box-shadow: var(--wd-shadow-sm);
   overflow: hidden;
 }

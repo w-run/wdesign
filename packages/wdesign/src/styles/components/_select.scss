@@ -69,7 +69,19 @@
 }
 .wd-select__option.is-hover { background: var(--wd-field); }
 
-.wd-select__option--active { background: var(--wd-tint-2); color: var(--wd-red-text); font-weight: 600; }
+/*
+ * 选中项用**中性底 + 加粗 + 勾选标记**表达，不用红色底。
+ *
+ * ⚠️ 本库主色是红色，而红色同时承载 danger 语义。
+ * 每次打开下拉选一项就看到整块红底，会让普通选择操作读起来像警告。
+ * 主题色的正确用法：少而精 —— 只出现在"必须引导视线"的位置
+ * （主按钮、当前步骤、错误态、进度），不在高频日常操作里铺底。
+ */
+.wd-select__option--active {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font-weight: 700;
+}
 .wd-select__option-mark { flex: none; color: var(--wd-red-text); }
 
 /* ---- 微交互（精致版）---- */
@@ -99,7 +111,7 @@
   max-width: 160px;
   padding: 3px 6px 3px 9px;
   border-radius: var(--wd-radius-xs);
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
   font-size: 12.5px;
   font-weight: 600;

@@ -7,8 +7,8 @@
   height: 34px;
   flex: none;
   border-radius: 50%;
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
   font-size: 12px;
   font-weight: 800;
   display: flex;
@@ -26,7 +26,7 @@
   box-shadow: var(--wd-shadow);
 }
 .wd-ai-msg--self .wd-ai-msg__bubble {
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
   border-top-left-radius: 18px;
   border-top-right-radius: 6px;
   color: var(--wd-red-text);
@@ -62,7 +62,7 @@
   word-break: break-word;
 }
 
-.wd-ai-msg__cursor { display: inline-block; color: var(--wd-red-text); animation: wd-ai-blink 1s step-end infinite; }
+.wd-ai-msg__cursor { display: inline-block; color: var(--wd-ink-3); animation: wd-ai-blink 1s step-end infinite; }
 @keyframes wd-ai-blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -101,7 +101,7 @@
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-ai-msg__reasoning-head.is-hover { color: var(--wd-ink); }
 
-.wd-ai-msg__reasoning-spark { color: var(--wd-red-text); flex: none; }
+.wd-ai-msg__reasoning-spark { color: var(--wd-ink-3); flex: none; }
 .wd-ai-msg__reasoning-title { color: var(--wd-ink); }
 .wd-ai-msg__reasoning-state { margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--wd-ink-2); }
 

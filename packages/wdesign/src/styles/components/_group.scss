@@ -345,7 +345,7 @@
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 .wd-group--inset > .wd-group__item:hover {
-  background-color: var(--wd-tint-2);
+  background-color: var(--wd-field-hover);
 }
 .wd-group--inset > .wd-group__item > .wd-btn--primary {
   background-color: var(--wd-card);
@@ -358,7 +358,7 @@
 }
 
 .wd-group--inset > .wd-group__item:hover {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 /* inset 靠间距区分，不画分隔线 */

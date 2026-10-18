@@ -52,7 +52,7 @@
   width: 38px;
   height: 38px;
   border-radius: 10px;
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-red-text);
   display: flex;
   align-items: center;
@@ -76,9 +76,9 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 @media (hover: hover) {
-  .wd-upload__remove:hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
+  .wd-upload__remove:hover { background: var(--wd-field-hover); color: var(--wd-red-text); }
 }
-.wd-upload__remove.is-hover { background: var(--wd-tint-2); color: var(--wd-red-text); }
+.wd-upload__remove.is-hover { background: var(--wd-field-hover); color: var(--wd-red-text); }
 
 .wd-upload__progress {
   height: 4px;

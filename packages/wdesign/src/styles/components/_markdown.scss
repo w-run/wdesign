@@ -119,7 +119,7 @@ a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hov
       // 三级：浅红加深
       blockquote {
         margin-bottom: 0;
-        background: var(--wd-tint-2);
+        background: var(--wd-field-hover);
         box-shadow: none;
         &::before { background: var(--wd-red); }
       }

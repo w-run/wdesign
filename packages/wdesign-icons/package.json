@@ -1,7 +1,7 @@
 {
   "name": "@w-run/wdesign-icons",
   "version": "1.0.0",
-  "description": "WDesign 图标库 — 595 个 SVG（256×256 · currentColor），Soft Bento · Red 配套",
+  "description": "WDesign Icon — 595 个 SVG（256×256 · currentColor），WDesign UI 配套图标库",
   "type": "module",
   "main": "./src/index.ts",
   "module": "./src/index.ts",

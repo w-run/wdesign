@@ -200,34 +200,57 @@ body {
 }
 
 // ── Hero ───────────────────────────────────────────────────────
+/*
+ * Hero 用**左对齐 + 撑满内容宽度**。
+ *
+ * ⚠️ 之前是 `justify-content: center` + `max-width: 760px` + 居中文本：
+ *   在 1440px 屏上两侧各空 340px，中间挤成一柱，观感局促。
+ *   大标题居中还会让读者的视线来回跳跃（每行行首位置都不同）。
+ *
+ * 现在的版式：左对齐、占满容器、用留白建立呼吸 ——
+ * 这是编辑类版式（杂志/文档站）的通行做法，比居中更"大气"。
+ */
 .demo-hero {
-  padding: 96px 0 72px;
+  padding: 120px 0 96px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
   position: relative;
+  max-width: none;
 }
-// 柔和背景色块
+/*
+ * 背景：中性灰径向渐变，不用淡红。
+ *
+ * 极简黑白灰体系里，页面底色上的大面积色晕会和内容抢注意力；
+ * 红色尤其危险 —— 它会被读成"这里有警报"。
+ * 用中性灰做同一种柔和铺底，观感一致但完全不抢色。
+ */
 .demo-hero::before {
   content: '';
   position: absolute;
-  left: 10%;
+  left: 8%;
   top: 0;
-  width: 48%;
+  width: 52%;
   height: 100%;
-  background: radial-gradient(circle at 30% 40%, var(--wd-tint-2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at 30% 40%,
+    var(--wd-field) 0%,
+    rgba(233, 237, 241, .35) 45%,
+    transparent 72%
+  );
   pointer-events: none;
-  opacity: .65;
+  opacity: .8;
 }
 .hero-inner {
   position: relative;
   z-index: 1;
-  max-width: 760px;
+  width: 100%;
+  max-width: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 18px;
+  align-items: flex-start;
+  gap: 22px;
 }
 .hero-eyebrow {
   display: inline-flex;
@@ -237,7 +260,8 @@ body {
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--wd-red-text);
+  /* eyebrow 是辅助信息，用中灰；红色留给标题强调词与主按钮 */
+  color: var(--wd-ink-2);
 }
 .hero-dot {
   width: 6px;
@@ -246,23 +270,36 @@ body {
   background: var(--wd-red);
   display: inline-block;
 }
+/*
+ * Slogan：两行短句，字距收紧、行高略松。
+ * 比原来的产品名（一个词 + 分隔点）更接近"宣言"的气质 ——
+ * 短句需要呼吸，不然两行会挤成一块。
+ */
 .hero-inner h1 {
-  font-size: 64px;
+  font-size: clamp(56px, 7.4vw, 104px);
   font-weight: 900;
-  letter-spacing: -.035em;
-  line-height: 1.05;
+  letter-spacing: -.042em;
+  line-height: 1.02;
   margin: 0;
   color: var(--wd-ink);
 }
+
+/* 第二行用中灰，制造"主句 → 续句"的层次，不靠颜色抢眼 */
+.hero-second {
+  color: var(--wd-ink-2);
+}
+
+/* hero-accent 仍保留给未来需要点睛的强调词 */
 .hero-accent {
-  color: var(--wd-red-text);
+  color: var(--wd-red);
 }
 .hero-lead {
   font-size: 17px;
   line-height: 1.65;
   color: var(--wd-ink-2);
-  /* 24ch 级宽 + 中文两端对齐：避免「简」这类单字被挤成孤行 */
-  max-width: 34em;
+  /* 宽版式下正文也不必挤在窄栏里；40em 仍保证单行长度可读 */
+  max-width: 40em;
+  font-size: 18px;
   margin: 0;
   text-wrap: pretty;
 }
@@ -276,21 +313,30 @@ body {
   display: flex;
   gap: 14px;
 }
+/* 统计块左对齐，与标题同一条左基线 */
 .hero-stats {
   display: flex;
-  gap: 36px;
-  margin-top: 10px;
+  gap: 52px;
+  margin-top: 18px;
+  padding-top: 26px;
+  /*
+   * 用一条极淡的上分隔线把"数据"与"文案"分开。
+   * 无边框原则里这属于"结构分隔"，所以用 ink-5 的极浅灰，
+   * 不用任何强调色。
+   */
+  border-top: 1px solid var(--wd-ink-5);
+  width: 100%;
 }
 .stat {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  align-items: flex-start;
+  gap: 4px;
 }
 .stat b {
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 800;
-  letter-spacing: -.02em;
+  letter-spacing: -.03em;
   color: var(--wd-ink);
   line-height: 1;
 }
@@ -327,9 +373,14 @@ body {
   font-weight: 800;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--wd-red-text);
+  /*
+   * 区块编号用中性灰，不用主题红。
+   * 极简黑白灰的底色上，红色只留给"点睛"（主按钮 / 当前态 / 错误）。
+   * 每个区块标题都染红，会让整页看起像警报面板。
+   */
+  color: var(--wd-ink-2);
   padding: 6px 12px;
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
   border-radius: 999px;
   white-space: nowrap;
   flex-shrink: 0;
@@ -387,7 +438,12 @@ body {
   font-weight: 800;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--wd-red-text);
+  /*
+   * 面板标题用深灰 + 深灰短杠。
+   * 全站 73 个面板，每个标题都染红的话页面上会有 73 处红字 ——
+   * 红色就彻底失去"强调"的意义了。极简风里，层级靠字重和字号建立。
+   */
+  color: var(--wd-ink-2);
   margin: 0 0 20px;
   display: flex;
   align-items: center;
@@ -397,7 +453,7 @@ body {
     width: 18px;
     height: 2px;
     border-radius: 999px;
-    background: var(--wd-red);
+    background: var(--wd-ink-4);
     display: inline-block;
   }
 }

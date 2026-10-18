@@ -31,7 +31,7 @@
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-popover__default-trigger:hover { background: var(--wd-tint-2); }
+.wd-popover__default-trigger:hover { background: var(--wd-field-hover); }
 
 .wd-popover__panel {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */

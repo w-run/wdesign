@@ -91,7 +91,7 @@
 }
 
 .wd-transfer__item.is-checked {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 
 .wd-transfer__item.is-disabled {
@@ -159,7 +159,7 @@
 }
 
 .wd-transfer__op:hover:not(:disabled) {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   color: var(--wd-ink);
 }
 

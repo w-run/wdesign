@@ -1,5 +1,5 @@
 // =============================================================
-//  wdesign · Soft Bento · Red — 具名导出入口
+//  wdesign · WDesign UI — 具名导出入口
 //
 //  按需引入（推荐，可 tree-shake）：
 //    import { WdButton, WdCard } from '@w-run/wdesign'

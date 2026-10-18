@@ -4112,7 +4112,8 @@ var WD_REAL_MODULE = (() => {
     props: {
       modelValue: { type: String, required: false, default: "" },
       placeholder: { type: String, required: false, default: "\u9009\u62E9\u65E5\u671F" },
-      disabled: { type: Boolean, required: false, default: false }
+      disabled: { type: Boolean, required: false, default: false },
+      size: { type: String, required: false, default: "md" }
     },
     emits: ["update:modelValue"],
     setup(__props, { emit: __emit }) {

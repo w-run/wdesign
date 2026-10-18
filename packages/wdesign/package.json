@@ -1,7 +1,7 @@
 {
   "name": "@w-run/wdesign",
   "version": "1.0.0",
-  "description": "WDesign — Soft Bento · Red；SCSS + Vue3 组件库（无边框 · 色块分区 · 全圆角 · 留白极简；字体走 CDN: https://box.w-run.net/npm/fonts/）",
+  "description": "WDesign UI — Less frame. More space. Vue 3 组件库（无边框 · 色块分区 · 全圆角 · 留白极简）",
   "type": "module",
   "main": "./dist/wdesign.cjs",
   "module": "./dist/wdesign.esm.js",
@@ -48,7 +48,7 @@
     "scss",
     "design-system",
     "component-library",
-    "soft-bento"
+    "wdesign-ui"
   ],
   "peerDependencies": {
     "vue": "^3.3.0"

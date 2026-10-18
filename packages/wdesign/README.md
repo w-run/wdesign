@@ -1,4 +1,4 @@
-# WDesign — Soft Bento · Red
+# WDesign — WDesign UI
 
 > 代码约定与结构规范见 [CONVENTIONS.md](./CONVENTIONS.md)
 

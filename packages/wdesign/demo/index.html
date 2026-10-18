@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.7ffc5399.css">
+<link rel="stylesheet" href="demo.ecf979e2.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -43,16 +43,18 @@
   <header class="demo-hero" id="top">
     <div class="hero-inner">
       <div class="hero-eyebrow">
-        <span class="hero-dot"></span> WDesign · SCSS + Vue3 组件库 · v1.0
+        <span class="hero-dot"></span> WDesign UI · Vue 3 · v1.0
       </div>
-      <h1>Soft Bento <span class="hero-accent">· Red</span></h1>
-      <p class="hero-lead">38 个真实 Vue3 组件 · 595 枚图标 · 深色主题 —— <em>无边框 · 色块分区 · 全圆角 · 留白极简</em></p>
+      <h1>Less frame.<br><span class="hero-second">More space.</span></h1>
+      <p class="hero-lead">
+        73 个组件 · 595 枚图标 · WDesign Sans —— <em>无边框 · 色块分区 · 全圆角 · 留白极简</em>
+      </p>
       <div class="hero-actions">
         <a class="wd-btn wd-btn--primary wd-btn--md" href="#sec-01">开始浏览</a>
         <a class="wd-btn wd-btn--ghost wd-btn--md" href="#sec-10">查看组合示例</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><b>38</b><span>组件</span></div>
+        <div class="stat"><b>73</b><span>组件</span></div>
         <div class="stat"><b>595</b><span>图标</span></div>
         <div class="stat"><b>2</b><span>主题</span></div>
         <div class="stat"><b>0</b><span>边框</span></div>
@@ -375,7 +377,7 @@
       <h3>MODAL 对话框</h3>
       <div class="demo-row" style="gap:16px; align-items:center">
         <wd-button variant="primary" @click="modalOpen = true">打开对话框</wd-button>
-        <wd-button variant="tint" size="sm" @click="modalWide = true">宽版（720px）</wd-button>
+        <wd-button variant="ghost" size="sm" @click="modalWide = true">宽版（720px）</wd-button>
         <span class="demo-cap">点击遮罩 / Esc 关闭</span>
         <wd-modal v-model="modalOpen" title="标准对话框">标准宽度 440px。</wd-modal>
         <wd-modal v-model="modalWide" title="宽版对话框" :width="720">自定义宽度 720px。</wd-modal>
@@ -432,7 +434,7 @@
       <div class="demo-row" style="gap:24px; align-items:flex-start">
         <div class="demo-col">
           <wd-dropdown :items="menu" @select="onDrop">
-            <wd-button variant="tint" size="sm">更多操作 ▾</wd-button>
+            <wd-button variant="ghost" size="sm">更多操作 ▾</wd-button>
           </wd-dropdown>
           <span class="demo-cap">含禁用项 / 危险项</span>
         </div>
@@ -448,8 +450,8 @@
     <div class="demo-panel">
       <h3>TOOLTIP 提示</h3>
       <div class="demo-row" style="gap:40px; align-items:center; padding:30px 0">
-        <wd-tooltip content="上方提示" placement="top"><wd-button variant="tint" size="sm">top</wd-button></wd-tooltip>
-        <wd-tooltip content="下方提示" placement="bottom"><wd-button variant="tint" size="sm">bottom</wd-button></wd-tooltip>
+        <wd-tooltip content="上方提示" placement="top"><wd-button variant="ghost" size="sm">top</wd-button></wd-tooltip>
+        <wd-tooltip content="下方提示" placement="bottom"><wd-button variant="ghost" size="sm">bottom</wd-button></wd-tooltip>
         <span class="demo-cap">placement：top / bottom</span>
       </div>
     </div>
@@ -490,10 +492,10 @@
     <div class="demo-panel">
       <h3>TOAST 轻提示</h3>
       <div class="demo-row">
-        <wd-button variant="tint" size="sm" @click="pop('info')">信息</wd-button>
-        <wd-button variant="tint" size="sm" @click="pop('success')">成功</wd-button>
-        <wd-button variant="tint" size="sm" @click="pop('warning')">警告</wd-button>
-        <wd-button variant="tint" size="sm" @click="pop('danger')">危险</wd-button>
+        <wd-button variant="ghost" size="sm" @click="pop('info')">信息</wd-button>
+        <wd-button variant="ghost" size="sm" @click="pop('success')">成功</wd-button>
+        <wd-button variant="ghost" size="sm" @click="pop('warning')">警告</wd-button>
+        <wd-button variant="ghost" size="sm" @click="pop('danger')">危险</wd-button>
         <span class="demo-cap">顶部深色胶囊 · 2.4s 自动消失</span>
       </div>
     </div>
@@ -561,7 +563,7 @@
 
         <wd-table :columns="tableCols" :rows="tableRows" :loading="tableLoading"></wd-table>
         <div class="demo-row" style="gap:10px; align-items:center">
-          <wd-button variant="tint" size="sm" @click="toggleTableLoading">切换 loading</wd-button>
+          <wd-button variant="ghost" size="sm" @click="toggleTableLoading">切换 loading</wd-button>
           <span class="demo-cap">{{ tableLoading ? '加载中…' : '已就绪' }}</span>
         </div>
 
@@ -583,8 +585,8 @@
     <div class="demo-panel">
       <h3>DRAWER 抽屉</h3>
       <div class="demo-row" style="gap:16px">
-        <wd-button variant="tint" size="sm" @click="drawerRight = true">右侧抽屉</wd-button>
-        <wd-button variant="tint" size="sm" @click="drawerLeft = true">左侧抽屉</wd-button>
+        <wd-button variant="ghost" size="sm" @click="drawerRight = true">右侧抽屉</wd-button>
+        <wd-button variant="ghost" size="sm" @click="drawerLeft = true">左侧抽屉</wd-button>
         <span class="demo-cap">side：right / left</span>
         <wd-drawer v-model="drawerRight" title="右侧抽屉" side="right">抽屉内容（side=right）</wd-drawer>
         <wd-drawer v-model="drawerLeft" title="左侧抽屉" side="left">抽屉内容（side=left）</wd-drawer>
@@ -644,9 +646,9 @@
     <div class="demo-panel">
       <h3>NOTIFICATION 通知横幅</h3>
       <div class="demo-row">
-        <wd-button variant="tint" size="sm" @click="notice('success')">成功通知</wd-button>
-        <wd-button variant="tint" size="sm" @click="notice('warning')">警告通知</wd-button>
-        <wd-button variant="tint" size="sm" @click="notice('danger')">危险通知</wd-button>
+        <wd-button variant="ghost" size="sm" @click="notice('success')">成功通知</wd-button>
+        <wd-button variant="ghost" size="sm" @click="notice('warning')">警告通知</wd-button>
+        <wd-button variant="ghost" size="sm" @click="notice('danger')">危险通知</wd-button>
         <span class="demo-cap">左下角卡片 · Esc 关闭</span>
       </div>
       <wd-notification v-model="noticeOpen" :title="noticeTitle" :description="noticeDesc" :variant="noticeVariant"></wd-notification>
@@ -683,7 +685,7 @@
         <wd-statistic title="转化率" :value="32.7" suffix="%" :precision="1"></wd-statistic>
         <div class="demo-col">
           <wd-statistic title="可动态更新" :value="statValue"></wd-statistic>
-          <wd-button variant="tint" size="sm" @click="bumpStat" style="margin-top:8px">+1000</wd-button>
+          <wd-button variant="ghost" size="sm" @click="bumpStat" style="margin-top:8px">+1000</wd-button>
         </div>
       </div>
       <span class="demo-cap" style="margin-top:12px">进场滚动 · 千分位 · 前后缀 · 小数位 · 值变化自动重播</span>
@@ -694,7 +696,7 @@
       <div class="demo-row" style="gap:20px; align-items:center; flex-wrap:wrap">
         <wd-popconfirm title="确定删除这条记录？" description="删除后无法恢复。"
           variant="danger" ok-text="删除" @confirm="onDeleted">
-          <wd-button variant="tint" size="sm">删除（危险）</wd-button>
+          <wd-button variant="ghost" size="sm">删除（危险）</wd-button>
         </wd-popconfirm>
 
         <wd-popconfirm title="要发布新版本吗？" ok-text="发布" @confirm="onPublished">
@@ -792,9 +794,9 @@
         </div>
         <div class="demo-col" style="min-width:180px; gap:8px">
           <div class="demo-cap">scrollToIndex()</div>
-          <wd-button variant="tint" size="sm" @click="jumpVlist(0)">第 1 项</wd-button>
-          <wd-button variant="tint" size="sm" @click="jumpVlist(5000)">第 5,001 项</wd-button>
-          <wd-button variant="tint" size="sm" @click="jumpVlist(9999, 'end')">最后一项</wd-button>
+          <wd-button variant="ghost" size="sm" @click="jumpVlist(0)">第 1 项</wd-button>
+          <wd-button variant="ghost" size="sm" @click="jumpVlist(5000)">第 5,001 项</wd-button>
+          <wd-button variant="ghost" size="sm" @click="jumpVlist(9999, 'end')">最后一项</wd-button>
           <wd-button variant="ghost" size="sm" @click="vlistTop">回到顶部</wd-button>
           <span class="demo-cap" style="margin-top:8px">
             固定行高 → 位置可精确计算，滚动中不会因测量重排而抖动。
@@ -1119,7 +1121,7 @@
         <wd-ai-message content="已完成精简，正文如下：保留 38 个组件、深色主题与 595 图标，逐条核对 token 无硬编码。" reasoning="检查 38 个组件 token 使用 → 去重重复圆角 → 确认深色主题覆盖完整 → 输出精简清单……" :default-reasoning-open="false"></wd-ai-message>
         <wd-ai-message :content="aiText" :reasoning="aiReasoning" :streaming="aiStreaming" :reasoning-streaming="aiReasoningStreaming" :thinking="aiThinking" :speed="40" :actions="aiActions" @action="onAiAction"></wd-ai-message>
         <div class="demo-row">
-          <wd-button variant="tint" size="sm" @click="startAi">▶ 播放（思考 → 正文）</wd-button>
+          <wd-button variant="ghost" size="sm" @click="startAi">▶ 播放（思考 → 正文）</wd-button>
           <wd-button variant="ghost" size="sm" @click="resetAi">重置</wd-button>
           <span class="demo-cap">思考链独立区域 · reasoning→content 两段流式 · 思考完自动收起</span>
         </div>
@@ -1574,7 +1576,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
           <div class="demo-cap" style="margin-bottom:8px">hover · 纯说明</div>
           <wd-popover trigger="hover" placement="bottom-start">
             <template #trigger>
-              <wd-button size="sm" variant="tint">悬停查看</wd-button>
+              <wd-button size="sm" variant="ghost">悬停查看</wd-button>
             </template>
             <strong>这是什么</strong>
             <span class="wd-popover__hint">一个可以放任意内容的浮层，悬停 120ms 后延迟关闭。</span>
@@ -1597,7 +1599,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
           <div class="demo-cap" style="margin-bottom:8px">命令式 toast</div>
           <wd-space>
             <wd-button size="sm" @click="toast('已保存')">普通</wd-button>
-            <wd-button size="sm" variant="tint" @click="toast.success('部署成功')">成功</wd-button>
+            <wd-button size="sm" variant="ghost" @click="toast.success('部署成功')">成功</wd-button>
             <wd-button size="sm" variant="ghost" @click="toast.warning('存储将满')">警告</wd-button>
             <wd-button size="sm" variant="ghost" @click="toast.danger('同步失败')">错误</wd-button>
           </wd-space>
@@ -1688,12 +1690,12 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
   <footer class="demo-foot">
     <div class="foot-inner">
       <div class="foot-brand">WDesign<span class="nav-brand-dot"></span></div>
-      <p class="foot-tag">Soft Bento · Red —— 无边框 · 色块分区 · 全圆角 · 留白极简</p>
+      <p class="foot-tag">WDesign UI — Less frame. More space.</p>
       <div class="foot-links">
         <a href="https://github.com/w-run/wdesign" target="_blank" rel="noopener">GitHub</a>
         <a href="#top">回到顶部 ↑</a>
       </div>
-      <p class="foot-meta">38 组件 · 595 图标 · 深色主题 · 0 条边框 · <a href="https://github.com/w-run/wdesign/blob/main/packages/wdesign/CONVENTIONS.md" target="_blank" rel="noopener">CONVENTIONS</a></p>
+      <p class="foot-meta">73 组件 · 595 图标 · 深浅主题 · 0 条边框 · <a href="https://github.com/w-run/wdesign/blob/main/packages/wdesign/CONVENTIONS.md" target="_blank" rel="noopener">CONVENTIONS</a></p>
     </div>
   </footer>
 
@@ -1702,7 +1704,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.276b5345.js"></script>
+<script src="components.232b70a7.js"></script>
 <script src="demo.38955a65.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

@@ -440,7 +440,7 @@
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-audio__ctl:hover { background: var(--wd-tint-2); color: var(--wd-ink); }
+.wd-audio__ctl:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
 .wd-audio__ctl--text { font-variant-numeric: tabular-nums; }
 /*
  * 占位符必须和 .wd-audio__ctl 同宽，否则缺失控件的行会重新错位。
@@ -540,7 +540,7 @@
   font-weight: 700;
   cursor: pointer;
 }
-.wd-audio__rate-menu--card button:hover { background: var(--wd-tint-2); }
+.wd-audio__rate-menu--card button:hover { background: var(--wd-field-hover); }
 .wd-audio__rate-menu--card button.is-on { background: var(--wd-ink); color: var(--wd-card); }
 
 /* =============================================================
@@ -801,7 +801,7 @@
   text-decoration: none;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-audio__ibtn:hover { background: var(--wd-tint-2); color: var(--wd-ink); }
+.wd-audio__ibtn:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
 .wd-audio__ibtn--text { font-variant-numeric: tabular-nums; }
 
 .wd-audio__vol { display: flex; align-items: center; }
@@ -846,7 +846,7 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.wd-audio__rate-menu button:hover { background: var(--wd-tint-2); }
+.wd-audio__rate-menu button:hover { background: var(--wd-field-hover); }
 .wd-audio__rate-menu button.is-on { color: var(--wd-red-text); font-weight: 700; }
 
 /* =============================================================
