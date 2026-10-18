@@ -18,6 +18,7 @@
 .wd-avatar--tone-3 { background: var(--wd-field); color: var(--wd-ink-2); }
 .wd-avatar--dark { background: var(--wd-dark); color: var(--wd-dark-text); }
 .wd-avatar--sm { width: 34px; height: 34px; font-size: 12.5px; }
+.wd-avatar--lg { width: 56px; height: 56px; font-size: 18px; }
 
 .wd-avatars { display: flex; align-items: center; }
 .wd-avatars .wd-avatar + .wd-avatar { margin-left: -11px; }

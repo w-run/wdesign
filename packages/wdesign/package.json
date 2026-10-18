@@ -33,7 +33,9 @@
     "build:demo": "node tools/build-demo-components.mjs && node tools/fingerprint.mjs demo",
     "prepublishOnly": "npm run build",
     "dev": "node tools/wd-dev.mjs",
-    "check:fingerprint": "node tools/fingerprint.mjs check"
+    "check:fingerprint": "node tools/fingerprint.mjs check",
+    "test": "node tools/smoke-test.mjs",
+    "test:all": "npm run check:tokens && npm run check:icons && npm run check:fingerprint && npm run test"
   },
   "sideEffects": [
     "*.css",

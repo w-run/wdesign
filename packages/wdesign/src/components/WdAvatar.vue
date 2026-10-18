@@ -9,7 +9,7 @@ const props = withDefaults(
     /** 0 = 根据名字自动分配 */
     tone?: 0 | 1 | 2 | 3
     dark?: boolean
-    size?: 'md' | 'sm'
+    size?: 'sm' | 'md' | 'lg'
   }>(),
   { name: '', tone: 0, dark: false, size: 'md' },
 )

@@ -62,6 +62,9 @@
 .wd-descriptions__colon { color: var(--wd-ink-3); }
 
 /* ---- 尺寸 ---- */
+.wd-descriptions--lg .wd-descriptions__row { padding: 13px 0; }
+.wd-descriptions--lg .wd-descriptions__label,
+.wd-descriptions--lg .wd-descriptions__value { font-size: 13.5px; }
 .wd-descriptions--md .wd-descriptions__row { padding: 9px 0; }
 .wd-descriptions--sm .wd-descriptions__row { padding: 6px 0; }
 .wd-descriptions--sm .wd-descriptions__label,

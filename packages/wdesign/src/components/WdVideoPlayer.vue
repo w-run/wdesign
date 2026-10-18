@@ -102,8 +102,8 @@ const emit = defineEmits<{
   (e: 'timeupdate', current: number, duration: number): void
   (e: 'error', msg: string): void
   /** 切集（组件只发事件，换源交给调用方；若 episode 带 src 则组件自行切换） */
-  (e: 'changeEpisode', ep: WdEpisode, index: number): void
-  (e: 'rateChange', rate: number): void
+  (e: 'change-episode', ep: WdEpisode, index: number): void
+  (e: 'rate-change', rate: number): void
 }>()
 
 const video = ref<HTMLVideoElement | null>(null)

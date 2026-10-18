@@ -48,7 +48,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'update:selected', rows: Row[]): void
   (e: 'change', rows: Row[]): void
-  (e: 'rowClick', row: Row, index: number): void
+  (e: 'row-click', row: Row, index: number): void
 }>()
 
 const sortKey = ref('')

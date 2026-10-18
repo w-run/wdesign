@@ -6477,7 +6477,7 @@ var WD_REAL_MODULE = (() => {
       rowKey: { type: String, required: false, default: "" },
       maxHeight: { type: [Number, String], required: false, default: "" }
     },
-    emits: ["update:selected", "change", "rowClick"],
+    emits: ["update:selected", "change", "row-click"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
@@ -7559,7 +7559,7 @@ var WD_REAL_MODULE = (() => {
       liveSync: { type: Boolean, required: false, default: true },
       iconStyle: { type: String, required: false, default: "filled" }
     },
-    emits: ["play", "pause", "ended", "timeupdate", "error", "changeEpisode", "rateChange"],
+    emits: ["play", "pause", "ended", "timeupdate", "error", "change-episode", "rate-change"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
@@ -8351,7 +8351,7 @@ var WD_REAL_MODULE = (() => {
       emptyText: { type: String, required: false, default: "\u6682\u65E0\u6570\u636E" },
       hideScrollbar: { type: Boolean, required: false, default: false }
     },
-    emits: ["scroll", "reachEnd"],
+    emits: ["scroll", "reach-end"],
     setup(__props, { expose: __expose, emit: __emit }) {
       const props = __props;
       const emit = __emit;

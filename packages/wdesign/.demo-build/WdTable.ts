@@ -50,7 +50,7 @@ export default /*@__PURE__*/_defineComponent({
     rowKey: { type: String, required: false, default: '' },
     maxHeight: { type: [Number, String], required: false, default: '' }
   },
-  emits: ["update:selected", "change", "rowClick"],
+  emits: ["update:selected", "change", "row-click"],
   setup(__props: any, { emit: __emit }) {
 
 

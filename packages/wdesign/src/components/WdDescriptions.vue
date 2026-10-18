@@ -26,7 +26,7 @@ const props = withDefaults(
     /** 标签与值之间加冒号 */
     colon?: boolean
     /** 单元格内边距大小 */
-    size?: 'sm' | 'md'
+    size?: 'sm' | 'md' | 'lg'
   }>(),
   {
     items: () => [],

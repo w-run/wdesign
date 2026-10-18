@@ -33,7 +33,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'scroll', offset: number): void
-  (e: 'reachEnd'): void
+  (e: 'reach-end'): void
 }>()
 
 const viewport = ref<HTMLElement | null>(null)
