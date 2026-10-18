@@ -540,13 +540,13 @@ var WD_REAL_MODULE = (() => {
     key: 2,
     class: "wd-audio__err"
   };
-  var _hoisted_222 = { class: "wd-audio__cover" };
+  var _hoisted_222 = ["aria-label"];
   var _hoisted_232 = ["src"];
-  var _hoisted_24 = {
+  var _hoisted_24 = { class: "wd-audio__cover-play" };
+  var _hoisted_25 = {
     key: 0,
     class: "wd-audio__pulse"
   };
-  var _hoisted_25 = ["aria-label"];
   var _hoisted_26 = { class: "wd-audio__main" };
   var _hoisted_27 = {
     key: 0,
@@ -610,7 +610,7 @@ var WD_REAL_MODULE = (() => {
       navigable: { type: Boolean, required: false, default: true },
       initialVolume: { type: Number, required: false, default: 1 },
       waveform: { type: Array, required: false, default: () => [] },
-      accent: { type: String, required: false, default: "" },
+      inverse: { type: Boolean, required: false, default: false },
       showTime: { type: Boolean, required: false, default: true },
       iconStyle: { type: String, required: false, default: "filled" }
     },
@@ -752,9 +752,12 @@ var WD_REAL_MODULE = (() => {
           {
             class: normalizeClass(["wd-audio", [
               `wd-audio--${mode.value}`,
-              { "wd-audio--playing": playing.value, "wd-audio--accent": !!__props.accent, "has-cover": hasCover.value }
-            ]]),
-            style: normalizeStyle(__props.accent ? { "--wd-audio-accent": __props.accent } : void 0)
+              {
+                "wd-audio--playing": playing.value,
+                "wd-audio--inverse": __props.inverse,
+                "has-cover": hasCover.value
+              }
+            ]])
           },
           [
             createElementVNode("audio", {
@@ -979,7 +982,13 @@ var WD_REAL_MODULE = (() => {
               { key: 1 },
               [
                 createCommentVNode(" ==================== \u6A2A\u6761 ==================== "),
-                createElementVNode("div", _hoisted_222, [
+                createCommentVNode("  \u5C01\u9762\u5373\u64AD\u653E\u952E\uFF1A\u4E00\u5757\u53EF\u70B9\u51FB\u533A\u57DF\uFF0C\u4E0D\u518D\u5E76\u6392\u4E24\u4E2A\u5143\u7D20 "),
+                createElementVNode("button", {
+                  type: "button",
+                  class: "wd-audio__cover",
+                  "aria-label": playing.value ? "\u6682\u505C" : "\u64AD\u653E",
+                  onClick: togglePlay
+                }, [
                   renderSlot(_ctx.$slots, "cover", {}, () => [
                     __props.cover ? (openBlock(), createElementBlock("img", {
                       key: 0,
@@ -987,12 +996,20 @@ var WD_REAL_MODULE = (() => {
                       alt: ""
                     }, null, 8, _hoisted_232)) : (openBlock(), createBlock(_component_wd_icon, {
                       key: 1,
+                      class: "wd-audio__cover-placeholder",
                       name: "music",
                       variant: __props.iconStyle,
-                      size: 20
+                      size: 22
                     }, null, 8, ["variant"]))
                   ]),
-                  playing.value ? (openBlock(), createElementBlock("span", _hoisted_24, [..._cache[8] || (_cache[8] = [
+                  createElementVNode("span", _hoisted_24, [
+                    createVNode(_component_wd_icon, {
+                      name: playing.value ? "pause" : "play",
+                      variant: __props.iconStyle,
+                      size: 16
+                    }, null, 8, ["name", "variant"])
+                  ]),
+                  playing.value ? (openBlock(), createElementBlock("span", _hoisted_25, [..._cache[8] || (_cache[8] = [
                     createElementVNode(
                       "i",
                       null,
@@ -1015,19 +1032,7 @@ var WD_REAL_MODULE = (() => {
                       /* CACHED */
                     )
                   ])])) : createCommentVNode("v-if", true)
-                ]),
-                createElementVNode("button", {
-                  type: "button",
-                  class: "wd-audio__play",
-                  "aria-label": playing.value ? "\u6682\u505C" : "\u64AD\u653E",
-                  onClick: togglePlay
-                }, [
-                  createVNode(_component_wd_icon, {
-                    name: playing.value ? "pause" : "play",
-                    variant: __props.iconStyle,
-                    size: 16
-                  }, null, 8, ["name", "variant"])
-                ], 8, _hoisted_25),
+                ], 8, _hoisted_222),
                 createElementVNode("div", _hoisted_26, [
                   __props.title || __props.subtitle || _ctx.$slots.info ? (openBlock(), createElementBlock("div", _hoisted_27, [
                     createElementVNode(
@@ -1301,8 +1306,8 @@ var WD_REAL_MODULE = (() => {
               /* STABLE_FRAGMENT */
             ))
           ],
-          6
-          /* CLASS, STYLE */
+          2
+          /* CLASS */
         );
       };
     }

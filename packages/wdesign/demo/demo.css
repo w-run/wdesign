@@ -6035,25 +6035,112 @@ img.wd-theme-invert {
 /* =============================================================
  *  card —— 竖版卡片
  * ============================================================= */
+/*
+ * card：必须能看出"这是一张卡片"。
+ *
+ * ⚠️ 之前 background: var(--wd-card) + box-shadow: none，
+ * 而所在面板也是纯白 —— 卡片和背景完全同色，边界消失，
+ * 所以看起来"贴"在页面上、没有层次。
+ *
+ * 现在用三件套建立层次：
+ *   1. 阴影（最轻的一档，不抢视觉）
+ *   2. 内描边（深色主题里阴影几乎不可见，靠它托底）
+ *   3. 与页面底色区分开的浅底（不是纯白）
+ */
 .wd-audio--card {
   display: flex;
   flex-direction: column;
-  /* 撑满父容器宽度：web 里卡片宽度由父亲决定，自身不应被内容压缩 */
   width: 100%;
   box-sizing: border-box;
   gap: 14px;
   padding: 18px 20px 20px;
   border-radius: var(--wd-radius-xl);
   background: var(--wd-card);
-  /* 不设 min-width：宽度完全交给父容器，窄容器自动降级 */
+  box-shadow: var(--wd-shadow-sm), var(--wd-shadow);
+  /* 内描边：深色主题 / 浅底上都能勾出边界 */
+  box-shadow: var(--wd-shadow-sm), var(--wd-shadow), inset 0 0 0 1px var(--wd-ink-5);
   container-type: inline-size;
   container-name: wd-audio;
 }
 
-/* 有主色时：整卡染色，文字反白（参考图的绿色版做法） */
-.wd-audio--accent.wd-audio--card {
-  background: var(--wd-audio-accent);
+/*
+ * 反色卡片：整卡用深色（不是大红大绿）。
+ *
+ * ⚠️ 之前的 accent 直接把传入色铺满整卡 —— 传个 #1db954 就是一大片绿，
+ * 非常刺眼，且与组件的红色主色系统打架。
+ *
+ * 改为**反色**方案：底色用 --wd-dark（深灰黑），文字反白，
+ * 强调色只用在「进度、播放键」这些真正需要强调的点上。
+ * 这样既能做出深色卡片的质感，又不会变成一块色板。
+ */
+.wd-audio--card.wd-audio--inverse {
+  background: var(--wd-dark);
+  color: var(--wd-dark-text);
+  box-shadow: var(--wd-shadow-hover), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.wd-audio--inverse .wd-audio__subtitle {
+  color: var(--wd-on-dark);
+}
+
+.wd-audio--inverse .wd-audio__times {
+  color: var(--wd-on-dark-2);
+}
+
+.wd-audio--inverse .wd-audio__remain {
+  color: var(--wd-on-dark);
+}
+
+.wd-audio--inverse .wd-audio__ctl {
+  color: var(--wd-on-dark-2);
+}
+
+.wd-audio--inverse .wd-audio__ctl:hover {
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
+}
+
+/*
+ * 反色卡片是**固定深色面**，不跟随主题翻转。
+ * ⚠️ 不能用 --wd-red-on-dark —— 它在深色主题下会变成浅粉，
+ * 在深底上既不够亮也失去"品牌红"的意味。
+ * 这里直接用一个固定的亮红：深底上足够醒目，浅深主题下表现一致。
+ */
+.wd-audio--inverse .wd-audio__wave-bar {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+.wd-audio--inverse .wd-audio__wave-bar.is-on {
+  background: #FF5A65;
+}
+
+.wd-audio--inverse .wd-audio__main-btn {
+  background: var(--wd-dark-text);
+  color: var(--wd-dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.wd-audio--inverse .wd-audio__hero-cover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.wd-audio--inverse .wd-audio__rate-menu--card {
+  background: var(--wd-dark);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: var(--wd-dark-text);
+}
+
+.wd-audio--inverse .wd-audio__rate-menu--card button {
+  color: var(--wd-on-dark-2);
+}
+
+.wd-audio--inverse .wd-audio__rate-menu--card button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.wd-audio--inverse .wd-audio__rate-menu--card button.is-on {
+  background: var(--wd-dark-text);
+  color: var(--wd-dark);
 }
 
 /*
@@ -6476,18 +6563,32 @@ img.wd-theme-invert {
   background: var(--wd-card);
 }
 
+/*
+ * bar：封面与播放键**二合一**。
+ *
+ * ⚠️ 之前是「封面方块 + 红色圆按钮」并排两个元素，
+ * 既占宽度又显得零碎（两个都在左边，视觉重心堆在一起）。
+ *
+ * 现在合并成一块：封面（或占位图）本身是可点击的播放区，
+ * 播放时在封面上叠加半透明遮罩 + 图标。
+ * 没有封面时用深色占位块 + 图标，依然是一个整体。
+ */
 .wd-audio__cover {
   position: relative;
   flex: none;
   width: 52px;
   height: 52px;
   border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-dark);
+  color: var(--wd-dark-text);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 
 .wd-audio__cover img {
@@ -6496,15 +6597,43 @@ img.wd-theme-invert {
   object-fit: cover;
 }
 
-.wd-audio__pulse {
+/* 播放/暂停图标：叠在封面上，带一层暗色遮罩保证任何封面都看得清 */
+.wd-audio__cover-play {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding-bottom: 10px;
-  background: rgba(0, 0, 0, 0.34);
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-audio__cover:hover .wd-audio__cover-play {
+  background: rgba(0, 0, 0, 0.46);
+}
+
+.wd-audio__cover:hover {
+  transform: scale(1.03);
+}
+
+/* 无封面时占位图标（降低存在感，不要和播放键打架） */
+.wd-audio__cover-placeholder {
+  /* 无封面时占位图标：作为背景纹理存在，但要比 .35 更可辨 */
+  opacity: 0.5;
+  color: var(--wd-dark-text);
+}
+
+.wd-audio__pulse {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .wd-audio__pulse i {
@@ -6527,30 +6656,6 @@ img.wd-theme-invert {
 .wd-audio__pulse i:nth-child(3) {
   height: 42%;
   animation-delay: -0.3s;
-}
-
-.wd-audio__play {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--wd-red);
-  color: #fff;
-  cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, transform var(--wd-dur-fast) var(--wd-ease-out);
-}
-
-.wd-audio__play:hover {
-  background: var(--wd-red-hover);
-}
-
-.wd-audio__play:active {
-  transform: scale(0.94);
 }
 
 .wd-audio__main {
@@ -6774,13 +6879,21 @@ img.wd-theme-invert {
  * 左右两端完全圆角（pill），与内部的圆形播放键呼应 ——
  * 方角容器 + 圆按钮会很割裂。
  */
+/*
+ * mini：卡片色，不用偏红的 tint。
+ *
+ * ⚠️ 之前用 --wd-tint-1（极浅的粉），整条看起来"泛红"，
+ * 在白色页面里很显眼且与内容无关。
+ * 改为卡片白 + 细描边 + 轻阴影，与其他卡片同一套层次语言。
+ */
 .wd-audio--mini {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 7px 16px 7px 8px;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-1);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm), inset 0 0 0 1px var(--wd-ink-5);
 }
 
 .wd-audio__mini-play {

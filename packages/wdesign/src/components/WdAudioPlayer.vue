@@ -38,8 +38,11 @@ const props = withDefaults(
     initialVolume?: number
     /** 波形（0-1 数组）；不给则用细进度线 */
     waveform?: number[]
-    /** 卡片主色（card 形态的背景）；不给则用中性底色 */
-    accent?: string
+    /**
+     * 反色卡片（深色底、文字反白）。
+     * 用于需要强调的单曲展示，视觉上从页面中"跳出来"。
+     */
+    inverse?: boolean
     /** 显示时间标签 */
     showTime?: boolean
     /** 图标风格 */
@@ -58,7 +61,7 @@ const props = withDefaults(
     navigable: true,
     initialVolume: 1,
     waveform: () => [],
-    accent: '',
+    inverse: false,
     showTime: true,
     iconStyle: 'filled',
   },
@@ -254,9 +257,12 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
     class="wd-audio"
     :class="[
       `wd-audio--${mode}`,
-      { 'wd-audio--playing': playing, 'wd-audio--accent': !!accent, 'has-cover': hasCover },
+      {
+        'wd-audio--playing': playing,
+        'wd-audio--inverse': inverse,
+        'has-cover': hasCover,
+      },
     ]"
-    :style="accent ? { '--wd-audio-accent': accent } : undefined"
   >
     <audio
       ref="audio"
@@ -367,16 +373,21 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
 
     <!-- ==================== 横条 ==================== -->
     <template v-else-if="mode === 'bar'">
-      <div class="wd-audio__cover">
+      <!--  封面即播放键：一块可点击区域，不再并排两个元素 -->
+      <button
+        type="button"
+        class="wd-audio__cover"
+        :aria-label="playing ? '暂停' : '播放'"
+        @click="togglePlay"
+      >
         <slot name="cover">
           <img v-if="cover" :src="cover" alt="" />
-          <wd-icon v-else name="music" :variant="iconStyle" :size="20" />
+          <wd-icon v-else class="wd-audio__cover-placeholder" name="music" :variant="iconStyle" :size="22" />
         </slot>
+        <span class="wd-audio__cover-play">
+          <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="16" />
+        </span>
         <span v-if="playing" class="wd-audio__pulse"><i></i><i></i><i></i></span>
-      </div>
-
-      <button type="button" class="wd-audio__play" :aria-label="playing ? '暂停' : '播放'" @click="togglePlay">
-        <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="16" />
       </button>
 
       <div class="wd-audio__main">
