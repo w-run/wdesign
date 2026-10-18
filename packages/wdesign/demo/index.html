@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.566cdcee.css">
+<link rel="stylesheet" href="demo.63bd9477.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -230,12 +230,14 @@
 
     <div class="demo-panel">
       <h3>LIST 列表</h3>
-      <div class="wd-list" style="background: var(--wd-card); border-radius: 20px; padding: 8px; max-width: 520px; box-shadow: var(--wd-shadow);">
+      <div class="demo-stage" style="max-width:580px">
+      <div class="wd-list" style="background: var(--wd-card); border-radius: 20px; padding: 8px; box-shadow: var(--wd-shadow);">
         <wd-list-item v-for="f in files" :key="f.name" :title="f.name" :meta="f.size">
           <template #icon>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4a2 2 0 0 1 2-2h6.6L20 7.4V20a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"></path></svg>
           </template>
         </wd-list-item>
+      </div>
       </div>
     </div>
     </div>
@@ -551,36 +553,61 @@
 
     <div class="demo-panel demo-panel--wide">
       <h3>TABLE 表格</h3>
-      <div class="demo-col" style="width:100%; gap:14px">
-        <wd-table :columns="tableCols" :rows="tableRows" striped selectable row-key="name"
-          :selected="tableSel" @update:selected="v => tableSel = v">
-          <template #cell-status="{ value }">
-            <span class="wd-tag" :class="value === 'active' ? 'wd-tag--tint' : 'wd-tag--gray'">
-              <i class="wd-tag__dot" :style="{ background: value === 'active' ? 'var(--wd-success)' : 'var(--wd-ink-3)' }"></i>
-              {{ value === 'active' ? '活跃' : '归档' }}
-            </span>
-          </template>
-          <template #cell-name="{ value }">
-            <strong style="font-weight:700">{{ value }}</strong>
-          </template>
-        </wd-table>
-        <span class="demo-cap">striped · 可排序 · selectable（已选 {{ tableSel.length }} 行）· #cell-&lt;key&gt; 自定义单元格</span>
+      <span class="demo-cap">
+        排序 / 勾选 / 加载态 / 空状态 · 固定列 / 树形数据 / 行展开。
+      </span>
 
-        <wd-divider spacing="6"></wd-divider>
+      <div class="demo-col" style="width:100%; gap:10px; margin-top:18px; align-items:stretch">
+        <div class="demo-cap">基础 · striped + selectable + 自定义单元格</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-table :columns="tableCols" :rows="tableRows" striped selectable row-key="name"
+            :selected="tableSel" @update:selected="v => tableSel = v">
+            <template #cell-status="{ value }">
+              <span class="wd-tag" :class="value === 'active' ? 'wd-tag--tint' : 'wd-tag--gray'">
+                <i class="wd-tag__dot" :style="{ background: value === 'active' ? 'var(--wd-success)' : 'var(--wd-ink-3)' }"></i>
+                {{ value === 'active' ? '活跃' : '归档' }}
+              </span>
+            </template>
+            <template #cell-name="{ value }">
+              <strong style="font-weight:700">{{ value }}</strong>
+            </template>
+          </wd-table>
+        </div>
 
-        <wd-table :columns="tableCols" :rows="tableRows" :loading="tableLoading"></wd-table>
+        <div class="demo-cap" style="margin-top:14px">加载态（已选 {{ tableSel.length }} 行）</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-table :columns="tableCols" :rows="tableRows" :loading="tableLoading"></wd-table>
+        </div>
         <div class="demo-row" style="gap:10px; align-items:center">
           <wd-button variant="ghost" size="sm" @click="toggleTableLoading">切换 loading</wd-button>
           <span class="demo-cap">{{ tableLoading ? '加载中…' : '已就绪' }}</span>
         </div>
 
-        <wd-divider spacing="6"></wd-divider>
+        <div class="demo-cap" style="margin-top:14px">空数据 + 自定义 emptyText</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-table :columns="tableCols" :rows="[]" empty-text="暂无仓库数据"></wd-table>
+        </div>
 
-        <wd-table :columns="tableCols" :rows="[]" empty-text="暂无仓库数据"></wd-table>
-        <span class="demo-cap">空数据 + 自定义 emptyText</span>
+        <div class="demo-cap" style="margin-top:14px">树形数据（点击箭头展开层级）</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-table :columns="treeCols" :rows="treeRows" tree row-key="id" default-expand-all size="sm"></wd-table>
+        </div>
+
+        <div class="demo-cap" style="margin-top:14px">行展开（点击最左侧箭头）</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-table :columns="expCols" :rows="expRows" expandable row-key="id" size="sm">
+            <template #expand="{ row }">
+              <strong>{{ row.name }}</strong> 的详情：{{ row.detail }}
+            </template>
+          </wd-table>
+        </div>
+
+        <div class="demo-cap" style="margin-top:14px">固定列（横向滚动时首列固定）</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-table :columns="fixedCols" :rows="fixedRows" row-key="id" size="sm" :max-height="260"></wd-table>
+        </div>
       </div>
     </div>
-
     <div class="demo-panel">
       <h3>DRAWER 抽屉</h3>
       <div class="demo-row" style="gap:16px">
@@ -870,14 +897,12 @@
       <span class="demo-cap">三种形态，其中 card 会按「有无封面」自动切换主体：有封面时封面为主，无封面时波形为主。</span>
 
       <!--
-        card 示例：**每个卡片单独占一行**。
-        ⚠️ 之前三列并排（每列 max-width:300px），在 800px 的行里只占 251px，
-        右侧空出一大片，看起来像"卡片偏左/控件偏右"。
-        改成一列一行后，宽度统一为整行，卡片内部 left/right 内距自然对称。
+        规则：灰底**只包组件本身**，说明文字留在白底上。
+        每个组件一个灰底区域，不合并、不嵌套多层卡片。
       -->
-      <div class="demo-stage" style="margin-top:18px"><div class="demo-stack">
-        <div>
-          <div class="demo-cap" style="margin-bottom:8px">card · 无封面（波形为主体）</div>
+      <div class="demo-col" style="width:100%; max-width:420px; align-items:stretch; gap:10px; margin-top:18px">
+        <div class="demo-cap">card · 无封面（波形为主体）</div>
+        <div class="demo-stage demo-stage--tight">
           <wd-audio-player
             variant="card"
             src="media/audio.mp3"
@@ -887,8 +912,8 @@
           ></wd-audio-player>
         </div>
 
-        <div>
-          <div class="demo-cap" style="margin-bottom:8px">card · 有封面（封面为主体）</div>
+        <div class="demo-cap" style="margin-top:12px">card · 有封面（封面为主体）</div>
+        <div class="demo-stage demo-stage--tight">
           <wd-audio-player
             variant="card"
             src="media/audio.mp3"
@@ -898,8 +923,8 @@
           ></wd-audio-player>
         </div>
 
-        <div>
-          <div class="demo-cap" style="margin-bottom:8px">card · 反色</div>
+        <div class="demo-cap" style="margin-top:12px">card · 反色</div>
+        <div class="demo-stage demo-stage--tight">
           <wd-audio-player
             variant="card"
             inverse
@@ -908,38 +933,34 @@
             subtitle="5 chapters · 64 subsections"
           ></wd-audio-player>
         </div>
+      </div>
+
+      <div class="demo-col" style="width:100%; align-items:stretch; gap:10px; margin-top:26px">
+        <div class="demo-cap">bar · 横条（列表内嵌）：细进度线 / 带波形</div>
+        <div class="demo-stage demo-stage--tight">
+          <div class="demo-col" style="gap:10px; align-items:stretch">
+            <wd-audio-player
+              variant="bar"
+              src="media/audio.mp3"
+              title="细进度线版本"
+              subtitle="不给 waveform 时用细线"
+              downloadable
+            ></wd-audio-player>
+            <wd-audio-player
+              variant="bar"
+              src="media/audio.mp3"
+              title="带波形"
+              subtitle="栏目名"
+              :waveform="waveform"
+              :cover="'media/poster.jpg'"
+            ></wd-audio-player>
+          </div>
         </div>
       </div>
 
-      <!--
-        bar 与 mini **各自单独一行**。
-        ⚠️ 之前并列（bar 420px + mini 340px），bar 里的进度条被挤得只剩 ~150px，
-        mini 的「标题 + 时间 + 进度」三列也贴在一起，看不出组件的真实形态。
-        两者都是横向铺开的组件，最小可用宽度都在 400px 以上。
-      -->
-      <div class="demo-stack" style="margin-top:26px">
-        <div>
-          <div class="demo-cap" style="margin-bottom:8px">bar · 横条（列表内嵌）</div>
-          <wd-audio-player
-            variant="bar"
-            src="media/audio.mp3"
-            title="细进度线版本"
-            subtitle="不给 waveform 时用细线"
-            downloadable
-          ></wd-audio-player>
-          <div style="height:10px"></div>
-          <wd-audio-player
-            variant="bar"
-            src="media/audio.mp3"
-            title="带波形"
-            subtitle="栏目名"
-            :waveform="waveform"
-            :cover="'media/poster.jpg'"
-          ></wd-audio-player>
-        </div>
-
-        <div>
-          <div class="demo-cap" style="margin-bottom:8px">mini · 迷你横条（固定底栏）</div>
+      <div class="demo-col" style="width:100%; max-width:420px; align-items:stretch; gap:10px; margin-top:26px">
+        <div class="demo-cap">mini · 迷你横条（固定底栏）</div>
+        <div class="demo-stage demo-stage--tight">
           <div class="demo-col" style="gap:8px; align-items:stretch">
             <wd-audio-player variant="mini" src="media/audio.mp3" title="第 1 段录音" subtitle="今天 14:20"></wd-audio-player>
             <wd-audio-player variant="mini" src="media/audio.mp3" title="第 2 段录音" subtitle="昨天"></wd-audio-player>
@@ -948,9 +969,8 @@
         </div>
       </div>
 
-      <span class="demo-cap" style="margin-top:14px" v-if="ucLog">最近操作：{{ ucLog }}</span>
+      <span class="demo-cap" style="margin-top:18px; display:block" v-if="ucLog">最近操作：{{ ucLog }}</span>
     </div>
-
     <div class="demo-panel demo-panel--wide">
       <h3>GROUP 组合容器</h3>
       <span class="demo-cap">把任意控件拼成一个整体：只保留外缘圆角、内部无缝、焦点环不互相遮挡。</span>
@@ -1111,7 +1131,9 @@
 
     <div class="demo-panel demo-panel--wide">
       <h3>EXPLORER 文件浏览器</h3>
-      <wd-explorer :folders="explorerFolders"></wd-explorer>
+      <div class="demo-stage">
+        <wd-explorer :folders="explorerFolders"></wd-explorer>
+      </div>
     </div>
 
     <div class="demo-panel demo-panel--wide">
@@ -1192,6 +1214,7 @@
 
     <div class="demo-panel demo-panel--wide">
       <h3>GRID 栅格</h3>
+      <div class="demo-stage">
       <wd-grid :columns="3" gap="md">
         <wd-card pad="sm">卡片 1</wd-card>
         <wd-card pad="sm">卡片 2</wd-card>
@@ -1200,7 +1223,8 @@
         <wd-card pad="sm">卡片 5</wd-card>
         <wd-card pad="sm">卡片 6</wd-card>
       </wd-grid>
-      <span class="demo-cap" style="margin-top:10px">columns=3 · gap=md · 自动折行</span>
+      </div>
+      <span class="demo-cap" style="display:block; margin-top:10px">columns=3 · gap=md · 自动折行</span>
     </div>
 
     <div class="demo-panel demo-panel--wide">
@@ -1349,133 +1373,139 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
 
     <div class="demo-panel demo-panel--wide">
-      <h3>TABLE 表格增强</h3>
-      <span class="demo-cap">新增：固定列 / 树形数据 / 行展开 / 尺寸。原有排序、勾选、加载态保持兼容。</span>
-
-      <div class="demo-cap" style="margin-top:16px; margin-bottom:10px">树形数据（点击箭头展开层级）</div>
-      <div style="max-width:720px">
-        <wd-table :columns="treeCols" :rows="treeRows" tree row-key="id" default-expand-all size="sm"></wd-table>
-      </div>
-
-      <div class="demo-cap" style="margin-top:26px; margin-bottom:10px">行展开（点击最左侧箭头）</div>
-      <div style="max-width:720px">
-        <wd-table :columns="expCols" :rows="expRows" expandable row-key="id" size="sm">
-          <template #expand="{ row }">
-            <strong>{{ row.name }}</strong> 的详情：{{ row.detail }}
-          </template>
-        </wd-table>
-      </div>
-
-      <div class="demo-cap" style="margin-top:26px; margin-bottom:10px">固定列（横向滚动时首列固定）</div>
-      <div style="max-width:720px">
-        <wd-table :columns="fixedCols" :rows="fixedRows" row-key="id" size="sm" :max-height="260"></wd-table>
-      </div>
-    </div>
-
-    <div class="demo-panel demo-panel--wide">
-      <h3>COLORPICKER 取色器 / MENTIONS 提及</h3>
-      <span class="demo-cap">取色器含 SV 渐变面板与 HEX 输入；Mentions 支持 @ 触发、键盘上下选择。</span>
-      <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
-        <div class="demo-col" style="flex:0 0 auto">
-          <div class="demo-cap" style="margin-bottom:8px">colorpicker · md</div>
-          <wd-color-picker v-model="pickColor"></wd-color-picker>
+      <h3>COLORPICKER 取色器</h3>
+      <span class="demo-cap">SV 渐变面板 + 色相条 + HEX/RGB 输入 + 预设色板。</span>
+      <div class="demo-row" style="gap:28px; margin-top:18px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:0 0 auto; align-items:stretch">
+          <div class="demo-cap" style="margin-bottom:8px">md</div>
+          <div class="demo-stage demo-stage--tight">
+            <wd-color-picker v-model="pickColor"></wd-color-picker>
+          </div>
           <span class="demo-cap" style="margin-top:8px">当前：{{ pickColor }}</span>
           <div style="margin-top:12px;height:44px;border-radius:10px" :style="{background:pickColor}"></div>
         </div>
-        <div class="demo-col" style="flex:0 0 auto">
-          <div class="demo-cap" style="margin-bottom:8px">colorpicker · sm</div>
-          <wd-color-picker v-model="pickColor2" size="sm"></wd-color-picker>
-        </div>
-        <div class="demo-col" style="flex:1 1 320px; min-width:280px">
-          <div class="demo-cap" style="margin-bottom:8px">mentions · @ 提及成员</div>
-          <wd-mentions v-model="mentionText" :users="mentionUsers" :rows="4"></wd-mentions>
-          <span class="demo-cap" style="margin-top:8px">{{ mentionText.length }} 字</span>
+        <div class="demo-col" style="flex:0 0 auto; align-items:stretch">
+          <div class="demo-cap" style="margin-bottom:8px">sm</div>
+          <div class="demo-stage demo-stage--tight">
+            <wd-color-picker v-model="pickColor2" size="sm"></wd-color-picker>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="demo-panel demo-panel--wide">
-      <h3>CALENDAR 日历 / SPLITTER 分栏</h3>
-      <span class="demo-cap">日历固定 6 行网格（翻月不跳动）；Splitter 可拖拽、双击复位、支持键盘调节。</span>
-      <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
-        <div class="demo-col" style="flex:0 0 auto">
-          <div class="demo-cap" style="margin-bottom:8px">calendar · md</div>
-          <wd-card style="padding:0">
+      <h3>MENTIONS 提及</h3>
+      <span class="demo-cap">输入 @ 触发候选；↑↓ 选择、Enter 确认、Esc 取消。</span>
+      <div class="demo-col" style="margin-top:18px; align-items:stretch; gap:10px">
+        <div class="demo-cap">@ 提及成员</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-mentions v-model="mentionText" :users="mentionUsers" :rows="4"></wd-mentions>
+        </div>
+        <span class="demo-cap">{{ mentionText.length }} 字</span>
+      </div>
+    </div>
+    <div class="demo-panel demo-panel--wide">
+      <h3>CALENDAR 日历</h3>
+      <span class="demo-cap">固定 6 行网格（翻月高度不跳动）；方向键移动、PageUp/Down 翻月。</span>
+      <div class="demo-row" style="gap:28px; margin-top:18px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:0 0 auto; align-items:stretch">
+          <div class="demo-cap" style="margin-bottom:8px">md</div>
+          <div class="demo-stage demo-stage--tight">
             <wd-calendar v-model="calDate"></wd-calendar>
-          </wd-card>
+          </div>
           <span class="demo-cap" style="margin-top:8px">已选：{{ calDate || '（未选）' }}</span>
         </div>
-        <div class="demo-col" style="flex:0 0 auto">
-          <div class="demo-cap" style="margin-bottom:8px">calendar · sm</div>
-          <wd-card style="padding:0">
+        <div class="demo-col" style="flex:0 0 auto; align-items:stretch">
+          <div class="demo-cap" style="margin-bottom:8px">sm</div>
+          <div class="demo-stage demo-stage--tight">
             <wd-calendar v-model="calDate2" size="sm"></wd-calendar>
-          </wd-card>
-        </div>
-        <div class="demo-col" style="flex:1 1 340px; min-width:300px; align-items:stretch">
-          <div class="demo-cap" style="margin-bottom:8px">splitter · 横向（可拖拽）</div>
-          <div style="height:220px; width:100%; border-radius:10px; overflow:hidden; background:var(--wd-field)">
-            <wd-splitter v-model="splitRatio" direction="horizontal">
-              <template #first>
-                <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--wd-ink-2)">左栏</div>
-              </template>
-              <template #second>
-                <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--wd-ink-2)">右栏</div>
-              </template>
-            </wd-splitter>
           </div>
-          <span class="demo-cap" style="margin-top:8px">{{ Math.round(splitRatio) }}% / {{ Math.round(100 - splitRatio) }}%（双击分隔条复位）</span>
         </div>
       </div>
     </div>
 
     <div class="demo-panel demo-panel--wide">
-      <h3>CASCADER 级联选择 / QRCODE 二维码</h3>
-      <span class="demo-cap">Cascader 多列联动；QRCode 用内嵌 MIT 版 qrcode-generator 编码，SVG 单 path 渲染。</span>
-      <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
-        <div class="demo-col" style="flex:1 1 300px">
-          <div class="demo-cap" style="margin-bottom:8px">cascader · 三级联动</div>
-          <wd-cascader v-model="cascVal" :options="cascOptions" placeholder="选择地区"></wd-cascader>
-          <span class="demo-cap" style="margin-top:8px">已选：{{ cascVal.join(' / ') || '（空）' }}</span>
+      <h3>SPLITTER 分栏</h3>
+      <span class="demo-cap">可拖拽分栏；双击分隔条复位；键盘 Home/End 到两端。</span>
+      <div class="demo-col" style="margin-top:18px; align-items:stretch; gap:10px">
+        <div class="demo-cap">横向 · 拖拽中间分隔条</div>
+        <div class="demo-stage demo-stage--tight" style="height:240px; padding:0">
+          <wd-splitter v-model="splitRatio" direction="horizontal">
+            <template #first>
+              <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--wd-ink-2)">左栏</div>
+            </template>
+            <template #second>
+              <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--wd-ink-2)">右栏</div>
+            </template>
+          </wd-splitter>
         </div>
+        <span class="demo-cap">{{ Math.round(splitRatio) }}% / {{ Math.round(100 - splitRatio) }}%</span>
+      </div>
+    </div>
+    <div class="demo-panel demo-panel--wide">
+      <h3>CASCADER 级联选择</h3>
+      <span class="demo-cap">多列联动；浏览路径与选中值分离，changeOnSelect 可选任意层级。</span>
+      <div class="demo-col" style="margin-top:18px; align-items:stretch; gap:10px; max-width:320px">
+        <div class="demo-cap">三级联动</div>
+        <div class="demo-stage demo-stage--tight">
+          <wd-cascader v-model="cascVal" :options="cascOptions" placeholder="选择地区"></wd-cascader>
+        </div>
+        <span class="demo-cap">已选：{{ cascVal.join(' / ') || '（空）' }}</span>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>QRCODE 二维码</h3>
+      <span class="demo-cap">内嵌 MIT 版 qrcode-generator 编码，SVG 单 path 渲染；支持三种模块样式与中心挖空。</span>
+      <div class="demo-row" style="gap:24px; margin-top:18px; align-items:flex-start; flex-wrap:wrap">
         <div class="demo-col">
           <div class="demo-cap" style="margin-bottom:8px">square · 经典方块</div>
-          <wd-qrcode text="https://github.com/w-run/wdesign" :size="132"></wd-qrcode>
+          <div class="demo-stage demo-stage--tight">
+            <wd-qrcode text="https://github.com/w-run/wdesign" :size="132"></wd-qrcode>
+          </div>
         </div>
         <div class="demo-col">
           <div class="demo-cap" style="margin-bottom:8px">dot · 圆点</div>
-          <wd-qrcode text="https://github.com/w-run/wdesign" :size="132" module-style="dot"></wd-qrcode>
+          <div class="demo-stage demo-stage--tight">
+            <wd-qrcode text="https://github.com/w-run/wdesign" :size="132" module-style="dot"></wd-qrcode>
+          </div>
         </div>
         <div class="demo-col">
           <div class="demo-cap" style="margin-bottom:8px">liquid · 水滴黏连</div>
-          <wd-qrcode text="https://github.com/w-run/wdesign" :size="132" module-style="liquid"></wd-qrcode>
+          <div class="demo-stage demo-stage--tight">
+            <wd-qrcode text="https://github.com/w-run/wdesign" :size="132" module-style="liquid"></wd-qrcode>
+          </div>
         </div>
         <div class="demo-col">
           <div class="demo-cap" style="margin-bottom:8px">液滴 + 中心挖空 + logo</div>
-          <wd-qrcode
-            text="https://w-run.net"
-            :size="132"
-            module-style="liquid"
-            level="H"
-            :center-blank="26"
-          >
-            <template #center>
-              <div style="width:26px;height:26px;border-radius:7px;background:var(--wd-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">W</div>
-            </template>
-          </wd-qrcode>
+          <div class="demo-stage demo-stage--tight">
+            <wd-qrcode
+              text="https://w-run.net"
+              :size="132"
+              module-style="liquid"
+              level="H"
+              :center-blank="26"
+            >
+              <template #center>
+                <div style="width:26px;height:26px;border-radius:7px;background:var(--wd-ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">W</div>
+              </template>
+            </wd-qrcode>
+          </div>
         </div>
         <div class="demo-col">
           <div class="demo-cap" style="margin-bottom:8px">自定义颜色</div>
-          <wd-qrcode
-            text="https://w-run.net"
-            :size="132"
-            module-style="dot"
-            color="#1F5F4B"
-            background="#F0F5F2"
-          ></wd-qrcode>
+          <div class="demo-stage demo-stage--tight">
+            <wd-qrcode
+              text="https://w-run.net"
+              :size="132"
+              module-style="dot"
+              color="#1F5F4B"
+              background="#F0F5F2"
+            ></wd-qrcode>
+          </div>
         </div>
       </div>
     </div>
-
     <div class="demo-panel demo-panel--wide">
       <h3>NAV 导航（横栏 / 竖栏）</h3>
       <span class="demo-cap">
@@ -1484,7 +1514,6 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
       <div class="demo-cap" style="margin-top:18px; margin-bottom:10px">horizontal · 顶部横栏</div>
       <div class="demo-stage demo-stage--tight">
-        <wd-card style="padding:0 20px">
         <wd-nav
           v-model:active="navTopActive"
           :items="navTopItems"
@@ -1497,13 +1526,12 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
             </wd-button>
           </template>
         </wd-nav>
-        </wd-card>
       </div>
 
       <div class="demo-row" style="gap:24px; margin-top:26px; align-items:flex-start; flex-wrap:wrap">
         <div class="demo-col" style="flex:0 0 auto">
           <div class="demo-cap" style="margin-bottom:10px">vertical · 侧边栏（可折叠）</div>
-          <div style="height:400px">
+          <div class="demo-stage demo-stage--tight" style="height:440px">
             <wd-nav
               v-model:active="navSideActive"
               v-model:collapsed="navCollapsed"
@@ -1523,7 +1551,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 
         <div class="demo-col" style="flex:0 0 auto">
           <div class="demo-cap" style="margin-bottom:10px">icon-only · 纯图标</div>
-          <div style="height:400px">
+          <div class="demo-stage demo-stage--tight" style="height:440px">
             <wd-nav
               v-model:active="navIconActive"
               direction="vertical"
@@ -1606,32 +1634,31 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
 
     <div class="demo-panel demo-panel--wide">
-      <h3>AFFIX 吸顶 / WATERMARK 水印</h3>
-      <span class="demo-cap">Affix 用「占位 + fixed」避免脱流跳动；Watermark 用 Canvas 生成平铺图，零 DOM 开销。</span>
-      <div class="demo-row" style="gap:20px; margin-top:16px; flex-wrap:wrap">
+      <h3>WATERMARK 水印</h3>
+      <span class="demo-cap">Canvas 生成平铺图，零 DOM 开销；支持多行文字 / 图片水印。</span>
+      <div class="demo-row" style="gap:20px; margin-top:18px; flex-wrap:wrap">
         <div class="demo-col" style="flex:1 1 320px; align-items:stretch">
-          <div class="demo-cap" style="margin-bottom:8px">watermark · 文字水印</div>
-          <wd-watermark text="WDesign 内部资料" :font-size="13" :gap="90" :rotate="-22">
-            <wd-card>
-              <div style="height:150px; display:flex; align-items:center; justify-content:center; color:var(--wd-ink-2); font-size:13px">
-                内容区（水印平铺在下方）
+          <div class="demo-cap" style="margin-bottom:8px">文字水印</div>
+          <div class="demo-stage demo-stage--tight">
+            <wd-watermark text="WDesign 内部资料" :font-size="13" :gap="90" :rotate="-22">
+              <div style="padding:40px 20px; display:flex; align-items:center; justify-content:center; color:var(--wd-ink-2); font-size:13px; background:var(--wd-card); border-radius:var(--wd-radius-md)">
+                内容区（水印平铺）
               </div>
-            </wd-card>
-          </wd-watermark>
+            </wd-watermark>
+          </div>
         </div>
         <div class="demo-col" style="flex:1 1 320px; align-items:stretch">
-          <div class="demo-cap" style="margin-bottom:8px">watermark · 多行</div>
-          <wd-watermark :text="['机密', '请勿外传']" :font-size="12" :gap="110" :rotate="-30" color="rgba(214,40,57,.10)">
-            <wd-card>
-              <div style="height:150px; display:flex; align-items:center; justify-content:center; color:var(--wd-ink-2); font-size:13px">
+          <div class="demo-cap" style="margin-bottom:8px">多行水印</div>
+          <div class="demo-stage demo-stage--tight">
+            <wd-watermark :text="['机密', '请勿外传']" :font-size="12" :gap="110" :rotate="-30" color="rgba(214,40,57,.10)">
+              <div style="padding:40px 20px; display:flex; align-items:center; justify-content:center; color:var(--wd-ink-2); font-size:13px; background:var(--wd-card); border-radius:var(--wd-radius-md)">
                 多行水印
               </div>
-            </wd-card>
-          </wd-watermark>
+            </wd-watermark>
+          </div>
         </div>
       </div>
     </div>
-
     <div class="demo-panel demo-panel--wide">
       <h3>POPOVER 气泡卡片</h3>
       <span class="demo-cap">比 Tooltip 重、比 Dropdown 轻：可承载任意内容。定位走 anchor.ts（文档坐标）。</span>
@@ -1686,22 +1713,15 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     <div class="demo-panel demo-panel--wide">
       <h3>MARKDOWN 渲染</h3>
       <span class="demo-cap">零依赖内置解析器（标题/列表/表格/代码/引用/链接），所有文本经 escapeHtml，可直接渲染 AI 输出。</span>
-      <div class="demo-row" style="gap:24px; margin-top:16px; flex-wrap:wrap">
-        <div class="demo-col" style="flex:1 1 420px; min-width:320px">
-          <div class="demo-cap" style="margin-bottom:8px">内置解析（source）</div>
-          <wd-card>
+      <div class="demo-col" style="margin-top:18px; align-items:stretch; gap:10px">
+        <div class="demo-cap">内置解析（source）</div>
+        <div class="demo-stage demo-stage--tight">
+          <div style="background:var(--wd-card); border-radius:var(--wd-radius-md); padding:20px 22px">
             <wd-markdown :source="mdSample" flush></wd-markdown>
-          </wd-card>
-        </div>
-        <div class="demo-col" style="flex:1 1 320px; min-width:280px">
-          <div class="demo-cap" style="margin-bottom:8px">骨架 / 空态</div>
-          <wd-skeleton :rows="3"></wd-skeleton>
-          <div style="height:16px"></div>
-          <wd-empty text="还没有内容"></wd-empty>
+          </div>
         </div>
       </div>
     </div>
-
     <div class="demo-panel demo-panel--wide">
       <h3>图标墙（节选 {{ wall.length }} / 共 {{ iconCount }} 枚）</h3>
       <div class="demo-iconwall">

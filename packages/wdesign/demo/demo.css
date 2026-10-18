@@ -4305,9 +4305,20 @@ body {
   border-radius: 999px;
 }
 
+/*
+ * 宽度策略：**内容少时撑满，内容多时横向滚动**。
+ *
+ * ⚠️ 之前写的是 `width: max-content; min-width: 100%` ——
+ * 方向反了：max-content 让表格永远只占内容宽度，
+ * 列少时右侧会空出一大片，看起来像"表格没做满"。
+ *
+ * 正确写法：`width: 100%` 撑满容器，
+ * 再用 `min-width: max-content` 保证内容超宽时不被压缩
+ * （配合外层 .wd-table-wrap 的 overflow-x: auto 实现横向滚动）。
+ */
 .wd-table {
-  min-width: 100%;
-  width: max-content;
+  width: 100%;
+  min-width: max-content;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
