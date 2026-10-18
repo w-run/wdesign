@@ -290,9 +290,7 @@
   padding: 0 7px;
 }
 
-/* 控制条里 18px 的小播放键：位移按比例缩小到 1px */
-.wd-vplayer__btn[aria-label="播放"] svg,
-.wd-vplayer__btn[aria-label="暂停"] svg { transform: translateX(1px); }
+/* 播放三角的视觉补偿已修正到图标本身（play.svg），此处不再需要 transform */
 
 .wd-vplayer__time {
   margin-left: 6px;
@@ -453,17 +451,10 @@
 }
 
 /*
-  播放三角形的视觉补偿。
-  几何上它已经居中（path bbox 左右各留 50/49.8），但三角的重心偏左：
-  左边是竖直边、右侧收成尖角，实心质量集中在左侧 —— 看起来就"压在左边"。
-
-  这类"指向性"图形都要往指向方向推一点才对得上视觉中心：
-  播放▶ 右移、返回◀ 左移、上箭头↑ 上移。经验值约为图标宽度的 5%~6%，
-  这里是 34px × 6% ≈ 2px。
+  播放三角的视觉补偿已挪到图标自身（play.svg 内平移 12.4 viewBox 单位）。
+  图标的视觉重心是图标的责任，不该让每个使用方各自写 transform 补偿 ——
+  那样每处补偿量都得单独调，且容易互相覆盖。
 */
-.wd-vplayer__big svg {
-  transform: translateX(2px);
-}
 
 .wd-vplayer__big:hover {
   transform: translate(-50%, -50%) scale(1.06);

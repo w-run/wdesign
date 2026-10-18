@@ -860,7 +860,7 @@ var WD_REAL_MODULE = (() => {
                         {
                           key: i,
                           class: normalizeClass(["wd-audio__wave-bar", { "is-on": i / waveBars.value.length * 100 <= shownPct.value }]),
-                          style: normalizeStyle({ height: Math.max(6, h * 100) + "%" })
+                          style: normalizeStyle({ height: "100%", transform: `scaleY(${h})` })
                         },
                         null,
                         6
@@ -1065,7 +1065,7 @@ var WD_REAL_MODULE = (() => {
                           {
                             key: i,
                             class: normalizeClass(["wd-audio__wave-bar", { "is-on": i / bars.value.length * 100 <= shownPct.value }]),
-                            style: normalizeStyle({ height: Math.max(12, h * 100) + "%" })
+                            style: normalizeStyle({ height: "100%", transform: `scaleY(${h})` })
                           },
                           null,
                           6

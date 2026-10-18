@@ -313,7 +313,7 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           :key="i"
           class="wd-audio__wave-bar"
           :class="{ 'is-on': (i / waveBars.length) * 100 <= shownPct }"
-          :style="{ height: Math.max(6, h * 100) + '%' }"
+          :style="{ height: '100%', transform: `scaleY(${h})` }"
         ></span>
       </div>
 
@@ -390,7 +390,7 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
           <span v-for="(h, i) in bars" :key="i" class="wd-audio__wave-bar"
             :class="{ 'is-on': (i / bars.length) * 100 <= shownPct }"
-            :style="{ height: Math.max(12, h * 100) + '%' }"></span>
+            :style="{ height: '100%', transform: `scaleY(${h})` }"></span>
         </div>
 
         <div v-else class="wd-audio__scrub" role="slider" tabindex="0" aria-label="播放进度"

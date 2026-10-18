@@ -6061,9 +6061,18 @@ img.wd-theme-invert {
  * .78 在 #1db954 这类中亮绿上对比不足，提到 .88；
  * 倒计时更弱一档但仍需可读。
  */
+/*
+ * 主题色底上的次级文本必须接近纯白 ——
+ * .78 / .88 在中亮绿(#1db954)上对比都不够，实测读起来发灰。
+ * 用 .92 起步，只有倒计时保留 .72 做层级区分。
+ */
 .wd-audio--accent .wd-audio__subtitle,
 .wd-audio--accent .wd-audio__ctl {
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.wd-audio--accent .wd-audio__title {
+  color: #fff;
 }
 
 .wd-audio--accent .wd-audio__times {
@@ -6075,7 +6084,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio--accent .wd-audio__wave-bar {
-  background: rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .wd-audio--accent .wd-audio__wave-bar.is-on {
@@ -6212,12 +6221,23 @@ img.wd-theme-invert {
   }
 }
 /* ---------------- 波形 ---------------- */
+/*
+ * 波形：**以中线上下对称**。
+ *
+ * ⚠️ 参考图里柱子是从中线向上下两端生长，不是我原来那样从底部长起。
+ * 底部生长看起来像柱状图，对称生长才像"音频波形"。
+ *
+ * 柱子用固定宽度（不 flex 撑开）—— flex:1 会让柱宽随容器变化，
+ * 宽屏上变成一片粗棒，窄屏上又细如针，与参考的等宽细柱不符。
+ */
 .wd-audio__wave {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   cursor: pointer;
   outline: none;
+  /* 允许溢出隐藏：极端窄容器下柱子不撑破布局 */
+  overflow: hidden;
 }
 
 /*
@@ -6230,9 +6250,10 @@ img.wd-theme-invert {
  * 容器查询让它在 48~84px 之间自适应。
  */
 .wd-audio__wave--hero {
-  height: 84px;
+  height: 68px;
   gap: 3px;
-  padding: 4px 0;
+  padding: 2px 0;
+  justify-content: space-between;
 }
 
 @container wd-audio (max-width: 420px) {
@@ -6251,8 +6272,9 @@ img.wd-theme-invert {
  * 90 根，间距 1.5px，像白噪声一样铺满 —— 参考白色版。
  */
 .wd-audio__wave--fine {
-  height: 40px;
+  height: 44px;
   gap: 2px;
+  justify-content: space-between;
 }
 
 @container wd-audio (max-width: 320px) {
@@ -6265,14 +6287,27 @@ img.wd-theme-invert {
   border-radius: 6px;
 }
 
+/*
+ * 柱子宽度：优先按容器自适应，但设上下限。
+ *
+ * 完全固定 2px 在窄卡里撑不满（波形只占 40% 宽，像被截断）；
+ * 完全 flex:1 在宽卡里又变成粗棒。
+ * 折中：flex 分配 + min/max 夹住，2px 是下限、4px 是上限。
+ */
 .wd-audio__wave-bar {
-  flex: 1;
-  min-width: 1px;
-  border-radius: 2px;
-  background: var(--wd-ink-5);
+  flex: 1 1 auto;
+  min-width: 2px;
+  max-width: 4px;
+  border-radius: 1px;
+  /*
+   * 未播用中间调灰（约 78% 明度的灰），不是最浅的 ink-5 ——
+   * 参考图的未播段是清晰可见的浅灰，太浅会"消失"，
+   * 整条波形就只剩左侧一截，看不出总长度。
+   */
+  background: var(--wd-ink-3);
   transition: background var(--wd-dur-fast) ease;
-  /* 从底部生长，视觉重心更稳（居中会让波形看起来在抖） */
-  transform-origin: center;
+  /* 关键：柱子自中线向两端生长 —— 由 transform: scaleY 驱动，不用 height */
+  align-self: center;
 }
 
 /*
@@ -6296,12 +6331,13 @@ img.wd-theme-invert {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11.5px;
+  /* 参考图里时间字号明显大于常规说明文字，且加粗 */
+  font-size: 13px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--wd-ink-2);
-  /* 负 margin 让时间和波形视觉上更贴 */
-  margin-top: -6px;
-  min-height: 16px;
+  color: var(--wd-ink);
+  margin-top: 2px;
+  min-height: 18px;
 }
 
 /* 未加载时右侧不显示占位符（`-:--` 比空白更干扰） */
@@ -6310,7 +6346,8 @@ img.wd-theme-invert {
 }
 
 .wd-audio__remain {
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
+  font-weight: 600;
 }
 
 /* ---------------- 控件行 ---------------- */
@@ -6365,34 +6402,32 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 56px;
+  height: 56px;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: var(--wd-ink);
   color: var(--wd-card);
   cursor: pointer;
-  transition: transform var(--wd-dur-fast) var(--wd-ease-out), background var(--wd-dur-fast) ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
 }
 
 .wd-audio__main-btn:hover {
   transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
 }
 
 .wd-audio__main-btn:active {
   transform: scale(0.97);
 }
 
-/* 播放三角的视觉补偿（几何居中会显偏左） */
-.wd-audio__main-btn > * {
-  transform: translateX(1.5px);
-}
-
-.wd-audio__main-btn .wd-icon {
-  transform: none;
-}
-
+/*
+ * 注：播放三角的视觉补偿已修正到**图标本身**（play.svg 内部平移 12.4 单位），
+ * 不再依赖使用方写 transform hack。
+ * 原则：图标的视觉重心属于图标自身的责任，不该由每个使用方各自补偿。
+ */
 /* ---------------- 倍速菜单（card） ---------------- */
 .wd-audio__rate-menu--card {
   position: absolute;
@@ -6516,10 +6551,6 @@ img.wd-theme-invert {
 
 .wd-audio__play:active {
   transform: scale(0.94);
-}
-
-.wd-audio__play .wd-icon {
-  transform: translateX(1px);
 }
 
 .wd-audio__main {
@@ -6738,12 +6769,17 @@ img.wd-theme-invert {
 /* =============================================================
  *  mini —— 单行迷你横条
  * ============================================================= */
+/*
+ * mini：胶囊形状。
+ * 左右两端完全圆角（pill），与内部的圆形播放键呼应 ——
+ * 方角容器 + 圆按钮会很割裂。
+ */
 .wd-audio--mini {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 12px;
-  border-radius: var(--wd-radius-md);
+  padding: 7px 16px 7px 8px;
+  border-radius: var(--wd-radius-pill);
   background: var(--wd-tint-1);
 }
 
@@ -6765,10 +6801,6 @@ img.wd-theme-invert {
 
 .wd-audio__mini-play:hover {
   transform: scale(1.06);
-}
-
-.wd-audio__mini-play .wd-icon {
-  transform: translateX(1px);
 }
 
 .wd-audio__mini-main {
@@ -6807,7 +6839,7 @@ img.wd-theme-invert {
 .wd-audio__mini-progress {
   cursor: pointer;
   outline: none;
-  padding: 3px 0;
+  padding: 2px 0 0;
 }
 
 .wd-audio__mini-progress:focus-visible {
@@ -6832,9 +6864,11 @@ img.wd-theme-invert {
 
 .wd-audio__mini-time {
   flex: none;
+  margin-left: 4px;
   font-size: 11px;
   color: var(--wd-ink-3);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* =============================================================
@@ -7193,12 +7227,7 @@ img.wd-theme-invert {
   padding: 0 7px;
 }
 
-/* 控制条里 18px 的小播放键：位移按比例缩小到 1px */
-.wd-vplayer__btn[aria-label=播放] svg,
-.wd-vplayer__btn[aria-label=暂停] svg {
-  transform: translateX(1px);
-}
-
+/* 播放三角的视觉补偿已修正到图标本身（play.svg），此处不再需要 transform */
 .wd-vplayer__time {
   margin-left: 6px;
   font-size: 12px;
@@ -7379,18 +7408,10 @@ img.wd-theme-invert {
 }
 
 /*
-  播放三角形的视觉补偿。
-  几何上它已经居中（path bbox 左右各留 50/49.8），但三角的重心偏左：
-  左边是竖直边、右侧收成尖角，实心质量集中在左侧 —— 看起来就"压在左边"。
-
-  这类"指向性"图形都要往指向方向推一点才对得上视觉中心：
-  播放▶ 右移、返回◀ 左移、上箭头↑ 上移。经验值约为图标宽度的 5%~6%，
-  这里是 34px × 6% ≈ 2px。
+  播放三角的视觉补偿已挪到图标自身（play.svg 内平移 12.4 viewBox 单位）。
+  图标的视觉重心是图标的责任，不该让每个使用方各自写 transform 补偿 ——
+  那样每处补偿量都得单独调，且容易互相覆盖。
 */
-.wd-vplayer__big svg {
-  transform: translateX(2px);
-}
-
 .wd-vplayer__big:hover {
   transform: translate(-50%, -50%) scale(1.06);
   background: var(--wd-red);
