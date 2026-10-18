@@ -6025,25 +6025,422 @@ img.wd-theme-invert {
 }
 
 .wd-audio {
+  --wd-audio-accent: var(--wd-card);
+  position: relative;
+  color: var(--wd-ink);
+  user-select: none;
+  font-size: 13px;
+}
+
+/* =============================================================
+ *  card —— 竖版卡片
+ * ============================================================= */
+.wd-audio--card {
+  display: flex;
+  flex-direction: column;
+  /* 撑满父容器宽度：web 里卡片宽度由父亲决定，自身不应被内容压缩 */
+  width: 100%;
+  box-sizing: border-box;
+  gap: 14px;
+  padding: 18px 20px 20px;
+  border-radius: var(--wd-radius-xl);
+  background: var(--wd-card);
+  /* 不设 min-width：宽度完全交给父容器，窄容器自动降级 */
+  container-type: inline-size;
+  container-name: wd-audio;
+}
+
+/* 有主色时：整卡染色，文字反白（参考图的绿色版做法） */
+.wd-audio--accent.wd-audio--card {
+  background: var(--wd-audio-accent);
+  color: #fff;
+}
+
+/*
+ * 主题色底上的次级文字。
+ * .78 在 #1db954 这类中亮绿上对比不足，提到 .88；
+ * 倒计时更弱一档但仍需可读。
+ */
+.wd-audio--accent .wd-audio__subtitle,
+.wd-audio--accent .wd-audio__ctl {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.wd-audio--accent .wd-audio__times {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.wd-audio--accent .wd-audio__remain {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.wd-audio--accent .wd-audio__wave-bar {
+  background: rgba(255, 255, 255, 0.34);
+}
+
+.wd-audio--accent .wd-audio__wave-bar.is-on {
+  background: #fff;
+}
+
+.wd-audio--accent .wd-audio__main-btn {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/*
+ * 有封面时：封面 + 标题区横向排列。
+ * 用一个 wrapper 包住，避免封面孤立在第一行。
+ */
+.wd-audio--card.has-cover .wd-audio__top {
+  align-items: center;
+}
+
+/* ---------------- 顶部标题区 ---------------- */
+.wd-audio__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wd-audio__head {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wd-audio--card .wd-audio__title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-audio--card .wd-audio__subtitle {
+  font-size: 12px;
+  color: var(--wd-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-audio__top-extra {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---------------- 主体：封面 ---------------- */
+/*
+ * 有封面时：横向排布（封面在左，标题在右）。
+ *
+ * ⚠️ 不能用移动端那种 1:1 大正方形 —— web 里卡片宽度由父容器决定，
+ * 在宽屏上会撑出一个占满半屏的巨大方块，把页面撑得极高。
+ * 横向排布在任何宽度下都稳定。
+ */
+.wd-audio__hero-cover {
+  position: relative;
+  flex: none;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--wd-radius-md);
+  overflow: hidden;
+  background: var(--wd-field);
+}
+
+/* 窄容器（< 300px）时缩到 64px，避免挤压文字 */
+@container wd-audio (max-width: 300px) {
+  .wd-audio__hero-cover {
+    width: 64px;
+    height: 64px;
+  }
+}
+.wd-audio__hero-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 播放中角标：三根跳动条 */
+.wd-audio__hero-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.wd-audio__hero-badge i {
+  width: 2.5px;
+  border-radius: 1px;
+  background: #fff;
+  animation: wd-audio-eq 0.9s ease-in-out infinite;
+}
+
+.wd-audio__hero-badge i:nth-child(1) {
+  height: 8px;
+  animation-delay: -0.15s;
+}
+
+.wd-audio__hero-badge i:nth-child(2) {
+  height: 13px;
+  animation-delay: -0.45s;
+}
+
+.wd-audio__hero-badge i:nth-child(3) {
+  height: 10px;
+  animation-delay: -0.3s;
+}
+
+@keyframes wd-audio-eq {
+  0%, 100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+/* ---------------- 波形 ---------------- */
+.wd-audio__wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  outline: none;
+}
+
+/*
+ * 主体形态（无封面）：波形取代封面，高度必须够。
+ * 30 根粗柱，间距 3px —— 接近参考图绿色版的比例。
+ */
+/*
+ * 波形是主体，但高度要跟着容器宽度走 ——
+ * 桌面宽卡里 92px 会显得过重，窄卡里 48px 又太薄。
+ * 容器查询让它在 48~84px 之间自适应。
+ */
+.wd-audio__wave--hero {
+  height: 84px;
+  gap: 3px;
+  padding: 4px 0;
+}
+
+@container wd-audio (max-width: 420px) {
+  .wd-audio__wave--hero {
+    height: 64px;
+  }
+}
+@container wd-audio (max-width: 320px) {
+  .wd-audio__wave--hero {
+    height: 52px;
+    gap: 2px;
+  }
+}
+/*
+ * 辅助形态（有封面）：细密一条，高度收到 42px。
+ * 90 根，间距 1.5px，像白噪声一样铺满 —— 参考白色版。
+ */
+.wd-audio__wave--fine {
+  height: 40px;
+  gap: 2px;
+}
+
+@container wd-audio (max-width: 320px) {
+  .wd-audio__wave--fine {
+    height: 32px;
+  }
+}
+.wd-audio__wave:focus-visible {
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  border-radius: 6px;
+}
+
+.wd-audio__wave-bar {
+  flex: 1;
+  min-width: 1px;
+  border-radius: 2px;
+  background: var(--wd-ink-5);
+  transition: background var(--wd-dur-fast) ease;
+  /* 从底部生长，视觉重心更稳（居中会让波形看起来在抖） */
+  transform-origin: center;
+}
+
+/*
+ * 进度用明度区分，不用颜色 ——
+ * 主题红在波形上过重，会把「进度」变成「警告」。
+ */
+.wd-audio__wave-bar.is-on {
+  background: var(--wd-ink);
+}
+
+.wd-audio__wave--hero .wd-audio__wave-bar {
+  border-radius: 2px;
+}
+
+.wd-audio__wave--fine .wd-audio__wave-bar {
+  border-radius: 1px;
+}
+
+/* ---------------- 时间 ---------------- */
+.wd-audio__times {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--wd-ink-2);
+  /* 负 margin 让时间和波形视觉上更贴 */
+  margin-top: -6px;
+  min-height: 16px;
+}
+
+/* 未加载时右侧不显示占位符（`-:--` 比空白更干扰） */
+.wd-audio__remain:empty {
+  visibility: hidden;
+}
+
+.wd-audio__remain {
+  color: var(--wd-ink-3);
+}
+
+/* ---------------- 控件行 ---------------- */
+.wd-audio__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.wd-audio__ctl {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-audio__ctl:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-audio__ctl--text {
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-audio__ctl-spacer {
+  width: 34px;
+  flex: none;
+}
+
+/*
+ * 播放键：视觉主体，但用 web 的尺度。
+ * 44px（不是移动端的 52px）—— web 页面里控件过大会抢走焦点，
+ * 44px 已足够与 34px 的次级控件拉开层级。
+ */
+.wd-audio__main-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  cursor: pointer;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out), background var(--wd-dur-fast) ease;
+}
+
+.wd-audio__main-btn:hover {
+  transform: scale(1.05);
+}
+
+.wd-audio__main-btn:active {
+  transform: scale(0.97);
+}
+
+/* 播放三角的视觉补偿（几何居中会显偏左） */
+.wd-audio__main-btn > * {
+  transform: translateX(1.5px);
+}
+
+.wd-audio__main-btn .wd-icon {
+  transform: none;
+}
+
+/* ---------------- 倍速菜单（card） ---------------- */
+.wd-audio__rate-menu--card {
+  position: absolute;
+  left: 50%;
+  bottom: 74px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  z-index: 5;
+}
+
+.wd-audio__rate-menu--card button {
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.wd-audio__rate-menu--card button:hover {
+  background: var(--wd-tint-2);
+}
+
+.wd-audio__rate-menu--card button.is-on {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+}
+
+/* =============================================================
+ *  bar —— 横条（封面 + 标题 + 细进度）
+ * ============================================================= */
+.wd-audio--bar {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-card);
-  color: var(--wd-ink);
-  font-size: 13px;
-  user-select: none;
 }
 
-.wd-audio--compact {
-  padding: 7px 10px;
-  gap: 8px;
-  border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-1);
-}
-
-/* ---------------- 封面 ---------------- */
 .wd-audio__cover {
   position: relative;
   flex: none;
@@ -6058,19 +6455,12 @@ img.wd-theme-invert {
   justify-content: center;
 }
 
-.wd-audio--compact .wd-audio__cover {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--wd-radius-xs);
-}
-
 .wd-audio__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* 播放中的三根跳动条：比转圈更轻，不抢注意力 */
 .wd-audio__pulse {
   position: absolute;
   inset: 0;
@@ -6080,11 +6470,6 @@ img.wd-theme-invert {
   gap: 2px;
   padding-bottom: 10px;
   background: rgba(0, 0, 0, 0.34);
-}
-
-.wd-audio--compact .wd-audio__pulse {
-  padding-bottom: 5px;
-  gap: 1.5px;
 }
 
 .wd-audio__pulse i {
@@ -6109,20 +6494,6 @@ img.wd-theme-invert {
   animation-delay: -0.3s;
 }
 
-@keyframes wd-audio-eq {
-  0%, 100% {
-    transform: scaleY(0.45);
-  }
-  50% {
-    transform: scaleY(1);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .wd-audio__pulse i {
-    animation: none;
-  }
-}
-/* ---------------- 播放键 ---------------- */
 .wd-audio__play {
   flex: none;
   display: flex;
@@ -6139,29 +6510,18 @@ img.wd-theme-invert {
   transition: background var(--wd-dur-fast) ease, transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-audio--compact .wd-audio__play {
-  width: 28px;
-  height: 28px;
-}
-
-/* 同视频播放键：三角形重心偏左，右移 1.5px 做视觉补偿 */
-.wd-audio__play svg {
-  transform: translateX(1.5px);
-}
-
-.wd-audio--compact .wd-audio__play svg {
-  transform: translateX(1px);
-}
-
 .wd-audio__play:hover {
-  background: var(--wd-red-hover, var(--wd-red-text));
+  background: var(--wd-red-hover);
 }
 
 .wd-audio__play:active {
   transform: scale(0.94);
 }
 
-/* ---------------- 主区 ---------------- */
+.wd-audio__play .wd-icon {
+  transform: translateX(1px);
+}
+
 .wd-audio__main {
   flex: 1;
   min-width: 0;
@@ -6177,7 +6537,7 @@ img.wd-theme-invert {
   min-width: 0;
 }
 
-.wd-audio__title {
+.wd-audio--bar .wd-audio__title {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -6186,7 +6546,7 @@ img.wd-theme-invert {
   font-size: 13px;
 }
 
-.wd-audio__subtitle {
+.wd-audio--bar .wd-audio__subtitle {
   flex: none;
   font-size: 11.5px;
   color: var(--wd-ink-2);
@@ -6195,7 +6555,11 @@ img.wd-theme-invert {
   white-space: nowrap;
 }
 
-/* ---------------- 进度 ---------------- */
+.wd-audio--bar .wd-audio__wave {
+  height: 30px;
+  gap: 2px;
+}
+
 .wd-audio__scrub {
   position: relative;
   height: 14px;
@@ -6232,12 +6596,6 @@ img.wd-theme-invert {
   background: var(--wd-red);
 }
 
-.wd-audio__scrub:hover .wd-audio__track,
-.wd-audio__scrub:hover .wd-audio__buffer,
-.wd-audio__scrub:hover .wd-audio__played {
-  height: 5px;
-}
-
 .wd-audio__knob {
   position: absolute;
   top: 50%;
@@ -6256,39 +6614,6 @@ img.wd-theme-invert {
   transform: translateY(-50%) scale(1);
 }
 
-/* ---------------- 波形 ---------------- */
-.wd-audio__wave {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  height: 30px;
-  cursor: pointer;
-  outline: none;
-}
-
-.wd-audio--compact .wd-audio__wave {
-  height: 20px;
-  gap: 1.5px;
-}
-
-.wd-audio__wave:focus-visible {
-  box-shadow: 0 0 0 2px var(--wd-focus-ring);
-  border-radius: 4px;
-}
-
-.wd-audio__wave-bar {
-  flex: 1;
-  min-width: 1px;
-  border-radius: 1px;
-  background: var(--wd-ink-5);
-  transition: background var(--wd-dur-fast) ease;
-}
-
-.wd-audio__wave-bar.is-on {
-  background: var(--wd-red);
-}
-
-/* ---------------- 时间 ---------------- */
 .wd-audio__time {
   display: flex;
   align-items: center;
@@ -6303,12 +6628,12 @@ img.wd-theme-invert {
 }
 
 .wd-audio__err {
-  margin-left: 8px;
   color: var(--wd-red-text);
   font-weight: 600;
+  font-size: 12px;
 }
 
-/* ---------------- 右侧控件 ---------------- */
+/* ---------------- 侧栏控件 ---------------- */
 .wd-audio__side {
   flex: none;
   display: flex;
@@ -6344,7 +6669,6 @@ img.wd-theme-invert {
   font-variant-numeric: tabular-nums;
 }
 
-/* 音量：hover 展开 */
 .wd-audio__vol {
   display: flex;
   align-items: center;
@@ -6371,7 +6695,6 @@ img.wd-theme-invert {
   background: var(--wd-red);
 }
 
-/* 倍速菜单 */
 .wd-audio__rate {
   position: relative;
 }
@@ -6412,6 +6735,135 @@ img.wd-theme-invert {
   font-weight: 700;
 }
 
+/* =============================================================
+ *  mini —— 单行迷你横条
+ * ============================================================= */
+.wd-audio--mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-tint-1);
+}
+
+.wd-audio__mini-play {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  cursor: pointer;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-audio__mini-play:hover {
+  transform: scale(1.06);
+}
+
+.wd-audio__mini-play .wd-icon {
+  transform: translateX(1px);
+}
+
+.wd-audio__mini-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wd-audio__mini-text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wd-audio--mini .wd-audio__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.wd-audio--mini .wd-audio__subtitle {
+  flex: none;
+  font-size: 11px;
+  color: var(--wd-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-audio__mini-progress {
+  cursor: pointer;
+  outline: none;
+  padding: 3px 0;
+}
+
+.wd-audio__mini-progress:focus-visible {
+  box-shadow: 0 0 0 2px var(--wd-focus-ring);
+  border-radius: 3px;
+}
+
+.wd-audio__mini-track {
+  display: block;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--wd-ink-5);
+  overflow: hidden;
+}
+
+.wd-audio__mini-fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--wd-ink);
+}
+
+.wd-audio__mini-time {
+  flex: none;
+  font-size: 11px;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================
+ *  动效降级
+ * ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .wd-audio__pulse i,
+  .wd-audio__hero-badge i {
+    animation: none;
+  }
+  .wd-audio__main-btn:hover,
+  .wd-audio__play:active,
+  .wd-audio__mini-play:hover {
+    transform: none;
+  }
+}
+/* 窄容器：card 的音量键让位 */
+@media (max-width: 320px) {
+  .wd-audio--card .wd-audio__ctl {
+    width: 32px;
+  }
+  .wd-audio--card .wd-audio__ctl-spacer {
+    width: 32px;
+  }
+  .wd-audio__main-btn {
+    width: 46px;
+    height: 46px;
+  }
+}
 .wd-vplayer {
   position: relative;
   width: 100%;

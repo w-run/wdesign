@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.0cb7761b.css">
+<link rel="stylesheet" href="demo.7f585196.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -865,44 +865,76 @@
     </div>
 
     <div class="demo-panel demo-panel--wide">
-      <h3>AUDIOPLAYER 音频播放条</h3>
-      <div class="demo-col" style="gap:18px">
-        <div>
-          <div class="demo-cap" style="margin-bottom:6px">标准形态 · 波形 · 下载</div>
-          <wd-audio-player
-            src="media/audio.mp3"
-            title="示例音频 · T-Rex Roar"
-            subtitle="CC0 · MDN 示例音频"
-            :cover="'media/poster.jpg'"
-            downloadable
-            :waveform="waveform"
-          >
-            <template #actions>
-              <button type="button" class="ap-btn" aria-label="收藏">☆</button>
-            </template>
-          </wd-audio-player>
-        </div>
+      <h3>AUDIOPLAYER 音频播放器</h3>
+      <span class="demo-cap">三种形态，其中 card 会按「有无封面」自动切换主体：有封面时封面为主，无封面时波形为主。</span>
 
-        <div>
-          <div class="demo-cap" style="margin-bottom:6px">进度线形态</div>
+      <div class="demo-row" style="gap:24px; flex-wrap:wrap; margin-top:18px; align-items:flex-start">
+        <div class="demo-col" style="flex:1 1 250px; min-width:250px; max-width:300px">
+          <div class="demo-cap" style="margin-bottom:8px">card · 无封面（波形为主体）</div>
           <wd-audio-player
+            variant="card"
             src="media/audio.mp3"
-            title="细进度线版本"
-            subtitle="不给 waveform 时用细线"
+            title="Unsayable"
+            subtitle="Brambles"
+            @prev="ucLog = '上一首'" @next="ucLog = '下一首'"
           ></wd-audio-player>
         </div>
 
-        <div>
-          <div class="demo-cap" style="margin-bottom:6px">compact · 列表内嵌</div>
-          <div class="demo-col" style="gap:6px">
-            <wd-audio-player v-for="i in 3" :key="i" compact
-              src="media/audio.mp3"
-              :title="'第 ' + i + ' 段录音'"
-              :subtitle="'0' + i + ':2' + i"
-            ></wd-audio-player>
+        <div class="demo-col" style="flex:1 1 250px; min-width:250px; max-width:300px">
+          <div class="demo-cap" style="margin-bottom:8px">card · 有封面（封面为主体）</div>
+          <wd-audio-player
+            variant="card"
+            src="media/audio.mp3"
+            title="Ace"
+            subtitle="Else & Vanderway"
+            :cover="'media/poster.jpg'"
+          ></wd-audio-player>
+        </div>
+
+        <div class="demo-col" style="flex:1 1 250px; min-width:250px; max-width:300px">
+          <div class="demo-cap" style="margin-bottom:8px">card · 主题色</div>
+          <wd-audio-player
+            variant="card"
+            src="media/audio.mp3"
+            title="Magic Stories"
+            subtitle="5 chapters · 64 subsections"
+            accent="#1db954"
+          ></wd-audio-player>
+        </div>
+      </div>
+
+      <div class="demo-row" style="gap:20px; flex-wrap:wrap; margin-top:26px; align-items:flex-start">
+        <div class="demo-col" style="min-width:420px; flex:1">
+          <div class="demo-cap" style="margin-bottom:8px">bar · 横条（列表内嵌）</div>
+          <wd-audio-player
+            variant="bar"
+            src="media/audio.mp3"
+            title="细进度线版本"
+            subtitle="不给 waveform 时用细线"
+            downloadable
+          ></wd-audio-player>
+          <div style="height:10px"></div>
+          <wd-audio-player
+            variant="bar"
+            src="media/audio.mp3"
+            title="带波形"
+            subtitle="栏目名"
+            :waveform="waveform"
+            :cover="'media/poster.jpg'"
+          ></wd-audio-player>
+        </div>
+
+        <div class="demo-col" style="min-width:340px; flex:1">
+          <div class="demo-cap" style="margin-bottom:8px">mini · 迷你横条（固定底栏）</div>
+          <div class="demo-col" style="gap:8px">
+            <wd-audio-player variant="mini" src="media/audio.mp3" title="第 1 段录音" subtitle="今天 14:20"></wd-audio-player>
+            <wd-audio-player variant="mini" src="media/audio.mp3" title="第 2 段录音" subtitle="昨天"></wd-audio-player>
+            <wd-audio-player variant="mini" src="media/audio.mp3" title="第 3 段录音" subtitle="10-16"></wd-audio-player>
           </div>
         </div>
       </div>
+
+      <span class="demo-cap" style="margin-top:14px" v-if="ucLog">最近操作：{{ ucLog }}</span>
     </div>
 
     <div class="demo-panel demo-panel--wide">
@@ -1357,7 +1389,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.b9755e6f.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.09b060f8.js"></script>
+<script src="components.b049fce6.js"></script>
 <script src="demo.b9442923.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

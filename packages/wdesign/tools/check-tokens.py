@@ -34,6 +34,8 @@ INTERNAL = {
     '--wd-group-h',
     '--wd-group-pad',
     '--wd-group-fs',
+    # 音频卡片主色：由组件的 accent prop 通过 inline style 注入
+    '--wd-audio-accent',
 }
 
 

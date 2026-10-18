@@ -8,31 +8,46 @@ const props = withDefaults(
   defineProps<{
     /** 音频地址 */
     src?: string
+    /**
+     * 卡片形态。去掉封面之后，波形应当升格为视觉主体 ——
+     * 参考主流音乐 App：波形取代封面占据主位置，控件在下方分层。
+     *
+     *  card   — 竖版卡片：波形为主体，标题在上、控件在下（默认推荐）
+     *  bar    — 横条：封面 + 标题 + 细进度，适合列表内嵌
+     *  mini   — 迷你横条：单行极简，适合固定底栏
+     */
+    variant?: 'card' | 'bar' | 'mini'
+    /** 兼容旧用法：等同于 variant="mini" */
+    compact?: boolean
     /** 标题 */
     title?: string
     /** 副标题（作者 / 专辑 / 说明） */
     subtitle?: string
-    /** 封面图 */
+    /** 封面；不给则显示占位图形 */
     cover?: string
-    /** 循环 */
     loop?: boolean
-    /** 显示音量 */
+    /** 显示音量（mini 不显示） */
     volume?: boolean
     /** 显示倍速 */
     playbackRate?: boolean
-    /** 显示下载按钮 */
+    /** 显示下载 */
     downloadable?: boolean
-    /** 紧凑模式：更矮，适合列表内嵌 */
-    compact?: boolean
+    /** 显示上一首/下一首 */
+    navigable?: boolean
     /** 初始音量 0-1 */
     initialVolume?: number
-    /** 波形（0-1 的数组）；给了就画波形而不是细进度线 */
+    /** 波形（0-1 数组）；不给则用细进度线 */
     waveform?: number[]
-    /** 图标风格。默认 outlined —— 音频条在浅色卡片上，细线更贴合正文排版层次 */
+    /** 卡片主色（card 形态的背景）；不给则用中性底色 */
+    accent?: string
+    /** 显示时间标签 */
+    showTime?: boolean
+    /** 图标风格 */
     iconStyle?: 'filled' | 'outlined'
   }>(),
   {
-    src: '',
+    variant: 'card',
+    compact: false,
     title: '',
     subtitle: '',
     cover: '',
@@ -40,10 +55,12 @@ const props = withDefaults(
     volume: true,
     playbackRate: true,
     downloadable: false,
-    compact: false,
+    navigable: true,
     initialVolume: 1,
     waveform: () => [],
-    iconStyle: 'outlined',
+    accent: '',
+    showTime: true,
+    iconStyle: 'filled',
   },
 )
 
@@ -53,7 +70,12 @@ const emit = defineEmits<{
   (e: 'ended'): void
   (e: 'timeupdate', current: number, duration: number): void
   (e: 'error', msg: string): void
+  (e: 'prev'): void
+  (e: 'next'): void
 }>()
+
+/* ---------------- 兼容旧 API ---------------- */
+const mode = computed<'card' | 'bar' | 'mini'>(() => (props.compact ? 'mini' : props.variant))
 
 const audio = ref<HTMLAudioElement | null>(null)
 const playing = ref(false)
@@ -63,21 +85,69 @@ const buffered = ref(0)
 const volume = ref(props.initialVolume)
 const muted = ref(false)
 const rate = ref(1)
-const ready = ref(false)
 const errMsg = ref('')
 const rateOpen = ref(false)
 
+const progress = computed(() =>
+  duration.value > 0 ? (current.value / duration.value) * 100 : 0,
+)
+const bufferedPct = computed(() =>
+  duration.value > 0 ? (buffered.value / duration.value) * 100 : 0,
+)
 
-const progress = computed(() => (duration.value > 0 ? (current.value / duration.value) * 100 : 0))
-const bufferedPct = computed(() => (duration.value > 0 ? (buffered.value / duration.value) * 100 : 0))
-const remain = computed(() => Math.max(0, duration.value - current.value))
+/**
+ * 是否有封面。
+ *
+ * 大部分 web 音频（播客 / 语音记录 / 提示音）没有音乐封面，
+ * 所以「无封面」反而是主场景 —— card 形态必须两种情况都好看：
+ *   有封面 → 封面当视觉主体，波形缩成细密的一条（参考白色版）
+ *   无封面 → 波形升格为主体，占据原封面的位置（参考绿色版）
+ */
+const hasCover = computed(() => !!props.cover)
 
-/** 波形柱：未给 waveform 时按固定规律生成一条稳定的示意波 */
+/* ---------------- 波形 ---------------- */
+/**
+ * 波形柱。
+ *
+ * 参考图的核心规律：**波形就是去掉封面后的「封面」**。
+ * 它必须占据主位置、够高、够密 —— 之前把它做成 30px 高的一行装饰，
+ * 所以整个卡片看起来像列表项而不是播放器。
+ */
+/**
+ * 波形密度随主体变化：
+ *   无封面（波形是主体）→ 30 根，粗、间距大，像参考图的绿色版
+ *   有封面（波形是辅助）→ 90 根，细密，像白色版
+ */
+const WAVE_BARS_THICK = 30
+const WAVE_BARS_FINE = 60
+
 const bars = computed(() => {
   if (props.waveform.length) return props.waveform
   return null
 })
 
+/** 没有真实波形数据时，生成一条稳定可复现的示意波（不用随机，避免每次重渲染跳动） */
+const waveCount = computed(() => (hasCover.value ? WAVE_BARS_FINE : WAVE_BARS_THICK))
+
+const demoWave = computed(() =>
+  Array.from({ length: waveCount.value }, (_, i) => {
+    const t = i / waveCount.value
+    // 几个不同频率的正弦叠加：模拟人声/音乐的起伏，中间略高、两端收敛
+    const v =
+      Math.abs(Math.sin(t * 9.2) * 0.42) +
+      Math.abs(Math.sin(t * 23.7 + 1.3) * 0.28) +
+      Math.abs(Math.sin(t * 4.1 + 2.7) * 0.3)
+    const envelope = Math.sin(Math.PI * t) * 0.35 + 0.65
+    return Math.min(1, Math.max(0.06, v * envelope))
+  }),
+)
+
+const waveBars = computed(() => {
+  if (props.waveform.length) return props.waveform
+  return demoWave.value
+})
+
+/* ---------------- 播放控制 ---------------- */
 function togglePlay() {
   const a = audio.value
   if (!a) return
@@ -85,7 +155,6 @@ function togglePlay() {
   else a.pause()
 }
 
-/** 让拖动的进度在拖动中不跳回（拖动时暂停 timeupdate 覆盖） */
 const dragging = ref(false)
 const dragPct = ref(0)
 const shownPct = computed(() => (dragging.value ? dragPct.value : progress.value))
@@ -158,19 +227,37 @@ function onError() {
   emit('error', errMsg.value)
 }
 
+/** 剩余时间（参考图里右侧显示的是 -3:56 这种倒计时） */
+/**
+ * 右侧时间。
+ * 参考图显示的是倒计时（-3:56），信息量比总时长更大；
+ * 但未加载出时长时留空 —— `-:--` 的占位反而干扰阅读。
+ */
+const remainText = computed(() =>
+  duration.value > 0 ? '-' + formatDuration(Math.max(0, duration.value - current.value)) : '',
+)
+
 watch(() => props.src, () => {
   errMsg.value = ''
-  ready.value = false
   current.value = 0
   duration.value = 0
   buffered.value = 0
 })
 
+onBeforeUnmount(() => { /* 媒体元素随组件销毁，无需额外清理 */ })
+
 defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause() })
 </script>
 
 <template>
-  <div class="wd-audio" :class="{ 'wd-audio--compact': compact, 'wd-audio--playing': playing }">
+  <div
+    class="wd-audio"
+    :class="[
+      `wd-audio--${mode}`,
+      { 'wd-audio--playing': playing, 'wd-audio--accent': !!accent, 'has-cover': hasCover },
+    ]"
+    :style="accent ? { '--wd-audio-accent': accent } : undefined"
+  >
     <audio
       ref="audio"
       :src="src"
@@ -181,37 +268,37 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
       @ended="playing = false; emit('ended')"
       @timeupdate="onTimeUpdate"
       @progress="onProgress"
-      @loadedmetadata="ready = true; onTimeUpdate()"
+      @loadedmetadata="onTimeUpdate"
       @error="onError"
     ></audio>
 
-    <!-- 封面 -->
-    <div v-if="cover || !compact || $slots.cover" class="wd-audio__cover">
-      <slot name="cover">
-        <img v-if="cover" :src="cover" alt="" />
-        <wd-icon v-else name="music" :variant="iconStyle" :size="compact ? 16 : 20" />
-      </slot>
-      <!-- 播放中的跳动指示 -->
-      <span v-if="playing" class="wd-audio__pulse"><i></i><i></i><i></i></span>
-    </div>
-
-    <button type="button" class="wd-audio__play" :aria-label="playing ? '暂停' : '播放'" @click="togglePlay">
-      <wd-icon v-if="playing" name="pause" :variant="iconStyle" :size="16" />
-      <wd-icon v-else name="play" :variant="iconStyle" :size="16" />
-    </button>
-
-    <div class="wd-audio__main">
-      <div v-if="title || subtitle || $slots.info" class="wd-audio__meta">
-        <span class="wd-audio__title">{{ title }}</span>
-        <span v-if="subtitle" class="wd-audio__subtitle">{{ subtitle }}</span>
-        <!-- 标题下方扩展位：歌词、标签、作者链接等 -->
-        <slot name="info" />
+    <!-- ==================== 竖版卡片 ==================== -->
+    <template v-if="mode === 'card'">
+      <!-- 顶部：有封面时封面在左、标题在右（横向排布，见样式说明） -->
+      <div class="wd-audio__top">
+        <div v-if="hasCover" class="wd-audio__hero-cover">
+          <slot name="cover"><img :src="cover" alt="" /></slot>
+          <span v-if="playing" class="wd-audio__hero-badge"><i></i><i></i><i></i></span>
+        </div>
+        <div class="wd-audio__head">
+          <div class="wd-audio__title">{{ title }}</div>
+          <div v-if="subtitle" class="wd-audio__subtitle">{{ subtitle }}</div>
+          <slot name="info" />
+        </div>
+        <div class="wd-audio__top-extra">
+          <slot name="actions" />
+        </div>
       </div>
 
-      <!-- 波形模式 -->
+      <!--
+        视觉主体：
+          有封面 → 大封面（正方形，圆角），波形在下方缩成细密一条
+          无封面 → 波形升格为主体，高度显著加大，取代封面的位置
+        这是两种参考设计的核心差异，由一个 hasCover 分支切换。
+      -->
       <div
-        v-if="bars"
         class="wd-audio__wave"
+        :class="hasCover ? 'wd-audio__wave--fine' : 'wd-audio__wave--hero'"
         role="slider"
         tabindex="0"
         aria-label="播放进度"
@@ -222,74 +309,152 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
         @keydown="onScrubKey"
       >
         <span
-          v-for="(h, i) in bars"
+          v-for="(h, i) in waveBars"
           :key="i"
           class="wd-audio__wave-bar"
-          :class="{ 'is-on': (i / bars.length) * 100 <= shownPct }"
-          :style="{ height: Math.max(12, h * 100) + '%' }"
+          :class="{ 'is-on': (i / waveBars.length) * 100 <= shownPct }"
+          :style="{ height: Math.max(6, h * 100) + '%' }"
         ></span>
       </div>
 
-      <!-- 进度线模式 -->
-      <div
-        v-else
-        class="wd-audio__scrub"
-        role="slider"
-        tabindex="0"
-        aria-label="播放进度"
-        :aria-valuenow="Math.round(shownPct)"
-        aria-valuemin="0"
-        aria-valuemax="100"
-        @click="seekTo"
-        @keydown="onScrubKey"
-      >
-        <span class="wd-audio__track"></span>
-        <span class="wd-audio__buffer" :style="{ width: bufferedPct + '%' }"></span>
-        <span class="wd-audio__played" :style="{ width: shownPct + '%' }"></span>
-        <span class="wd-audio__knob" :style="{ left: shownPct + '%' }"></span>
-      </div>
-
-      <div class="wd-audio__time">
+      <div v-if="showTime" class="wd-audio__times">
         <span>{{ formatDuration(current) }}</span>
-        <span class="wd-audio__time-sep">/</span>
-        <span>{{ formatDuration(duration) }}</span>
-        <span v-if="errMsg" class="wd-audio__err">{{ errMsg }}</span>
-        <!-- 时间行右侧扩展位 -->
-        <slot name="extra" />
+        <span class="wd-audio__remain">{{ remainText }}</span>
       </div>
-    </div>
 
-    <div v-if="!compact" class="wd-audio__side">
-      <div v-if="volume" class="wd-audio__vol">
-        <button type="button" class="wd-audio__ibtn" :aria-label="muted ? '取消静音' : '静音'" @click="toggleMute">
-          <wd-icon v-if="muted || volume === 0" name="volume-mute" :variant="iconStyle" :size="15" />
-          <wd-icon v-else name="volume-up" :variant="iconStyle" :size="15" />
+      <!-- 控件：播放键为绝对主体，其余次级且弱化 -->
+      <div class="wd-audio__controls">
+        <button
+          v-if="playbackRate"
+          type="button"
+          class="wd-audio__ctl wd-audio__ctl--text"
+          :aria-label="`倍速 ${rate}x`"
+          @click="rateOpen = !rateOpen"
+        >{{ rate }}×</button>
+        <span v-else class="wd-audio__ctl-spacer"></span>
+
+        <button v-if="navigable" type="button" class="wd-audio__ctl" aria-label="上一首" @click="emit('prev')">
+          <wd-icon name="skip-previous" :variant="iconStyle" :size="17" />
         </button>
-        <div class="wd-audio__vol-track" @click="setVolume">
-          <span class="wd-audio__vol-fill" :style="{ width: (muted ? 0 : volume * 100) + '%' }"></span>
+
+        <button type="button" class="wd-audio__main-btn" :aria-label="playing ? '暂停' : '播放'" @click="togglePlay">
+          <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="22" />
+        </button>
+
+        <button v-if="navigable" type="button" class="wd-audio__ctl" aria-label="下一首" @click="emit('next')">
+          <wd-icon name="skip-next" :variant="iconStyle" :size="17" />
+        </button>
+
+        <button
+          v-if="volume"
+          type="button"
+          class="wd-audio__ctl"
+          :aria-label="muted ? '取消静音' : '静音'"
+          @click="toggleMute"
+        >
+          <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="17" />
+        </button>
+        <span v-else class="wd-audio__ctl-spacer"></span>
+      </div>
+
+      <div v-if="rateOpen" class="wd-audio__rate-menu wd-audio__rate-menu--card">
+        <button v-for="r in [0.75, 1, 1.25, 1.5, 2]" :key="r" type="button"
+          :class="{ 'is-on': r === rate }" @click="setRate(r)">{{ r }}×</button>
+      </div>
+
+      <div v-if="errMsg" class="wd-audio__err">{{ errMsg }}</div>
+    </template>
+
+    <!-- ==================== 横条 ==================== -->
+    <template v-else-if="mode === 'bar'">
+      <div class="wd-audio__cover">
+        <slot name="cover">
+          <img v-if="cover" :src="cover" alt="" />
+          <wd-icon v-else name="music" :variant="iconStyle" :size="20" />
+        </slot>
+        <span v-if="playing" class="wd-audio__pulse"><i></i><i></i><i></i></span>
+      </div>
+
+      <button type="button" class="wd-audio__play" :aria-label="playing ? '暂停' : '播放'" @click="togglePlay">
+        <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="16" />
+      </button>
+
+      <div class="wd-audio__main">
+        <div v-if="title || subtitle || $slots.info" class="wd-audio__meta">
+          <span class="wd-audio__title">{{ title }}</span>
+          <span v-if="subtitle" class="wd-audio__subtitle">{{ subtitle }}</span>
+          <slot name="info" />
+        </div>
+
+        <div v-if="bars" class="wd-audio__wave" role="slider" tabindex="0" aria-label="播放进度"
+          :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
+          <span v-for="(h, i) in bars" :key="i" class="wd-audio__wave-bar"
+            :class="{ 'is-on': (i / bars.length) * 100 <= shownPct }"
+            :style="{ height: Math.max(12, h * 100) + '%' }"></span>
+        </div>
+
+        <div v-else class="wd-audio__scrub" role="slider" tabindex="0" aria-label="播放进度"
+          :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
+          <span class="wd-audio__track"></span>
+          <span class="wd-audio__buffer" :style="{ width: bufferedPct + '%' }"></span>
+          <span class="wd-audio__played" :style="{ width: shownPct + '%' }"></span>
+          <span class="wd-audio__knob" :style="{ left: shownPct + '%' }"></span>
+        </div>
+
+        <div class="wd-audio__time">
+          <span>{{ formatDuration(current) }}</span>
+          <span class="wd-audio__time-sep">/</span>
+          <span>{{ formatDuration(duration) }}</span>
+          <span v-if="errMsg" class="wd-audio__err">{{ errMsg }}</span>
+          <slot name="extra" />
         </div>
       </div>
 
-      <div v-if="playbackRate" class="wd-audio__rate">
-        <button type="button" class="wd-audio__ibtn wd-audio__ibtn--text" @click="rateOpen = !rateOpen">
-          {{ rate }}×
-        </button>
-        <div v-if="rateOpen" class="wd-audio__rate-menu">
-          <button
-            v-for="r in [0.75, 1, 1.25, 1.5, 2]"
-            :key="r"
-            type="button"
-            :class="{ 'is-on': r === rate }"
-            @click="setRate(r)"
-          >{{ r }}×</button>
+      <div class="wd-audio__side">
+        <div v-if="volume" class="wd-audio__vol">
+          <button type="button" class="wd-audio__ibtn" :aria-label="muted ? '取消静音' : '静音'" @click="toggleMute">
+            <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="15" />
+          </button>
+          <div class="wd-audio__vol-track" @click="setVolume">
+            <span class="wd-audio__vol-fill" :style="{ width: (muted ? 0 : volume * 100) + '%' }"></span>
+          </div>
+        </div>
+
+        <div v-if="playbackRate" class="wd-audio__rate">
+          <button type="button" class="wd-audio__ibtn wd-audio__ibtn--text" @click="rateOpen = !rateOpen">{{ rate }}×</button>
+          <div v-if="rateOpen" class="wd-audio__rate-menu">
+            <button v-for="r in [0.75, 1, 1.25, 1.5, 2]" :key="r" type="button"
+              :class="{ 'is-on': r === rate }" @click="setRate(r)">{{ r }}×</button>
+          </div>
+        </div>
+
+        <a v-if="downloadable" class="wd-audio__ibtn" :href="src" download aria-label="下载">
+          <wd-icon name="download" :variant="iconStyle" :size="15" />
+        </a>
+        <slot name="actions" />
+      </div>
+    </template>
+
+    <!-- ==================== 迷你横条 ==================== -->
+    <template v-else>
+      <button type="button" class="wd-audio__mini-play" :aria-label="playing ? '暂停' : '播放'" @click="togglePlay">
+        <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="14" />
+      </button>
+
+      <div class="wd-audio__mini-main">
+        <div class="wd-audio__mini-text">
+          <span class="wd-audio__title">{{ title }}</span>
+          <span v-if="subtitle" class="wd-audio__subtitle">{{ subtitle }}</span>
+        </div>
+        <div class="wd-audio__mini-progress" role="slider" tabindex="0" aria-label="播放进度"
+          :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
+          <span class="wd-audio__mini-track">
+            <span class="wd-audio__mini-fill" :style="{ width: shownPct + '%' }"></span>
+          </span>
         </div>
       </div>
 
-      <a v-if="downloadable" class="wd-audio__ibtn" :href="src" download aria-label="下载">
-        <wd-icon name="download" :variant="iconStyle" :size="15" />
-      </a>
-      <!-- 右侧扩展位：收藏 / 加入队列 / 分享等 -->
-      <slot name="actions" />
-    </div>
+      <span class="wd-audio__mini-time">{{ formatDuration(current) }} / {{ formatDuration(duration) }}</span>
+    </template>
   </div>
 </template>
