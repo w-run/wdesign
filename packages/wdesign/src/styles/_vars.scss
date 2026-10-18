@@ -6,6 +6,7 @@
 // =============================================================
 
 @use "./tokens" as *;
+@use "./rainbow" as *;
 
 :root {
   --wd-red:        #{$wd-red};
@@ -134,4 +135,38 @@
   --wd-space-10: #{$wd-space-10};
   --wd-space-12: #{$wd-space-12};
   --wd-space-16: #{$wd-space-16};
+
+// --- Rainbow · 装饰色（极简黑白灰中的闯入色彩） ---
+  --wd-rainbow-red: #{$wd-rainbow-red};
+  --wd-rainbow-orange: #{$wd-rainbow-orange};
+  --wd-rainbow-amber: #{$wd-rainbow-amber};
+  --wd-rainbow-lime: #{$wd-rainbow-lime};
+  --wd-rainbow-green: #{$wd-rainbow-green};
+  --wd-rainbow-teal: #{$wd-rainbow-teal};
+  --wd-rainbow-blue: #{$wd-rainbow-blue};
+  --wd-rainbow-indigo: #{$wd-rainbow-indigo};
+  --wd-rainbow-violet: #{$wd-rainbow-violet};
+  --wd-rainbow-pink: #{$wd-rainbow-pink};
+
+  --wd-rainbow-red-soft: #{$wd-rainbow-red-soft};
+  --wd-rainbow-orange-soft: #{$wd-rainbow-orange-soft};
+  --wd-rainbow-amber-soft: #{$wd-rainbow-amber-soft};
+  --wd-rainbow-lime-soft: #{$wd-rainbow-lime-soft};
+  --wd-rainbow-green-soft: #{$wd-rainbow-green-soft};
+  --wd-rainbow-teal-soft: #{$wd-rainbow-teal-soft};
+  --wd-rainbow-blue-soft: #{$wd-rainbow-blue-soft};
+  --wd-rainbow-indigo-soft: #{$wd-rainbow-indigo-soft};
+  --wd-rainbow-violet-soft: #{$wd-rainbow-violet-soft};
+  --wd-rainbow-pink-soft: #{$wd-rainbow-pink-soft};
+
+  --wd-rainbow-red-ink: #{$wd-rainbow-red-ink};
+  --wd-rainbow-orange-ink: #{$wd-rainbow-orange-ink};
+  --wd-rainbow-amber-ink: #{$wd-rainbow-amber-ink};
+  --wd-rainbow-lime-ink: #{$wd-rainbow-lime-ink};
+  --wd-rainbow-green-ink: #{$wd-rainbow-green-ink};
+  --wd-rainbow-teal-ink: #{$wd-rainbow-teal-ink};
+  --wd-rainbow-blue-ink: #{$wd-rainbow-blue-ink};
+  --wd-rainbow-indigo-ink: #{$wd-rainbow-indigo-ink};
+  --wd-rainbow-violet-ink: #{$wd-rainbow-violet-ink};
+  --wd-rainbow-pink-ink: #{$wd-rainbow-pink-ink};
 }

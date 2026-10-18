@@ -836,3 +836,29 @@ app.mount('#app')
   window.__wdAddHover = function () { return function stop() { clearAll() } }
 })()
 
+/* =============================================================
+ *  彩虹点缀：按文档顺序给每个面板标题的小横线分配色相
+ *
+ *  这是"闯入色彩"的正确用法 —— 纯装饰、无语义，
+ *  只为在黑白灰版面里提供视觉节奏与分区坐标。
+ * ============================================================= */
+;(function paintPanelAccents() {
+  const CYCLE = [
+    'red', 'orange', 'amber', 'lime', 'green',
+    'teal', 'blue', 'indigo', 'violet', 'pink',
+  ]
+  function paint() {
+    const panels = document.querySelectorAll('.demo-panel')
+    panels.forEach((p, i) => {
+      p.style.setProperty('--panel-accent', `var(--wd-rainbow-${CYCLE[i % CYCLE.length]})`)
+    })
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', paint)
+  } else {
+    paint()
+  }
+  // Vue 挂载后 DOM 会重建一次，再补一遍
+  window.addEventListener('load', paint)
+  setTimeout(paint, 300)
+})()

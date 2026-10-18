@@ -8,8 +8,6 @@
 //     按需引入请用：import { WdButton } from "@w-run/wdesign"
 // =============================================================
 import type { App, Plugin } from 'vue'
-import WdAccordion from './components/WdAccordion.vue'
-import WdAccordionItem from './components/WdAccordionItem.vue'
 import WdAffix from './components/WdAffix.vue'
 import WdAiMessage from './components/WdAiMessage.vue'
 import WdAlert from './components/WdAlert.vue'
@@ -83,8 +81,6 @@ import WdVirtualList from './components/WdVirtualList.vue'
 import WdWatermark from './components/WdWatermark.vue'
 
 const components = [
-  WdAccordion,
-  WdAccordionItem,
   WdAffix,
   WdAiMessage,
   WdAlert,

@@ -1,5 +1,3 @@
-export { default as WdAccordion } from './WdAccordion'
-export { default as WdAccordionItem } from './WdAccordionItem'
 export { default as WdAffix } from './WdAffix'
 export { default as WdAiMessage } from './WdAiMessage'
 export { default as WdAlert } from './WdAlert'

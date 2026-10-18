@@ -54,7 +54,6 @@
 @import '../src/styles/components/watermark';
 @import '../src/styles/components/scrollbar';
 @import '../src/styles/components/affix';
-@import '../src/styles/components/accordion';
 @import '../src/styles/components/drawer';
 @import '../src/styles/components/result';
 @import '../src/styles/components/rate';
@@ -210,142 +209,92 @@ body {
  * 现在的版式：左对齐、占满容器、用留白建立呼吸 ——
  * 这是编辑类版式（杂志/文档站）的通行做法，比居中更"大气"。
  */
-.demo-hero {
-  padding: 120px 0 96px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-  position: relative;
-  max-width: none;
-}
 /*
- * 背景：中性灰径向渐变，不用淡红。
- *
- * 极简黑白灰体系里，页面底色上的大面积色晕会和内容抢注意力；
- * 红色尤其危险 —— 它会被读成"这里有警报"。
- * 用中性灰做同一种柔和铺底，观感一致但完全不抢色。
+ * ===== Hero =====
+ * 版式：左文右色条，栅格两栏（1fr / auto）。
+ * 底色是页面底（L0），不加任何色晕 —— 留白本身就是内容。
  */
-.demo-hero::before {
-  content: '';
-  position: absolute;
-  left: 8%;
-  top: 0;
-  width: 52%;
-  height: 100%;
-  background: radial-gradient(
-    circle at 30% 40%,
-    var(--wd-field) 0%,
-    rgba(233, 237, 241, .35) 45%,
-    transparent 72%
-  );
-  pointer-events: none;
-  opacity: .8;
-}
-.hero-inner {
+/*
+ * 首屏：纯文字版式，无任何视觉装饰。
+ *
+ * 参考 Apple —— 首屏 80% 是留白的。
+ * 上下内距给得很大（140/120），让标题悬在页面中上部，
+ * 与下方的第一个 section 之间有大段呼吸空间。
+ */
+.demo-hero {
+  padding: 140px 0 120px;
   position: relative;
-  z-index: 1;
+}
+
+.hero-inner {
+  display: flex;
   width: 100%;
-  max-width: none;
+}
+
+.hero-copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 22px;
+  min-width: 0;
 }
+
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .16em;
   text-transform: uppercase;
-  /* eyebrow 是辅助信息，用中灰；红色留给标题强调词与主按钮 */
   color: var(--wd-ink-2);
+  margin-bottom: 26px;
 }
+
 .hero-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--wd-red);
   display: inline-block;
 }
+
 /*
- * Slogan：两行短句，字距收紧、行高略松。
- * 比原来的产品名（一个词 + 分隔点）更接近"宣言"的气质 ——
- * 短句需要呼吸，不然两行会挤成一块。
+ * Slogan：两行宣言。
+ * 第一行纯黑、第二行中灰 —— 层次靠明度，不靠颜色。
+ * clamp 让它在 1280~1920 之间平滑缩放。
  */
 .hero-inner h1 {
-  font-size: clamp(56px, 7.4vw, 104px);
+  font-size: clamp(48px, 6.6vw, 96px);
   font-weight: 900;
-  letter-spacing: -.042em;
+  letter-spacing: -.045em;
   line-height: 1.02;
-  margin: 0;
+  margin: 0 0 40px;
   color: var(--wd-ink);
 }
 
-/* 第二行用中灰，制造"主句 → 续句"的层次，不靠颜色抢眼 */
 .hero-second {
-  color: var(--wd-ink-2);
+  color: var(--wd-ink-3);
 }
 
-/* hero-accent 仍保留给未来需要点睛的强调词 */
-.hero-accent {
-  color: var(--wd-red);
-}
-.hero-lead {
-  font-size: 17px;
-  line-height: 1.65;
-  color: var(--wd-ink-2);
-  /* 宽版式下正文也不必挤在窄栏里；40em 仍保证单行长度可读 */
-  max-width: 40em;
-  font-size: 18px;
-  margin: 0;
-  text-wrap: pretty;
-}
-.hero-lead em {
-  font-style: normal;
-  color: var(--wd-ink);
-  /* 内层短语不允许被拆行 → 不产生孤字 */
-  white-space: nowrap;
-}
 .hero-actions {
   display: flex;
-  gap: 14px;
+  align-items: center;
+  gap: 12px;
+}
+
+/*
+ * 主按钮悬停时箭头轻微右移 —— 表达"进入"的方向感。
+ * 位移只有 3px：足够被感知，又不至于让按钮跟着抖。
+ */
+.hero-go wd-icon,
+.hero-go .wd-icon {
+  transition: transform var(--wd-dur-base) var(--wd-ease-out);
+}
+.hero-go:hover wd-icon,
+.hero-go:hover .wd-icon {
+  transform: translateX(3px);
 }
 /* 统计块左对齐，与标题同一条左基线 */
-.hero-stats {
-  display: flex;
-  gap: 52px;
-  margin-top: 18px;
-  padding-top: 26px;
-  /*
-   * 用一条极淡的上分隔线把"数据"与"文案"分开。
-   * 无边框原则里这属于"结构分隔"，所以用 ink-5 的极浅灰，
-   * 不用任何强调色。
-   */
-  border-top: 1px solid var(--wd-ink-5);
-  width: 100%;
-}
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-.stat b {
-  font-size: 34px;
-  font-weight: 800;
-  letter-spacing: -.03em;
-  color: var(--wd-ink);
-  line-height: 1;
-}
-.stat span {
-  font-size: 11.5px;
-  color: var(--wd-ink-2);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
 
 // ── Section ────────────────────────────────────────────────────
 .demo-sec {
@@ -448,15 +397,29 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  /*
+   * 标题前的小横线：用彩虹色轮换。
+   *
+   * 这是"闯入色彩"的典型用法 —— 它不承载任何语义，
+   * 只做版面节奏与视觉锚点。73 个面板如果全是灰线，
+   * 整页会糊成一片；轮换色相后每一节有自己的"坐标"，
+   * 又不至于像主题红那样到处喊"注意我"。
+   *
+   * 实现：用 nth-of-type 按面板顺序取色，
+   * 不依赖 JS、不写内联样式，增删面板自动重排。
+   */
   &::before {
     content: '';
     width: 18px;
     height: 2px;
     border-radius: 999px;
-    background: var(--wd-ink-4);
     display: inline-block;
+    /* 色相由 JS 写入 --panel-accent（见 demo.js paintPanelAccents） */
+    background: var(--panel-accent, var(--wd-ink-4));
   }
 }
+
+
 
 .demo-row {
   display: flex;
@@ -665,4 +628,21 @@ html { scroll-behavior: smooth; }
   font-size: 11.5px;
   color: var(--wd-ink-3);
   font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================
+ *  Rainbow accent · 面板标题前的小横线
+ *
+ *  色相由 JS 按**文档顺序**赋值（见 demo.js 的 paintPanelAccents）。
+ *
+ *  ⚠️ 为什么不能用 CSS nth-child / nth-of-type：
+ *    它们只统计「同一父级下的兄弟」。demo 的面板分散在多个
+ *    .demo-grid / .demo-sec 里，每组 7 个 → 颜色每 7 个就回到起点，
+ *    区块之间还会重复。CSS 没有任何选择器能跨父级计数
+ *    （CSS 计数器可以做到，但无法对计数取模映射到 10 种颜色）。
+ *
+ *  用 JS 一次性赋值还有个好处：增删面板时自动重排，不用改样式。
+ * ============================================================= */
+.demo-panel > h3::before {
+  background: var(--wd-ink-4); /* 兜底：JS 未执行时仍是中性灰 */
 }

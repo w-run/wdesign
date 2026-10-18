@@ -1,0 +1,23 @@
+// =============================================================
+//  WDesign UI — Rainbow Tokens（深色主题）
+//
+//  深色下彩虹色的两处调整：
+//    · base 提亮一档（深底上过暗会失去色彩感）
+//    · soft 变成"深色半透明底"而非浅色 —— 直译浅色会白得刺眼，
+//      破坏整页的深色调性
+//    · ink 变成"浅色版"（深底上要浅色文字才可读）
+//
+//  ⚠️ 这个文件必须由 _vars.scss 在深色层里 @use，
+//     否则令牌只在浅色下存在，深色下会回落到 undefined。
+// =============================================================
+
+$wd-rainbow-red-dark:    #F07A86 !default;
+$wd-rainbow-orange-dark: #F0A06A !default;
+$wd-rainbow-amber-dark:  #E8BE6E !default;
+$wd-rainbow-lime-dark:   #B0CC74 !default;
+$wd-rainbow-green-dark:  #6BC194 !default;
+$wd-rainbow-teal-dark:   #5FC0BC !default;
+$wd-rainbow-blue-dark:   #6FA8DC !default;
+$wd-rainbow-indigo-dark: #8494DC !default;
+$wd-rainbow-violet-dark: #B08FD4 !default;
+$wd-rainbow-pink-dark:   #DC8FBE !default;

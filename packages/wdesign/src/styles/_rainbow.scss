@@ -1,0 +1,59 @@
+// =============================================================
+//  WDesign UI — Rainbow Tokens（彩虹装饰色）
+//
+//  定位：极简黑白灰风里的「闯入色彩」。
+//
+//  使用纪律（务必遵守，见 COLOR-DISCIPLINE.md）：
+//    ✅ 允许：装饰性色块、图表序列、彩色标签、渐变底色、
+//            分组标识、插画配色
+//    ❌ 禁止：主按钮、交互反馈（hover/active）、错误/警告语义
+//            —— 这些位置必须留给主色（红）或中性灰
+//
+//  为什么要有这套：
+//    纯黑白灰的界面在信息密度高时容易"糊成一片 灰"，
+//    缺少可区分的标识色。彩虹色提供了**非语义的区分手段**：
+//    它不表达"重要/危险/成功"，只表达"这是另一类"。
+//
+//  配色取自 Material Design 的 tonal palette 中间调，
+//  在白卡（#FFFFFF）与页面底（#F7F8FA）上都有足够对比，
+//  且不同色相之间明度接近 —— 并排放置时不会某一块特别抢眼。
+// =============================================================
+
+// --- Rainbow · 主色（装饰填充 / 图标 / 图表线条） -------------
+// 明度统一在 L*≈52-58，色相均匀分布在色环上
+$wd-rainbow-red:    #E05361 !default; // 红（与主色区分：更偏玫红）
+$wd-rainbow-orange: #E88442 !default; // 橙
+$wd-rainbow-amber:  #D9A441 !default; // 琥珀
+$wd-rainbow-lime:   #8BAE3F !default; // 黄绿
+$wd-rainbow-green:  #3FA06A !default; // 绿
+$wd-rainbow-teal:   #2F9E9A !default; // 青
+$wd-rainbow-blue:   #3B82C4 !default; // 蓝
+$wd-rainbow-indigo: #5B6BC0 !default; // 靛
+$wd-rainbow-violet: #8B5FBF !default; // 紫
+$wd-rainbow-pink:   #C95FA0 !default; // 粉
+
+// --- Rainbow · 浅底（色块背板 / 标签底 / 分组区域） -----------
+// 白卡上的大面积使用场景，饱和度压到很低，保证其上文字可读
+$wd-rainbow-red-soft:    #FCEDEF !default;
+$wd-rainbow-orange-soft: #FDF2E9 !default;
+$wd-rainbow-amber-soft:  #FBF5E6 !default;
+$wd-rainbow-lime-soft:   #F1F6E8 !default;
+$wd-rainbow-green-soft:  #EAF5EF !default;
+$wd-rainbow-teal-soft:   #E6F5F4 !default;
+$wd-rainbow-blue-soft:   #EBF3FA !default;
+$wd-rainbow-indigo-soft: #EDEFF9 !default;
+$wd-rainbow-violet-soft: #F3EDF9 !default;
+$wd-rainbow-pink-soft:   #FAEDF5 !default;
+
+// --- Rainbow · 文字款（浅底上的彩色文字） ---------------------
+// -soft 底上需要 ≥4.5:1；比 base 压深约 25%
+$wd-rainbow-red-ink:    #B02E3D !default;
+$wd-rainbow-orange-ink: #A9561F !default;
+$wd-rainbow-amber-ink:  #8A6417 !default;
+$wd-rainbow-lime-ink:   #52701C !default;
+$wd-rainbow-green-ink:  #1F6B44 !default;
+$wd-rainbow-teal-ink:   #166863 !default;
+$wd-rainbow-blue-ink:   #1F558A !default;
+$wd-rainbow-indigo-ink: #39458A !default;
+$wd-rainbow-violet-ink: #64408A !default;
+$wd-rainbow-pink-ink:   #8E3D70 !default;

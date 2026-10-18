@@ -13,8 +13,15 @@ const props = withDefaults(
     /** 展开项的索引数组 */
     modelValue?: number[]
     items?: WdCollapseItem[]
+    /**
+     * 手风琴模式：同时只能展开一项。
+     * 开启后点开新项会自动收起之前的项。
+     */
+    accordion?: boolean
+    /** 手风琴模式下是否允许全部收起（默认允许） */
+    collapsible?: boolean
   }>(),
-  { modelValue: () => [], items: () => [] },
+  { modelValue: () => [], items: () => [], accordion: false, collapsible: true },
 )
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: number[]): void }>()
@@ -22,10 +29,26 @@ const emit = defineEmits<{ (e: 'update:modelValue', value: number[]): void }>()
 const openSet = computed(() => new Set(props.modelValue))
 
 function toggle(i: number) {
-  const next = new Set(props.modelValue)
-  if (next.has(i)) next.delete(i)
-  else next.add(i)
-  emit('update:modelValue', [...next].sort((a, b) => a - b))
+  if (!props.accordion) {
+    const next = new Set(props.modelValue)
+    if (next.has(i)) next.delete(i)
+    else next.add(i)
+    emit('update:modelValue', [...next].sort((a, b) => a - b))
+    return
+  }
+
+  /*
+   * 手风琴：点开新项只保留这一项；点已展开项则全部收起
+   * （collapsible=false 时保持展开，不允许全收）。
+   *
+   * ⚠️ 不能简写成 `openSet.has(i) ? [] : [i]` ——
+   * collapsible=false 时点当前项会意外收起。
+   */
+  if (openSet.value.has(i)) {
+    emit('update:modelValue', props.collapsible ? [] : [i])
+  } else {
+    emit('update:modelValue', [i])
+  }
 }
 </script>
 

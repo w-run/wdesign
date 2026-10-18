@@ -1,5 +1,5 @@
 // =============================================================
-//  wdesign · WDesign UI — 具名导出入口
+//  wdesign · Soft Bento · Red — 具名导出入口
 //
 //  按需引入（推荐，可 tree-shake）：
 //    import { WdButton, WdCard } from '@w-run/wdesign'
@@ -12,8 +12,6 @@
 //     这里**故意没有 export default** —— 有默认导出就必须把 46 个组件
 //     全部列入数组，打包器的 tree-shaking 会因此失效。
 // =============================================================
-export { default as WdAccordion } from './components/WdAccordion.vue'
-export { default as WdAccordionItem } from './components/WdAccordionItem.vue'
 export { default as WdAffix } from './components/WdAffix.vue'
 export { default as WdAiMessage } from './components/WdAiMessage.vue'
 export { default as WdAlert } from './components/WdAlert.vue'

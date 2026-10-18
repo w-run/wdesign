@@ -5,6 +5,7 @@
  *  自给自足：@use 自己的令牌层，可被宿主独立 @use（blog / wcode 无需 @import 全量）
  * ============================================================= */
 @use './tokens' as t;
+@use "./rainbow-dark" as *;
 
 [data-theme="dark"],
 .dark-theme,
@@ -67,6 +68,46 @@ html.dark-theme {
 
   background: var(--wd-bg);
   color: var(--wd-ink);
+
+/* ---------------- Rainbow · 深色覆盖 ---------------- */
+/*
+ * 深色下三档都要变：
+ *   base  提亮（深底上原色过暗，失去色彩感）
+ *   soft  改成半透明深色底（直译浅色会白得刺眼）
+ *   ink   改成浅色（深底上要浅字才可读）
+ */
+  --wd-rainbow-red: #{$wd-rainbow-red-dark};
+  --wd-rainbow-orange: #{$wd-rainbow-orange-dark};
+  --wd-rainbow-amber: #{$wd-rainbow-amber-dark};
+  --wd-rainbow-lime: #{$wd-rainbow-lime-dark};
+  --wd-rainbow-green: #{$wd-rainbow-green-dark};
+  --wd-rainbow-teal: #{$wd-rainbow-teal-dark};
+  --wd-rainbow-blue: #{$wd-rainbow-blue-dark};
+  --wd-rainbow-indigo: #{$wd-rainbow-indigo-dark};
+  --wd-rainbow-violet: #{$wd-rainbow-violet-dark};
+  --wd-rainbow-pink: #{$wd-rainbow-pink-dark};
+
+  --wd-rainbow-red-soft: color-mix(in srgb, #{$wd-rainbow-red-dark} 14%, transparent);
+  --wd-rainbow-orange-soft: color-mix(in srgb, #{$wd-rainbow-orange-dark} 14%, transparent);
+  --wd-rainbow-amber-soft: color-mix(in srgb, #{$wd-rainbow-amber-dark} 14%, transparent);
+  --wd-rainbow-lime-soft: color-mix(in srgb, #{$wd-rainbow-lime-dark} 14%, transparent);
+  --wd-rainbow-green-soft: color-mix(in srgb, #{$wd-rainbow-green-dark} 14%, transparent);
+  --wd-rainbow-teal-soft: color-mix(in srgb, #{$wd-rainbow-teal-dark} 14%, transparent);
+  --wd-rainbow-blue-soft: color-mix(in srgb, #{$wd-rainbow-blue-dark} 14%, transparent);
+  --wd-rainbow-indigo-soft: color-mix(in srgb, #{$wd-rainbow-indigo-dark} 14%, transparent);
+  --wd-rainbow-violet-soft: color-mix(in srgb, #{$wd-rainbow-violet-dark} 14%, transparent);
+  --wd-rainbow-pink-soft: color-mix(in srgb, #{$wd-rainbow-pink-dark} 14%, transparent);
+
+  --wd-rainbow-red-ink: #{$wd-rainbow-red-dark};
+  --wd-rainbow-orange-ink: #{$wd-rainbow-orange-dark};
+  --wd-rainbow-amber-ink: #{$wd-rainbow-amber-dark};
+  --wd-rainbow-lime-ink: #{$wd-rainbow-lime-dark};
+  --wd-rainbow-green-ink: #{$wd-rainbow-green-dark};
+  --wd-rainbow-teal-ink: #{$wd-rainbow-teal-dark};
+  --wd-rainbow-blue-ink: #{$wd-rainbow-blue-dark};
+  --wd-rainbow-indigo-ink: #{$wd-rainbow-indigo-dark};
+  --wd-rainbow-violet-ink: #{$wd-rainbow-violet-dark};
+  --wd-rainbow-pink-ink: #{$wd-rainbow-pink-dark};
 }
 
 /* 深色下滚动条 */

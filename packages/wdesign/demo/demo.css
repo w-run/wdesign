@@ -117,6 +117,36 @@
   --wd-space-10: 40px;
   --wd-space-12: 48px;
   --wd-space-16: 64px;
+  --wd-rainbow-red: #E05361;
+  --wd-rainbow-orange: #E88442;
+  --wd-rainbow-amber: #D9A441;
+  --wd-rainbow-lime: #8BAE3F;
+  --wd-rainbow-green: #3FA06A;
+  --wd-rainbow-teal: #2F9E9A;
+  --wd-rainbow-blue: #3B82C4;
+  --wd-rainbow-indigo: #5B6BC0;
+  --wd-rainbow-violet: #8B5FBF;
+  --wd-rainbow-pink: #C95FA0;
+  --wd-rainbow-red-soft: #FCEDEF;
+  --wd-rainbow-orange-soft: #FDF2E9;
+  --wd-rainbow-amber-soft: #FBF5E6;
+  --wd-rainbow-lime-soft: #F1F6E8;
+  --wd-rainbow-green-soft: #EAF5EF;
+  --wd-rainbow-teal-soft: #E6F5F4;
+  --wd-rainbow-blue-soft: #EBF3FA;
+  --wd-rainbow-indigo-soft: #EDEFF9;
+  --wd-rainbow-violet-soft: #F3EDF9;
+  --wd-rainbow-pink-soft: #FAEDF5;
+  --wd-rainbow-red-ink: #B02E3D;
+  --wd-rainbow-orange-ink: #A9561F;
+  --wd-rainbow-amber-ink: #8A6417;
+  --wd-rainbow-lime-ink: #52701C;
+  --wd-rainbow-green-ink: #1F6B44;
+  --wd-rainbow-teal-ink: #166863;
+  --wd-rainbow-blue-ink: #1F558A;
+  --wd-rainbow-indigo-ink: #39458A;
+  --wd-rainbow-violet-ink: #64408A;
+  --wd-rainbow-pink-ink: #8E3D70;
 }
 
 /* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
@@ -5059,140 +5089,6 @@ body {
   box-shadow: var(--wd-shadow-sm);
 }
 
-.wd-accordion {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.wd-accordion__item {
-  border-radius: var(--wd-radius-md);
-  background: var(--wd-card);
-  overflow: hidden;
-  transition: background var(--wd-dur-fast) ease;
-}
-
-/* 展开项给一点底色差，强化"当前在看哪一块" */
-.wd-accordion__item.is-open {
-  background: var(--wd-card);
-}
-
-.wd-accordion__head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding: 14px 16px;
-  border: 0;
-  background: transparent;
-  color: var(--wd-ink);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: left;
-  cursor: pointer;
-  transition: background var(--wd-dur-fast) ease;
-}
-
-.wd-accordion__head:hover {
-  background: var(--wd-tint-1);
-}
-
-.wd-accordion__item.is-disabled .wd-accordion__head {
-  color: var(--wd-ink-3);
-  cursor: not-allowed;
-}
-
-.wd-accordion__item.is-disabled .wd-accordion__head:hover {
-  background: transparent;
-}
-
-.wd-accordion__head:focus-visible {
-  outline: none;
-  box-shadow: inset 0 0 0 2px var(--wd-focus-ring);
-}
-
-.wd-accordion__title-wrap {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.wd-accordion__title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.wd-accordion__desc {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--wd-ink-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/*
- * 箭头旋转。
- * 用 transform 而非切换图标 —— 图标切换在动画时钟停摆的环境下会闪。
- */
-.wd-accordion__chevron {
-  flex: none;
-  color: var(--wd-ink-3);
-  transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) ease;
-}
-
-.wd-accordion__chevron.is-open {
-  transform: rotate(180deg);
-  color: var(--wd-ink-2);
-}
-
-.wd-accordion__body {
-  /* hidden 属性已由模板控制，这里负责内容的内距与节奏 */
-  padding: 0 16px 16px;
-}
-
-/*
- * 内容区展开动画。
- *
- * ⚠️ 不用 height:auto 过渡（浏览器不支持 auto 插值），
- * 也不用 grid-template-rows（Safari 16 之前不稳定）。
- * 用 opacity + translateY 的轻量入场，高度直接由 hidden 控制 ——
- * 这样没有布局抖动，也不依赖动画时钟（时钟停摆时只是不播动画，
- * 内容该出现还是会出现）。
- */
-.wd-accordion__inner {
-  padding-top: 2px;
-  color: var(--wd-ink-2);
-  font-size: 13.5px;
-  line-height: 1.7;
-}
-
-.wd-accordion__item.is-open .wd-accordion__inner {
-  animation: wd-accordion-in var(--wd-dur) var(--wd-ease-out);
-}
-
-@keyframes wd-accordion-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .wd-accordion__item.is-open .wd-accordion__inner {
-    animation: none;
-  }
-  .wd-accordion__chevron {
-    transition: none;
-  }
-}
 .wd-drawer {
   position: fixed;
   inset: 0;
@@ -10433,6 +10329,43 @@ html.dark-theme {
   --wd-link-underline: rgba(214, 40, 57, .5);
   background: var(--wd-bg);
   color: var(--wd-ink);
+  /* ---------------- Rainbow · 深色覆盖 ---------------- */
+  /*
+   * 深色下三档都要变：
+   *   base  提亮（深底上原色过暗，失去色彩感）
+   *   soft  改成半透明深色底（直译浅色会白得刺眼）
+   *   ink   改成浅色（深底上要浅字才可读）
+   */
+  --wd-rainbow-red: #F07A86;
+  --wd-rainbow-orange: #F0A06A;
+  --wd-rainbow-amber: #E8BE6E;
+  --wd-rainbow-lime: #B0CC74;
+  --wd-rainbow-green: #6BC194;
+  --wd-rainbow-teal: #5FC0BC;
+  --wd-rainbow-blue: #6FA8DC;
+  --wd-rainbow-indigo: #8494DC;
+  --wd-rainbow-violet: #B08FD4;
+  --wd-rainbow-pink: #DC8FBE;
+  --wd-rainbow-red-soft: color-mix(in srgb, #F07A86 14%, transparent);
+  --wd-rainbow-orange-soft: color-mix(in srgb, #F0A06A 14%, transparent);
+  --wd-rainbow-amber-soft: color-mix(in srgb, #E8BE6E 14%, transparent);
+  --wd-rainbow-lime-soft: color-mix(in srgb, #B0CC74 14%, transparent);
+  --wd-rainbow-green-soft: color-mix(in srgb, #6BC194 14%, transparent);
+  --wd-rainbow-teal-soft: color-mix(in srgb, #5FC0BC 14%, transparent);
+  --wd-rainbow-blue-soft: color-mix(in srgb, #6FA8DC 14%, transparent);
+  --wd-rainbow-indigo-soft: color-mix(in srgb, #8494DC 14%, transparent);
+  --wd-rainbow-violet-soft: color-mix(in srgb, #B08FD4 14%, transparent);
+  --wd-rainbow-pink-soft: color-mix(in srgb, #DC8FBE 14%, transparent);
+  --wd-rainbow-red-ink: #F07A86;
+  --wd-rainbow-orange-ink: #F0A06A;
+  --wd-rainbow-amber-ink: #E8BE6E;
+  --wd-rainbow-lime-ink: #B0CC74;
+  --wd-rainbow-green-ink: #6BC194;
+  --wd-rainbow-teal-ink: #5FC0BC;
+  --wd-rainbow-blue-ink: #6FA8DC;
+  --wd-rainbow-indigo-ink: #8494DC;
+  --wd-rainbow-violet-ink: #B08FD4;
+  --wd-rainbow-pink-ink: #DC8FBE;
 }
 
 /* 深色下滚动条 */
@@ -10587,150 +10520,94 @@ body {
  * 现在的版式：左对齐、占满容器、用留白建立呼吸 ——
  * 这是编辑类版式（杂志/文档站）的通行做法，比居中更"大气"。
  */
-.demo-hero {
-  padding: 120px 0 96px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  text-align: left;
-  position: relative;
-  max-width: none;
-}
-
 /*
- * 背景：中性灰径向渐变，不用淡红。
- *
- * 极简黑白灰体系里，页面底色上的大面积色晕会和内容抢注意力；
- * 红色尤其危险 —— 它会被读成"这里有警报"。
- * 用中性灰做同一种柔和铺底，观感一致但完全不抢色。
+ * ===== Hero =====
+ * 版式：左文右色条，栅格两栏（1fr / auto）。
+ * 底色是页面底（L0），不加任何色晕 —— 留白本身就是内容。
  */
-.demo-hero::before {
-  content: "";
-  position: absolute;
-  left: 8%;
-  top: 0;
-  width: 52%;
-  height: 100%;
-  background: radial-gradient(circle at 30% 40%, var(--wd-field) 0%, rgba(233, 237, 241, 0.35) 45%, transparent 72%);
-  pointer-events: none;
-  opacity: 0.8;
+/*
+ * 首屏：纯文字版式，无任何视觉装饰。
+ *
+ * 参考 Apple —— 首屏 80% 是留白的。
+ * 上下内距给得很大（140/120），让标题悬在页面中上部，
+ * 与下方的第一个 section 之间有大段呼吸空间。
+ */
+.demo-hero {
+  padding: 140px 0 120px;
+  position: relative;
 }
 
 .hero-inner {
-  position: relative;
-  z-index: 1;
+  display: flex;
   width: 100%;
-  max-width: none;
+}
+
+.hero-copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 22px;
+  min-width: 0;
 }
 
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  /* eyebrow 是辅助信息，用中灰；红色留给标题强调词与主按钮 */
   color: var(--wd-ink-2);
+  margin-bottom: 26px;
 }
 
 .hero-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: var(--wd-red);
   display: inline-block;
 }
 
 /*
- * Slogan：两行短句，字距收紧、行高略松。
- * 比原来的产品名（一个词 + 分隔点）更接近"宣言"的气质 ——
- * 短句需要呼吸，不然两行会挤成一块。
+ * Slogan：两行宣言。
+ * 第一行纯黑、第二行中灰 —— 层次靠明度，不靠颜色。
+ * clamp 让它在 1280~1920 之间平滑缩放。
  */
 .hero-inner h1 {
-  font-size: clamp(56px, 7.4vw, 104px);
+  font-size: clamp(48px, 6.6vw, 96px);
   font-weight: 900;
-  letter-spacing: -0.042em;
+  letter-spacing: -0.045em;
   line-height: 1.02;
-  margin: 0;
+  margin: 0 0 40px;
   color: var(--wd-ink);
 }
 
-/* 第二行用中灰，制造"主句 → 续句"的层次，不靠颜色抢眼 */
 .hero-second {
-  color: var(--wd-ink-2);
-}
-
-/* hero-accent 仍保留给未来需要点睛的强调词 */
-.hero-accent {
-  color: var(--wd-red);
-}
-
-.hero-lead {
-  font-size: 17px;
-  line-height: 1.65;
-  color: var(--wd-ink-2);
-  /* 宽版式下正文也不必挤在窄栏里；40em 仍保证单行长度可读 */
-  max-width: 40em;
-  font-size: 18px;
-  margin: 0;
-  text-wrap: pretty;
-}
-
-.hero-lead em {
-  font-style: normal;
-  color: var(--wd-ink);
-  /* 内层短语不允许被拆行 → 不产生孤字 */
-  white-space: nowrap;
+  color: var(--wd-ink-3);
 }
 
 .hero-actions {
   display: flex;
-  gap: 14px;
+  align-items: center;
+  gap: 12px;
+}
+
+/*
+ * 主按钮悬停时箭头轻微右移 —— 表达"进入"的方向感。
+ * 位移只有 3px：足够被感知，又不至于让按钮跟着抖。
+ */
+.hero-go wd-icon,
+.hero-go .wd-icon {
+  transition: transform var(--wd-dur-base) var(--wd-ease-out);
+}
+
+.hero-go:hover wd-icon,
+.hero-go:hover .wd-icon {
+  transform: translateX(3px);
 }
 
 /* 统计块左对齐，与标题同一条左基线 */
-.hero-stats {
-  display: flex;
-  gap: 52px;
-  margin-top: 18px;
-  padding-top: 26px;
-  /*
-   * 用一条极淡的上分隔线把"数据"与"文案"分开。
-   * 无边框原则里这属于"结构分隔"，所以用 ink-5 的极浅灰，
-   * 不用任何强调色。
-   */
-  border-top: 1px solid var(--wd-ink-5);
-  width: 100%;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-}
-
-.stat b {
-  font-size: 34px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--wd-ink);
-  line-height: 1;
-}
-
-.stat span {
-  font-size: 11.5px;
-  color: var(--wd-ink-2);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
 .demo-sec {
   background: transparent;
   /* 用 padding 而非 margin：sticky 导航会「吃掉」margin，
@@ -10827,14 +10704,26 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  /*
+   * 标题前的小横线：用彩虹色轮换。
+   *
+   * 这是"闯入色彩"的典型用法 —— 它不承载任何语义，
+   * 只做版面节奏与视觉锚点。73 个面板如果全是灰线，
+   * 整页会糊成一片；轮换色相后每一节有自己的"坐标"，
+   * 又不至于像主题红那样到处喊"注意我"。
+   *
+   * 实现：用 nth-of-type 按面板顺序取色，
+   * 不依赖 JS、不写内联样式，增删面板自动重排。
+   */
 }
 .demo-panel > h3::before {
   content: "";
   width: 18px;
   height: 2px;
   border-radius: 999px;
-  background: var(--wd-ink-4);
   display: inline-block;
+  /* 色相由 JS 写入 --panel-accent（见 demo.js paintPanelAccents） */
+  background: var(--panel-accent, var(--wd-ink-4));
 }
 
 .demo-row {
@@ -11134,4 +11023,21 @@ html {
   font-size: 11.5px;
   color: var(--wd-ink-3);
   font-variant-numeric: tabular-nums;
+}
+
+/* =============================================================
+ *  Rainbow accent · 面板标题前的小横线
+ *
+ *  色相由 JS 按**文档顺序**赋值（见 demo.js 的 paintPanelAccents）。
+ *
+ *  ⚠️ 为什么不能用 CSS nth-child / nth-of-type：
+ *    它们只统计「同一父级下的兄弟」。demo 的面板分散在多个
+ *    .demo-grid / .demo-sec 里，每组 7 个 → 颜色每 7 个就回到起点，
+ *    区块之间还会重复。CSS 没有任何选择器能跨父级计数
+ *    （CSS 计数器可以做到，但无法对计数取模映射到 10 种颜色）。
+ *
+ *  用 JS 一次性赋值还有个好处：增删面板时自动重排，不用改样式。
+ * ============================================================= */
+.demo-panel > h3::before {
+  background: var(--wd-ink-4); /* 兜底：JS 未执行时仍是中性灰 */
 }
