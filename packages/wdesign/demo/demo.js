@@ -236,6 +236,19 @@ const app = createApp({
   data() {
     return {
       popSeg: '全部',
+      transferVal: [2, 4],
+      transferData: [
+        { key: 1, label: '林小满', desc: '设计' },
+        { key: 2, label: '陈一鸣', desc: '前端' },
+        { key: 3, label: '苏哲', desc: '后端' },
+        { key: 4, label: '周未', desc: '产品' },
+        { key: 5, label: '何川', desc: '测试' },
+        { key: 6, label: '李维', desc: '运维' },
+        { key: 7, label: '吴笛', desc: '数据' },
+        { key: 8, label: '郑安', desc: '安全', disabled: true },
+        { key: 9, label: '孙禾', desc: '算法' },
+        { key: 10, label: '钱七', desc: '运营' },
+      ],
       mdSample: `# 组件说明
 
 **WdMarkdown** 用内置解析器渲染，不引第三方库。

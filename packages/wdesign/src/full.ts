@@ -8,6 +8,9 @@
 //     按需引入请用：import { WdButton } from "@w-run/wdesign"
 // =============================================================
 import type { App, Plugin } from 'vue'
+import WdAccordion from './components/WdAccordion.vue'
+import WdAccordionItem from './components/WdAccordionItem.vue'
+import WdAffix from './components/WdAffix.vue'
 import WdAiMessage from './components/WdAiMessage.vue'
 import WdAlert from './components/WdAlert.vue'
 import WdAudioPlayer from './components/WdAudioPlayer.vue'
@@ -50,6 +53,7 @@ import WdProgress from './components/WdProgress.vue'
 import WdRadioGroup from './components/WdRadioGroup.vue'
 import WdRate from './components/WdRate.vue'
 import WdResult from './components/WdResult.vue'
+import WdScrollbar from './components/WdScrollbar.vue'
 import WdSegmented from './components/WdSegmented.vue'
 import WdSelect from './components/WdSelect.vue'
 import WdSkeleton from './components/WdSkeleton.vue'
@@ -65,12 +69,17 @@ import WdTabs from './components/WdTabs.vue'
 import WdTag from './components/WdTag.vue'
 import WdTimeline from './components/WdTimeline.vue'
 import WdTooltip from './components/WdTooltip.vue'
+import WdTransfer from './components/WdTransfer.vue'
 import WdTree from './components/WdTree.vue'
 import WdUpload from './components/WdUpload.vue'
 import WdVideoPlayer from './components/WdVideoPlayer.vue'
 import WdVirtualList from './components/WdVirtualList.vue'
+import WdWatermark from './components/WdWatermark.vue'
 
 const components = [
+  WdAccordion,
+  WdAccordionItem,
+  WdAffix,
   WdAiMessage,
   WdAlert,
   WdAudioPlayer,
@@ -113,6 +122,7 @@ const components = [
   WdRadioGroup,
   WdRate,
   WdResult,
+  WdScrollbar,
   WdSegmented,
   WdSelect,
   WdSkeleton,
@@ -128,10 +138,12 @@ const components = [
   WdTag,
   WdTimeline,
   WdTooltip,
+  WdTransfer,
   WdTree,
   WdUpload,
   WdVideoPlayer,
   WdVirtualList,
+  WdWatermark,
 ]
 
 export const WdUI: Plugin = {

@@ -1,0 +1,97 @@
+// =============================================================
+//  WDesign — Scrollbar（自定义滚动条）
+//
+//  ⚠️ 核心原则：**只换外观，不换滚动机制**。
+//     隐藏原生滚动条（scrollbar-width: none + ::-webkit-scrollbar），
+//     但滚动本身仍由浏览器处理 —— 这样惯性滚动、键盘 PageUp/Down、
+//     触控板双指、iOS 橡皮筋全部保留。
+//     用 JS 自己实现滚动会把这些全部丢掉。
+// =============================================================
+
+.wd-scrollbar {
+  position: relative;
+  overflow: hidden; /* 让自定义轨道贴在容器内缘 */
+}
+
+.wd-scrollbar__view {
+  /*
+   * 真正的滚动容器。
+   * overflow-y: auto + 隐藏原生条 —— 两件事必须同时做，
+   * 只写 overflow: hidden 会彻底失去滚动能力。
+   */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 旧 Edge */
+  height: 100%;
+  max-height: inherit;
+  padding-right: 2px; /* 给自绘轨道留一点视觉呼吸 */
+}
+
+.wd-scrollbar__view::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+/* native 模式：恢复浏览器原生滚动条（无障碍优先的场景） */
+.wd-scrollbar__view.is-native {
+  scrollbar-width: auto;
+  -ms-overflow-style: auto;
+  padding-right: 0;
+}
+.wd-scrollbar__view.is-native::-webkit-scrollbar {
+  display: initial;
+}
+
+/* ---------------- 自绘轨道 ---------------- */
+.wd-scrollbar__track {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  z-index: 2;
+  border-radius: var(--wd-radius-pill);
+  /*
+   * 轨道本体透明：只在 hover / 拖动时透出一点底色。
+   * 常驻色块会在内容边缘形成一条"永远存在的灰带"，
+   * 在无边框设计里很抢眼。
+   */
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+}
+
+.wd-scrollbar__track.is-visible {
+  opacity: 1;
+}
+
+.wd-scrollbar.is-hover .wd-scrollbar__track {
+  background: var(--wd-tint-1);
+}
+
+.wd-scrollbar__thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-ink-4);
+  cursor: grab;
+  transition: background var(--wd-dur-fast) ease;
+  /* 触摸设备上可拖拽：阻止浏览器的滚动接管 */
+  touch-action: none;
+}
+
+.wd-scrollbar__thumb:hover {
+  background: var(--wd-ink-3);
+}
+
+.wd-scrollbar__thumb.is-dragging {
+  background: var(--wd-ink-2);
+  cursor: grabbing;
+  /* 拖动时不做位置过渡，否则滑块会"追"着指针跑 */
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-scrollbar__track,
+  .wd-scrollbar__thumb { transition: none; }
+}

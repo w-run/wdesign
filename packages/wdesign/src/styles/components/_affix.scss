@@ -1,0 +1,35 @@
+// =============================================================
+//  WDesign — Affix（吸顶 / 吸底）
+//
+//  实现方式是「占位 + fixed」：
+//    · 未吸附：内容在文档流里正常排布
+//    · 吸附：内容变 fixed 脱离文档流，同时插入一个等尺寸占位
+//      —— 否则页面会向上跳一段（脱流后空间消失）
+//
+//  ⚠️ 这里用 fixed 是对的：它就该永远贴在视口边缘，
+//     与「锚定浮层」（absolute + 文档坐标）不是一回事。
+// =============================================================
+
+.wd-affix {
+  /* 本身不设定位，吸附与否由内部 __content 的 style 决定 */
+  display: block;
+}
+
+.wd-affix__placeholder {
+  /* 纯占位，不参与交互与无障碍 */
+  pointer-events: none;
+}
+
+.wd-affix__content {
+  /* 未吸附时无特殊样式；吸附时的 position/left/top 全部由 JS 内联给出 */
+  will-change: transform;
+}
+
+/*
+ * 吸附时给一点投影，让"浮起来"这件事在视觉上成立。
+ * ⚠️ 只在 .is-affixed 下加，否则未吸附时也会有一圈阴影。
+ */
+.wd-affix.is-affixed .wd-affix__content {
+  background: var(--wd-bg);
+  box-shadow: var(--wd-shadow-sm);
+}

@@ -3444,6 +3444,465 @@ body {
   pointer-events: none;
 }
 
+.wd-transfer {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.wd-transfer.is-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.wd-transfer__panel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+}
+
+.wd-transfer__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--wd-ink);
+}
+
+.wd-transfer__check-all {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.wd-transfer__check-all input,
+.wd-transfer__item input {
+  /* 统一用系统 checkbox：无障碍最好，且与 WdCheckbox 视觉刻意区分 */
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--wd-red);
+  cursor: pointer;
+}
+
+.wd-transfer__count {
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-transfer__list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* 列表内部的滚动条保持细窄，避免在窄栏里占太多宽度 */
+  scrollbar-width: thin;
+}
+
+.wd-transfer__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: var(--wd-radius-sm);
+  font-size: 13px;
+  color: var(--wd-ink);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-transfer__item:hover {
+  background: var(--wd-tint-1);
+}
+
+.wd-transfer__item.is-checked {
+  background: var(--wd-tint-2);
+}
+
+.wd-transfer__item.is-disabled {
+  color: var(--wd-ink-3);
+  cursor: not-allowed;
+}
+
+.wd-transfer__item.is-disabled:hover {
+  background: transparent;
+}
+
+.wd-transfer__item input {
+  /* 与首行文字基线对齐：15px 的框放在 13px/1.5 的行里需要微调 */
+  margin-top: 2px;
+}
+
+.wd-transfer__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wd-transfer__desc {
+  font-size: 11.5px;
+  color: var(--wd-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-transfer__empty {
+  margin: 0;
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--wd-ink-3);
+}
+
+/* ---------------- 中间操作列 ---------------- */
+.wd-transfer__ops {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex: none;
+}
+
+.wd-transfer__op {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, opacity var(--wd-dur-fast) ease;
+}
+
+.wd-transfer__op:hover:not(:disabled) {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-transfer__op:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.wd-transfer__op:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* 窄屏：上下堆叠，操作列横过来 */
+@media (max-width: 560px) {
+  .wd-transfer {
+    flex-direction: column;
+  }
+  .wd-transfer__ops {
+    flex-direction: row;
+    justify-content: center;
+  }
+  /* 竖排时箭头方向也该转：右→下，左→上 */
+  .wd-transfer__ops .wd-transfer__op:first-child wd-icon,
+  .wd-transfer__ops .wd-transfer__op:last-child wd-icon {
+    transform: rotate(90deg);
+  }
+}
+.wd-watermark {
+  position: relative;
+  /* 水印层绝对定位需要它是包含块 */
+  isolation: isolate;
+  /*
+   * 撑满父容器宽度。
+   *
+   * ⚠️ 没有这条时，如果父级是 flex + align-items:flex-start
+   * （很常见），本组件会收缩到内容宽度 —— 水印只能覆盖一小块，
+   * 表现为"只在左下角露出一小段文字"。
+   * 水印的语义就是覆盖整个区域，宽度不该由内容决定。
+   */
+  width: 100%;
+  /* 内部卡片块级撑满，避免再次收缩 */
+  display: block;
+}
+
+.wd-watermark__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /*
+   * 平铺图已由 JS 生成（含旋转与透明度），
+   * 这里不再叠 opacity —— 双重透明会让水印淡到看不见。
+   */
+  background-repeat: repeat;
+}
+
+.wd-scrollbar {
+  position: relative;
+  overflow: hidden; /* 让自定义轨道贴在容器内缘 */
+}
+
+.wd-scrollbar__view {
+  /*
+   * 真正的滚动容器。
+   * overflow-y: auto + 隐藏原生条 —— 两件事必须同时做，
+   * 只写 overflow: hidden 会彻底失去滚动能力。
+   */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 旧 Edge */
+  height: 100%;
+  max-height: inherit;
+  padding-right: 2px; /* 给自绘轨道留一点视觉呼吸 */
+}
+
+.wd-scrollbar__view::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+/* native 模式：恢复浏览器原生滚动条（无障碍优先的场景） */
+.wd-scrollbar__view.is-native {
+  scrollbar-width: auto;
+  -ms-overflow-style: auto;
+  padding-right: 0;
+}
+
+.wd-scrollbar__view.is-native::-webkit-scrollbar {
+  display: initial;
+}
+
+/* ---------------- 自绘轨道 ---------------- */
+.wd-scrollbar__track {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  z-index: 2;
+  border-radius: var(--wd-radius-pill);
+  /*
+   * 轨道本体透明：只在 hover / 拖动时透出一点底色。
+   * 常驻色块会在内容边缘形成一条"永远存在的灰带"，
+   * 在无边框设计里很抢眼。
+   */
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+}
+
+.wd-scrollbar__track.is-visible {
+  opacity: 1;
+}
+
+.wd-scrollbar.is-hover .wd-scrollbar__track {
+  background: var(--wd-tint-1);
+}
+
+.wd-scrollbar__thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-ink-4);
+  cursor: grab;
+  transition: background var(--wd-dur-fast) ease;
+  /* 触摸设备上可拖拽：阻止浏览器的滚动接管 */
+  touch-action: none;
+}
+
+.wd-scrollbar__thumb:hover {
+  background: var(--wd-ink-3);
+}
+
+.wd-scrollbar__thumb.is-dragging {
+  background: var(--wd-ink-2);
+  cursor: grabbing;
+  /* 拖动时不做位置过渡，否则滑块会"追"着指针跑 */
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-scrollbar__track,
+  .wd-scrollbar__thumb {
+    transition: none;
+  }
+}
+.wd-affix {
+  /* 本身不设定位，吸附与否由内部 __content 的 style 决定 */
+  display: block;
+}
+
+.wd-affix__placeholder {
+  /* 纯占位，不参与交互与无障碍 */
+  pointer-events: none;
+}
+
+.wd-affix__content {
+  /* 未吸附时无特殊样式；吸附时的 position/left/top 全部由 JS 内联给出 */
+  will-change: transform;
+}
+
+/*
+ * 吸附时给一点投影，让"浮起来"这件事在视觉上成立。
+ * ⚠️ 只在 .is-affixed 下加，否则未吸附时也会有一圈阴影。
+ */
+.wd-affix.is-affixed .wd-affix__content {
+  background: var(--wd-bg);
+  box-shadow: var(--wd-shadow-sm);
+}
+
+.wd-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wd-accordion__item {
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  overflow: hidden;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+/* 展开项给一点底色差，强化"当前在看哪一块" */
+.wd-accordion__item.is-open {
+  background: var(--wd-card);
+}
+
+.wd-accordion__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-accordion__head:hover {
+  background: var(--wd-tint-1);
+}
+
+.wd-accordion__item.is-disabled .wd-accordion__head {
+  color: var(--wd-ink-3);
+  cursor: not-allowed;
+}
+
+.wd-accordion__item.is-disabled .wd-accordion__head:hover {
+  background: transparent;
+}
+
+.wd-accordion__head:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--wd-focus-ring);
+}
+
+.wd-accordion__title-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wd-accordion__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-accordion__desc {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--wd-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * 箭头旋转。
+ * 用 transform 而非切换图标 —— 图标切换在动画时钟停摆的环境下会闪。
+ */
+.wd-accordion__chevron {
+  flex: none;
+  color: var(--wd-ink-3);
+  transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) ease;
+}
+
+.wd-accordion__chevron.is-open {
+  transform: rotate(180deg);
+  color: var(--wd-ink-2);
+}
+
+.wd-accordion__body {
+  /* hidden 属性已由模板控制，这里负责内容的内距与节奏 */
+  padding: 0 16px 16px;
+}
+
+/*
+ * 内容区展开动画。
+ *
+ * ⚠️ 不用 height:auto 过渡（浏览器不支持 auto 插值），
+ * 也不用 grid-template-rows（Safari 16 之前不稳定）。
+ * 用 opacity + translateY 的轻量入场，高度直接由 hidden 控制 ——
+ * 这样没有布局抖动，也不依赖动画时钟（时钟停摆时只是不播动画，
+ * 内容该出现还是会出现）。
+ */
+.wd-accordion__inner {
+  padding-top: 2px;
+  color: var(--wd-ink-2);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.wd-accordion__item.is-open .wd-accordion__inner {
+  animation: wd-accordion-in var(--wd-dur) var(--wd-ease-out);
+}
+
+@keyframes wd-accordion-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-accordion__item.is-open .wd-accordion__inner {
+    animation: none;
+  }
+  .wd-accordion__chevron {
+    transition: none;
+  }
+}
 .wd-drawer {
   position: fixed;
   inset: 0;

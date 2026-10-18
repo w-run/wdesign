@@ -1,0 +1,190 @@
+// =============================================================
+//  WDesign — Transfer（穿梭框）
+//
+//  三栏：待选 · 操作 · 已选。
+//  无边框原则：面板之间靠底色差 + 圆角区分，不加 border。
+// =============================================================
+
+.wd-transfer {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.wd-transfer.is-disabled {
+  opacity: .6;
+  pointer-events: none;
+}
+
+.wd-transfer__panel {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+}
+
+.wd-transfer__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--wd-ink);
+}
+
+.wd-transfer__check-all {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.wd-transfer__check-all input,
+.wd-transfer__item input {
+  /* 统一用系统 checkbox：无障碍最好，且与 WdCheckbox 视觉刻意区分 */
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--wd-red);
+  cursor: pointer;
+}
+
+.wd-transfer__count {
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-transfer__list {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  /* 列表内部的滚动条保持细窄，避免在窄栏里占太多宽度 */
+  scrollbar-width: thin;
+}
+
+.wd-transfer__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: var(--wd-radius-sm);
+  font-size: 13px;
+  color: var(--wd-ink);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-transfer__item:hover {
+  background: var(--wd-tint-1);
+}
+
+.wd-transfer__item.is-checked {
+  background: var(--wd-tint-2);
+}
+
+.wd-transfer__item.is-disabled {
+  color: var(--wd-ink-3);
+  cursor: not-allowed;
+}
+.wd-transfer__item.is-disabled:hover {
+  background: transparent;
+}
+
+.wd-transfer__item input {
+  /* 与首行文字基线对齐：15px 的框放在 13px/1.5 的行里需要微调 */
+  margin-top: 2px;
+}
+
+.wd-transfer__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wd-transfer__desc {
+  font-size: 11.5px;
+  color: var(--wd-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-transfer__empty {
+  margin: 0;
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--wd-ink-3);
+}
+
+/* ---------------- 中间操作列 ---------------- */
+.wd-transfer__ops {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  flex: none;
+}
+
+.wd-transfer__op {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease,
+              opacity var(--wd-dur-fast) ease;
+}
+
+.wd-transfer__op:hover:not(:disabled) {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-transfer__op:disabled {
+  opacity: .38;
+  cursor: not-allowed;
+}
+
+.wd-transfer__op:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* 窄屏：上下堆叠，操作列横过来 */
+@media (max-width: 560px) {
+  .wd-transfer {
+    flex-direction: column;
+  }
+  .wd-transfer__ops {
+    flex-direction: row;
+    justify-content: center;
+  }
+  /* 竖排时箭头方向也该转：右→下，左→上 */
+  .wd-transfer__ops .wd-transfer__op:first-child wd-icon,
+  .wd-transfer__ops .wd-transfer__op:last-child wd-icon {
+    transform: rotate(90deg);
+  }
+}

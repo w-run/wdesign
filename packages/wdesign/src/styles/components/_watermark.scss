@@ -1,0 +1,35 @@
+// =============================================================
+//  WDesign — Watermark（水印）
+//
+//  · background-image 平铺，不用 DOM 节点铺满
+//  · pointer-events: none，绝不挡交互
+//  · aria-hidden="true"，读屏不念
+// =============================================================
+
+.wd-watermark {
+  position: relative;
+  /* 水印层绝对定位需要它是包含块 */
+  isolation: isolate;
+  /*
+   * 撑满父容器宽度。
+   *
+   * ⚠️ 没有这条时，如果父级是 flex + align-items:flex-start
+   * （很常见），本组件会收缩到内容宽度 —— 水印只能覆盖一小块，
+   * 表现为"只在左下角露出一小段文字"。
+   * 水印的语义就是覆盖整个区域，宽度不该由内容决定。
+   */
+  width: 100%;
+  /* 内部卡片块级撑满，避免再次收缩 */
+  display: block;
+}
+
+.wd-watermark__layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /*
+   * 平铺图已由 JS 生成（含旋转与透明度），
+   * 这里不再叠 opacity —— 双重透明会让水印淡到看不见。
+   */
+  background-repeat: repeat;
+}
