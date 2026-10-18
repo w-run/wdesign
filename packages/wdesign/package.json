@@ -31,7 +31,8 @@
     "check:icons": "python3 tools/check-icons.py --strict",
     "build": "node tools/build-lib.mjs",
     "build:demo": "node tools/build-demo-components.mjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "dev": "node tools/wd-dev.mjs"
   },
   "sideEffects": [
     "*.css",

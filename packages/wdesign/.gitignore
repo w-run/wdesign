@@ -1,1 +1,5 @@
+node_modules/
+dist/
+.dev-cache/
 .demo-build/
+.lib-build/
