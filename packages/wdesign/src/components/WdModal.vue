@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
+import { computed, ref, toRef, watchEffect } from 'vue'
+import { useScrollLock, useFocusTrap } from './overlay'
+import { nextZIndex } from './overlay-stack'
+import { popDuration } from './pop-duration'
+
+const POP_DURATION = popDuration()
+
+// 显式给 duration：transitionend 在渲染器暂停/时钟停摆时会丢失，
+// 导致元素永远停在 enter-from（或关闭时无法销毁）。
+// 给 duration 让 Vue 用定时器兜底。
 
 defineOptions({ name: 'WdModal' })
 
@@ -16,7 +25,24 @@ const props = withDefaults(
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
 
 const panel = ref<HTMLElement | null>(null)
-let lastActive: HTMLElement | null = null
+
+/** 打开过一次后节点常驻，之后靠 .is-open 控制显隐（见模板注释） */
+const mounted = ref(false)
+watchEffect(() => { if (props.modelValue) mounted.value = true })
+
+/**
+ * 滚动锁定 + 焦点陷阱。
+ * 两者都抽在 overlay.ts —— 之前「点击外部关闭」在 5 个组件里各写一份，
+ * 结果 WdSelect 的 Esc 是后来补的。共用的行为只该有一处实现。
+ */
+const openRef = toRef(props, 'modelValue')
+
+/** 每次打开重新取层级：后开的浮层压在先开的上面 */
+const myZ = ref(0)
+watchEffect(() => { if (props.modelValue) myZ.value = nextZIndex() })
+useScrollLock(openRef)
+// Esc 交给层栈统一调度 —— 多层时只关最上层
+useFocusTrap(openRef, panel, () => { close(); return true; })
 
 const maxWidth = computed(() =>
   typeof props.width === 'number' ? `${props.width}px` : props.width,
@@ -26,52 +52,27 @@ function close() {
   emit('update:modelValue', false)
 }
 
-const FOCUSABLE =
-  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
 
-/**
- * 无障碍焦点管理：
- * 打开时把焦点移入面板并记住来源，Tab 在面板内循环（焦点陷阱），
- * 关闭后归还焦点——否则键盘/读屏用户会「tab 到背后的页面」而失去上下文。
- */
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') { close(); return }
-  if (e.key !== 'Tab' || !panel.value) return
-  const nodes = Array.from(panel.value.querySelectorAll<HTMLElement>(FOCUSABLE))
-  if (!nodes.length) return
-  const first = nodes[0]
-  const last = nodes[nodes.length - 1]
-  const active = document.activeElement as HTMLElement | null
-  if (e.shiftKey && (active === first || !panel.value.contains(active))) {
-    e.preventDefault(); last.focus()
-  } else if (!e.shiftKey && active === last) {
-    e.preventDefault(); first.focus()
-  }
-}
-
-watchEffect((onCleanup) => {
-  if (!props.modelValue) return
-  lastActive = document.activeElement as HTMLElement | null
-  document.addEventListener('keydown', onKeydown)
-  // 等面板渲染后聚焦首个可聚焦元素（无可聚焦元素时聚焦面板本身）
-  requestAnimationFrame(() => {
-    const el = panel.value
-    if (!el) return
-    const first = el.querySelector<HTMLElement>(FOCUSABLE)
-    ;(first ?? el).focus()
-  })
-  onCleanup(() => {
-    document.removeEventListener('keydown', onKeydown)
-    lastActive?.focus?.()
-    lastActive = null
-  })
-})
 </script>
 
 <template>
   <Teleport to="body">
-    <Transition name="wd-modal-fade">
-    <div v-if="modelValue" class="wd-modal" role="dialog" aria-modal="true" :aria-label="title || undefined">
+    <!--
+      不用 <Transition>：其 enter 阶段依赖 nextFrame，动画时钟停摆时
+      （后台标签页 / 无头渲染 / 减弱动效）永不推进，enter-from 会残留，
+      关闭时再叠 leave-* 就彻底销毁不掉 —— 表现为「弹窗关不掉、还挡着点击」。
+      改为常驻节点 + .is-open 类，可见性交给 display，动画只负责好看。
+    -->
+    <div
+      v-show="mounted"
+      class="wd-modal"
+      :class="{ 'is-open': modelValue }"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="title || undefined"
+      :style="{ zIndex: myZ }"
+      @transitionend.self="onLeaveEnd"
+    >
       <div class="wd-modal__mask" @click="closeOnMask && close()"></div>
       <div ref="panel" class="wd-modal__panel" tabindex="-1" :style="{ maxWidth }">
         <div class="wd-modal__head">
@@ -84,6 +85,5 @@ watchEffect((onCleanup) => {
         <div v-if="$slots.footer" class="wd-modal__foot"><slot name="footer" /></div>
       </div>
     </div>
-    </Transition>
   </Teleport>
 </template>

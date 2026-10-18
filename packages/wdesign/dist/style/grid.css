@@ -1,0 +1,4 @@
+.wd-grid {
+  display: grid;
+  gap: var(--wd-space-4);
+}

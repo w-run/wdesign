@@ -1,0 +1,76 @@
+@charset "UTF-8";
+.wd-dropdown {
+  position: relative;
+  display: inline-flex;
+}
+
+.wd-dropdown__trigger {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.wd-dropdown__trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+.wd-dropdown__menu {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 180px;
+  padding: 8px;
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-md);
+  box-shadow: var(--wd-shadow-hover);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wd-dropdown__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--wd-radius-sm);
+  font: inherit;
+  font-size: 14px;
+  color: var(--wd-ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+@media (hover: hover) {
+  .wd-dropdown__item:hover {
+    background: var(--wd-bg);
+  }
+}
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-dropdown__item.is-hover {
+  background: var(--wd-bg);
+}
+
+.wd-dropdown__item--danger {
+  color: var(--wd-red-text);
+}
+
+@media (hover: hover) {
+  .wd-dropdown__item--danger:hover {
+    background: var(--wd-tint-1);
+  }
+}
+.wd-dropdown__item--danger.is-hover {
+  background: var(--wd-tint-1);
+}
+
+.wd-dropdown__item--disabled {
+  color: var(--wd-ink-3);
+  pointer-events: none;
+}
+
+/* ---- 微交互（精致版）---- */
+/* 入场交给 <Transition name="wd-pop">（_popover.scss）；不要再叠 animation，否则会压掉过渡 */

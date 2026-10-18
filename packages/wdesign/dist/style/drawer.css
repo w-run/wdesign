@@ -1,0 +1,145 @@
+@charset "UTF-8";
+.wd-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+}
+
+.wd-drawer.is-open {
+  display: block;
+  animation: wd-drawer-fade-in var(--wd-dur) var(--wd-ease-out) both;
+}
+
+@keyframes wd-drawer-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.wd-drawer__mask {
+  position: absolute;
+  inset: 0;
+  background: var(--wd-mask);
+}
+
+.wd-drawer__panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
+  width: 380px;
+  max-width: calc(100% - 24px);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-lg);
+  box-shadow: var(--wd-shadow-lg);
+}
+
+.wd-drawer--left .wd-drawer__panel {
+  right: auto;
+  left: 12px;
+}
+
+/* 面板滑入：右侧从右往左、左侧从左往右 */
+.wd-drawer.is-open .wd-drawer__panel {
+  animation: wd-drawer-in-right var(--wd-dur-slow) var(--wd-ease-out) both;
+}
+
+.wd-drawer--left.is-open .wd-drawer__panel {
+  animation-name: wd-drawer-in-left;
+}
+
+@keyframes wd-drawer-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes wd-drawer-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-drawer.is-open,
+  .wd-drawer.is-open .wd-drawer__panel {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+.wd-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.wd-drawer__title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.wd-drawer__body {
+  flex: 1;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--wd-ink-2);
+}
+
+.wd-drawer__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.wd-drawer-fade-enter-active, .wd-drawer-fade-leave-active {
+  transition: opacity var(--wd-dur-slow) ease;
+}
+
+.wd-drawer-fade-enter-from, .wd-drawer-fade-leave-to {
+  opacity: 0;
+}
+
+/* 面板滑入：由同一套 Transition 控制，不叠加 animation
+   （animation 与 Transition 竞争会导致先闪到最终位置再弹回） */
+.wd-drawer-fade-enter-active .wd-drawer__panel {
+  transition: transform var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), opacity var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1);
+}
+
+.wd-drawer-fade-enter-from .wd-drawer__panel {
+  transform: translateX(24px);
+  opacity: 0.6;
+}
+
+.wd-drawer--left .wd-drawer-fade-enter-from .wd-drawer__panel,
+.wd-drawer-fade-enter-from .wd-drawer--left .wd-drawer__panel {
+  transform: translateX(-24px);
+}
+
+.wd-drawer-fade-leave-active .wd-drawer__panel {
+  transition: transform var(--wd-dur) ease, opacity var(--wd-dur) ease;
+}
+
+.wd-drawer-fade-leave-to .wd-drawer__panel {
+  transform: translateX(24px);
+  opacity: 0;
+}

@@ -1,0 +1,70 @@
+@charset "UTF-8";
+.wd-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  display: none;
+  opacity: 0;
+}
+
+.wd-modal.is-open {
+  display: flex;
+  opacity: 1;
+  animation: wd-modal-in var(--wd-dur) var(--wd-ease-out) both;
+}
+
+.wd-modal__mask {
+  position: absolute;
+  inset: 0;
+  background: var(--wd-mask);
+}
+
+.wd-modal__panel {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 26px 26px 24px;
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-xl);
+  box-shadow: var(--wd-shadow-lg);
+  transform: translateY(-6px) scale(0.97);
+  opacity: 0;
+}
+
+.wd-modal.is-open .wd-modal__panel {
+  transform: none;
+  opacity: 1;
+  animation: wd-modal-panel-in var(--wd-dur-slow) var(--wd-ease-out) both;
+}
+
+@keyframes wd-modal-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes wd-modal-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* 减弱动效：直接到位 */
+@media (prefers-reduced-motion: reduce) {
+  .wd-modal.is-open,
+  .wd-modal.is-open .wd-modal__panel {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

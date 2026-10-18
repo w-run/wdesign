@@ -1,5 +1,19 @@
 // WDesign — Drawer（侧滑抽屉）
-.wd-drawer { position: fixed; inset: 0; z-index: 1000; }
+// 显隐由 .is-open 驱动（display 保证开合，动画只管好看），见组件内注释
+.wd-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+}
+.wd-drawer.is-open {
+  display: block;
+  animation: wd-drawer-fade-in var(--wd-dur) var(--wd-ease-out) both;
+}
+@keyframes wd-drawer-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 .wd-drawer__mask { position: absolute; inset: 0; background: var(--wd-mask); }
 
@@ -18,6 +32,27 @@
   box-shadow: var(--wd-shadow-lg);
 }
 .wd-drawer--left .wd-drawer__panel { right: auto; left: 12px; }
+
+/* 面板滑入：右侧从右往左、左侧从左往右 */
+.wd-drawer.is-open .wd-drawer__panel {
+  animation: wd-drawer-in-right var(--wd-dur-slow) var(--wd-ease-out) both;
+}
+.wd-drawer--left.is-open .wd-drawer__panel {
+  animation-name: wd-drawer-in-left;
+}
+@keyframes wd-drawer-in-right {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes wd-drawer-in-left {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-drawer.is-open,
+  .wd-drawer.is-open .wd-drawer__panel { animation: none; opacity: 1; transform: none; }
+}
 
 .wd-drawer__head {
   display: flex;

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
+import { popDuration } from './pop-duration'
+
+const POP_DURATION = popDuration()
 
 defineOptions({ name: 'WdNotification' })
 
@@ -31,7 +34,7 @@ watchEffect((onCleanup) => {
 
 <template>
   <Teleport to="body">
-    <Transition name="wd-notification-fade">
+    <Transition name="wd-notification-fade" :duration="POP_DURATION">
       <div v-if="modelValue" class="wd-notification" :class="`wd-notification--${variant}`" role="alert">
         <span class="wd-notification__icon wd-dot wd-dot--lg" :class="`wd-dot--${variant}`"></span>
         <div class="wd-notification__body">

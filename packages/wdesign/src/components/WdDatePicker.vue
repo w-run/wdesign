@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useOverlayLayer } from './overlay-stack'
 
 // 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
 // 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
@@ -24,6 +25,9 @@ const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+
+/** 层栈：Esc 只关最上层 */
+useOverlayLayer(open, root, () => { open.value = false; return true })
 const view = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
 
 const WEEK = ['一', '二', '三', '四', '五', '六', '日']
@@ -90,7 +94,6 @@ function onDocClick(e: MouseEvent) {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false
 }
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') open.value = false
 }
 onMounted(() => {
   document.addEventListener('click', onDocClick)

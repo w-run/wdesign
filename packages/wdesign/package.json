@@ -3,21 +3,24 @@
   "version": "1.0.0",
   "description": "WDesign — Soft Bento · Red；SCSS + Vue3 组件库（无边框 · 色块分区 · 全圆角 · 留白极简；字体走 CDN: https://box.w-run.net/npm/fonts/）",
   "type": "module",
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/wdesign.cjs",
+  "module": "./dist/wdesign.esm.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./full": "./src/full.ts",
-    "./components/*": "./src/components/*",
-    "./styles": "./src/styles/index.scss",
-    "./styles/*": "./src/styles/*",
-    "./tokens.json": "./tokens.json",
-    "./hover": "./src/hover.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/wdesign.esm.js",
+      "require": "./dist/wdesign.cjs"
+    },
+    "./style": "./dist/wdesign.css",
+    "./style/*": "./dist/style/*.css",
+    "./src/*": "./src/*",
+    "./tokens.json": "./tokens.json"
   },
   "files": [
-    "src",
-    "tokens.json"
+    "dist",
+    "tokens.json",
+    "README.md"
   ],
   "scripts": {
     "audit": "python3 tools/design-audit.py",
@@ -25,11 +28,15 @@
     "gen:index": "node tools/gen-index.mjs",
     "hover:check": "python3 tools/hover-js.py --check",
     "check:tokens": "python3 tools/check-tokens.py --strict",
-    "check:icons": "python3 tools/check-icons.py --strict"
+    "check:icons": "python3 tools/check-icons.py --strict",
+    "build": "node tools/build-lib.mjs",
+    "build:demo": "node tools/build-demo-components.mjs",
+    "prepublishOnly": "npm run build"
   },
   "sideEffects": [
-    "**/*.scss",
-    "**/*.css"
+    "*.css",
+    "**/*.css",
+    "**/*.scss"
   ],
   "keywords": [
     "vue3",

@@ -1,0 +1,150 @@
+@charset "UTF-8";
+.wd-table-wrap {
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-md);
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: var(--wd-shadow);
+}
+
+.wd-table-wrap::-webkit-scrollbar {
+  height: 4px;
+}
+
+.wd-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-3);
+  border-radius: 999px;
+}
+
+.wd-table {
+  min-width: 100%;
+  width: max-content;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+.wd-table th {
+  padding: 13px 16px;
+  text-align: left;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--wd-ink-2);
+  background: var(--wd-bg);
+  white-space: nowrap;
+}
+
+.wd-table td {
+  padding: 14px 16px;
+  color: var(--wd-ink);
+}
+
+.wd-table tbody tr {
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-table--striped tbody tr:nth-child(even) {
+  background: var(--wd-bg);
+}
+
+@media (hover: hover) {
+  .wd-table tbody tr:hover {
+    background: var(--wd-tint-1);
+  }
+}
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-table tbody tr.is-hover {
+  background: var(--wd-tint-1);
+}
+
+.wd-table__th {
+  cursor: default;
+}
+
+.wd-table__th--sort {
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (hover: hover) {
+  .wd-table__th--sort:hover {
+    color: var(--wd-red-text);
+  }
+}
+.wd-table__th--sort.is-hover {
+  color: var(--wd-red-text);
+}
+
+.wd-table__sort {
+  display: inline-flex;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.wd-table__empty {
+  padding: 42px 20px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--wd-ink-2);
+}
+
+/* ---- 勾选列 ---- */
+.wd-table__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--wd-field);
+  color: #fff;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-table__check:hover {
+  background: var(--wd-field-hover);
+}
+
+.wd-table__check--on,
+.wd-table__check--part {
+  background: var(--wd-red);
+}
+
+.wd-table__row--checked {
+  background: var(--wd-tint-1);
+}
+
+.wd-table__row--checked:hover {
+  background: var(--wd-tint-2);
+}
+
+/* ---- 加载遮罩 ---- */
+.wd-table-wrap {
+  position: relative;
+}
+
+.wd-table-wrap--loading {
+  min-height: 120px;
+}
+
+.wd-table-wrap--loading .wd-table {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.wd-table__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+  background: color-mix(in srgb, var(--wd-card) 55%, transparent);
+  border-radius: inherit;
+}

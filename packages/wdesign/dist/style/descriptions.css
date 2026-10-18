@@ -1,0 +1,110 @@
+@charset "UTF-8";
+.wd-descriptions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: var(--wd-radius-sm);
+  overflow: hidden;
+}
+
+.wd-descriptions__row {
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.wd-descriptions__item {
+  display: flex;
+  flex: var(--wd-desc-span) 1 0;
+  min-width: 0;
+  gap: 10px;
+  align-items: baseline;
+}
+
+/*
+  ⚠️ 标签宽度不能写死（原来固定 96px）：
+  三列布局且容器偏窄时，每个单元格只有 ~127px，标签独占 96px 后
+  值区只剩 21px —— 中文字符逐字竖排，完全不可读（实测复现）。
+  改为「按内容自适应 + 上限 40%」，窄容器下标签让位给值。
+*/
+.wd-descriptions__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  line-height: 1.6;
+  /* 标签本身也该换行，而不是被压成一条竖线 */
+  overflow-wrap: break-word;
+}
+
+.wd-descriptions__value {
+  flex: 1 1 0;
+  /* 保证值区至少有可读宽度，否则宁可整行变窄 */
+  min-width: 3.5em;
+  font-size: 13px;
+  color: var(--wd-ink);
+  line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+.wd-descriptions__hint {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+  color: var(--wd-ink-2);
+}
+
+.wd-descriptions__colon {
+  color: var(--wd-ink-3);
+}
+
+/* ---- 尺寸 ---- */
+.wd-descriptions--md .wd-descriptions__row {
+  padding: 9px 0;
+}
+
+.wd-descriptions--sm .wd-descriptions__row {
+  padding: 6px 0;
+}
+
+.wd-descriptions--sm .wd-descriptions__label,
+.wd-descriptions--sm .wd-descriptions__value {
+  font-size: 12.5px;
+}
+
+/* ---- 竖排：标签在上 ---- */
+.wd-descriptions--vertical .wd-descriptions__item {
+  flex-direction: column;
+  gap: 3px;
+  padding-right: 18px;
+}
+
+.wd-descriptions--vertical .wd-descriptions__label {
+  max-width: none;
+  font-size: 12px;
+  color: var(--wd-ink-2);
+}
+
+.wd-descriptions--vertical .wd-descriptions__value {
+  font-weight: 600;
+}
+
+/* ---- 斑马纹：按行交替 ---- */
+.wd-descriptions--striped .wd-descriptions__row:nth-child(odd) {
+  background: var(--wd-tint-1);
+}
+
+.wd-descriptions--striped .wd-descriptions__row {
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: var(--wd-radius-xs);
+}
+
+.wd-descriptions__empty {
+  padding: 18px 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+}

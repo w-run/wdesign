@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, normalizeStyle as _normalizeStyle, withModifiers as _withModifiers, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock, Fragment as _Fragment } from "vue"
+import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, unref as _unref, normalizeStyle as _normalizeStyle, withModifiers as _withModifiers, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock, Fragment as _Fragment } from "vue"
 
 const _hoisted_1 = ["src", "alt"]
 const _hoisted_2 = {
@@ -14,6 +14,7 @@ const _hoisted_4 = {
 const _hoisted_5 = { class: "wd-preview__toolbar" }
 
 import { computed, ref, watch } from 'vue'
+import { popDuration } from './pop-duration'
 
 
 export default /*@__PURE__*/_defineComponent({
@@ -26,6 +27,8 @@ export default /*@__PURE__*/_defineComponent({
     index: { type: Number, required: false, default: 0 }
   },
   setup(__props: any) {
+
+const POP_DURATION = popDuration()
 
 
 
@@ -85,7 +88,10 @@ return (_ctx: any,_cache: any) => {
       ])
     ]),
     (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
-      _createVNode(_Transition, { name: "wd-preview-fade" }, {
+      _createVNode(_Transition, {
+        name: "wd-preview-fade",
+        duration: _unref(POP_DURATION)
+      }, {
         default: _withCtx(() => [
           (open.value)
             ? (_openBlock(), _createElementBlock("div", _hoisted_2, [
@@ -166,7 +172,7 @@ return (_ctx: any,_cache: any) => {
             : _createCommentVNode("v-if", true)
         ]),
         _: 1 /* STABLE */
-      })
+      }, 8 /* PROPS */, ["duration"])
     ]))
   ], 64 /* STABLE_FRAGMENT */))
 }

@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock } from "vue"
+import { unref as _unref, normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, renderSlot as _renderSlot, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, Transition as _Transition, withCtx as _withCtx, Teleport as _Teleport, createBlock as _createBlock } from "vue"
 
 const _hoisted_1 = { class: "wd-notification__body" }
 const _hoisted_2 = {
@@ -12,6 +12,7 @@ const _hoisted_3 = {
 }
 
 import { watchEffect } from 'vue'
+import { popDuration } from './pop-duration'
 
 
 export default /*@__PURE__*/_defineComponent({
@@ -25,6 +26,8 @@ export default /*@__PURE__*/_defineComponent({
   },
   emits: ["update:modelValue"],
   setup(__props: any, { emit: __emit }) {
+
+const POP_DURATION = popDuration()
 
 
 
@@ -49,7 +52,10 @@ return (_ctx: any,_cache: any) => {
   const _component_wd_icon = _resolveComponent("wd-icon")!
 
   return (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
-    _createVNode(_Transition, { name: "wd-notification-fade" }, {
+    _createVNode(_Transition, {
+      name: "wd-notification-fade",
+      duration: _unref(POP_DURATION)
+    }, {
       default: _withCtx(() => [
         (__props.modelValue)
           ? (_openBlock(), _createElementBlock("div", {
@@ -87,7 +93,7 @@ return (_ctx: any,_cache: any) => {
           : _createCommentVNode("v-if", true)
       ]),
       _: 3 /* FORWARDED */
-    })
+    }, 8 /* PROPS */, ["duration"])
   ]))
 }
 }

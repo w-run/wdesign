@@ -1,0 +1,7 @@
+.wd-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--wd-space-4);
+  padding-block: var(--wd-space-4);
+}

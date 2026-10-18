@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { popDuration } from './pop-duration'
+
+const POP_DURATION = popDuration()
 
 defineOptions({ name: 'WdTooltip' })
 
@@ -24,7 +27,7 @@ const open = ref(false)
     @focusout="open = false"
   >
     <slot />
-    <Transition name="wd-pop">
+    <Transition name="wd-pop" :duration="POP_DURATION">
       <span v-if="open" class="wd-tooltip__bubble" role="tooltip">{{ content }}</span>
     </Transition>
   </span>

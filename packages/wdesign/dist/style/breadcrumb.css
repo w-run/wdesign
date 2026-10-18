@@ -1,0 +1,54 @@
+@charset "UTF-8";
+.wd-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-size: 13.5px;
+}
+
+.wd-breadcrumb__item {
+  border: 0;
+  background: transparent;
+  padding: 4px 9px;
+  border-radius: var(--wd-radius-pill);
+  font: inherit;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: color var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-breadcrumb__item:hover {
+    color: var(--wd-red-text);
+    background: var(--wd-tint-1);
+  }
+}
+/* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+.wd-breadcrumb__item.is-hover {
+  color: var(--wd-red-text);
+  background: var(--wd-tint-1);
+}
+
+.wd-breadcrumb__item--current {
+  color: var(--wd-ink);
+  font-weight: 700;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .wd-breadcrumb__item--current:hover {
+    color: var(--wd-ink);
+    background: transparent;
+  }
+}
+.wd-breadcrumb__item--current.is-hover {
+  color: var(--wd-ink);
+  background: transparent;
+}
+
+.wd-breadcrumb__sep {
+  color: var(--wd-ink-2);
+  font-size: 12px;
+  user-select: none;
+}

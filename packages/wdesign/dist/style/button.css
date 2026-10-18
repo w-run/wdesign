@@ -1,0 +1,219 @@
+@charset "UTF-8";
+.wd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  height: var(--wd-size-md);
+  padding: 0 24px;
+  border-radius: var(--wd-radius-pill);
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
+}
+.wd-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.wd-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+.wd-btn:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+.wd-btn.wd-btn--lg {
+  height: var(--wd-size-lg);
+  padding: 0 34px;
+  font-size: var(--wd-font-size-lg);
+}
+.wd-btn.wd-btn--md {
+  height: var(--wd-size-md);
+  padding: 0 24px;
+  font-size: var(--wd-font-size-md);
+}
+.wd-btn.wd-btn--sm {
+  height: var(--wd-size-sm);
+  padding: 0 14px;
+  font-size: var(--wd-font-size-sm);
+}
+.wd-btn.wd-btn--icon {
+  width: var(--wd-size-md);
+  height: var(--wd-size-md);
+  padding: 0;
+}
+.wd-btn.wd-btn--icon.wd-btn--lg {
+  width: var(--wd-size-lg);
+  height: var(--wd-size-lg);
+}
+.wd-btn.wd-btn--icon.wd-btn--md {
+  width: var(--wd-size-md);
+  height: var(--wd-size-md);
+}
+.wd-btn.wd-btn--icon.wd-btn--sm {
+  width: var(--wd-size-sm);
+  height: var(--wd-size-sm);
+}
+.wd-btn.wd-btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.wd-btn--primary {
+  background: var(--wd-red);
+  color: #fff;
+}
+@media (hover: hover) {
+  .wd-btn--primary:hover:not(:disabled) {
+    background: var(--wd-red-hover);
+  }
+}
+.wd-btn--primary {
+  /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+}
+.wd-btn--primary.is-hover:not(:disabled) {
+  background: var(--wd-red-hover);
+}
+.wd-btn--primary:active:not(:disabled) {
+  background: var(--wd-red-active);
+}
+.wd-btn--primary:disabled {
+  background: var(--wd-tint-1);
+  color: var(--wd-ink-3);
+}
+
+.wd-btn--tint {
+  background: var(--wd-tint-2);
+  color: var(--wd-red-text);
+}
+@media (hover: hover) {
+  .wd-btn--tint:hover:not(:disabled) {
+    background: var(--wd-tint-3);
+  }
+}
+.wd-btn--tint.is-hover:not(:disabled) {
+  background: var(--wd-tint-3);
+}
+.wd-btn--tint:active:not(:disabled) {
+  background: var(--wd-tint-4);
+}
+.wd-btn--tint:disabled {
+  background: var(--wd-tint-1);
+  color: var(--wd-ink-3);
+}
+
+.wd-btn--dark {
+  background: var(--wd-dark);
+  color: var(--wd-dark-text);
+}
+@media (hover: hover) {
+  .wd-btn--dark:hover:not(:disabled) {
+    background: var(--wd-dark-hover);
+  }
+}
+.wd-btn--dark.is-hover:not(:disabled) {
+  background: var(--wd-dark-hover);
+}
+.wd-btn--dark:active:not(:disabled) {
+  background: var(--wd-dark-active);
+}
+.wd-btn--dark:disabled {
+  background: var(--wd-tint-1);
+  color: var(--wd-ink-3);
+}
+
+.wd-btn--ghost {
+  background: transparent;
+  color: var(--wd-ink);
+}
+@media (hover: hover) {
+  .wd-btn--ghost:hover:not(:disabled) {
+    background: var(--wd-field);
+  }
+}
+.wd-btn--ghost.is-hover:not(:disabled) {
+  background: var(--wd-field);
+}
+.wd-btn--ghost:active:not(:disabled) {
+  background: var(--wd-tint-2);
+}
+.wd-btn--ghost:disabled {
+  background: transparent;
+  color: var(--wd-ink-3);
+}
+
+/* ---- 微交互（精致版）---- */
+.wd-btn {
+  position: relative;
+  overflow: hidden;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-out), transform var(--wd-dur-fast) var(--wd-ease-spring);
+}
+
+.wd-btn:not(:disabled):active {
+  transform: scale(0.985);
+}
+
+.wd-btn--primary::after,
+.wd-btn--dark::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: 0;
+  width: 38%;
+  /* 高光扫过：白色常量（深色按钮上的反光，不随主题翻转） */
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+  transform: translateX(-130%) skewX(-18deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .wd-btn--primary:not(:disabled):hover::after, .wd-btn--dark:not(:disabled):hover::after {
+    animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out);
+  }
+}
+.wd-btn--primary:not(:disabled).is-hover::after, .wd-btn--dark:not(:disabled).is-hover::after {
+  animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out);
+}
+
+@media (hover: hover) {
+  .wd-btn--tint:not(:disabled):hover {
+    background: var(--wd-tint-3);
+  }
+}
+.wd-btn--tint:not(:disabled).is-hover {
+  background: var(--wd-tint-3);
+}
+
+.wd-btn--tint:not(:disabled):active {
+  background: var(--wd-tint-4);
+}
+
+/* ---- 加载态 ---- */
+.wd-btn--loading {
+  cursor: default;
+  /* 保留原色，只降低一点存在感；禁用态用的是褪色，二者要能区分 */
+  opacity: 0.82;
+}
+
+.wd-btn__spinner {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  border-radius: 50%;
+  /* 用 currentColor 描边，自动适配任何 variant 的文字色 */
+  border: 2px solid color-mix(in srgb, currentColor 26%, transparent);
+  border-top-color: currentColor;
+  animation: wd-spinner-rotate 0.7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-btn__spinner {
+    animation-duration: 2s;
+  }
+}

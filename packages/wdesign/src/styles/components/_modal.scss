@@ -1,4 +1,13 @@
 // WDesign — Modal（对话框 · 实色遮罩，非毛玻璃）
+//
+//  显隐由 .is-open 驱动，不用 <Transition>。
+//  原因见组件内注释：Transition 的 enter 依赖 nextFrame，动画时钟停摆时
+//  （后台标签页 / 无头渲染 / 系统减弱动效）永不推进，enter-from 残留，
+//  关闭时再叠 leave-* 就销毁不掉 —— 表现为「弹窗关不掉还挡着点击」。
+//
+//  这里把「可见性」和「动画」彻底解耦：
+//    display  → 保证一定能开能关（不依赖任何时序）
+//    opacity/transform → 只负责好不好看
 .wd-modal {
   position: fixed;
   inset: 0;
@@ -7,6 +16,14 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
+
+  display: none;
+  opacity: 0;
+}
+.wd-modal.is-open {
+  display: flex;
+  opacity: 1;
+  animation: wd-modal-in var(--wd-dur) var(--wd-ease-out) both;
 }
 
 .wd-modal__mask {
@@ -23,57 +40,26 @@
   background: var(--wd-card);
   border-radius: var(--wd-radius-xl);
   box-shadow: var(--wd-shadow-lg);
-  /* ⚠️ 面板入场**不要**在这里挂 animation。
-     元素一插入 animation 就无条件播放，与 <Transition> 的 enter 阶段
-     交叉作用 → 出现「先闪到最终位置再回弹」。
-     入场状态统一由下方 .wd-modal-fade-enter-from .wd-modal__panel 控制。 */
-}
-
-/* 遮罩：只做透明度过渡 */
-.wd-modal-fade-enter-active,
-.wd-modal-fade-leave-active { transition: opacity var(--wd-dur) ease; }
-.wd-modal-fade-enter-from,
-.wd-modal-fade-leave-to { opacity: 0; }
-
-/* 面板：位移 + 缩放。
-   ⚠️ 不能再用 `animation: wd-settle` —— 它与外层的 <Transition> 竞争：
-   元素插入后先按最终样式绘制一帧，动画才从首帧开始，表现为
-   「先闪到最终位置再弹回」。
-   改用同一套 Transition 的 enter-from 控制面板自身状态，时机严格一致。 */
-.wd-modal-fade-enter-active .wd-modal__panel {
-  transition:
-    opacity var(--wd-dur-slow) var(--wd-ease-out),
-    transform var(--wd-dur-slow) var(--wd-ease-out);
-}
-.wd-modal-fade-enter-from .wd-modal__panel {
-  opacity: 0;
   transform: translateY(-6px) scale(.97);
-}
-.wd-modal-fade-leave-active .wd-modal__panel {
-  transition:
-    opacity var(--wd-dur) var(--wd-ease-sharp),
-    transform var(--wd-dur) var(--wd-ease-sharp);
-}
-.wd-modal-fade-leave-to .wd-modal__panel {
   opacity: 0;
-  transform: scale(.98);
+}
+.wd-modal.is-open .wd-modal__panel {
+  transform: none;
+  opacity: 1;
+  animation: wd-modal-panel-in var(--wd-dur-slow) var(--wd-ease-out) both;
 }
 
-.wd-modal__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
+@keyframes wd-modal-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-.wd-modal__title { font-size: 18px; font-weight: 800; letter-spacing: -.01em; }
-
-.wd-modal__body { font-size: 14.5px; color: var(--wd-ink-2); line-height: 1.65; }
-
-.wd-modal__foot {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 24px;
+@keyframes wd-modal-panel-in {
+  from { opacity: 0; transform: translateY(-6px) scale(.97); }
+  to   { opacity: 1; transform: none; }
 }
 
+/* 减弱动效：直接到位 */
+@media (prefers-reduced-motion: reduce) {
+  .wd-modal.is-open,
+  .wd-modal.is-open .wd-modal__panel { animation: none; opacity: 1; transform: none; }
+}

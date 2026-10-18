@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { popDuration } from './pop-duration'
+
+const POP_DURATION = popDuration()
 
 defineOptions({ name: 'WdPopconfirm' })
 

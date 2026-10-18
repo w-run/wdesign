@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdSegmented' })
 
@@ -43,6 +44,9 @@ const mode = ref<Mode>('flat')
 const canLeft = ref(false)
 const canRight = ref(false)
 const dropdownOpen = ref(false)
+
+/** 层栈：Esc 只关最上层 */
+useOverlayLayer(dropdownOpen, wrap, () => { dropdownOpen.value = false; return true })
 
 /* ---------------- 滑块（选中项平移） ---------------- */
 function updateSlider() {
@@ -130,7 +134,7 @@ function onDocClick(e: MouseEvent) {
   if (wrap.value && !wrap.value.contains(e.target as Node)) dropdownOpen.value = false
 }
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') dropdownOpen.value = false
+  // Esc 由层栈统一调度（见下方 useOverlayLayer），这里不再单独处理
 }
 
 let ro: ResizeObserver | undefined

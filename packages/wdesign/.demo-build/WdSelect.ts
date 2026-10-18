@@ -29,6 +29,7 @@ const _hoisted_11 = {
 }
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useOverlayLayer } from './overlay-stack'
 
 // <Transition> 依赖 transitionend 收尾；事件丢失时元素会停在 enter-from。
 // 显式给 duration，让 Vue 用定时器兜底。
@@ -66,6 +67,9 @@ const emit = __emit
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+
+/** 层栈：Esc 只关最上层（弹窗里的选择器不会连带关弹窗） */
+useOverlayLayer(open, root, () => { open.value = false; return true })
 const search = ref('')
 const searchEl = ref<HTMLInputElement | null>(null)
 const activeIndex = ref(-1)
@@ -148,7 +152,6 @@ async function toggleOpen() {
 /* ---- 键盘操作 ---- */
 function onKeydown(e: KeyboardEvent) {
   if (props.disabled) return
-  if (e.key === 'Escape') { open.value = false; return }
   if (!open.value && (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown')) {
     e.preventDefault(); toggleOpen(); return
   }

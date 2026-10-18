@@ -1,0 +1,38 @@
+@charset "UTF-8";
+.wd-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.wd-tooltip__bubble {
+  position: absolute;
+  z-index: 60;
+  left: 50%;
+  transform: translateX(-50%) translateY(2px);
+  background: var(--wd-dark);
+  color: var(--wd-dark-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: var(--wd-radius-sm);
+  white-space: nowrap;
+  box-shadow: var(--wd-shadow-pop);
+  pointer-events: none;
+}
+
+.wd-tooltip--top .wd-tooltip__bubble {
+  bottom: calc(100% + 10px);
+}
+
+.wd-tooltip--bottom .wd-tooltip__bubble {
+  top: calc(100% + 10px);
+}
+
+/* 入场/退场由 <Transition name="wd-pop"> 负责（_popover.scss）。
+   ⚠️ 这里不要再挂 animation：它的 transform 会覆盖上面的 translateX(-50%) 居中，
+      导致气泡水平错位（历史 bug）。 */
+.wd-tooltip .wd-pop-enter-from,
+.wd-tooltip .wd-pop-leave-to {
+  transform: translateX(-50%) translateY(4px);
+}

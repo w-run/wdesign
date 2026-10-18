@@ -1,0 +1,304 @@
+@charset "UTF-8";
+.wd-markdown {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--wd-ink);
+  word-wrap: break-word;
+  -webkit-text-size-adjust: 100%;
+}
+.wd-markdown ::selection {
+  background: var(--wd-tint-3);
+  color: var(--wd-ink);
+}
+.wd-markdown > :first-child {
+  margin-top: 0;
+}
+.wd-markdown h1, .wd-markdown h2, .wd-markdown h3, .wd-markdown h4, .wd-markdown h5, .wd-markdown h6 {
+  margin: 1.6em 0 0.6em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+}
+.wd-markdown h1 {
+  font-size: 2rem;
+}
+.wd-markdown h2 {
+  font-size: 1.55rem;
+}
+.wd-markdown h3 {
+  font-size: 1.22rem;
+}
+.wd-markdown h4 {
+  font-size: 1.05rem;
+}
+.wd-markdown h5 {
+  font-size: 0.95rem;
+}
+.wd-markdown h6 {
+  font-size: 0.88rem;
+  color: var(--wd-ink-2);
+}
+.wd-markdown p {
+  margin: 0 0 1.15em;
+}
+.wd-markdown a {
+  color: var(--wd-red-text);
+  text-decoration: underline;
+  text-decoration-color: var(--wd-link-underline);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  transition: color var(--wd-dur-fast) ease, text-decoration-color var(--wd-dur-fast) ease;
+}
+@media (hover: hover) {
+  .wd-markdown a:hover {
+    color: var(--wd-red-hover);
+    text-decoration-color: var(--wd-red-hover);
+  }
+}
+.wd-markdown {
+  /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
+}
+.wd-markdown a.is-hover {
+  color: var(--wd-red-hover);
+  text-decoration-color: var(--wd-red-hover);
+}
+.wd-markdown strong, .wd-markdown b {
+  font-weight: 700;
+}
+.wd-markdown em {
+  font-style: italic;
+}
+.wd-markdown mark {
+  padding: 0.05em 0.35em;
+  border-radius: 6px;
+  background: var(--wd-mark-bg);
+  color: inherit;
+}
+.wd-markdown small {
+  font-size: 0.88em;
+  color: var(--wd-ink-2);
+}
+.wd-markdown sub, .wd-markdown sup {
+  font-size: 0.72em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.wd-markdown sub {
+  bottom: -0.25em;
+}
+.wd-markdown sup {
+  top: -0.5em;
+}
+.wd-markdown abbr[title] {
+  text-decoration: underline dotted var(--wd-underline);
+  text-underline-offset: 3px;
+}
+.wd-markdown code, .wd-markdown kbd, .wd-markdown pre, .wd-markdown samp {
+  font-family: var(--wd-font-mono);
+}
+.wd-markdown code {
+  padding: 0.16em 0.45em;
+  font-size: 0.87em;
+  border-radius: 7px;
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  white-space: break-spaces;
+}
+.wd-markdown pre {
+  margin: 0 0 1.25em;
+  padding: 18px 20px;
+  background: #101013; /* 固定深色块，不随主题翻转 */
+  color: var(--wd-on-dark-text);
+  border-radius: var(--wd-radius-md);
+  overflow: auto;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.wd-markdown pre code {
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+  white-space: pre;
+}
+.wd-markdown kbd {
+  padding: 0.12em 0.45em;
+  font-size: 0.85em;
+  border-radius: 7px;
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  box-shadow: 0 2px 0 var(--wd-ring-soft);
+}
+.wd-markdown blockquote {
+  position: relative;
+  margin: 0 0 1.25em;
+  padding: 15px 18px 15px 27px;
+  background: var(--wd-tint-1);
+  border-radius: var(--wd-radius-md);
+  color: var(--wd-ink-2);
+}
+.wd-markdown blockquote::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 15px;
+  bottom: 15px;
+  width: 4px;
+  border-radius: 999px;
+  background: var(--wd-red-soft);
+}
+.wd-markdown blockquote > :last-child {
+  margin-bottom: 0;
+}
+.wd-markdown blockquote blockquote {
+  margin: 12px 0 2px;
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
+}
+.wd-markdown blockquote blockquote::before {
+  background: var(--wd-tint-4);
+}
+.wd-markdown blockquote blockquote blockquote {
+  margin-bottom: 0;
+  background: var(--wd-tint-2);
+  box-shadow: none;
+}
+.wd-markdown blockquote blockquote blockquote::before {
+  background: var(--wd-red);
+}
+.wd-markdown ul, .wd-markdown ol {
+  margin: 0 0 1.15em;
+  padding-left: 1.5em;
+}
+.wd-markdown ul ul, .wd-markdown ul ol, .wd-markdown ol ol, .wd-markdown ol ul {
+  margin: 0.35em 0 0;
+}
+.wd-markdown li {
+  margin: 0.3em 0;
+}
+.wd-markdown li::marker {
+  color: var(--wd-red-text);
+}
+.wd-markdown ol li::marker {
+  color: var(--wd-ink-2);
+  font-weight: 600;
+}
+.wd-markdown li > p {
+  margin: 0.4em 0;
+}
+.wd-markdown .task-list-item {
+  list-style: none;
+}
+.wd-markdown .task-list-item input[type=checkbox],
+.wd-markdown input.task-list-item-checkbox {
+  accent-color: var(--wd-red);
+  width: 15px;
+  height: 15px;
+  margin: 0 0.5em 0 0;
+  vertical-align: -2px;
+}
+.wd-markdown table {
+  width: 100%;
+  margin: 0 0 1.25em;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14.5px;
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--wd-shadow);
+}
+.wd-markdown table th, .wd-markdown table td {
+  padding: 11px 16px;
+  text-align: left;
+}
+.wd-markdown table thead th {
+  background: var(--wd-field);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--wd-ink);
+}
+.wd-markdown table tbody tr:nth-child(even) {
+  background: var(--wd-bg);
+}
+@media (hover: hover) {
+  .wd-markdown table tbody tr:hover {
+    background: var(--wd-tint-1);
+  }
+}
+.wd-markdown table tbody tr.is-hover {
+  background: var(--wd-tint-1);
+}
+.wd-markdown hr {
+  border: 0;
+  height: 3px;
+  width: 64px;
+  margin: 34px auto;
+  border-radius: 999px;
+  background: var(--wd-field);
+}
+.wd-markdown img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-bg);
+}
+.wd-markdown figure {
+  margin: 0 0 1.25em;
+}
+.wd-markdown figcaption {
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--wd-ink-2);
+  text-align: center;
+}
+.wd-markdown dl {
+  margin: 0 0 1.25em;
+}
+.wd-markdown dt {
+  font-weight: 700;
+  margin-top: 0.8em;
+}
+.wd-markdown dd {
+  margin: 0.2em 0 0;
+  padding-left: 1.2em;
+  color: var(--wd-ink-2);
+}
+.wd-markdown .hljs-comment, .wd-markdown .hljs-quote, .wd-markdown .hljs-meta {
+  color: #6A9955;
+}
+.wd-markdown .hljs-name, .wd-markdown .hljs-keyword, .wd-markdown .hljs-selector-tag, .wd-markdown .hljs-literal,
+.wd-markdown .hljs-link, .wd-markdown .hljs-modifier, .wd-markdown .hljs-template-tag {
+  color: #569CD6;
+}
+.wd-markdown .hljs-string {
+  color: #CE9178;
+}
+.wd-markdown .hljs-variable, .wd-markdown .hljs-template-variable, .wd-markdown .hljs-attr, .wd-markdown .hljs-attribute,
+.wd-markdown .hljs-params, .wd-markdown .hljs-property, .wd-markdown .hljs-pseudo {
+  color: #9CDCFE;
+}
+.wd-markdown .hljs-title, .wd-markdown .hljs-function .hljs-title, .wd-markdown .hljs-function_ .hljs-title {
+  color: #DCDCAA;
+}
+.wd-markdown .hljs-number, .wd-markdown .hljs-value {
+  color: #B5CEA8;
+}
+.wd-markdown .hljs-operator, .wd-markdown .hljs-ellipsis {
+  color: #D4D4D4;
+}
+.wd-markdown .hljs-tag {
+  color: #808080;
+}
+.wd-markdown .hljs-built_in, .wd-markdown .hljs-builtin-name, .wd-markdown .hljs-constructor, .wd-markdown .hljs-class .hljs-title,
+.wd-markdown .hljs-enum .hljs-title, .wd-markdown .hljs-interface .hljs-title {
+  color: #4EC9B0;
+}
+.wd-markdown .hljs-exception, .wd-markdown .hljs-regexp {
+  color: #D16969;
+}
+.wd-markdown .hljs-decorator {
+  color: #6394BF;
+}

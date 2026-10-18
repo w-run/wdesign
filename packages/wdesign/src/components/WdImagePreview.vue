@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { popDuration } from './pop-duration'
+
+const POP_DURATION = popDuration()
 
 defineOptions({ name: 'WdImagePreview' })
 
@@ -56,7 +59,7 @@ function openPreview() {
   </span>
 
   <Teleport to="body">
-    <Transition name="wd-preview-fade">
+    <Transition name="wd-preview-fade" :duration="POP_DURATION">
       <div v-if="open" class="wd-preview">
         <div class="wd-preview__mask" @click="open = false"></div>
         <div
