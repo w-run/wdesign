@@ -6052,7 +6052,12 @@ img.wd-theme-invert {
   width: 100%;
   box-sizing: border-box;
   gap: 16px;
-  padding: 20px 22px;
+  /*
+   * 内距：标题离上/左要更远一点。
+   * 20/22 时标题几乎贴边（标题字重 800、字号大，视觉上更"顶"），
+   * 撑到 24/26 才有呼吸感；底部略收，避免下方控件离边缘太远。
+   */
+  padding: 24px 26px 22px;
   border-radius: var(--wd-radius-xl);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow);
@@ -6105,7 +6110,7 @@ img.wd-theme-invert {
  * 这里直接用一个固定的亮红：深底上足够醒目，浅深主题下表现一致。
  */
 .wd-audio--inverse .wd-audio__wave-bar {
-  background: rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .wd-audio--inverse .wd-audio__wave-bar.is-on {
@@ -6663,7 +6668,12 @@ img.wd-theme-invert {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 7px;
+}
+
+/* 让 main 与右侧控件之间有呼吸，不然 1× 会贴着总时长 */
+.wd-audio--bar {
+  gap: 16px;
 }
 
 .wd-audio__meta {
@@ -6691,9 +6701,23 @@ img.wd-theme-invert {
   white-space: nowrap;
 }
 
+/*
+ * bar 里的波形：柱子数量多（有 waveform 数据时按数据长度），
+ * 用 justify-content: space-between + 固定柱宽会让它散成一片"梳子"。
+ * 这里改成居中且不撑满，柱子紧挨着，视觉上是一条连续的波形带。
+ */
 .wd-audio--bar .wd-audio__wave {
-  height: 30px;
-  gap: 2px;
+  height: 24px;
+  gap: 1.5px;
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
+  padding: 0;
+}
+
+.wd-audio--bar .wd-audio__wave .wd-audio__wave-bar {
+  flex: 0 0 2px;
+  max-width: 2px;
 }
 
 .wd-audio__scrub {
@@ -6703,6 +6727,8 @@ img.wd-theme-invert {
   align-items: center;
   cursor: pointer;
   outline: none;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .wd-audio__scrub:focus-visible {
@@ -6750,17 +6776,47 @@ img.wd-theme-invert {
   transform: translateY(-50%) scale(1);
 }
 
-.wd-audio__time {
+/*
+ * 进度行：已播时间 / 进度条 / 总时长，三者同一行且垂直居中。
+ *
+ * ⚠️ 之前时间单独占一行，右侧比左侧封面高两行，整条重心偏上、封面显矮。
+ * 现在用 flex + align-items:center 让它们在一条基线上。
+ */
+.wd-audio__progress-row {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wd-audio__time-cur,
+.wd-audio__time-total {
+  flex: none;
   font-size: 11.5px;
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.wd-audio__time-sep {
+.wd-audio__time-total {
   color: var(--wd-ink-3);
+}
+
+/* 进度条在中间，占满剩余宽度 */
+.wd-audio__progress-row > .wd-audio__scrub,
+.wd-audio__progress-row > .wd-audio__wave {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/*
+ * 波形模式下，时间不要被推到两端。
+ * 波形本身 flex:1 会吃掉所有空间，时间自然贴住它 ——
+ * 但如果波形是 space-between 布局，柱子会散开、时间也离得远。
+ * 这里给波形一点内边距，让视觉上更紧凑。
+ */
+.wd-audio--bar .wd-audio__wave {
+  padding: 0 2px;
 }
 
 .wd-audio__err {
@@ -7702,13 +7758,14 @@ img.wd-theme-invert {
  * B 更常见（按钮直接作为插槽子节点），第一版漏了它，
  * 表现为「最后一个按钮右端被切平」。
  */
-.wd-group--capsule > .wd-group__item--first,
-.wd-group--capsule > .wd-group__item--first > * {
+/* 横向专用：用 :not(--col) 排除纵向，避免与纵向规则互相覆盖 */
+.wd-group--row.wd-group--capsule > .wd-group__item--first,
+.wd-group--row.wd-group--capsule > .wd-group__item--first > * {
   border-radius: var(--wd-radius-pill) 0 0 var(--wd-radius-pill) !important;
 }
 
-.wd-group--capsule > .wd-group__item--last,
-.wd-group--capsule > .wd-group__item--last > * {
+.wd-group--row.wd-group--capsule > .wd-group__item--last,
+.wd-group--row.wd-group--capsule > .wd-group__item--last > * {
   border-radius: 0 var(--wd-radius-pill) var(--wd-radius-pill) 0 !important;
 }
 
@@ -7860,18 +7917,18 @@ img.wd-theme-invert {
   box-shadow: var(--wd-shadow-sm);
 }
 
-.wd-group--joined > .wd-group__item--first,
-.wd-group--joined > .wd-group__item--first > * {
+.wd-group--row.wd-group--joined > .wd-group__item--first,
+.wd-group--row.wd-group--joined > .wd-group__item--first > * {
   border-radius: var(--wd-radius-md) 0 0 var(--wd-radius-md) !important;
 }
 
-.wd-group--joined > .wd-group__item--last,
-.wd-group--joined > .wd-group__item--last > * {
+.wd-group--row.wd-group--joined > .wd-group__item--last,
+.wd-group--row.wd-group--joined > .wd-group__item--last > * {
   border-radius: 0 var(--wd-radius-md) var(--wd-radius-md) 0 !important;
 }
 
-.wd-group--joined > .wd-group__item--only,
-.wd-group--joined > .wd-group__item--only > * {
+.wd-group--row.wd-group--joined > .wd-group__item--only,
+.wd-group--row.wd-group--joined > .wd-group__item--only > * {
   border-radius: var(--wd-radius-md) !important;
 }
 
@@ -7898,20 +7955,24 @@ img.wd-theme-invert {
   top: 50%;
   transform: translateY(-50%);
   width: 1px;
-  height: 46%;
+  /* 46% 在 44px 高的按钮里约 20px，克制且能暗示分段 */
+  height: 40%;
   background: var(--wd-ink-5);
   pointer-events: none;
 }
 
 /*
- * 纵向 joined 的分隔线。
- * 用 width:46% 居中 —— 满宽会显得像表格线，短一点更像分隔符。
+ * 纵向分隔线：只画中间一小段。
+ *
+ * ⚠️ 之前 `calc(100% - 28px)` 在 220px 宽的组里是 192px ——
+ * 横跨几乎整行，视觉上像表格横线，和「分段拼接」的语义不符。
+ * 分段之间的分隔应该短而克制：40px 足够暗示，又不会切断视线。
  */
 .wd-group--joined.wd-group--col.wd-group--divided > .wd-group__item:not(.wd-group__item--first)::before {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
-  width: calc(100% - 28px);
+  width: 40px;
   height: 1px;
 }
 

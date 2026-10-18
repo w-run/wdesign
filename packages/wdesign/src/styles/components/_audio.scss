@@ -58,7 +58,12 @@
   width: 100%;
   box-sizing: border-box;
   gap: 16px;
-  padding: 20px 22px;
+  /*
+   * 内距：标题离上/左要更远一点。
+   * 20/22 时标题几乎贴边（标题字重 800、字号大，视觉上更"顶"），
+   * 撑到 24/26 才有呼吸感；底部略收，避免下方控件离边缘太远。
+   */
+  padding: 24px 26px 22px;
   border-radius: var(--wd-radius-xl);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow);
@@ -97,7 +102,7 @@
  * 在深底上既不够亮也失去"品牌红"的意味。
  * 这里直接用一个固定的亮红：深底上足够醒目，浅深主题下表现一致。
  */
-.wd-audio--inverse .wd-audio__wave-bar { background: rgba(255, 255, 255, .26); }
+.wd-audio--inverse .wd-audio__wave-bar { background: rgba(255, 255, 255, .3); }
 .wd-audio--inverse .wd-audio__wave-bar.is-on { background: #FF5A65; }
 .wd-audio--inverse .wd-audio__main-btn {
   background: var(--wd-dark-text);
@@ -560,8 +565,11 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 7px;
 }
+
+/* 让 main 与右侧控件之间有呼吸，不然 1× 会贴着总时长 */
+.wd-audio--bar { gap: 16px; }
 
 .wd-audio__meta {
   display: flex;
@@ -586,7 +594,24 @@
   white-space: nowrap;
 }
 
-.wd-audio--bar .wd-audio__wave { height: 30px; gap: 2px; }
+/*
+ * bar 里的波形：柱子数量多（有 waveform 数据时按数据长度），
+ * 用 justify-content: space-between + 固定柱宽会让它散成一片"梳子"。
+ * 这里改成居中且不撑满，柱子紧挨着，视觉上是一条连续的波形带。
+ */
+.wd-audio--bar .wd-audio__wave {
+  height: 24px;
+  gap: 1.5px;
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
+  padding: 0;
+}
+
+.wd-audio--bar .wd-audio__wave .wd-audio__wave-bar {
+  flex: 0 0 2px;
+  max-width: 2px;
+}
 
 .wd-audio__scrub {
   position: relative;
@@ -595,6 +620,8 @@
   align-items: center;
   cursor: pointer;
   outline: none;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .wd-audio__scrub:focus-visible {
   box-shadow: 0 0 0 2px var(--wd-focus-ring);
@@ -628,15 +655,45 @@
 .wd-audio__scrub:hover .wd-audio__knob,
 .wd-audio__scrub:focus-visible .wd-audio__knob { transform: translateY(-50%) scale(1); }
 
-.wd-audio__time {
+/*
+ * 进度行：已播时间 / 进度条 / 总时长，三者同一行且垂直居中。
+ *
+ * ⚠️ 之前时间单独占一行，右侧比左侧封面高两行，整条重心偏上、封面显矮。
+ * 现在用 flex + align-items:center 让它们在一条基线上。
+ */
+.wd-audio__progress-row {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wd-audio__time-cur,
+.wd-audio__time-total {
+  flex: none;
   font-size: 11.5px;
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
-.wd-audio__time-sep { color: var(--wd-ink-3); }
+.wd-audio__time-total { color: var(--wd-ink-3); }
+
+/* 进度条在中间，占满剩余宽度 */
+.wd-audio__progress-row > .wd-audio__scrub,
+.wd-audio__progress-row > .wd-audio__wave {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/*
+ * 波形模式下，时间不要被推到两端。
+ * 波形本身 flex:1 会吃掉所有空间，时间自然贴住它 ——
+ * 但如果波形是 space-between 布局，柱子会散开、时间也离得远。
+ * 这里给波形一点内边距，让视觉上更紧凑。
+ */
+.wd-audio--bar .wd-audio__wave {
+  padding: 0 2px;
+}
 
 .wd-audio__err {
   color: var(--wd-red-text);

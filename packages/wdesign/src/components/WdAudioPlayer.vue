@@ -397,28 +397,34 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           <slot name="info" />
         </div>
 
-        <div v-if="bars" class="wd-audio__wave" role="slider" tabindex="0" aria-label="播放进度"
-          :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
-          <span v-for="(h, i) in bars" :key="i" class="wd-audio__wave-bar"
-            :class="{ 'is-on': (i / bars.length) * 100 <= shownPct }"
-            :style="{ height: '100%', transform: `scaleY(${h})` }"></span>
-        </div>
+        <!--
+          时间与进度条**同一行**，不单独占一行。
+          ⚠️ 之前时间另起一行，导致右侧内容比左侧封面高出两行，
+          封面显得"矮了一截"，整条重心偏上。
+          现在：已播时间 → 进度条 → 总时长，三者垂直居中于一行。
+        -->
+        <div class="wd-audio__progress-row">
+          <span class="wd-audio__time-cur">{{ formatDuration(current) }}</span>
 
-        <div v-else class="wd-audio__scrub" role="slider" tabindex="0" aria-label="播放进度"
-          :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
-          <span class="wd-audio__track"></span>
-          <span class="wd-audio__buffer" :style="{ width: bufferedPct + '%' }"></span>
-          <span class="wd-audio__played" :style="{ width: shownPct + '%' }"></span>
-          <span class="wd-audio__knob" :style="{ left: shownPct + '%' }"></span>
-        </div>
+          <div v-if="bars" class="wd-audio__wave" role="slider" tabindex="0" aria-label="播放进度"
+            :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
+            <span v-for="(h, i) in bars" :key="i" class="wd-audio__wave-bar"
+              :class="{ 'is-on': (i / bars.length) * 100 <= shownPct }"
+              :style="{ height: '100%', transform: `scaleY(${h})` }"></span>
+          </div>
 
-        <div class="wd-audio__time">
-          <span>{{ formatDuration(current) }}</span>
-          <span class="wd-audio__time-sep">/</span>
-          <span>{{ formatDuration(duration) }}</span>
+          <div v-else class="wd-audio__scrub" role="slider" tabindex="0" aria-label="播放进度"
+            :aria-valuenow="Math.round(shownPct)" @click="seekTo" @keydown="onScrubKey">
+            <span class="wd-audio__track"></span>
+            <span class="wd-audio__buffer" :style="{ width: bufferedPct + '%' }"></span>
+            <span class="wd-audio__played" :style="{ width: shownPct + '%' }"></span>
+            <span class="wd-audio__knob" :style="{ left: shownPct + '%' }"></span>
+          </div>
+
+          <span class="wd-audio__time-total">{{ formatDuration(duration) }}</span>
           <span v-if="errMsg" class="wd-audio__err">{{ errMsg }}</span>
-          <slot name="extra" />
         </div>
+        <slot name="extra" />
       </div>
 
       <div class="wd-audio__side">
