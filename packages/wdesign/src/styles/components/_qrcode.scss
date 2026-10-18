@@ -1,0 +1,76 @@
+// =============================================================
+//  WDesign — QRCode（二维码）
+//
+//  渲染用 SVG + 单条 path 合并所有黑模块：
+//    · 矢量，任意缩放/高分屏清晰
+//    · 上千个模块只产生 1 个 <path>，不是上千个 <rect>
+//    · shape-rendering: crispEdges 保证边缘不模糊
+//
+//  编码实现在 components/qrcode.ts（内嵌 MIT 版 qrcode-generator）。
+// =============================================================
+
+.wd-qrcode {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: var(--wd-radius-sm);
+  overflow: hidden;
+}
+
+.wd-qrcode__svg {
+  display: block;
+  border-radius: var(--wd-radius-sm);
+  /*
+   * crispEdges：关闭抗锯齿。
+   * 二维码模块边缘若被平滑，在低分辨率下会出现灰色过渡带，
+   * 扫描器可能把边缘判成"不确定"而解码失败。
+   */
+  shape-rendering: crispEdges;
+}
+
+.wd-qrcode__skeleton {
+  border-radius: var(--wd-radius-sm);
+  background: linear-gradient(
+    100deg,
+    var(--wd-tint-1) 30%,
+    var(--wd-tint-2) 50%,
+    var(--wd-tint-1) 70%
+  );
+  background-size: 200% 100%;
+  animation: wd-qrcode-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes wd-qrcode-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.wd-qrcode__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--wd-radius-sm);
+  background: var(--wd-field);
+  color: var(--wd-ink-3);
+  font-size: 12px;
+}
+
+/* 中心插槽（logo）：绝对居中，不参与二维码绘制 */
+.wd-qrcode__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-qrcode__skeleton { animation: none; }
+}

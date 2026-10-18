@@ -10,7 +10,7 @@
  * 流程：@vue/compiler-sfc 逐组件编译 → 写临时目录 → esbuild 打包成 IIFE
  *       （自动处理模块级变量重名、TS 类型剥离）
  */
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
@@ -81,6 +81,22 @@ for (const f of files) {
 // 复制 .ts 辅助模块
 for (const h of helpers) {
   writeFileSync(join(TMP, h), readFileSync(join(COMP, h), 'utf8'))
+}
+
+/*
+ * 复制 vendor 子目录。
+ * 组件可能依赖同目录下的第三方源码（如 qrcode-generator），
+ * 这些不是 .ts 也不是 .vue，上面的循环抓不到。
+ * ⚠️ 漏掉时 esbuild 报 "Could not resolve ./vendor/xxx"，但错误信息
+ * 指向 .demo-build 里的临时文件，很容易误以为是路径写错了。
+ */
+const VENDOR = join(COMP, 'vendor')
+if (existsSync(VENDOR)) {
+  mkdirSync(join(TMP, 'vendor'), { recursive: true })
+  for (const f of readdirSync(VENDOR)) {
+    writeFileSync(join(TMP, 'vendor', f), readFileSync(join(VENDOR, f), 'utf8'))
+  }
+  console.log(`   + vendor/（${readdirSync(VENDOR).length} 个文件）`)
 }
 
 writeFileSync(join(TMP, 'entry.ts'), entry.join('\n') + '\n')

@@ -1,5 +1,5 @@
 /* 由 tools/build-demo-components.mjs 生成，请勿手工编辑。
- * 源：src/components/*.vue（67 个）· 依赖全局 Vue
+ * 源：src/components/*.vue（69 个）· 依赖全局 Vue
  */
 var WD_REAL_MODULE = (() => {
   var __defProp = Object.defineProperty;
@@ -37,6 +37,7 @@ var WD_REAL_MODULE = (() => {
     WdButton: () => WdButton_default,
     WdCard: () => WdCard_default,
     WdCarousel: () => WdCarousel_default,
+    WdCascader: () => WdCascader_default,
     WdCheckbox: () => WdCheckbox_default,
     WdCollapse: () => WdCollapse_default,
     WdCommand: () => WdCommand_default,
@@ -66,6 +67,7 @@ var WD_REAL_MODULE = (() => {
     WdPopover: () => WdPopover_default,
     WdPostItem: () => WdPostItem_default,
     WdProgress: () => WdProgress_default,
+    WdQRCode: () => WdQRCode_default,
     WdRadioGroup: () => WdRadioGroup_default,
     WdRate: () => WdRate_default,
     WdResult: () => WdResult_default,
@@ -128,10 +130,10 @@ var WD_REAL_MODULE = (() => {
   var unref = G.unref;
   var createBlock = G.createBlock;
   var withModifiers = G.withModifiers;
-  var vModelText = G.vModelText;
-  var withDirectives = G.withDirectives;
   var Teleport = G.Teleport;
   var nextTick = G.nextTick;
+  var vModelText = G.vModelText;
+  var withDirectives = G.withDirectives;
   var vShow = G.vShow;
   var toRef = G.toRef;
   var watchEffect = G.watchEffect;
@@ -2342,6 +2344,479 @@ var WD_REAL_MODULE = (() => {
     }
   });
 
+  // .demo-build/anchor.ts
+  function scrollOffset() {
+    const x = window.scrollX ?? window.pageXOffset ?? document.documentElement.scrollLeft ?? 0;
+    const y = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0;
+    return { x, y };
+  }
+  function viewportSize() {
+    const vv = window.visualViewport;
+    if (vv) return { width: vv.width, height: vv.height };
+    return { width: window.innerWidth, height: window.innerHeight };
+  }
+  function useAnchoredPosition(open, anchor, panel, options = {}) {
+    const pos = ref({ top: 0, left: 0 });
+    const actual = ref(options.placement || "bottom-start");
+    function place() {
+      const el = anchor.value;
+      if (!el) return;
+      const a = el.getBoundingClientRect();
+      const pr = panel.value?.getBoundingClientRect();
+      const gap = options.gap ?? 6;
+      const pw = options.matchWidth ? a.width : options.width ?? pr?.width ?? 0;
+      const ph = pr?.height ?? 0;
+      const vp = viewportSize();
+      const s = scrollOffset();
+      const vTop = a.top;
+      const vBottom = a.bottom;
+      const dTop = a.top + s.y;
+      const dBottom = a.bottom + s.y;
+      const dLeft = a.left + s.x;
+      const dRight = a.right + s.x;
+      let placement = options.placement || "bottom-start";
+      const wantBottom = placement.startsWith("bottom");
+      const fitsBelow = vBottom + gap + ph <= vp.height - 8;
+      const fitsAbove = vTop - gap - ph >= 8;
+      const goBottom = wantBottom ? fitsBelow || !fitsAbove : !fitsAbove && fitsBelow;
+      let top;
+      if (goBottom) {
+        top = dBottom + gap;
+        placement = placement.replace("top", "bottom");
+      } else {
+        top = dTop - gap - ph;
+        placement = placement.replace("bottom", "top");
+      }
+      let left;
+      if (placement.endsWith("start")) left = dLeft;
+      else if (placement.endsWith("end")) left = dRight - pw;
+      else left = dLeft + a.width / 2 - pw / 2;
+      const minLeft = s.x + 8;
+      const maxLeft = s.x + vp.width - pw - 8;
+      left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft)));
+      pos.value = { top, left };
+      actual.value = placement;
+    }
+    let raf = 0;
+    let timer = 0;
+    function schedule() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        place();
+      });
+      clearTimeout(timer);
+      timer = window.setTimeout(place, 32);
+    }
+    function onScroll(e) {
+      const t = e.target;
+      if (t && panel.value && panel.value.contains(t)) return;
+      schedule();
+    }
+    let vv = null;
+    function bind() {
+      window.addEventListener("scroll", onScroll, true);
+      window.addEventListener("resize", schedule);
+      vv = window.visualViewport ?? null;
+      if (vv) {
+        vv.addEventListener("resize", schedule);
+        vv.addEventListener("scroll", schedule);
+      }
+    }
+    function unbind() {
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", schedule);
+      if (vv) {
+        vv.removeEventListener("resize", schedule);
+        vv.removeEventListener("scroll", schedule);
+        vv = null;
+      }
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+      clearTimeout(timer);
+    }
+    watch(open, async (v) => {
+      if (v) {
+        await nextTick();
+        place();
+        bind();
+        schedule();
+      } else {
+        unbind();
+      }
+    });
+    let ro = null;
+    watch(panel, (el) => {
+      ro?.disconnect();
+      if (el && typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(() => schedule());
+        ro.observe(el);
+      }
+    });
+    onBeforeUnmount(() => {
+      ro?.disconnect();
+      ro = null;
+    });
+    onMounted(() => {
+      if (open.value) {
+        place();
+        bind();
+      }
+    });
+    onBeforeUnmount(unbind);
+    return { pos, place: schedule, actual };
+  }
+  function useDismiss(refs, close, enabled, event = "click") {
+    function onDoc(e) {
+      if (!enabled.value) return;
+      const t = e.target;
+      if (refs.some((r) => r.value?.contains(t))) return;
+      close();
+    }
+    if (typeof document !== "undefined") document.addEventListener(event, onDoc);
+    onBeforeUnmount(() => {
+      if (typeof document !== "undefined") document.removeEventListener(event, onDoc);
+    });
+  }
+
+  // .demo-build/overlay-stack.ts
+  var stack = [];
+  var seq = 0;
+  var overlayDepth = ref(0);
+  var BASE_Z = 1e3;
+  var zSeq = 0;
+  function nextZIndex() {
+    return BASE_Z + ++zSeq * 10;
+  }
+  function topOverlay() {
+    return stack[stack.length - 1];
+  }
+  function isTopOverlay(id2) {
+    const t = topOverlay();
+    return !!t && t.id === id2;
+  }
+  function pushOverlay(entry) {
+    const id2 = ++seq;
+    stack.push({ ...entry, id: id2 });
+    overlayDepth.value = stack.length;
+    return id2;
+  }
+  function removeOverlay(id2) {
+    const i = stack.findIndex((e) => e.id === id2);
+    if (i >= 0) stack.splice(i, 1);
+    overlayDepth.value = stack.length;
+  }
+  function useOverlayLayer(open, panel, onEsc) {
+    let myId = null;
+    watch(
+      open,
+      (v) => {
+        if (v) {
+          const active = document.activeElement;
+          myId = pushOverlay({
+            panel,
+            restoreTo: active && active !== document.body ? active : null,
+            onEscape: onEsc
+          });
+        } else if (myId !== null) {
+          removeOverlay(myId);
+          myId = null;
+        }
+      },
+      { immediate: true }
+    );
+    onBeforeUnmount(() => {
+      if (myId !== null) {
+        removeOverlay(myId);
+        myId = null;
+      }
+    });
+    return {
+      /** 本层是否在栈顶（需要响应键盘时先判断它） */
+      isTop: () => myId === null ? false : isTopOverlay(myId)
+    };
+  }
+  var installed = false;
+  function installOverlayKeyboard() {
+    if (installed || typeof document === "undefined") return;
+    installed = true;
+    document.addEventListener(
+      "keydown",
+      (e) => {
+        const top = topOverlay();
+        if (!top) return;
+        if (e.key === "Escape") {
+          const handled = top.onEscape?.();
+          if (handled !== false) {
+            e.stopPropagation();
+          }
+        }
+      },
+      true
+    );
+  }
+
+  // .demo-build/WdCascader.ts
+  var _hoisted_117 = ["tabindex", "aria-expanded"];
+  var _hoisted_214 = ["disabled", "aria-selected", "onClick"];
+  var _hoisted_312 = { class: "wd-cascader__label" };
+  var _hoisted_411 = {
+    key: 0,
+    class: "wd-cascader__empty"
+  };
+  var WdCascader_default = /* @__PURE__ */ defineComponent({
+    ...{ name: "WdCascader" },
+    __name: "WdCascader",
+    props: {
+      options: { type: Array, required: false, default: () => [] },
+      modelValue: { type: Array, required: false, default: void 0 },
+      placeholder: { type: String, required: false, default: "\u8BF7\u9009\u62E9" },
+      changeOnSelect: { type: Boolean, required: false, default: false },
+      disabled: { type: Boolean, required: false, default: false },
+      clearable: { type: Boolean, required: false, default: true },
+      size: { type: String, required: false, default: "md" },
+      maxHeight: { type: Number, required: false, default: 280 }
+    },
+    emits: ["update:modelValue", "change"],
+    setup(__props, { emit: __emit }) {
+      const props = __props;
+      const emit = __emit;
+      const open = ref(false);
+      const mounted = ref(false);
+      const rootEl = ref(null);
+      const panelEl = ref(null);
+      const { pos } = useAnchoredPosition(open, rootEl, panelEl, {
+        placement: "bottom-start",
+        gap: 6,
+        matchWidth: true
+      });
+      const inner = ref([]);
+      const isControlled = computed(() => props.modelValue !== void 0);
+      const selected = computed(() => isControlled.value ? props.modelValue : inner.value);
+      const browsing = ref([]);
+      const columns = computed(() => {
+        const out = [props.options];
+        let level = props.options;
+        for (const v of browsing.value) {
+          const hit = level.find((o) => o.value === v);
+          if (!hit?.children?.length) break;
+          out.push(hit.children);
+          level = hit.children;
+        }
+        return out;
+      });
+      function pickedAt(level) {
+        return browsing.value[level];
+      }
+      function labelsOf(values) {
+        const out = [];
+        let level = props.options;
+        for (const v of values) {
+          const hit = level.find((o) => o.value === v);
+          if (!hit) break;
+          out.push(hit.label);
+          level = hit.children ?? [];
+        }
+        return out;
+      }
+      const displayText = computed(() => labelsOf(selected.value).join(" / "));
+      watch(open, (v) => {
+        if (v) {
+          browsing.value = [...selected.value];
+        }
+      });
+      function toggleOpen() {
+        if (props.disabled) return;
+        if (open.value) close();
+        else {
+          mounted.value = true;
+          open.value = true;
+        }
+      }
+      function close() {
+        open.value = false;
+        window.setTimeout(() => {
+          if (!open.value) mounted.value = false;
+        }, 200);
+      }
+      function pick(level, opt) {
+        if (opt.disabled) return;
+        const next = browsing.value.slice(0, level);
+        next.push(opt.value);
+        const hasChildren = !!opt.children?.length;
+        if (hasChildren) {
+          browsing.value = next;
+          if (props.changeOnSelect) commit(next);
+          return;
+        }
+        browsing.value = next;
+        commit(next);
+        close();
+      }
+      function commit(values) {
+        if (!isControlled.value) inner.value = values;
+        emit("update:modelValue", values);
+        emit("change", values, labelsOf(values));
+      }
+      function clear(e) {
+        e.stopPropagation();
+        browsing.value = [];
+        if (!isControlled.value) inner.value = [];
+        emit("update:modelValue", []);
+        emit("change", [], []);
+      }
+      function onKeydown(e) {
+        if (e.key === "Escape") {
+          close();
+          return;
+        }
+        if (e.key === "Enter" || e.key === " " || e.key === "ArrowDown") {
+          e.preventDefault();
+          if (!open.value) toggleOpen();
+        }
+      }
+      useDismiss([rootEl, panelEl], close, open);
+      useOverlayLayer(open, panelEl, () => {
+        close();
+        return true;
+      });
+      const style = computed(() => ({
+        top: pos.value.top + "px",
+        left: pos.value.left + "px",
+        maxHeight: props.maxHeight + "px"
+      }));
+      watch(open, async (v) => {
+        if (v) {
+          await nextTick();
+        }
+      });
+      return (_ctx, _cache) => {
+        const _component_wd_icon = resolveComponent("wd-icon");
+        return openBlock(), createElementBlock(
+          Fragment,
+          null,
+          [
+            createElementVNode("div", {
+              ref_key: "rootEl",
+              ref: rootEl,
+              class: normalizeClass(["wd-cascader", [`wd-cascader--${__props.size}`, { "is-open": open.value, "is-disabled": __props.disabled }]]),
+              tabindex: __props.disabled ? -1 : 0,
+              role: "combobox",
+              "aria-expanded": open.value,
+              "aria-haspopup": "listbox",
+              onClick: toggleOpen,
+              onKeydown
+            }, [
+              createElementVNode(
+                "span",
+                {
+                  class: normalizeClass(["wd-cascader__value", { "is-placeholder": !displayText.value }])
+                },
+                toDisplayString(displayText.value || __props.placeholder),
+                3
+                /* TEXT, CLASS */
+              ),
+              createCommentVNode(" \u6E05\u7A7A\uFF1A\u53EA\u5728\u6709\u503C\u65F6\u51FA\u73B0\uFF0C\u4E14\u4E0D\u89E6\u53D1\u9762\u677F\u5F00\u5173 "),
+              __props.clearable && displayText.value && !__props.disabled ? (openBlock(), createElementBlock("span", {
+                key: 0,
+                class: "wd-cascader__clear",
+                role: "button",
+                "aria-label": "\u6E05\u7A7A",
+                onClick: clear
+              }, [
+                createVNode(_component_wd_icon, {
+                  name: "close",
+                  size: 13
+                })
+              ])) : createCommentVNode("v-if", true),
+              createVNode(_component_wd_icon, {
+                class: normalizeClass(["wd-cascader__caret", { "is-open": open.value }]),
+                name: "chevron-down",
+                size: 15
+              }, null, 8, ["class"])
+            ], 42, _hoisted_117),
+            (openBlock(), createBlock(Teleport, { to: "body" }, [
+              mounted.value ? (openBlock(), createElementBlock(
+                "div",
+                {
+                  key: 0,
+                  ref_key: "panelEl",
+                  ref: panelEl,
+                  class: normalizeClass(["wd-cascader__panel", { "is-open": open.value }]),
+                  style: normalizeStyle(style.value),
+                  role: "listbox"
+                },
+                [
+                  createCommentVNode("\n        \u591A\u5217\u5E76\u6392\uFF1A\u6BCF\u4E00\u5C42\u4E00\u5217\u3002\n        \u26A0\uFE0F \u7528 flex \u800C\u4E0D\u662F\u7EDD\u5BF9\u5B9A\u4F4D\u53E0\u52A0 \u2014\u2014 \u5217\u5BBD\u7531\u5185\u5BB9\u51B3\u5B9A\uFF0C\n        \u7EDD\u5BF9\u5B9A\u4F4D\u9700\u8981\u9884\u77E5\u6BCF\u5217\u5BBD\u5EA6\uFF0C\u591A\u8BED\u8A00\u4E0B\u4F1A\u7B97\u9519\u3002\n      "),
+                  (openBlock(true), createElementBlock(
+                    Fragment,
+                    null,
+                    renderList(columns.value, (col, level) => {
+                      return openBlock(), createElementBlock("div", {
+                        key: level,
+                        class: "wd-cascader__column"
+                      }, [
+                        (openBlock(true), createElementBlock(
+                          Fragment,
+                          null,
+                          renderList(col, (opt) => {
+                            return openBlock(), createElementBlock("button", {
+                              key: opt.value,
+                              type: "button",
+                              class: normalizeClass(["wd-cascader__option", {
+                                "is-active": pickedAt(level) === opt.value,
+                                "is-selected": selected.value[level] === opt.value,
+                                "is-disabled": opt.disabled
+                              }]),
+                              disabled: opt.disabled,
+                              role: "option",
+                              "aria-selected": selected.value[level] === opt.value,
+                              onClick: withModifiers(($event) => pick(level, opt), ["stop"])
+                            }, [
+                              createElementVNode(
+                                "span",
+                                _hoisted_312,
+                                toDisplayString(opt.label),
+                                1
+                                /* TEXT */
+                              ),
+                              opt.children?.length ? (openBlock(), createBlock(_component_wd_icon, {
+                                key: 0,
+                                class: "wd-cascader__arrow",
+                                name: "chevron-right",
+                                size: 14
+                              })) : selected.value[level] === opt.value ? (openBlock(), createBlock(_component_wd_icon, {
+                                key: 1,
+                                class: "wd-cascader__check",
+                                name: "check",
+                                size: 14
+                              })) : createCommentVNode("v-if", true)
+                            ], 10, _hoisted_214);
+                          }),
+                          128
+                          /* KEYED_FRAGMENT */
+                        )),
+                        col.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_411, "\u6682\u65E0\u9009\u9879")) : createCommentVNode("v-if", true)
+                      ]);
+                    }),
+                    128
+                    /* KEYED_FRAGMENT */
+                  ))
+                ],
+                6
+                /* CLASS, STYLE */
+              )) : createCommentVNode("v-if", true)
+            ]))
+          ],
+          64
+          /* STABLE_FRAGMENT */
+        );
+      };
+    }
+  });
+
   // .demo-build/controllable.ts
   function useControllable(opts) {
     const { modelValue, defaultValue, fallback, onChange } = opts;
@@ -2379,9 +2854,9 @@ var WD_REAL_MODULE = (() => {
   }
 
   // .demo-build/WdCheckbox.ts
-  var _hoisted_117 = ["aria-checked", "disabled"];
-  var _hoisted_214 = { class: "wd-checkbox__box" };
-  var _hoisted_312 = {
+  var _hoisted_118 = ["aria-checked", "disabled"];
+  var _hoisted_215 = { class: "wd-checkbox__box" };
+  var _hoisted_313 = {
     key: 0,
     class: "wd-checkbox__label"
   };
@@ -2420,13 +2895,13 @@ var WD_REAL_MODULE = (() => {
           disabled: __props.disabled,
           onClick: toggle
         }, [
-          createElementVNode("span", _hoisted_214, [
+          createElementVNode("span", _hoisted_215, [
             createVNode(_component_wd_icon, {
               name: "check",
               size: 13
             })
           ]),
-          __props.label || _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_312, [
+          __props.label || _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_313, [
             renderSlot(_ctx.$slots, "default", {}, () => [
               createTextVNode(
                 toDisplayString(__props.label),
@@ -2435,16 +2910,16 @@ var WD_REAL_MODULE = (() => {
               )
             ])
           ])) : createCommentVNode("v-if", true)
-        ], 10, _hoisted_117);
+        ], 10, _hoisted_118);
       };
     }
   });
 
   // .demo-build/WdCollapse.ts
-  var _hoisted_118 = { class: "wd-collapse" };
-  var _hoisted_215 = ["aria-expanded", "onClick"];
-  var _hoisted_313 = { class: "wd-collapse__body" };
-  var _hoisted_411 = { class: "wd-collapse__inner" };
+  var _hoisted_119 = { class: "wd-collapse" };
+  var _hoisted_216 = ["aria-expanded", "onClick"];
+  var _hoisted_314 = { class: "wd-collapse__body" };
+  var _hoisted_412 = { class: "wd-collapse__inner" };
   var _hoisted_54 = { class: "wd-collapse__content" };
   var WdCollapse_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdCollapse" },
@@ -2466,7 +2941,7 @@ var WD_REAL_MODULE = (() => {
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_118, [
+        return openBlock(), createElementBlock("div", _hoisted_119, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -2496,9 +2971,9 @@ var WD_REAL_MODULE = (() => {
                       name: "chevron-down",
                       size: 15
                     }, null, 8, ["class"])
-                  ], 8, _hoisted_215),
-                  createElementVNode("div", _hoisted_313, [
-                    createElementVNode("div", _hoisted_411, [
+                  ], 8, _hoisted_216),
+                  createElementVNode("div", _hoisted_314, [
+                    createElementVNode("div", _hoisted_412, [
                       createElementVNode("div", _hoisted_54, [
                         renderSlot(_ctx.$slots, `item-${i}`, { item }, () => [
                           createTextVNode(
@@ -2524,16 +2999,16 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdCommand.ts
-  var _hoisted_119 = {
+  var _hoisted_120 = {
     key: 0,
     class: "wd-command",
     role: "dialog",
     "aria-modal": "true",
     "aria-label": "\u547D\u4EE4\u9762\u677F"
   };
-  var _hoisted_216 = { class: "wd-command__input-row" };
-  var _hoisted_314 = ["placeholder"];
-  var _hoisted_412 = {
+  var _hoisted_217 = { class: "wd-command__input-row" };
+  var _hoisted_315 = ["placeholder"];
+  var _hoisted_413 = {
     key: 0,
     class: "wd-command__group"
   };
@@ -2674,7 +3149,7 @@ var WD_REAL_MODULE = (() => {
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
         return openBlock(), createBlock(Teleport, { to: "body" }, [
-          __props.modelValue ? (openBlock(), createElementBlock("div", _hoisted_119, [
+          __props.modelValue ? (openBlock(), createElementBlock("div", _hoisted_120, [
             createElementVNode("div", {
               class: "wd-command__mask",
               onClick: close
@@ -2686,7 +3161,7 @@ var WD_REAL_MODULE = (() => {
                 style: normalizeStyle({ maxHeight: __props.maxHeight + "px" })
               },
               [
-                createElementVNode("div", _hoisted_216, [
+                createElementVNode("div", _hoisted_217, [
                   createVNode(_component_wd_icon, {
                     class: "wd-command__search-icon",
                     name: "search",
@@ -2702,7 +3177,7 @@ var WD_REAL_MODULE = (() => {
                     spellcheck: "false",
                     autocomplete: "off",
                     onKeydown: onKey
-                  }, null, 40, _hoisted_314), [
+                  }, null, 40, _hoisted_315), [
                     [vModelText, q.value]
                   ]),
                   _cache[1] || (_cache[1] = createElementVNode(
@@ -2733,7 +3208,7 @@ var WD_REAL_MODULE = (() => {
                           [
                             g.name ? (openBlock(), createElementBlock(
                               "div",
-                              _hoisted_412,
+                              _hoisted_413,
                               toDisplayString(g.name),
                               1
                               /* TEXT */
@@ -2873,220 +3348,6 @@ var WD_REAL_MODULE = (() => {
     }
   });
 
-  // .demo-build/overlay-stack.ts
-  var stack = [];
-  var seq = 0;
-  var overlayDepth = ref(0);
-  var BASE_Z = 1e3;
-  var zSeq = 0;
-  function nextZIndex() {
-    return BASE_Z + ++zSeq * 10;
-  }
-  function topOverlay() {
-    return stack[stack.length - 1];
-  }
-  function isTopOverlay(id2) {
-    const t = topOverlay();
-    return !!t && t.id === id2;
-  }
-  function pushOverlay(entry) {
-    const id2 = ++seq;
-    stack.push({ ...entry, id: id2 });
-    overlayDepth.value = stack.length;
-    return id2;
-  }
-  function removeOverlay(id2) {
-    const i = stack.findIndex((e) => e.id === id2);
-    if (i >= 0) stack.splice(i, 1);
-    overlayDepth.value = stack.length;
-  }
-  function useOverlayLayer(open, panel, onEsc) {
-    let myId = null;
-    watch(
-      open,
-      (v) => {
-        if (v) {
-          const active = document.activeElement;
-          myId = pushOverlay({
-            panel,
-            restoreTo: active && active !== document.body ? active : null,
-            onEscape: onEsc
-          });
-        } else if (myId !== null) {
-          removeOverlay(myId);
-          myId = null;
-        }
-      },
-      { immediate: true }
-    );
-    onBeforeUnmount(() => {
-      if (myId !== null) {
-        removeOverlay(myId);
-        myId = null;
-      }
-    });
-    return {
-      /** 本层是否在栈顶（需要响应键盘时先判断它） */
-      isTop: () => myId === null ? false : isTopOverlay(myId)
-    };
-  }
-  var installed = false;
-  function installOverlayKeyboard() {
-    if (installed || typeof document === "undefined") return;
-    installed = true;
-    document.addEventListener(
-      "keydown",
-      (e) => {
-        const top = topOverlay();
-        if (!top) return;
-        if (e.key === "Escape") {
-          const handled = top.onEscape?.();
-          if (handled !== false) {
-            e.stopPropagation();
-          }
-        }
-      },
-      true
-    );
-  }
-
-  // .demo-build/anchor.ts
-  function scrollOffset() {
-    const x = window.scrollX ?? window.pageXOffset ?? document.documentElement.scrollLeft ?? 0;
-    const y = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0;
-    return { x, y };
-  }
-  function viewportSize() {
-    const vv = window.visualViewport;
-    if (vv) return { width: vv.width, height: vv.height };
-    return { width: window.innerWidth, height: window.innerHeight };
-  }
-  function useAnchoredPosition(open, anchor, panel, options = {}) {
-    const pos = ref({ top: 0, left: 0 });
-    const actual = ref(options.placement || "bottom-start");
-    function place() {
-      const el = anchor.value;
-      if (!el) return;
-      const a = el.getBoundingClientRect();
-      const pr = panel.value?.getBoundingClientRect();
-      const gap = options.gap ?? 6;
-      const pw = options.matchWidth ? a.width : options.width ?? pr?.width ?? 0;
-      const ph = pr?.height ?? 0;
-      const vp = viewportSize();
-      const s = scrollOffset();
-      const vTop = a.top;
-      const vBottom = a.bottom;
-      const dTop = a.top + s.y;
-      const dBottom = a.bottom + s.y;
-      const dLeft = a.left + s.x;
-      const dRight = a.right + s.x;
-      let placement = options.placement || "bottom-start";
-      const wantBottom = placement.startsWith("bottom");
-      const fitsBelow = vBottom + gap + ph <= vp.height - 8;
-      const fitsAbove = vTop - gap - ph >= 8;
-      const goBottom = wantBottom ? fitsBelow || !fitsAbove : !fitsAbove && fitsBelow;
-      let top;
-      if (goBottom) {
-        top = dBottom + gap;
-        placement = placement.replace("top", "bottom");
-      } else {
-        top = dTop - gap - ph;
-        placement = placement.replace("bottom", "top");
-      }
-      let left;
-      if (placement.endsWith("start")) left = dLeft;
-      else if (placement.endsWith("end")) left = dRight - pw;
-      else left = dLeft + a.width / 2 - pw / 2;
-      const minLeft = s.x + 8;
-      const maxLeft = s.x + vp.width - pw - 8;
-      left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft)));
-      pos.value = { top, left };
-      actual.value = placement;
-    }
-    let raf = 0;
-    let timer = 0;
-    function schedule() {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        place();
-      });
-      clearTimeout(timer);
-      timer = window.setTimeout(place, 32);
-    }
-    function onScroll(e) {
-      const t = e.target;
-      if (t && panel.value && panel.value.contains(t)) return;
-      schedule();
-    }
-    let vv = null;
-    function bind() {
-      window.addEventListener("scroll", onScroll, true);
-      window.addEventListener("resize", schedule);
-      vv = window.visualViewport ?? null;
-      if (vv) {
-        vv.addEventListener("resize", schedule);
-        vv.addEventListener("scroll", schedule);
-      }
-    }
-    function unbind() {
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", schedule);
-      if (vv) {
-        vv.removeEventListener("resize", schedule);
-        vv.removeEventListener("scroll", schedule);
-        vv = null;
-      }
-      if (raf) {
-        cancelAnimationFrame(raf);
-        raf = 0;
-      }
-      clearTimeout(timer);
-    }
-    watch(open, async (v) => {
-      if (v) {
-        await nextTick();
-        place();
-        bind();
-        schedule();
-      } else {
-        unbind();
-      }
-    });
-    let ro = null;
-    watch(panel, (el) => {
-      ro?.disconnect();
-      if (el && typeof ResizeObserver !== "undefined") {
-        ro = new ResizeObserver(() => schedule());
-        ro.observe(el);
-      }
-    });
-    onBeforeUnmount(() => {
-      ro?.disconnect();
-      ro = null;
-    });
-    onMounted(() => {
-      if (open.value) {
-        place();
-        bind();
-      }
-    });
-    onBeforeUnmount(unbind);
-    return { pos, place: schedule, actual };
-  }
-  function useDismiss(refs, close, enabled, event = "click") {
-    function onDoc(e) {
-      if (!enabled.value) return;
-      const t = e.target;
-      if (refs.some((r) => r.value?.contains(t))) return;
-      close();
-    }
-    if (typeof document !== "undefined") document.addEventListener(event, onDoc);
-    onBeforeUnmount(() => {
-      if (typeof document !== "undefined") document.removeEventListener(event, onDoc);
-    });
-  }
-
   // .demo-build/pop-duration.ts
   var reduce = () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function popDuration(enter = 200, leave = 140) {
@@ -3094,16 +3355,16 @@ var WD_REAL_MODULE = (() => {
   }
 
   // .demo-build/WdDatePicker.ts
-  var _hoisted_120 = ["disabled"];
-  var _hoisted_217 = {
+  var _hoisted_121 = ["disabled"];
+  var _hoisted_218 = {
     key: 0,
     class: "wd-datepicker__value"
   };
-  var _hoisted_315 = {
+  var _hoisted_316 = {
     key: 1,
     class: "wd-datepicker__placeholder"
   };
-  var _hoisted_413 = { class: "wd-datepicker__head" };
+  var _hoisted_414 = { class: "wd-datepicker__head" };
   var _hoisted_56 = { class: "wd-datepicker__month" };
   var _hoisted_65 = { class: "wd-datepicker__nav" };
   var _hoisted_74 = { class: "wd-datepicker__week" };
@@ -3222,13 +3483,13 @@ var WD_REAL_MODULE = (() => {
                 }, [
                   __props.modelValue ? (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_217,
+                    _hoisted_218,
                     toDisplayString(__props.modelValue),
                     1
                     /* TEXT */
                   )) : (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_315,
+                    _hoisted_316,
                     toDisplayString(__props.placeholder),
                     1
                     /* TEXT */
@@ -3238,7 +3499,7 @@ var WD_REAL_MODULE = (() => {
                     name: "calendar",
                     size: 15
                   })
-                ], 8, _hoisted_120)
+                ], 8, _hoisted_121)
               ],
               2
               /* CLASS */
@@ -3253,7 +3514,7 @@ var WD_REAL_MODULE = (() => {
                   style: normalizeStyle({ top: unref(pos).top + "px", left: unref(pos).left + "px" })
                 },
                 [
-                  createElementVNode("div", _hoisted_413, [
+                  createElementVNode("div", _hoisted_414, [
                     createElementVNode(
                       "span",
                       _hoisted_56,
@@ -3344,13 +3605,13 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdDescriptions.ts
-  var _hoisted_121 = { class: "wd-descriptions__label" };
-  var _hoisted_218 = {
+  var _hoisted_124 = { class: "wd-descriptions__label" };
+  var _hoisted_219 = {
     key: 0,
     class: "wd-descriptions__colon"
   };
-  var _hoisted_316 = { class: "wd-descriptions__value" };
-  var _hoisted_414 = {
+  var _hoisted_317 = { class: "wd-descriptions__value" };
+  var _hoisted_415 = {
     key: 0,
     class: "wd-descriptions__hint"
   };
@@ -3427,15 +3688,15 @@ var WD_REAL_MODULE = (() => {
                           style: normalizeStyle({ "--wd-desc-span": String(item.span || 1) })
                         },
                         [
-                          createElementVNode("div", _hoisted_121, [
+                          createElementVNode("div", _hoisted_124, [
                             createTextVNode(
                               toDisplayString(item.label),
                               1
                               /* TEXT */
                             ),
-                            __props.colon ? (openBlock(), createElementBlock("span", _hoisted_218, "\uFF1A")) : createCommentVNode("v-if", true)
+                            __props.colon ? (openBlock(), createElementBlock("span", _hoisted_219, "\uFF1A")) : createCommentVNode("v-if", true)
                           ]),
-                          createElementVNode("div", _hoisted_316, [
+                          createElementVNode("div", _hoisted_317, [
                             renderSlot(_ctx.$slots, item.key || "", {
                               item,
                               value: item.value
@@ -3448,7 +3709,7 @@ var WD_REAL_MODULE = (() => {
                             ]),
                             item.hint ? (openBlock(), createElementBlock(
                               "span",
-                              _hoisted_414,
+                              _hoisted_415,
                               toDisplayString(item.hint),
                               1
                               /* TEXT */
@@ -3485,7 +3746,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdDivider.ts
-  var _hoisted_124 = {
+  var _hoisted_125 = {
     key: 0,
     class: "wd-divider__text"
   };
@@ -3522,7 +3783,7 @@ var WD_REAL_MODULE = (() => {
             "aria-orientation": "horizontal"
           },
           [
-            _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_124, [
+            _ctx.$slots.default ? (openBlock(), createElementBlock("span", _hoisted_125, [
               renderSlot(_ctx.$slots, "default")
             ])) : createCommentVNode("v-if", true)
           ],
@@ -3652,10 +3913,10 @@ var WD_REAL_MODULE = (() => {
   }
 
   // .demo-build/WdDrawer.ts
-  var _hoisted_125 = { class: "wd-drawer__head" };
-  var _hoisted_219 = { class: "wd-drawer__title" };
-  var _hoisted_317 = { class: "wd-drawer__body" };
-  var _hoisted_415 = {
+  var _hoisted_126 = { class: "wd-drawer__head" };
+  var _hoisted_220 = { class: "wd-drawer__title" };
+  var _hoisted_318 = { class: "wd-drawer__body" };
+  var _hoisted_416 = {
     key: 0,
     class: "wd-drawer__foot"
   };
@@ -3718,10 +3979,10 @@ var WD_REAL_MODULE = (() => {
                   tabindex: "-1"
                 },
                 [
-                  createElementVNode("div", _hoisted_125, [
+                  createElementVNode("div", _hoisted_126, [
                     createElementVNode(
                       "div",
-                      _hoisted_219,
+                      _hoisted_220,
                       toDisplayString(__props.title),
                       1
                       /* TEXT */
@@ -3738,10 +3999,10 @@ var WD_REAL_MODULE = (() => {
                       })
                     ])
                   ]),
-                  createElementVNode("div", _hoisted_317, [
+                  createElementVNode("div", _hoisted_318, [
                     renderSlot(_ctx.$slots, "default")
                   ]),
-                  _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_415, [
+                  _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_416, [
                     renderSlot(_ctx.$slots, "footer")
                   ])) : createCommentVNode("v-if", true)
                 ],
@@ -3760,8 +4021,8 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdDropdown.ts
-  var _hoisted_126 = ["aria-expanded"];
-  var _hoisted_220 = ["onClick"];
+  var _hoisted_127 = ["aria-expanded"];
+  var _hoisted_221 = ["onClick"];
   var WdDropdown_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdDropdown" },
     __name: "WdDropdown",
@@ -3830,7 +4091,7 @@ var WD_REAL_MODULE = (() => {
                   onClick: _cache[2] || (_cache[2] = ($event) => open.value = !open.value)
                 }, [
                   renderSlot(_ctx.$slots, "default")
-                ], 40, _hoisted_126)
+                ], 40, _hoisted_127)
               ],
               512
               /* NEED_PATCH */
@@ -3857,7 +4118,7 @@ var WD_REAL_MODULE = (() => {
                         class: normalizeClass(["wd-dropdown__item", { "wd-dropdown__item--danger": it.danger, "wd-dropdown__item--disabled": it.disabled }]),
                         "data-wd-hover": "",
                         onClick: ($event) => pick(it)
-                      }, toDisplayString(it.label), 11, _hoisted_220);
+                      }, toDisplayString(it.label), 11, _hoisted_221);
                     }),
                     128
                     /* KEYED_FRAGMENT */
@@ -3876,13 +4137,13 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdEmpty.ts
-  var _hoisted_127 = { class: "wd-empty" };
-  var _hoisted_221 = { class: "wd-empty__icon" };
-  var _hoisted_318 = {
+  var _hoisted_128 = { class: "wd-empty" };
+  var _hoisted_223 = { class: "wd-empty__icon" };
+  var _hoisted_319 = {
     key: 0,
     class: "wd-empty__title"
   };
-  var _hoisted_416 = {
+  var _hoisted_417 = {
     key: 1,
     class: "wd-empty__desc"
   };
@@ -3900,8 +4161,8 @@ var WD_REAL_MODULE = (() => {
     setup(__props) {
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_127, [
-          createElementVNode("div", _hoisted_221, [
+        return openBlock(), createElementBlock("div", _hoisted_128, [
+          createElementVNode("div", _hoisted_223, [
             renderSlot(_ctx.$slots, "icon", {}, () => [
               createVNode(_component_wd_icon, {
                 name: "folder-open",
@@ -3912,12 +4173,12 @@ var WD_REAL_MODULE = (() => {
           ]),
           __props.title ? (openBlock(), createElementBlock(
             "div",
-            _hoisted_318,
+            _hoisted_319,
             toDisplayString(__props.title),
             1
             /* TEXT */
           )) : createCommentVNode("v-if", true),
-          __props.description || _ctx.$slots.description ? (openBlock(), createElementBlock("div", _hoisted_416, [
+          __props.description || _ctx.$slots.description ? (openBlock(), createElementBlock("div", _hoisted_417, [
             renderSlot(_ctx.$slots, "description", {}, () => [
               createTextVNode(
                 toDisplayString(__props.description),
@@ -3935,10 +4196,10 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdExplorer.ts
-  var _hoisted_128 = { class: "wd-explorer" };
-  var _hoisted_223 = { class: "wd-explorer__side" };
-  var _hoisted_319 = ["onClick"];
-  var _hoisted_417 = { class: "wd-explorer__folder-name" };
+  var _hoisted_129 = { class: "wd-explorer" };
+  var _hoisted_224 = { class: "wd-explorer__side" };
+  var _hoisted_320 = ["onClick"];
+  var _hoisted_418 = { class: "wd-explorer__folder-name" };
   var _hoisted_59 = { class: "wd-explorer__count" };
   var _hoisted_66 = { class: "wd-explorer__main" };
   var _hoisted_75 = { class: "wd-explorer__bar" };
@@ -3949,7 +4210,7 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-explorer__table"
   };
-  var _hoisted_129 = ["onClick"];
+  var _hoisted_1210 = ["onClick"];
   var _hoisted_133 = { class: "wd-explorer__name" };
   var _hoisted_143 = { class: "wd-explorer__file-chip" };
   var _hoisted_152 = { class: "wd-explorer__file-name" };
@@ -3962,7 +4223,7 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_192 = ["onClick"];
   var _hoisted_202 = { class: "wd-explorer__tile-icon" };
   var _hoisted_2110 = { class: "wd-explorer__tile-name" };
-  var _hoisted_224 = { class: "wd-explorer__tile-size" };
+  var _hoisted_225 = { class: "wd-explorer__tile-size" };
   var _hoisted_233 = {
     key: 2,
     class: "wd-explorer__empty"
@@ -3989,8 +4250,8 @@ var WD_REAL_MODULE = (() => {
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_128, [
-          createElementVNode("div", _hoisted_223, [
+        return openBlock(), createElementBlock("div", _hoisted_129, [
+          createElementVNode("div", _hoisted_224, [
             _cache[3] || (_cache[3] = createElementVNode(
               "div",
               { class: "wd-explorer__side-title" },
@@ -4014,7 +4275,7 @@ var WD_REAL_MODULE = (() => {
                   }),
                   createElementVNode(
                     "span",
-                    _hoisted_417,
+                    _hoisted_418,
                     toDisplayString(f.name),
                     1
                     /* TEXT */
@@ -4026,7 +4287,7 @@ var WD_REAL_MODULE = (() => {
                     1
                     /* TEXT */
                   )
-                ], 10, _hoisted_319);
+                ], 10, _hoisted_320);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -4156,7 +4417,7 @@ var WD_REAL_MODULE = (() => {
                         1
                         /* TEXT */
                       )
-                    ], 8, _hoisted_129);
+                    ], 8, _hoisted_1210);
                   }),
                   128
                   /* KEYED_FRAGMENT */
@@ -4188,7 +4449,7 @@ var WD_REAL_MODULE = (() => {
                     ),
                     createElementVNode(
                       "span",
-                      _hoisted_224,
+                      _hoisted_225,
                       toDisplayString(fmtSize(f.size)),
                       1
                       /* TEXT */
@@ -4208,9 +4469,9 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdFileList.ts
   var _hoisted_130 = { class: "wd-file-list" };
-  var _hoisted_225 = ["onClick"];
-  var _hoisted_320 = { class: "wd-file-list__icon" };
-  var _hoisted_418 = { class: "wd-file-list__name" };
+  var _hoisted_226 = ["onClick"];
+  var _hoisted_321 = { class: "wd-file-list__icon" };
+  var _hoisted_419 = { class: "wd-file-list__name" };
   var _hoisted_510 = { class: "wd-file-list__size" };
   var WdFileList_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdFileList" },
@@ -4282,7 +4543,7 @@ var WD_REAL_MODULE = (() => {
                   2
                   /* CLASS */
                 ),
-                createElementVNode("span", _hoisted_320, [
+                createElementVNode("span", _hoisted_321, [
                   row.node.type === "folder" ? (openBlock(), createBlock(_component_wd_icon, {
                     key: 0,
                     name: "folder",
@@ -4295,7 +4556,7 @@ var WD_REAL_MODULE = (() => {
                 ]),
                 createElementVNode(
                   "span",
-                  _hoisted_418,
+                  _hoisted_419,
                   toDisplayString(row.node.name),
                   1
                   /* TEXT */
@@ -4307,7 +4568,7 @@ var WD_REAL_MODULE = (() => {
                   1
                   /* TEXT */
                 )
-              ], 14, _hoisted_225);
+              ], 14, _hoisted_226);
             }),
             128
             /* KEYED_FRAGMENT */
@@ -4455,17 +4716,17 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdFormItem.ts
   var _hoisted_131 = ["data-form-prop"];
-  var _hoisted_226 = {
+  var _hoisted_227 = {
     key: 0,
     class: "wd-form-item__req",
     "aria-hidden": "true"
   };
-  var _hoisted_321 = {
+  var _hoisted_323 = {
     key: 0,
     class: "wd-form-item__error",
     role: "alert"
   };
-  var _hoisted_419 = {
+  var _hoisted_420 = {
     key: 1,
     class: "wd-form-item__hint"
   };
@@ -4555,7 +4816,7 @@ var WD_REAL_MODULE = (() => {
               style: normalizeStyle(unref(form)?.labelPosition() === "left" ? { width: unref(form)?.labelWidth() } : void 0)
             },
             [
-              isRequired.value ? (openBlock(), createElementBlock("span", _hoisted_226, "*")) : createCommentVNode("v-if", true),
+              isRequired.value ? (openBlock(), createElementBlock("span", _hoisted_227, "*")) : createCommentVNode("v-if", true),
               createTextVNode(
                 " " + toDisplayString(__props.label),
                 1
@@ -4575,13 +4836,13 @@ var WD_REAL_MODULE = (() => {
               renderSlot(_ctx.$slots, "default"),
               error.value ? (openBlock(), createElementBlock(
                 "p",
-                _hoisted_321,
+                _hoisted_323,
                 toDisplayString(error.value),
                 1
                 /* TEXT */
               )) : __props.hint ? (openBlock(), createElementBlock(
                 "p",
-                _hoisted_419,
+                _hoisted_420,
                 toDisplayString(__props.hint),
                 1
                 /* TEXT */
@@ -4697,12 +4958,12 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdImagePreview.ts
   var _hoisted_135 = ["src", "alt"];
-  var _hoisted_227 = {
+  var _hoisted_228 = {
     key: 0,
     class: "wd-preview"
   };
-  var _hoisted_323 = ["src", "alt"];
-  var _hoisted_420 = {
+  var _hoisted_324 = ["src", "alt"];
+  var _hoisted_421 = {
     key: 0,
     class: "wd-preview__count"
   };
@@ -4774,7 +5035,7 @@ var WD_REAL_MODULE = (() => {
                 duration: unref(POP_DURATION)
               }, {
                 default: withCtx(() => [
-                  open.value ? (openBlock(), createElementBlock("div", _hoisted_227, [
+                  open.value ? (openBlock(), createElementBlock("div", _hoisted_228, [
                     createElementVNode("div", {
                       class: "wd-preview__mask",
                       onClick: _cache[0] || (_cache[0] = ($event) => open.value = false)
@@ -4791,14 +5052,14 @@ var WD_REAL_MODULE = (() => {
                           src: images.value[cur.value],
                           alt: __props.alt,
                           style: normalizeStyle({ transform: `scale(${scale.value}) rotate(${rotate.value}deg)` })
-                        }, null, 12, _hoisted_323)
+                        }, null, 12, _hoisted_324)
                       ],
                       32
                       /* NEED_HYDRATION */
                     ),
                     images.value.length > 1 ? (openBlock(), createElementBlock(
                       "div",
-                      _hoisted_420,
+                      _hoisted_421,
                       toDisplayString(cur.value + 1) + " / " + toDisplayString(images.value.length),
                       1
                       /* TEXT */
@@ -4873,8 +5134,8 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-input__icon"
   };
-  var _hoisted_228 = ["type", "value", "placeholder", "disabled", "readonly", "maxlength"];
-  var _hoisted_324 = {
+  var _hoisted_229 = ["type", "value", "placeholder", "disabled", "readonly", "maxlength"];
+  var _hoisted_325 = {
     key: 2,
     class: "wd-input__count"
   };
@@ -4955,7 +5216,7 @@ var WD_REAL_MODULE = (() => {
               maxlength: __props.maxlength,
               onInput,
               onKeydown
-            }, null, 40, _hoisted_228),
+            }, null, 40, _hoisted_229),
             showClear.value ? (openBlock(), createElementBlock("button", {
               key: 1,
               type: "button",
@@ -4971,7 +5232,7 @@ var WD_REAL_MODULE = (() => {
             renderSlot(_ctx.$slots, "suffix"),
             count.value ? (openBlock(), createElementBlock(
               "span",
-              _hoisted_324,
+              _hoisted_325,
               toDisplayString(count.value),
               1
               /* TEXT */
@@ -4989,8 +5250,8 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-list-item__icon"
   };
-  var _hoisted_229 = { class: "wd-list-item__title" };
-  var _hoisted_325 = {
+  var _hoisted_230 = { class: "wd-list-item__title" };
+  var _hoisted_326 = {
     key: 1,
     class: "wd-list-item__meta"
   };
@@ -5019,14 +5280,14 @@ var WD_REAL_MODULE = (() => {
             ])) : createCommentVNode("v-if", true),
             createElementVNode(
               "span",
-              _hoisted_229,
+              _hoisted_230,
               toDisplayString(__props.title),
               1
               /* TEXT */
             ),
             __props.meta ? (openBlock(), createElementBlock(
               "span",
-              _hoisted_325,
+              _hoisted_326,
               toDisplayString(__props.meta),
               1
               /* TEXT */
@@ -5207,9 +5468,9 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdModal.ts
   var _hoisted_139 = ["aria-label"];
-  var _hoisted_230 = { class: "wd-modal__head" };
-  var _hoisted_326 = { class: "wd-modal__title" };
-  var _hoisted_421 = { class: "wd-modal__body" };
+  var _hoisted_231 = { class: "wd-modal__head" };
+  var _hoisted_327 = { class: "wd-modal__title" };
+  var _hoisted_423 = { class: "wd-modal__body" };
   var _hoisted_512 = {
     key: 0,
     class: "wd-modal__foot"
@@ -5279,10 +5540,10 @@ var WD_REAL_MODULE = (() => {
                 style: normalizeStyle({ maxWidth: maxWidth.value })
               },
               [
-                createElementVNode("div", _hoisted_230, [
+                createElementVNode("div", _hoisted_231, [
                   createElementVNode(
                     "div",
-                    _hoisted_326,
+                    _hoisted_327,
                     toDisplayString(__props.title),
                     1
                     /* TEXT */
@@ -5299,7 +5560,7 @@ var WD_REAL_MODULE = (() => {
                     })
                   ])
                 ]),
-                createElementVNode("div", _hoisted_421, [
+                createElementVNode("div", _hoisted_423, [
                   renderSlot(_ctx.$slots, "default")
                 ]),
                 _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_512, [
@@ -5319,11 +5580,11 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdNotification.ts
   var _hoisted_140 = { class: "wd-notification__body" };
-  var _hoisted_231 = {
+  var _hoisted_234 = {
     key: 0,
     class: "wd-notification__title"
   };
-  var _hoisted_327 = {
+  var _hoisted_328 = {
     key: 1,
     class: "wd-notification__desc"
   };
@@ -5380,12 +5641,12 @@ var WD_REAL_MODULE = (() => {
                   createElementVNode("div", _hoisted_140, [
                     __props.title ? (openBlock(), createElementBlock(
                       "div",
-                      _hoisted_231,
+                      _hoisted_234,
                       toDisplayString(__props.title),
                       1
                       /* TEXT */
                     )) : createCommentVNode("v-if", true),
-                    __props.description || _ctx.$slots.default ? (openBlock(), createElementBlock("div", _hoisted_327, [
+                    __props.description || _ctx.$slots.default ? (openBlock(), createElementBlock("div", _hoisted_328, [
                       renderSlot(_ctx.$slots, "default", {}, () => [
                         createTextVNode(
                           toDisplayString(__props.description),
@@ -5515,9 +5776,9 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-pagination__total"
   };
-  var _hoisted_234 = ["disabled"];
-  var _hoisted_328 = { class: "wd-pagination__simple-text" };
-  var _hoisted_423 = ["disabled"];
+  var _hoisted_235 = ["disabled"];
+  var _hoisted_329 = { class: "wd-pagination__simple-text" };
+  var _hoisted_424 = ["disabled"];
   var _hoisted_513 = ["disabled"];
   var _hoisted_67 = {
     key: 0,
@@ -5615,10 +5876,10 @@ var WD_REAL_MODULE = (() => {
                     name: "chevron-left",
                     size: 14
                   })
-                ], 8, _hoisted_234),
+                ], 8, _hoisted_235),
                 createElementVNode(
                   "span",
-                  _hoisted_328,
+                  _hoisted_329,
                   toDisplayString(__props.modelValue) + " / " + toDisplayString(pageCount.value),
                   1
                   /* TEXT */
@@ -5635,7 +5896,7 @@ var WD_REAL_MODULE = (() => {
                     name: "chevron-right",
                     size: 14
                   })
-                ], 8, _hoisted_423)
+                ], 8, _hoisted_424)
               ],
               64
               /* STABLE_FRAGMENT */
@@ -5727,13 +5988,13 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdPopconfirm.ts
   var _hoisted_145 = ["aria-label", "aria-hidden"];
-  var _hoisted_235 = { class: "wd-popconfirm__title" };
-  var _hoisted_329 = {
+  var _hoisted_236 = { class: "wd-popconfirm__title" };
+  var _hoisted_330 = {
     key: 0,
     class: "wd-popconfirm__icon",
     "aria-hidden": "true"
   };
-  var _hoisted_424 = {
+  var _hoisted_425 = {
     key: 0,
     class: "wd-popconfirm__desc"
   };
@@ -5859,8 +6120,8 @@ var WD_REAL_MODULE = (() => {
                 onClick: _cache[1] || (_cache[1] = withModifiers(() => {
                 }, ["stop"]))
               }, [
-                createElementVNode("div", _hoisted_235, [
-                  __props.variant === "danger" ? (openBlock(), createElementBlock("span", _hoisted_329, [
+                createElementVNode("div", _hoisted_236, [
+                  __props.variant === "danger" ? (openBlock(), createElementBlock("span", _hoisted_330, [
                     createVNode(_component_wd_icon, {
                       name: "warning-circle",
                       size: 14
@@ -5874,7 +6135,7 @@ var WD_REAL_MODULE = (() => {
                 ]),
                 __props.description ? (openBlock(), createElementBlock(
                   "p",
-                  _hoisted_424,
+                  _hoisted_425,
                   toDisplayString(__props.description),
                   1
                   /* TEXT */
@@ -5921,12 +6182,12 @@ var WD_REAL_MODULE = (() => {
     type: "button",
     class: "wd-popover__default-trigger"
   };
-  var _hoisted_236 = ["aria-label"];
-  var _hoisted_330 = {
+  var _hoisted_237 = ["aria-label"];
+  var _hoisted_331 = {
     key: 0,
     class: "wd-popover__head"
   };
-  var _hoisted_425 = { class: "wd-popover__title" };
+  var _hoisted_426 = { class: "wd-popover__title" };
   var _hoisted_515 = { class: "wd-popover__body" };
   var WdPopover_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdPopover" },
@@ -6068,10 +6329,10 @@ var WD_REAL_MODULE = (() => {
                 onMouseleave: onLeave,
                 onClick: onPanelClick
               }, [
-                __props.title || __props.closable ? (openBlock(), createElementBlock("div", _hoisted_330, [
+                __props.title || __props.closable ? (openBlock(), createElementBlock("div", _hoisted_331, [
                   createElementVNode(
                     "span",
-                    _hoisted_425,
+                    _hoisted_426,
                     toDisplayString(__props.title),
                     1
                     /* TEXT */
@@ -6092,7 +6353,7 @@ var WD_REAL_MODULE = (() => {
                 createElementVNode("div", _hoisted_515, [
                   renderSlot(_ctx.$slots, "default")
                 ])
-              ], 46, _hoisted_236)) : createCommentVNode("v-if", true)
+              ], 46, _hoisted_237)) : createCommentVNode("v-if", true)
             ]))
           ],
           64
@@ -6104,15 +6365,15 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdPostItem.ts
   var _hoisted_147 = { class: "wd-post-item__title" };
-  var _hoisted_237 = {
+  var _hoisted_238 = {
     key: 0,
     class: "wd-post-item__emoji"
   };
-  var _hoisted_331 = {
+  var _hoisted_333 = {
     key: 0,
     class: "wd-post-item__summary"
   };
-  var _hoisted_426 = {
+  var _hoisted_427 = {
     key: 1,
     class: "wd-post-item__tags"
   };
@@ -6136,7 +6397,7 @@ var WD_REAL_MODULE = (() => {
             createElementVNode("h3", _hoisted_147, [
               __props.emoji ? (openBlock(), createElementBlock(
                 "span",
-                _hoisted_237,
+                _hoisted_238,
                 toDisplayString(__props.emoji),
                 1
                 /* TEXT */
@@ -6149,12 +6410,12 @@ var WD_REAL_MODULE = (() => {
             ]),
             __props.summary ? (openBlock(), createElementBlock(
               "p",
-              _hoisted_331,
+              _hoisted_333,
               toDisplayString(__props.summary),
               1
               /* TEXT */
             )) : createCommentVNode("v-if", true),
-            __props.tags.length ? (openBlock(), createElementBlock("div", _hoisted_426, [
+            __props.tags.length ? (openBlock(), createElementBlock("div", _hoisted_427, [
               (openBlock(true), createElementBlock(
                 Fragment,
                 null,
@@ -6223,13 +6484,1869 @@ var WD_REAL_MODULE = (() => {
     }
   });
 
-  // .demo-build/WdRadioGroup.ts
+  // .demo-build/vendor/qrcode-generator.js
+  var qrcode = function() {
+    var qrcode2 = function(typeNumber, errorCorrectionLevel) {
+      var PAD0 = 236;
+      var PAD1 = 17;
+      var _typeNumber = typeNumber;
+      var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+      var _modules = null;
+      var _moduleCount = 0;
+      var _dataCache = null;
+      var _dataList = [];
+      var _this = {};
+      var makeImpl = function(test, maskPattern) {
+        _moduleCount = _typeNumber * 4 + 17;
+        _modules = function(moduleCount) {
+          var modules = new Array(moduleCount);
+          for (var row = 0; row < moduleCount; row += 1) {
+            modules[row] = new Array(moduleCount);
+            for (var col = 0; col < moduleCount; col += 1) {
+              modules[row][col] = null;
+            }
+          }
+          return modules;
+        }(_moduleCount);
+        setupPositionProbePattern(0, 0);
+        setupPositionProbePattern(_moduleCount - 7, 0);
+        setupPositionProbePattern(0, _moduleCount - 7);
+        setupPositionAdjustPattern();
+        setupTimingPattern();
+        setupTypeInfo(test, maskPattern);
+        if (_typeNumber >= 7) {
+          setupTypeNumber(test);
+        }
+        if (_dataCache == null) {
+          _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+        }
+        mapData(_dataCache, maskPattern);
+      };
+      var setupPositionProbePattern = function(row, col) {
+        for (var r = -1; r <= 7; r += 1) {
+          if (row + r <= -1 || _moduleCount <= row + r) continue;
+          for (var c = -1; c <= 7; c += 1) {
+            if (col + c <= -1 || _moduleCount <= col + c) continue;
+            if (0 <= r && r <= 6 && (c == 0 || c == 6) || 0 <= c && c <= 6 && (r == 0 || r == 6) || 2 <= r && r <= 4 && 2 <= c && c <= 4) {
+              _modules[row + r][col + c] = true;
+            } else {
+              _modules[row + r][col + c] = false;
+            }
+          }
+        }
+      };
+      var getBestMaskPattern = function() {
+        var minLostPoint = 0;
+        var pattern = 0;
+        for (var i = 0; i < 8; i += 1) {
+          makeImpl(true, i);
+          var lostPoint = QRUtil.getLostPoint(_this);
+          if (i == 0 || minLostPoint > lostPoint) {
+            minLostPoint = lostPoint;
+            pattern = i;
+          }
+        }
+        return pattern;
+      };
+      var setupTimingPattern = function() {
+        for (var r = 8; r < _moduleCount - 8; r += 1) {
+          if (_modules[r][6] != null) {
+            continue;
+          }
+          _modules[r][6] = r % 2 == 0;
+        }
+        for (var c = 8; c < _moduleCount - 8; c += 1) {
+          if (_modules[6][c] != null) {
+            continue;
+          }
+          _modules[6][c] = c % 2 == 0;
+        }
+      };
+      var setupPositionAdjustPattern = function() {
+        var pos = QRUtil.getPatternPosition(_typeNumber);
+        for (var i = 0; i < pos.length; i += 1) {
+          for (var j = 0; j < pos.length; j += 1) {
+            var row = pos[i];
+            var col = pos[j];
+            if (_modules[row][col] != null) {
+              continue;
+            }
+            for (var r = -2; r <= 2; r += 1) {
+              for (var c = -2; c <= 2; c += 1) {
+                if (r == -2 || r == 2 || c == -2 || c == 2 || r == 0 && c == 0) {
+                  _modules[row + r][col + c] = true;
+                } else {
+                  _modules[row + r][col + c] = false;
+                }
+              }
+            }
+          }
+        }
+      };
+      var setupTypeNumber = function(test) {
+        var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+        for (var i = 0; i < 18; i += 1) {
+          var mod = !test && (bits >> i & 1) == 1;
+          _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+        }
+        for (var i = 0; i < 18; i += 1) {
+          var mod = !test && (bits >> i & 1) == 1;
+          _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+        }
+      };
+      var setupTypeInfo = function(test, maskPattern) {
+        var data = _errorCorrectionLevel << 3 | maskPattern;
+        var bits = QRUtil.getBCHTypeInfo(data);
+        for (var i = 0; i < 15; i += 1) {
+          var mod = !test && (bits >> i & 1) == 1;
+          if (i < 6) {
+            _modules[i][8] = mod;
+          } else if (i < 8) {
+            _modules[i + 1][8] = mod;
+          } else {
+            _modules[_moduleCount - 15 + i][8] = mod;
+          }
+        }
+        for (var i = 0; i < 15; i += 1) {
+          var mod = !test && (bits >> i & 1) == 1;
+          if (i < 8) {
+            _modules[8][_moduleCount - i - 1] = mod;
+          } else if (i < 9) {
+            _modules[8][15 - i - 1 + 1] = mod;
+          } else {
+            _modules[8][15 - i - 1] = mod;
+          }
+        }
+        _modules[_moduleCount - 8][8] = !test;
+      };
+      var mapData = function(data, maskPattern) {
+        var inc = -1;
+        var row = _moduleCount - 1;
+        var bitIndex = 7;
+        var byteIndex = 0;
+        var maskFunc = QRUtil.getMaskFunction(maskPattern);
+        for (var col = _moduleCount - 1; col > 0; col -= 2) {
+          if (col == 6) col -= 1;
+          while (true) {
+            for (var c = 0; c < 2; c += 1) {
+              if (_modules[row][col - c] == null) {
+                var dark = false;
+                if (byteIndex < data.length) {
+                  dark = (data[byteIndex] >>> bitIndex & 1) == 1;
+                }
+                var mask = maskFunc(row, col - c);
+                if (mask) {
+                  dark = !dark;
+                }
+                _modules[row][col - c] = dark;
+                bitIndex -= 1;
+                if (bitIndex == -1) {
+                  byteIndex += 1;
+                  bitIndex = 7;
+                }
+              }
+            }
+            row += inc;
+            if (row < 0 || _moduleCount <= row) {
+              row -= inc;
+              inc = -inc;
+              break;
+            }
+          }
+        }
+      };
+      var createBytes = function(buffer, rsBlocks) {
+        var offset = 0;
+        var maxDcCount = 0;
+        var maxEcCount = 0;
+        var dcdata = new Array(rsBlocks.length);
+        var ecdata = new Array(rsBlocks.length);
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          var dcCount = rsBlocks[r].dataCount;
+          var ecCount = rsBlocks[r].totalCount - dcCount;
+          maxDcCount = Math.max(maxDcCount, dcCount);
+          maxEcCount = Math.max(maxEcCount, ecCount);
+          dcdata[r] = new Array(dcCount);
+          for (var i = 0; i < dcdata[r].length; i += 1) {
+            dcdata[r][i] = 255 & buffer.getBuffer()[i + offset];
+          }
+          offset += dcCount;
+          var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+          var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+          var modPoly = rawPoly.mod(rsPoly);
+          ecdata[r] = new Array(rsPoly.getLength() - 1);
+          for (var i = 0; i < ecdata[r].length; i += 1) {
+            var modIndex = i + modPoly.getLength() - ecdata[r].length;
+            ecdata[r][i] = modIndex >= 0 ? modPoly.getAt(modIndex) : 0;
+          }
+        }
+        var totalCodeCount = 0;
+        for (var i = 0; i < rsBlocks.length; i += 1) {
+          totalCodeCount += rsBlocks[i].totalCount;
+        }
+        var data = new Array(totalCodeCount);
+        var index = 0;
+        for (var i = 0; i < maxDcCount; i += 1) {
+          for (var r = 0; r < rsBlocks.length; r += 1) {
+            if (i < dcdata[r].length) {
+              data[index] = dcdata[r][i];
+              index += 1;
+            }
+          }
+        }
+        for (var i = 0; i < maxEcCount; i += 1) {
+          for (var r = 0; r < rsBlocks.length; r += 1) {
+            if (i < ecdata[r].length) {
+              data[index] = ecdata[r][i];
+              index += 1;
+            }
+          }
+        }
+        return data;
+      };
+      var createData = function(typeNumber2, errorCorrectionLevel2, dataList) {
+        var rsBlocks = QRRSBlock.getRSBlocks(typeNumber2, errorCorrectionLevel2);
+        var buffer = qrBitBuffer();
+        for (var i = 0; i < dataList.length; i += 1) {
+          var data = dataList[i];
+          buffer.put(data.getMode(), 4);
+          buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber2));
+          data.write(buffer);
+        }
+        var totalDataCount = 0;
+        for (var i = 0; i < rsBlocks.length; i += 1) {
+          totalDataCount += rsBlocks[i].dataCount;
+        }
+        if (buffer.getLengthInBits() > totalDataCount * 8) {
+          throw "code length overflow. (" + buffer.getLengthInBits() + ">" + totalDataCount * 8 + ")";
+        }
+        if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+          buffer.put(0, 4);
+        }
+        while (buffer.getLengthInBits() % 8 != 0) {
+          buffer.putBit(false);
+        }
+        while (true) {
+          if (buffer.getLengthInBits() >= totalDataCount * 8) {
+            break;
+          }
+          buffer.put(PAD0, 8);
+          if (buffer.getLengthInBits() >= totalDataCount * 8) {
+            break;
+          }
+          buffer.put(PAD1, 8);
+        }
+        return createBytes(buffer, rsBlocks);
+      };
+      _this.addData = function(data, mode) {
+        mode = mode || "Byte";
+        var newData = null;
+        switch (mode) {
+          case "Numeric":
+            newData = qrNumber(data);
+            break;
+          case "Alphanumeric":
+            newData = qrAlphaNum(data);
+            break;
+          case "Byte":
+            newData = qr8BitByte(data);
+            break;
+          case "Kanji":
+            newData = qrKanji(data);
+            break;
+          default:
+            throw "mode:" + mode;
+        }
+        _dataList.push(newData);
+        _dataCache = null;
+      };
+      _this.isDark = function(row, col) {
+        if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+          throw row + "," + col;
+        }
+        return _modules[row][col];
+      };
+      _this.getModuleCount = function() {
+        return _moduleCount;
+      };
+      _this.make = function() {
+        if (_typeNumber < 1) {
+          var typeNumber2 = 1;
+          for (; typeNumber2 < 40; typeNumber2++) {
+            var rsBlocks = QRRSBlock.getRSBlocks(typeNumber2, _errorCorrectionLevel);
+            var buffer = qrBitBuffer();
+            for (var i = 0; i < _dataList.length; i++) {
+              var data = _dataList[i];
+              buffer.put(data.getMode(), 4);
+              buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber2));
+              data.write(buffer);
+            }
+            var totalDataCount = 0;
+            for (var i = 0; i < rsBlocks.length; i++) {
+              totalDataCount += rsBlocks[i].dataCount;
+            }
+            if (buffer.getLengthInBits() <= totalDataCount * 8) {
+              break;
+            }
+          }
+          _typeNumber = typeNumber2;
+        }
+        makeImpl(false, getBestMaskPattern());
+      };
+      _this.createTableTag = function(cellSize, margin) {
+        cellSize = cellSize || 2;
+        margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+        var qrHtml = "";
+        qrHtml += '<table style="';
+        qrHtml += " border-width: 0px; border-style: none;";
+        qrHtml += " border-collapse: collapse;";
+        qrHtml += " padding: 0px; margin: " + margin + "px;";
+        qrHtml += '">';
+        qrHtml += "<tbody>";
+        for (var r = 0; r < _this.getModuleCount(); r += 1) {
+          qrHtml += "<tr>";
+          for (var c = 0; c < _this.getModuleCount(); c += 1) {
+            qrHtml += '<td style="';
+            qrHtml += " border-width: 0px; border-style: none;";
+            qrHtml += " border-collapse: collapse;";
+            qrHtml += " padding: 0px; margin: 0px;";
+            qrHtml += " width: " + cellSize + "px;";
+            qrHtml += " height: " + cellSize + "px;";
+            qrHtml += " background-color: ";
+            qrHtml += _this.isDark(r, c) ? "#000000" : "#ffffff";
+            qrHtml += ";";
+            qrHtml += '"/>';
+          }
+          qrHtml += "</tr>";
+        }
+        qrHtml += "</tbody>";
+        qrHtml += "</table>";
+        return qrHtml;
+      };
+      _this.createSvgTag = function(cellSize, margin, alt, title) {
+        var opts = {};
+        if (typeof arguments[0] == "object") {
+          opts = arguments[0];
+          cellSize = opts.cellSize;
+          margin = opts.margin;
+          alt = opts.alt;
+          title = opts.title;
+        }
+        cellSize = cellSize || 2;
+        margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+        alt = typeof alt === "string" ? { text: alt } : alt || {};
+        alt.text = alt.text || null;
+        alt.id = alt.text ? alt.id || "qrcode-description" : null;
+        title = typeof title === "string" ? { text: title } : title || {};
+        title.text = title.text || null;
+        title.id = title.text ? title.id || "qrcode-title" : null;
+        var size = _this.getModuleCount() * cellSize + margin * 2;
+        var c, mc, r, mr, qrSvg = "", rect;
+        rect = "l" + cellSize + ",0 0," + cellSize + " -" + cellSize + ",0 0,-" + cellSize + "z ";
+        qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+        qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : "";
+        qrSvg += ' viewBox="0 0 ' + size + " " + size + '" ';
+        qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+        qrSvg += title.text || alt.text ? ' role="img" aria-labelledby="' + escapeXml([title.id, alt.id].join(" ").trim()) + '"' : "";
+        qrSvg += ">";
+        qrSvg += title.text ? '<title id="' + escapeXml(title.id) + '">' + escapeXml(title.text) + "</title>" : "";
+        qrSvg += alt.text ? '<description id="' + escapeXml(alt.id) + '">' + escapeXml(alt.text) + "</description>" : "";
+        qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+        qrSvg += '<path d="';
+        for (r = 0; r < _this.getModuleCount(); r += 1) {
+          mr = r * cellSize + margin;
+          for (c = 0; c < _this.getModuleCount(); c += 1) {
+            if (_this.isDark(r, c)) {
+              mc = c * cellSize + margin;
+              qrSvg += "M" + mc + "," + mr + rect;
+            }
+          }
+        }
+        qrSvg += '" stroke="transparent" fill="black"/>';
+        qrSvg += "</svg>";
+        return qrSvg;
+      };
+      _this.createDataURL = function(cellSize, margin) {
+        cellSize = cellSize || 2;
+        margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+        var size = _this.getModuleCount() * cellSize + margin * 2;
+        var min = margin;
+        var max = size - margin;
+        return createDataURL(size, size, function(x, y) {
+          if (min <= x && x < max && min <= y && y < max) {
+            var c = Math.floor((x - min) / cellSize);
+            var r = Math.floor((y - min) / cellSize);
+            return _this.isDark(r, c) ? 0 : 1;
+          } else {
+            return 1;
+          }
+        });
+      };
+      _this.createImgTag = function(cellSize, margin, alt) {
+        cellSize = cellSize || 2;
+        margin = typeof margin == "undefined" ? cellSize * 4 : margin;
+        var size = _this.getModuleCount() * cellSize + margin * 2;
+        var img = "";
+        img += "<img";
+        img += ' src="';
+        img += _this.createDataURL(cellSize, margin);
+        img += '"';
+        img += ' width="';
+        img += size;
+        img += '"';
+        img += ' height="';
+        img += size;
+        img += '"';
+        if (alt) {
+          img += ' alt="';
+          img += escapeXml(alt);
+          img += '"';
+        }
+        img += "/>";
+        return img;
+      };
+      var escapeXml = function(s) {
+        var escaped = "";
+        for (var i = 0; i < s.length; i += 1) {
+          var c = s.charAt(i);
+          switch (c) {
+            case "<":
+              escaped += "&lt;";
+              break;
+            case ">":
+              escaped += "&gt;";
+              break;
+            case "&":
+              escaped += "&amp;";
+              break;
+            case '"':
+              escaped += "&quot;";
+              break;
+            default:
+              escaped += c;
+              break;
+          }
+        }
+        return escaped;
+      };
+      var _createHalfASCII = function(margin) {
+        var cellSize = 1;
+        margin = typeof margin == "undefined" ? cellSize * 2 : margin;
+        var size = _this.getModuleCount() * cellSize + margin * 2;
+        var min = margin;
+        var max = size - margin;
+        var y, x, r1, r2, p;
+        var blocks = {
+          "\u2588\u2588": "\u2588",
+          "\u2588 ": "\u2580",
+          " \u2588": "\u2584",
+          "  ": " "
+        };
+        var blocksLastLineNoMargin = {
+          "\u2588\u2588": "\u2580",
+          "\u2588 ": "\u2580",
+          " \u2588": " ",
+          "  ": " "
+        };
+        var ascii = "";
+        for (y = 0; y < size; y += 2) {
+          r1 = Math.floor((y - min) / cellSize);
+          r2 = Math.floor((y + 1 - min) / cellSize);
+          for (x = 0; x < size; x += 1) {
+            p = "\u2588";
+            if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+              p = " ";
+            }
+            if (min <= x && x < max && min <= y + 1 && y + 1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+              p += " ";
+            } else {
+              p += "\u2588";
+            }
+            ascii += margin < 1 && y + 1 >= max ? blocksLastLineNoMargin[p] : blocks[p];
+          }
+          ascii += "\n";
+        }
+        if (size % 2 && margin > 0) {
+          return ascii.substring(0, ascii.length - size - 1) + Array(size + 1).join("\u2580");
+        }
+        return ascii.substring(0, ascii.length - 1);
+      };
+      _this.createASCII = function(cellSize, margin) {
+        cellSize = cellSize || 1;
+        if (cellSize < 2) {
+          return _createHalfASCII(margin);
+        }
+        cellSize -= 1;
+        margin = typeof margin == "undefined" ? cellSize * 2 : margin;
+        var size = _this.getModuleCount() * cellSize + margin * 2;
+        var min = margin;
+        var max = size - margin;
+        var y, x, r, p;
+        var white = Array(cellSize + 1).join("\u2588\u2588");
+        var black = Array(cellSize + 1).join("  ");
+        var ascii = "";
+        var line = "";
+        for (y = 0; y < size; y += 1) {
+          r = Math.floor((y - min) / cellSize);
+          line = "";
+          for (x = 0; x < size; x += 1) {
+            p = 1;
+            if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+              p = 0;
+            }
+            line += p ? white : black;
+          }
+          for (r = 0; r < cellSize; r += 1) {
+            ascii += line + "\n";
+          }
+        }
+        return ascii.substring(0, ascii.length - 1);
+      };
+      _this.renderTo2dContext = function(context, cellSize) {
+        cellSize = cellSize || 2;
+        var length = _this.getModuleCount();
+        for (var row = 0; row < length; row++) {
+          for (var col = 0; col < length; col++) {
+            context.fillStyle = _this.isDark(row, col) ? "black" : "white";
+            context.fillRect(row * cellSize, col * cellSize, cellSize, cellSize);
+          }
+        }
+      };
+      return _this;
+    };
+    qrcode2.stringToBytesFuncs = {
+      "default": function(s) {
+        var bytes = [];
+        for (var i = 0; i < s.length; i += 1) {
+          var c = s.charCodeAt(i);
+          bytes.push(c & 255);
+        }
+        return bytes;
+      }
+    };
+    qrcode2.stringToBytes = qrcode2.stringToBytesFuncs["default"];
+    qrcode2.createStringToBytes = function(unicodeData, numChars) {
+      var unicodeMap = function() {
+        var bin = base64DecodeInputStream(unicodeData);
+        var read = function() {
+          var b = bin.read();
+          if (b == -1) throw "eof";
+          return b;
+        };
+        var count = 0;
+        var unicodeMap2 = {};
+        while (true) {
+          var b0 = bin.read();
+          if (b0 == -1) break;
+          var b1 = read();
+          var b2 = read();
+          var b3 = read();
+          var k = String.fromCharCode(b0 << 8 | b1);
+          var v = b2 << 8 | b3;
+          unicodeMap2[k] = v;
+          count += 1;
+        }
+        if (count != numChars) {
+          throw count + " != " + numChars;
+        }
+        return unicodeMap2;
+      }();
+      var unknownChar = "?".charCodeAt(0);
+      return function(s) {
+        var bytes = [];
+        for (var i = 0; i < s.length; i += 1) {
+          var c = s.charCodeAt(i);
+          if (c < 128) {
+            bytes.push(c);
+          } else {
+            var b = unicodeMap[s.charAt(i)];
+            if (typeof b == "number") {
+              if ((b & 255) == b) {
+                bytes.push(b);
+              } else {
+                bytes.push(b >>> 8);
+                bytes.push(b & 255);
+              }
+            } else {
+              bytes.push(unknownChar);
+            }
+          }
+        }
+        return bytes;
+      };
+    };
+    var QRMode = {
+      MODE_NUMBER: 1 << 0,
+      MODE_ALPHA_NUM: 1 << 1,
+      MODE_8BIT_BYTE: 1 << 2,
+      MODE_KANJI: 1 << 3
+    };
+    var QRErrorCorrectionLevel = {
+      L: 1,
+      M: 0,
+      Q: 3,
+      H: 2
+    };
+    var QRMaskPattern = {
+      PATTERN000: 0,
+      PATTERN001: 1,
+      PATTERN010: 2,
+      PATTERN011: 3,
+      PATTERN100: 4,
+      PATTERN101: 5,
+      PATTERN110: 6,
+      PATTERN111: 7
+    };
+    var QRUtil = function() {
+      var PATTERN_POSITION_TABLE = [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+      ];
+      var G15 = 1 << 10 | 1 << 8 | 1 << 5 | 1 << 4 | 1 << 2 | 1 << 1 | 1 << 0;
+      var G18 = 1 << 12 | 1 << 11 | 1 << 10 | 1 << 9 | 1 << 8 | 1 << 5 | 1 << 2 | 1 << 0;
+      var G15_MASK = 1 << 14 | 1 << 12 | 1 << 10 | 1 << 4 | 1 << 1;
+      var _this = {};
+      var getBCHDigit = function(data) {
+        var digit = 0;
+        while (data != 0) {
+          digit += 1;
+          data >>>= 1;
+        }
+        return digit;
+      };
+      _this.getBCHTypeInfo = function(data) {
+        var d = data << 10;
+        while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+          d ^= G15 << getBCHDigit(d) - getBCHDigit(G15);
+        }
+        return (data << 10 | d) ^ G15_MASK;
+      };
+      _this.getBCHTypeNumber = function(data) {
+        var d = data << 12;
+        while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+          d ^= G18 << getBCHDigit(d) - getBCHDigit(G18);
+        }
+        return data << 12 | d;
+      };
+      _this.getPatternPosition = function(typeNumber) {
+        return PATTERN_POSITION_TABLE[typeNumber - 1];
+      };
+      _this.getMaskFunction = function(maskPattern) {
+        switch (maskPattern) {
+          case QRMaskPattern.PATTERN000:
+            return function(i, j) {
+              return (i + j) % 2 == 0;
+            };
+          case QRMaskPattern.PATTERN001:
+            return function(i, j) {
+              return i % 2 == 0;
+            };
+          case QRMaskPattern.PATTERN010:
+            return function(i, j) {
+              return j % 3 == 0;
+            };
+          case QRMaskPattern.PATTERN011:
+            return function(i, j) {
+              return (i + j) % 3 == 0;
+            };
+          case QRMaskPattern.PATTERN100:
+            return function(i, j) {
+              return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 == 0;
+            };
+          case QRMaskPattern.PATTERN101:
+            return function(i, j) {
+              return i * j % 2 + i * j % 3 == 0;
+            };
+          case QRMaskPattern.PATTERN110:
+            return function(i, j) {
+              return (i * j % 2 + i * j % 3) % 2 == 0;
+            };
+          case QRMaskPattern.PATTERN111:
+            return function(i, j) {
+              return (i * j % 3 + (i + j) % 2) % 2 == 0;
+            };
+          default:
+            throw "bad maskPattern:" + maskPattern;
+        }
+      };
+      _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+        var a = qrPolynomial([1], 0);
+        for (var i = 0; i < errorCorrectLength; i += 1) {
+          a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0));
+        }
+        return a;
+      };
+      _this.getLengthInBits = function(mode, type) {
+        if (1 <= type && type < 10) {
+          switch (mode) {
+            case QRMode.MODE_NUMBER:
+              return 10;
+            case QRMode.MODE_ALPHA_NUM:
+              return 9;
+            case QRMode.MODE_8BIT_BYTE:
+              return 8;
+            case QRMode.MODE_KANJI:
+              return 8;
+            default:
+              throw "mode:" + mode;
+          }
+        } else if (type < 27) {
+          switch (mode) {
+            case QRMode.MODE_NUMBER:
+              return 12;
+            case QRMode.MODE_ALPHA_NUM:
+              return 11;
+            case QRMode.MODE_8BIT_BYTE:
+              return 16;
+            case QRMode.MODE_KANJI:
+              return 10;
+            default:
+              throw "mode:" + mode;
+          }
+        } else if (type < 41) {
+          switch (mode) {
+            case QRMode.MODE_NUMBER:
+              return 14;
+            case QRMode.MODE_ALPHA_NUM:
+              return 13;
+            case QRMode.MODE_8BIT_BYTE:
+              return 16;
+            case QRMode.MODE_KANJI:
+              return 12;
+            default:
+              throw "mode:" + mode;
+          }
+        } else {
+          throw "type:" + type;
+        }
+      };
+      _this.getLostPoint = function(qrcode3) {
+        var moduleCount = qrcode3.getModuleCount();
+        var lostPoint = 0;
+        for (var row = 0; row < moduleCount; row += 1) {
+          for (var col = 0; col < moduleCount; col += 1) {
+            var sameCount = 0;
+            var dark = qrcode3.isDark(row, col);
+            for (var r = -1; r <= 1; r += 1) {
+              if (row + r < 0 || moduleCount <= row + r) {
+                continue;
+              }
+              for (var c = -1; c <= 1; c += 1) {
+                if (col + c < 0 || moduleCount <= col + c) {
+                  continue;
+                }
+                if (r == 0 && c == 0) {
+                  continue;
+                }
+                if (dark == qrcode3.isDark(row + r, col + c)) {
+                  sameCount += 1;
+                }
+              }
+            }
+            if (sameCount > 5) {
+              lostPoint += 3 + sameCount - 5;
+            }
+          }
+        }
+        ;
+        for (var row = 0; row < moduleCount - 1; row += 1) {
+          for (var col = 0; col < moduleCount - 1; col += 1) {
+            var count = 0;
+            if (qrcode3.isDark(row, col)) count += 1;
+            if (qrcode3.isDark(row + 1, col)) count += 1;
+            if (qrcode3.isDark(row, col + 1)) count += 1;
+            if (qrcode3.isDark(row + 1, col + 1)) count += 1;
+            if (count == 0 || count == 4) {
+              lostPoint += 3;
+            }
+          }
+        }
+        for (var row = 0; row < moduleCount; row += 1) {
+          for (var col = 0; col < moduleCount - 6; col += 1) {
+            if (qrcode3.isDark(row, col) && !qrcode3.isDark(row, col + 1) && qrcode3.isDark(row, col + 2) && qrcode3.isDark(row, col + 3) && qrcode3.isDark(row, col + 4) && !qrcode3.isDark(row, col + 5) && qrcode3.isDark(row, col + 6)) {
+              lostPoint += 40;
+            }
+          }
+        }
+        for (var col = 0; col < moduleCount; col += 1) {
+          for (var row = 0; row < moduleCount - 6; row += 1) {
+            if (qrcode3.isDark(row, col) && !qrcode3.isDark(row + 1, col) && qrcode3.isDark(row + 2, col) && qrcode3.isDark(row + 3, col) && qrcode3.isDark(row + 4, col) && !qrcode3.isDark(row + 5, col) && qrcode3.isDark(row + 6, col)) {
+              lostPoint += 40;
+            }
+          }
+        }
+        var darkCount = 0;
+        for (var col = 0; col < moduleCount; col += 1) {
+          for (var row = 0; row < moduleCount; row += 1) {
+            if (qrcode3.isDark(row, col)) {
+              darkCount += 1;
+            }
+          }
+        }
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+        return lostPoint;
+      };
+      return _this;
+    }();
+    var QRMath = function() {
+      var EXP_TABLE = new Array(256);
+      var LOG_TABLE = new Array(256);
+      for (var i = 0; i < 8; i += 1) {
+        EXP_TABLE[i] = 1 << i;
+      }
+      for (var i = 8; i < 256; i += 1) {
+        EXP_TABLE[i] = EXP_TABLE[i - 4] ^ EXP_TABLE[i - 5] ^ EXP_TABLE[i - 6] ^ EXP_TABLE[i - 8];
+      }
+      for (var i = 0; i < 255; i += 1) {
+        LOG_TABLE[EXP_TABLE[i]] = i;
+      }
+      var _this = {};
+      _this.glog = function(n) {
+        if (n < 1) {
+          throw "glog(" + n + ")";
+        }
+        return LOG_TABLE[n];
+      };
+      _this.gexp = function(n) {
+        while (n < 0) {
+          n += 255;
+        }
+        while (n >= 256) {
+          n -= 255;
+        }
+        return EXP_TABLE[n];
+      };
+      return _this;
+    }();
+    function qrPolynomial(num, shift) {
+      if (typeof num.length == "undefined") {
+        throw num.length + "/" + shift;
+      }
+      var _num = function() {
+        var offset = 0;
+        while (offset < num.length && num[offset] == 0) {
+          offset += 1;
+        }
+        var _num2 = new Array(num.length - offset + shift);
+        for (var i = 0; i < num.length - offset; i += 1) {
+          _num2[i] = num[i + offset];
+        }
+        return _num2;
+      }();
+      var _this = {};
+      _this.getAt = function(index) {
+        return _num[index];
+      };
+      _this.getLength = function() {
+        return _num.length;
+      };
+      _this.multiply = function(e) {
+        var num2 = new Array(_this.getLength() + e.getLength() - 1);
+        for (var i = 0; i < _this.getLength(); i += 1) {
+          for (var j = 0; j < e.getLength(); j += 1) {
+            num2[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i)) + QRMath.glog(e.getAt(j)));
+          }
+        }
+        return qrPolynomial(num2, 0);
+      };
+      _this.mod = function(e) {
+        if (_this.getLength() - e.getLength() < 0) {
+          return _this;
+        }
+        var ratio = QRMath.glog(_this.getAt(0)) - QRMath.glog(e.getAt(0));
+        var num2 = new Array(_this.getLength());
+        for (var i = 0; i < _this.getLength(); i += 1) {
+          num2[i] = _this.getAt(i);
+        }
+        for (var i = 0; i < e.getLength(); i += 1) {
+          num2[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i)) + ratio);
+        }
+        return qrPolynomial(num2, 0).mod(e);
+      };
+      return _this;
+    }
+    ;
+    var QRRSBlock = function() {
+      var RS_BLOCK_TABLE = [
+        // L
+        // M
+        // Q
+        // H
+        // 1
+        [1, 26, 19],
+        [1, 26, 16],
+        [1, 26, 13],
+        [1, 26, 9],
+        // 2
+        [1, 44, 34],
+        [1, 44, 28],
+        [1, 44, 22],
+        [1, 44, 16],
+        // 3
+        [1, 70, 55],
+        [1, 70, 44],
+        [2, 35, 17],
+        [2, 35, 13],
+        // 4
+        [1, 100, 80],
+        [2, 50, 32],
+        [2, 50, 24],
+        [4, 25, 9],
+        // 5
+        [1, 134, 108],
+        [2, 67, 43],
+        [2, 33, 15, 2, 34, 16],
+        [2, 33, 11, 2, 34, 12],
+        // 6
+        [2, 86, 68],
+        [4, 43, 27],
+        [4, 43, 19],
+        [4, 43, 15],
+        // 7
+        [2, 98, 78],
+        [4, 49, 31],
+        [2, 32, 14, 4, 33, 15],
+        [4, 39, 13, 1, 40, 14],
+        // 8
+        [2, 121, 97],
+        [2, 60, 38, 2, 61, 39],
+        [4, 40, 18, 2, 41, 19],
+        [4, 40, 14, 2, 41, 15],
+        // 9
+        [2, 146, 116],
+        [3, 58, 36, 2, 59, 37],
+        [4, 36, 16, 4, 37, 17],
+        [4, 36, 12, 4, 37, 13],
+        // 10
+        [2, 86, 68, 2, 87, 69],
+        [4, 69, 43, 1, 70, 44],
+        [6, 43, 19, 2, 44, 20],
+        [6, 43, 15, 2, 44, 16],
+        // 11
+        [4, 101, 81],
+        [1, 80, 50, 4, 81, 51],
+        [4, 50, 22, 4, 51, 23],
+        [3, 36, 12, 8, 37, 13],
+        // 12
+        [2, 116, 92, 2, 117, 93],
+        [6, 58, 36, 2, 59, 37],
+        [4, 46, 20, 6, 47, 21],
+        [7, 42, 14, 4, 43, 15],
+        // 13
+        [4, 133, 107],
+        [8, 59, 37, 1, 60, 38],
+        [8, 44, 20, 4, 45, 21],
+        [12, 33, 11, 4, 34, 12],
+        // 14
+        [3, 145, 115, 1, 146, 116],
+        [4, 64, 40, 5, 65, 41],
+        [11, 36, 16, 5, 37, 17],
+        [11, 36, 12, 5, 37, 13],
+        // 15
+        [5, 109, 87, 1, 110, 88],
+        [5, 65, 41, 5, 66, 42],
+        [5, 54, 24, 7, 55, 25],
+        [11, 36, 12, 7, 37, 13],
+        // 16
+        [5, 122, 98, 1, 123, 99],
+        [7, 73, 45, 3, 74, 46],
+        [15, 43, 19, 2, 44, 20],
+        [3, 45, 15, 13, 46, 16],
+        // 17
+        [1, 135, 107, 5, 136, 108],
+        [10, 74, 46, 1, 75, 47],
+        [1, 50, 22, 15, 51, 23],
+        [2, 42, 14, 17, 43, 15],
+        // 18
+        [5, 150, 120, 1, 151, 121],
+        [9, 69, 43, 4, 70, 44],
+        [17, 50, 22, 1, 51, 23],
+        [2, 42, 14, 19, 43, 15],
+        // 19
+        [3, 141, 113, 4, 142, 114],
+        [3, 70, 44, 11, 71, 45],
+        [17, 47, 21, 4, 48, 22],
+        [9, 39, 13, 16, 40, 14],
+        // 20
+        [3, 135, 107, 5, 136, 108],
+        [3, 67, 41, 13, 68, 42],
+        [15, 54, 24, 5, 55, 25],
+        [15, 43, 15, 10, 44, 16],
+        // 21
+        [4, 144, 116, 4, 145, 117],
+        [17, 68, 42],
+        [17, 50, 22, 6, 51, 23],
+        [19, 46, 16, 6, 47, 17],
+        // 22
+        [2, 139, 111, 7, 140, 112],
+        [17, 74, 46],
+        [7, 54, 24, 16, 55, 25],
+        [34, 37, 13],
+        // 23
+        [4, 151, 121, 5, 152, 122],
+        [4, 75, 47, 14, 76, 48],
+        [11, 54, 24, 14, 55, 25],
+        [16, 45, 15, 14, 46, 16],
+        // 24
+        [6, 147, 117, 4, 148, 118],
+        [6, 73, 45, 14, 74, 46],
+        [11, 54, 24, 16, 55, 25],
+        [30, 46, 16, 2, 47, 17],
+        // 25
+        [8, 132, 106, 4, 133, 107],
+        [8, 75, 47, 13, 76, 48],
+        [7, 54, 24, 22, 55, 25],
+        [22, 45, 15, 13, 46, 16],
+        // 26
+        [10, 142, 114, 2, 143, 115],
+        [19, 74, 46, 4, 75, 47],
+        [28, 50, 22, 6, 51, 23],
+        [33, 46, 16, 4, 47, 17],
+        // 27
+        [8, 152, 122, 4, 153, 123],
+        [22, 73, 45, 3, 74, 46],
+        [8, 53, 23, 26, 54, 24],
+        [12, 45, 15, 28, 46, 16],
+        // 28
+        [3, 147, 117, 10, 148, 118],
+        [3, 73, 45, 23, 74, 46],
+        [4, 54, 24, 31, 55, 25],
+        [11, 45, 15, 31, 46, 16],
+        // 29
+        [7, 146, 116, 7, 147, 117],
+        [21, 73, 45, 7, 74, 46],
+        [1, 53, 23, 37, 54, 24],
+        [19, 45, 15, 26, 46, 16],
+        // 30
+        [5, 145, 115, 10, 146, 116],
+        [19, 75, 47, 10, 76, 48],
+        [15, 54, 24, 25, 55, 25],
+        [23, 45, 15, 25, 46, 16],
+        // 31
+        [13, 145, 115, 3, 146, 116],
+        [2, 74, 46, 29, 75, 47],
+        [42, 54, 24, 1, 55, 25],
+        [23, 45, 15, 28, 46, 16],
+        // 32
+        [17, 145, 115],
+        [10, 74, 46, 23, 75, 47],
+        [10, 54, 24, 35, 55, 25],
+        [19, 45, 15, 35, 46, 16],
+        // 33
+        [17, 145, 115, 1, 146, 116],
+        [14, 74, 46, 21, 75, 47],
+        [29, 54, 24, 19, 55, 25],
+        [11, 45, 15, 46, 46, 16],
+        // 34
+        [13, 145, 115, 6, 146, 116],
+        [14, 74, 46, 23, 75, 47],
+        [44, 54, 24, 7, 55, 25],
+        [59, 46, 16, 1, 47, 17],
+        // 35
+        [12, 151, 121, 7, 152, 122],
+        [12, 75, 47, 26, 76, 48],
+        [39, 54, 24, 14, 55, 25],
+        [22, 45, 15, 41, 46, 16],
+        // 36
+        [6, 151, 121, 14, 152, 122],
+        [6, 75, 47, 34, 76, 48],
+        [46, 54, 24, 10, 55, 25],
+        [2, 45, 15, 64, 46, 16],
+        // 37
+        [17, 152, 122, 4, 153, 123],
+        [29, 74, 46, 14, 75, 47],
+        [49, 54, 24, 10, 55, 25],
+        [24, 45, 15, 46, 46, 16],
+        // 38
+        [4, 152, 122, 18, 153, 123],
+        [13, 74, 46, 32, 75, 47],
+        [48, 54, 24, 14, 55, 25],
+        [42, 45, 15, 32, 46, 16],
+        // 39
+        [20, 147, 117, 4, 148, 118],
+        [40, 75, 47, 7, 76, 48],
+        [43, 54, 24, 22, 55, 25],
+        [10, 45, 15, 67, 46, 16],
+        // 40
+        [19, 148, 118, 6, 149, 119],
+        [18, 75, 47, 31, 76, 48],
+        [34, 54, 24, 34, 55, 25],
+        [20, 45, 15, 61, 46, 16]
+      ];
+      var qrRSBlock = function(totalCount, dataCount) {
+        var _this2 = {};
+        _this2.totalCount = totalCount;
+        _this2.dataCount = dataCount;
+        return _this2;
+      };
+      var _this = {};
+      var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+        switch (errorCorrectionLevel) {
+          case QRErrorCorrectionLevel.L:
+            return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+          case QRErrorCorrectionLevel.M:
+            return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+          case QRErrorCorrectionLevel.Q:
+            return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+          case QRErrorCorrectionLevel.H:
+            return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+          default:
+            return void 0;
+        }
+      };
+      _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+        var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+        if (typeof rsBlock == "undefined") {
+          throw "bad rs block @ typeNumber:" + typeNumber + "/errorCorrectionLevel:" + errorCorrectionLevel;
+        }
+        var length = rsBlock.length / 3;
+        var list = [];
+        for (var i = 0; i < length; i += 1) {
+          var count = rsBlock[i * 3 + 0];
+          var totalCount = rsBlock[i * 3 + 1];
+          var dataCount = rsBlock[i * 3 + 2];
+          for (var j = 0; j < count; j += 1) {
+            list.push(qrRSBlock(totalCount, dataCount));
+          }
+        }
+        return list;
+      };
+      return _this;
+    }();
+    var qrBitBuffer = function() {
+      var _buffer = [];
+      var _length = 0;
+      var _this = {};
+      _this.getBuffer = function() {
+        return _buffer;
+      };
+      _this.getAt = function(index) {
+        var bufIndex = Math.floor(index / 8);
+        return (_buffer[bufIndex] >>> 7 - index % 8 & 1) == 1;
+      };
+      _this.put = function(num, length) {
+        for (var i = 0; i < length; i += 1) {
+          _this.putBit((num >>> length - i - 1 & 1) == 1);
+        }
+      };
+      _this.getLengthInBits = function() {
+        return _length;
+      };
+      _this.putBit = function(bit) {
+        var bufIndex = Math.floor(_length / 8);
+        if (_buffer.length <= bufIndex) {
+          _buffer.push(0);
+        }
+        if (bit) {
+          _buffer[bufIndex] |= 128 >>> _length % 8;
+        }
+        _length += 1;
+      };
+      return _this;
+    };
+    var qrNumber = function(data) {
+      var _mode = QRMode.MODE_NUMBER;
+      var _data = data;
+      var _this = {};
+      _this.getMode = function() {
+        return _mode;
+      };
+      _this.getLength = function(buffer) {
+        return _data.length;
+      };
+      _this.write = function(buffer) {
+        var data2 = _data;
+        var i = 0;
+        while (i + 2 < data2.length) {
+          buffer.put(strToNum(data2.substring(i, i + 3)), 10);
+          i += 3;
+        }
+        if (i < data2.length) {
+          if (data2.length - i == 1) {
+            buffer.put(strToNum(data2.substring(i, i + 1)), 4);
+          } else if (data2.length - i == 2) {
+            buffer.put(strToNum(data2.substring(i, i + 2)), 7);
+          }
+        }
+      };
+      var strToNum = function(s) {
+        var num = 0;
+        for (var i = 0; i < s.length; i += 1) {
+          num = num * 10 + chatToNum(s.charAt(i));
+        }
+        return num;
+      };
+      var chatToNum = function(c) {
+        if ("0" <= c && c <= "9") {
+          return c.charCodeAt(0) - "0".charCodeAt(0);
+        }
+        throw "illegal char :" + c;
+      };
+      return _this;
+    };
+    var qrAlphaNum = function(data) {
+      var _mode = QRMode.MODE_ALPHA_NUM;
+      var _data = data;
+      var _this = {};
+      _this.getMode = function() {
+        return _mode;
+      };
+      _this.getLength = function(buffer) {
+        return _data.length;
+      };
+      _this.write = function(buffer) {
+        var s = _data;
+        var i = 0;
+        while (i + 1 < s.length) {
+          buffer.put(
+            getCode(s.charAt(i)) * 45 + getCode(s.charAt(i + 1)),
+            11
+          );
+          i += 2;
+        }
+        if (i < s.length) {
+          buffer.put(getCode(s.charAt(i)), 6);
+        }
+      };
+      var getCode = function(c) {
+        if ("0" <= c && c <= "9") {
+          return c.charCodeAt(0) - "0".charCodeAt(0);
+        } else if ("A" <= c && c <= "Z") {
+          return c.charCodeAt(0) - "A".charCodeAt(0) + 10;
+        } else {
+          switch (c) {
+            case " ":
+              return 36;
+            case "$":
+              return 37;
+            case "%":
+              return 38;
+            case "*":
+              return 39;
+            case "+":
+              return 40;
+            case "-":
+              return 41;
+            case ".":
+              return 42;
+            case "/":
+              return 43;
+            case ":":
+              return 44;
+            default:
+              throw "illegal char :" + c;
+          }
+        }
+      };
+      return _this;
+    };
+    var qr8BitByte = function(data) {
+      var _mode = QRMode.MODE_8BIT_BYTE;
+      var _data = data;
+      var _bytes = qrcode2.stringToBytes(data);
+      var _this = {};
+      _this.getMode = function() {
+        return _mode;
+      };
+      _this.getLength = function(buffer) {
+        return _bytes.length;
+      };
+      _this.write = function(buffer) {
+        for (var i = 0; i < _bytes.length; i += 1) {
+          buffer.put(_bytes[i], 8);
+        }
+      };
+      return _this;
+    };
+    var qrKanji = function(data) {
+      var _mode = QRMode.MODE_KANJI;
+      var _data = data;
+      var stringToBytes = qrcode2.stringToBytesFuncs["SJIS"];
+      if (!stringToBytes) {
+        throw "sjis not supported.";
+      }
+      !function(c, code) {
+        var test = stringToBytes(c);
+        if (test.length != 2 || (test[0] << 8 | test[1]) != code) {
+          throw "sjis not supported.";
+        }
+      }("\u53CB", 38726);
+      var _bytes = stringToBytes(data);
+      var _this = {};
+      _this.getMode = function() {
+        return _mode;
+      };
+      _this.getLength = function(buffer) {
+        return ~~(_bytes.length / 2);
+      };
+      _this.write = function(buffer) {
+        var data2 = _bytes;
+        var i = 0;
+        while (i + 1 < data2.length) {
+          var c = (255 & data2[i]) << 8 | 255 & data2[i + 1];
+          if (33088 <= c && c <= 40956) {
+            c -= 33088;
+          } else if (57408 <= c && c <= 60351) {
+            c -= 49472;
+          } else {
+            throw "illegal char at " + (i + 1) + "/" + c;
+          }
+          c = (c >>> 8 & 255) * 192 + (c & 255);
+          buffer.put(c, 13);
+          i += 2;
+        }
+        if (i < data2.length) {
+          throw "illegal char at " + (i + 1);
+        }
+      };
+      return _this;
+    };
+    var byteArrayOutputStream = function() {
+      var _bytes = [];
+      var _this = {};
+      _this.writeByte = function(b) {
+        _bytes.push(b & 255);
+      };
+      _this.writeShort = function(i) {
+        _this.writeByte(i);
+        _this.writeByte(i >>> 8);
+      };
+      _this.writeBytes = function(b, off, len) {
+        off = off || 0;
+        len = len || b.length;
+        for (var i = 0; i < len; i += 1) {
+          _this.writeByte(b[i + off]);
+        }
+      };
+      _this.writeString = function(s) {
+        for (var i = 0; i < s.length; i += 1) {
+          _this.writeByte(s.charCodeAt(i));
+        }
+      };
+      _this.toByteArray = function() {
+        return _bytes;
+      };
+      _this.toString = function() {
+        var s = "";
+        s += "[";
+        for (var i = 0; i < _bytes.length; i += 1) {
+          if (i > 0) {
+            s += ",";
+          }
+          s += _bytes[i];
+        }
+        s += "]";
+        return s;
+      };
+      return _this;
+    };
+    var base64EncodeOutputStream = function() {
+      var _buffer = 0;
+      var _buflen = 0;
+      var _length = 0;
+      var _base64 = "";
+      var _this = {};
+      var writeEncoded = function(b) {
+        _base64 += String.fromCharCode(encode(b & 63));
+      };
+      var encode = function(n) {
+        if (n < 0) {
+        } else if (n < 26) {
+          return 65 + n;
+        } else if (n < 52) {
+          return 97 + (n - 26);
+        } else if (n < 62) {
+          return 48 + (n - 52);
+        } else if (n == 62) {
+          return 43;
+        } else if (n == 63) {
+          return 47;
+        }
+        throw "n:" + n;
+      };
+      _this.writeByte = function(n) {
+        _buffer = _buffer << 8 | n & 255;
+        _buflen += 8;
+        _length += 1;
+        while (_buflen >= 6) {
+          writeEncoded(_buffer >>> _buflen - 6);
+          _buflen -= 6;
+        }
+      };
+      _this.flush = function() {
+        if (_buflen > 0) {
+          writeEncoded(_buffer << 6 - _buflen);
+          _buffer = 0;
+          _buflen = 0;
+        }
+        if (_length % 3 != 0) {
+          var padlen = 3 - _length % 3;
+          for (var i = 0; i < padlen; i += 1) {
+            _base64 += "=";
+          }
+        }
+      };
+      _this.toString = function() {
+        return _base64;
+      };
+      return _this;
+    };
+    var base64DecodeInputStream = function(str) {
+      var _str = str;
+      var _pos = 0;
+      var _buffer = 0;
+      var _buflen = 0;
+      var _this = {};
+      _this.read = function() {
+        while (_buflen < 8) {
+          if (_pos >= _str.length) {
+            if (_buflen == 0) {
+              return -1;
+            }
+            throw "unexpected end of file./" + _buflen;
+          }
+          var c = _str.charAt(_pos);
+          _pos += 1;
+          if (c == "=") {
+            _buflen = 0;
+            return -1;
+          } else if (c.match(/^\s$/)) {
+            continue;
+          }
+          _buffer = _buffer << 6 | decode(c.charCodeAt(0));
+          _buflen += 6;
+        }
+        var n = _buffer >>> _buflen - 8 & 255;
+        _buflen -= 8;
+        return n;
+      };
+      var decode = function(c) {
+        if (65 <= c && c <= 90) {
+          return c - 65;
+        } else if (97 <= c && c <= 122) {
+          return c - 97 + 26;
+        } else if (48 <= c && c <= 57) {
+          return c - 48 + 52;
+        } else if (c == 43) {
+          return 62;
+        } else if (c == 47) {
+          return 63;
+        } else {
+          throw "c:" + c;
+        }
+      };
+      return _this;
+    };
+    var gifImage = function(width, height) {
+      var _width = width;
+      var _height = height;
+      var _data = new Array(width * height);
+      var _this = {};
+      _this.setPixel = function(x, y, pixel) {
+        _data[y * _width + x] = pixel;
+      };
+      _this.write = function(out) {
+        out.writeString("GIF87a");
+        out.writeShort(_width);
+        out.writeShort(_height);
+        out.writeByte(128);
+        out.writeByte(0);
+        out.writeByte(0);
+        out.writeByte(0);
+        out.writeByte(0);
+        out.writeByte(0);
+        out.writeByte(255);
+        out.writeByte(255);
+        out.writeByte(255);
+        out.writeString(",");
+        out.writeShort(0);
+        out.writeShort(0);
+        out.writeShort(_width);
+        out.writeShort(_height);
+        out.writeByte(0);
+        var lzwMinCodeSize = 2;
+        var raster = getLZWRaster(lzwMinCodeSize);
+        out.writeByte(lzwMinCodeSize);
+        var offset = 0;
+        while (raster.length - offset > 255) {
+          out.writeByte(255);
+          out.writeBytes(raster, offset, 255);
+          offset += 255;
+        }
+        out.writeByte(raster.length - offset);
+        out.writeBytes(raster, offset, raster.length - offset);
+        out.writeByte(0);
+        out.writeString(";");
+      };
+      var bitOutputStream = function(out) {
+        var _out = out;
+        var _bitLength = 0;
+        var _bitBuffer = 0;
+        var _this2 = {};
+        _this2.write = function(data, length) {
+          if (data >>> length != 0) {
+            throw "length over";
+          }
+          while (_bitLength + length >= 8) {
+            _out.writeByte(255 & (data << _bitLength | _bitBuffer));
+            length -= 8 - _bitLength;
+            data >>>= 8 - _bitLength;
+            _bitBuffer = 0;
+            _bitLength = 0;
+          }
+          _bitBuffer = data << _bitLength | _bitBuffer;
+          _bitLength = _bitLength + length;
+        };
+        _this2.flush = function() {
+          if (_bitLength > 0) {
+            _out.writeByte(_bitBuffer);
+          }
+        };
+        return _this2;
+      };
+      var getLZWRaster = function(lzwMinCodeSize) {
+        var clearCode = 1 << lzwMinCodeSize;
+        var endCode = (1 << lzwMinCodeSize) + 1;
+        var bitLength = lzwMinCodeSize + 1;
+        var table = lzwTable();
+        for (var i = 0; i < clearCode; i += 1) {
+          table.add(String.fromCharCode(i));
+        }
+        table.add(String.fromCharCode(clearCode));
+        table.add(String.fromCharCode(endCode));
+        var byteOut = byteArrayOutputStream();
+        var bitOut = bitOutputStream(byteOut);
+        bitOut.write(clearCode, bitLength);
+        var dataIndex = 0;
+        var s = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+        while (dataIndex < _data.length) {
+          var c = String.fromCharCode(_data[dataIndex]);
+          dataIndex += 1;
+          if (table.contains(s + c)) {
+            s = s + c;
+          } else {
+            bitOut.write(table.indexOf(s), bitLength);
+            if (table.size() < 4095) {
+              if (table.size() == 1 << bitLength) {
+                bitLength += 1;
+              }
+              table.add(s + c);
+            }
+            s = c;
+          }
+        }
+        bitOut.write(table.indexOf(s), bitLength);
+        bitOut.write(endCode, bitLength);
+        bitOut.flush();
+        return byteOut.toByteArray();
+      };
+      var lzwTable = function() {
+        var _map = {};
+        var _size = 0;
+        var _this2 = {};
+        _this2.add = function(key) {
+          if (_this2.contains(key)) {
+            throw "dup key:" + key;
+          }
+          _map[key] = _size;
+          _size += 1;
+        };
+        _this2.size = function() {
+          return _size;
+        };
+        _this2.indexOf = function(key) {
+          return _map[key];
+        };
+        _this2.contains = function(key) {
+          return typeof _map[key] != "undefined";
+        };
+        return _this2;
+      };
+      return _this;
+    };
+    var createDataURL = function(width, height, getPixel) {
+      var gif = gifImage(width, height);
+      for (var y = 0; y < height; y += 1) {
+        for (var x = 0; x < width; x += 1) {
+          gif.setPixel(x, y, getPixel(x, y));
+        }
+      }
+      var b = byteArrayOutputStream();
+      gif.write(b);
+      var base64 = base64EncodeOutputStream();
+      var bytes = b.toByteArray();
+      for (var i = 0; i < bytes.length; i += 1) {
+        base64.writeByte(bytes[i]);
+      }
+      base64.flush();
+      return "data:image/gif;base64," + base64;
+    };
+    return qrcode2;
+  }();
+  !function() {
+    qrcode.stringToBytesFuncs["UTF-8"] = function(s) {
+      function toUTF8Array(str) {
+        var utf8 = [];
+        for (var i = 0; i < str.length; i++) {
+          var charcode = str.charCodeAt(i);
+          if (charcode < 128) utf8.push(charcode);
+          else if (charcode < 2048) {
+            utf8.push(
+              192 | charcode >> 6,
+              128 | charcode & 63
+            );
+          } else if (charcode < 55296 || charcode >= 57344) {
+            utf8.push(
+              224 | charcode >> 12,
+              128 | charcode >> 6 & 63,
+              128 | charcode & 63
+            );
+          } else {
+            i++;
+            charcode = 65536 + ((charcode & 1023) << 10 | str.charCodeAt(i) & 1023);
+            utf8.push(
+              240 | charcode >> 18,
+              128 | charcode >> 12 & 63,
+              128 | charcode >> 6 & 63,
+              128 | charcode & 63
+            );
+          }
+        }
+        return utf8;
+      }
+      return toUTF8Array(s);
+    };
+  }();
+  (function(factory) {
+    if (typeof define === "function" && define.amd) {
+      define([], factory);
+    } else if (typeof exports === "object") {
+      module.exports = factory();
+    }
+  })(function() {
+    return qrcode;
+  });
+  var qrcode_generator_default = qrcode;
+
+  // .demo-build/qrcode.ts
+  function getLib() {
+    const m = qrcode_generator_default;
+    return m.default ?? m;
+  }
+  function ensureUtf8(lib) {
+    const funcs = lib.stringToBytesFuncs;
+    if (funcs && funcs["UTF-8"]) {
+      lib.stringToBytes = funcs["UTF-8"];
+      return true;
+    }
+    return false;
+  }
+  function encodeQr(text, ec = "M", minVersion = 0) {
+    try {
+      const lib = getLib();
+      ensureUtf8(lib);
+      const qr = lib(minVersion, ec);
+      qr.addData(text, "Byte");
+      qr.make();
+      const n = qr.getModuleCount();
+      const matrix = Array.from(
+        { length: n },
+        (_, r) => Array.from({ length: n }, (_2, c) => qr.isDark(r, c))
+      );
+      return {
+        matrix,
+        version: (n - 17) / 4,
+        size: n
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  // .demo-build/WdQRCode.ts
   var _hoisted_149 = {
+    key: 1,
+    class: "wd-qrcode__empty"
+  };
+  var _hoisted_239 = ["viewBox", "width", "height", "aria-label"];
+  var _hoisted_334 = ["width", "height", "fill"];
+  var _hoisted_428 = ["transform"];
+  var _hoisted_516 = ["d", "fill"];
+  var _hoisted_68 = ["cx", "cy", "r", "fill"];
+  var _hoisted_77 = {
+    key: 3,
+    class: "wd-qrcode__center"
+  };
+  var WdQRCode_default = /* @__PURE__ */ defineComponent({
+    ...{ name: "WdQRCode" },
+    __name: "WdQRCode",
+    props: {
+      text: { type: String, required: false, default: "" },
+      size: { type: Number, required: false, default: 160 },
+      level: { type: String, required: false, default: "M" },
+      margin: { type: Number, required: false, default: 2 },
+      color: { type: String, required: false, default: "#191B1F" },
+      background: { type: String, required: false, default: "#FFFFFF" },
+      centerBlank: { type: Number, required: false, default: 0 },
+      loading: { type: Boolean, required: false, default: false }
+    },
+    emits: ["error"],
+    setup(__props, { emit: __emit }) {
+      const props = __props;
+      const emit = __emit;
+      const result = computed(() => {
+        if (!props.text) return null;
+        const r = encodeQr(props.text, props.level);
+        if (!r) {
+          emit("error", "\u5185\u5BB9\u8FC7\u957F\uFF0C\u65E0\u6CD5\u751F\u6210\u4E8C\u7EF4\u7801");
+          return null;
+        }
+        return r;
+      });
+      const pathData = computed(() => {
+        const r = result.value;
+        if (!r) return "";
+        const parts = [];
+        for (let row = 0; row < r.size; row++) {
+          for (let col = 0; col < r.size; col++) {
+            if (r.matrix[row][col]) {
+              parts.push(`M${col} ${row}h1v1h-1z`);
+            }
+          }
+        }
+        return parts.join("");
+      });
+      const totalSize = computed(() => result.value ? result.value.size + props.margin * 2 : 0);
+      const svgStyle = computed(() => ({
+        width: props.size + "px",
+        height: props.size + "px",
+        background: props.background
+      }));
+      const blankR = computed(() => {
+        if (!props.centerBlank || !totalSize.value) return 0;
+        return totalSize.value * Math.min(props.centerBlank, 40) / 200;
+      });
+      const failed = ref(false);
+      watch(
+        () => props.text,
+        () => {
+          failed.value = false;
+        }
+      );
+      onBeforeUnmount(() => {
+      });
+      return (_ctx, _cache) => {
+        return openBlock(), createElementBlock(
+          "div",
+          {
+            class: "wd-qrcode",
+            style: normalizeStyle({ width: __props.size + "px", height: __props.size + "px" })
+          },
+          [
+            createCommentVNode(" \u52A0\u8F7D\u6001\uFF1A\u4E0E\u6700\u7EC8\u5C3A\u5BF8\u4E00\u81F4\u7684\u9AA8\u67B6\uFF0C\u907F\u514D\u5E03\u5C40\u8DF3\u52A8 "),
+            __props.loading ? (openBlock(), createElementBlock(
+              "div",
+              {
+                key: 0,
+                class: "wd-qrcode__skeleton",
+                style: normalizeStyle({ width: __props.size + "px", height: __props.size + "px" })
+              },
+              null,
+              4
+              /* STYLE */
+            )) : !result.value ? (openBlock(), createElementBlock("div", _hoisted_149, " \u65E0\u5185\u5BB9 ")) : (openBlock(), createElementBlock("svg", {
+              key: 2,
+              class: "wd-qrcode__svg",
+              style: normalizeStyle(svgStyle.value),
+              viewBox: `0 0 ${totalSize.value} ${totalSize.value}`,
+              width: __props.size,
+              height: __props.size,
+              "shape-rendering": "crispEdges",
+              role: "img",
+              "aria-label": `\u4E8C\u7EF4\u7801\uFF1A${__props.text}`
+            }, [
+              createCommentVNode(" \u9759\u533A\uFF1A\u5FC5\u987B\u662F\u7EAF\u80CC\u666F\u8272\uFF0C\u5426\u5219\u8FB9\u754C\u8BC6\u522B\u4F1A\u5931\u8D25 "),
+              createElementVNode("rect", {
+                width: totalSize.value,
+                height: totalSize.value,
+                fill: __props.background
+              }, null, 8, _hoisted_334),
+              createElementVNode("g", {
+                transform: `translate(${__props.margin} ${__props.margin})`
+              }, [
+                createElementVNode("path", {
+                  d: pathData.value,
+                  fill: __props.color
+                }, null, 8, _hoisted_516),
+                createCommentVNode("\n          \u4E2D\u5FC3\u6316\u7A7A\uFF1A\u5148\u753B\u4E00\u4E2A\u80CC\u666F\u8272\u5706\u5F62\u76D6\u4F4F\uFF0C\u518D\u8BA9\u4F7F\u7528\u8005\u7528\u63D2\u69FD\u53E0 logo\u3002\n          \u7528\u300C\u906E\u76D6\u300D\u800C\u4E0D\u662F\u300C\u6316\u6D1E\u300D\uFF0C\u662F\u56E0\u4E3A path \u91CC\u505A\u5E03\u5C14\u8FD0\u7B97\u592A\u590D\u6742\uFF0C\n          \u800C\u4E14\u4E8C\u7EF4\u7801\u4E2D\u95F4\u672C\u6765\u5C31\u662F\u7EA0\u9519\u7801\u533A\u57DF\uFF0C\u906E\u6389\u4E00\u90E8\u5206\u4E0D\u5F71\u54CD\u8BC6\u522B\u3002\n        "),
+                blankR.value > 0 ? (openBlock(), createElementBlock("circle", {
+                  key: 0,
+                  cx: result.value.size / 2,
+                  cy: result.value.size / 2,
+                  r: blankR.value,
+                  fill: __props.background
+                }, null, 8, _hoisted_68)) : createCommentVNode("v-if", true)
+              ], 8, _hoisted_428)
+            ], 12, _hoisted_239)),
+            createCommentVNode(" \u4E2D\u5FC3\u63D2\u69FD\uFF1A\u53E0\u5728 SVG \u4E4B\u4E0A\uFF0C\u7EDD\u5BF9\u5B9A\u4F4D\u5C45\u4E2D "),
+            _ctx.$slots.center && result.value ? (openBlock(), createElementBlock("div", _hoisted_77, [
+              renderSlot(_ctx.$slots, "center")
+            ])) : createCommentVNode("v-if", true)
+          ],
+          4
+          /* STYLE */
+        );
+      };
+    }
+  });
+
+  // .demo-build/WdRadioGroup.ts
+  var _hoisted_150 = {
     class: "wd-radio-group",
     role: "radiogroup"
   };
-  var _hoisted_238 = ["aria-checked", "disabled", "onClick"];
-  var _hoisted_333 = { class: "wd-radio__label" };
+  var _hoisted_240 = ["aria-checked", "disabled", "onClick"];
+  var _hoisted_335 = { class: "wd-radio__label" };
   var WdRadioGroup_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdRadioGroup" },
     __name: "WdRadioGroup",
@@ -6259,7 +8376,7 @@ var WD_REAL_MODULE = (() => {
         if (!props.disabled) set(value2);
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_149, [
+        return openBlock(), createElementBlock("div", _hoisted_150, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -6284,12 +8401,12 @@ var WD_REAL_MODULE = (() => {
                 )),
                 createElementVNode(
                   "span",
-                  _hoisted_333,
+                  _hoisted_335,
                   toDisplayString(o.label),
                   1
                   /* TEXT */
                 )
-              ], 10, _hoisted_238);
+              ], 10, _hoisted_240);
             }),
             128
             /* KEYED_FRAGMENT */
@@ -6300,8 +8417,8 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdRate.ts
-  var _hoisted_150 = ["aria-label", "aria-disabled"];
-  var _hoisted_239 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"];
+  var _hoisted_151 = ["aria-label", "aria-disabled"];
+  var _hoisted_241 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"];
   var WdRate_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdRate" },
     __name: "WdRate",
@@ -6391,27 +8508,27 @@ var WD_REAL_MODULE = (() => {
                   name: "star",
                   size: 22
                 })
-              ], 42, _hoisted_239);
+              ], 42, _hoisted_241);
             }),
             128
             /* KEYED_FRAGMENT */
           ))
-        ], 42, _hoisted_150);
+        ], 42, _hoisted_151);
       };
     }
   });
 
   // .demo-build/WdResult.ts
-  var _hoisted_151 = { class: "wd-result__icon" };
-  var _hoisted_240 = {
+  var _hoisted_153 = { class: "wd-result__icon" };
+  var _hoisted_243 = {
     key: 0,
     class: "wd-result__title"
   };
-  var _hoisted_334 = {
+  var _hoisted_336 = {
     key: 1,
     class: "wd-result__desc"
   };
-  var _hoisted_427 = {
+  var _hoisted_429 = {
     key: 2,
     class: "wd-result__extra"
   };
@@ -6432,7 +8549,7 @@ var WD_REAL_MODULE = (() => {
             class: normalizeClass(["wd-result", `wd-result--${__props.status}`])
           },
           [
-            createElementVNode("div", _hoisted_151, [
+            createElementVNode("div", _hoisted_153, [
               renderSlot(_ctx.$slots, "icon", {}, () => [
                 __props.status === "success" ? (openBlock(), createBlock(_component_wd_icon, {
                   key: 0,
@@ -6455,12 +8572,12 @@ var WD_REAL_MODULE = (() => {
             ]),
             __props.title ? (openBlock(), createElementBlock(
               "div",
-              _hoisted_240,
+              _hoisted_243,
               toDisplayString(__props.title),
               1
               /* TEXT */
             )) : createCommentVNode("v-if", true),
-            __props.description || _ctx.$slots.default ? (openBlock(), createElementBlock("div", _hoisted_334, [
+            __props.description || _ctx.$slots.default ? (openBlock(), createElementBlock("div", _hoisted_336, [
               renderSlot(_ctx.$slots, "default", {}, () => [
                 createTextVNode(
                   toDisplayString(__props.description),
@@ -6469,7 +8586,7 @@ var WD_REAL_MODULE = (() => {
                 )
               ])
             ])) : createCommentVNode("v-if", true),
-            _ctx.$slots.extra ? (openBlock(), createElementBlock("div", _hoisted_427, [
+            _ctx.$slots.extra ? (openBlock(), createElementBlock("div", _hoisted_429, [
               renderSlot(_ctx.$slots, "extra")
             ])) : createCommentVNode("v-if", true)
           ],
@@ -6663,16 +8780,16 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSegmented.ts
-  var _hoisted_153 = ["aria-hidden"];
-  var _hoisted_241 = ["aria-selected", "tabindex", "onClick"];
-  var _hoisted_335 = {
+  var _hoisted_154 = ["aria-hidden"];
+  var _hoisted_244 = ["aria-selected", "tabindex", "onClick"];
+  var _hoisted_337 = {
     key: 0,
     class: "wd-segmented-picker"
   };
-  var _hoisted_428 = ["aria-expanded"];
-  var _hoisted_516 = { class: "wd-segmented-picker__label" };
-  var _hoisted_68 = { class: "wd-segmented-picker__meta" };
-  var _hoisted_77 = {
+  var _hoisted_430 = ["aria-expanded"];
+  var _hoisted_517 = { class: "wd-segmented-picker__label" };
+  var _hoisted_69 = { class: "wd-segmented-picker__meta" };
+  var _hoisted_78 = {
     key: 0,
     class: "wd-segmented-picker__panel",
     role: "listbox"
@@ -6872,14 +8989,14 @@ var WD_REAL_MODULE = (() => {
                     "aria-selected": o.value === __props.modelValue,
                     tabindex: mode.value === "dropdown" ? -1 : 0,
                     onClick: ($event) => emit("update:modelValue", o.value)
-                  }, toDisplayString(o.label), 11, _hoisted_241);
+                  }, toDisplayString(o.label), 11, _hoisted_244);
                 }),
                 128
                 /* KEYED_FRAGMENT */
               ))
-            ], 42, _hoisted_153),
+            ], 42, _hoisted_154),
             createCommentVNode(" \u9009\u9879\u8FC7\u591A\uFF1A\u964D\u7EA7\u4E3A\u4E0B\u62C9\u7B5B\u9009 "),
-            mode.value === "dropdown" ? (openBlock(), createElementBlock("div", _hoisted_335, [
+            mode.value === "dropdown" ? (openBlock(), createElementBlock("div", _hoisted_337, [
               createElementVNode("button", {
                 type: "button",
                 class: "wd-segmented-picker__trigger",
@@ -6889,14 +9006,14 @@ var WD_REAL_MODULE = (() => {
               }, [
                 createElementVNode(
                   "span",
-                  _hoisted_516,
+                  _hoisted_517,
                   toDisplayString(activeLabel.value),
                   1
                   /* TEXT */
                 ),
                 createElementVNode(
                   "span",
-                  _hoisted_68,
+                  _hoisted_69,
                   toDisplayString(items.value.length) + " \u9879",
                   1
                   /* TEXT */
@@ -6906,8 +9023,8 @@ var WD_REAL_MODULE = (() => {
                   name: "chevron-down",
                   size: 16
                 }, null, 8, ["class"])
-              ], 8, _hoisted_428),
-              dropdownOpen.value ? (openBlock(), createElementBlock("div", _hoisted_77, [
+              ], 8, _hoisted_430),
+              dropdownOpen.value ? (openBlock(), createElementBlock("div", _hoisted_78, [
                 (openBlock(true), createElementBlock(
                   Fragment,
                   null,
@@ -6948,22 +9065,22 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSelect.ts
-  var _hoisted_154 = ["disabled", "aria-expanded"];
-  var _hoisted_243 = {
+  var _hoisted_155 = ["disabled", "aria-expanded"];
+  var _hoisted_245 = {
     key: 0,
     class: "wd-select__tags"
   };
-  var _hoisted_336 = ["aria-label", "onClick"];
-  var _hoisted_429 = {
+  var _hoisted_338 = ["aria-label", "onClick"];
+  var _hoisted_431 = {
     key: 0,
     class: "wd-select__tag wd-select__tag--more"
   };
-  var _hoisted_517 = { class: "wd-select__value" };
-  var _hoisted_69 = {
+  var _hoisted_518 = { class: "wd-select__value" };
+  var _hoisted_610 = {
     key: 2,
     class: "wd-select__placeholder"
   };
-  var _hoisted_78 = { class: "wd-select__actions" };
+  var _hoisted_79 = { class: "wd-select__actions" };
   var _hoisted_88 = ["aria-multiselectable"];
   var _hoisted_97 = {
     key: 0,
@@ -7127,7 +9244,7 @@ var WD_REAL_MODULE = (() => {
                   onClick: toggleOpen
                 }, [
                   createCommentVNode(" \u591A\u9009\uFF1A\u6807\u7B7E\u5806\u53E0 "),
-                  __props.multiple && hasValue.value ? (openBlock(), createElementBlock("span", _hoisted_243, [
+                  __props.multiple && hasValue.value ? (openBlock(), createElementBlock("span", _hoisted_245, [
                     (openBlock(true), createElementBlock(
                       Fragment,
                       null,
@@ -7152,7 +9269,7 @@ var WD_REAL_MODULE = (() => {
                               name: "close",
                               size: 10
                             })
-                          ], 8, _hoisted_336)) : createCommentVNode("v-if", true)
+                          ], 8, _hoisted_338)) : createCommentVNode("v-if", true)
                         ]);
                       }),
                       128
@@ -7160,7 +9277,7 @@ var WD_REAL_MODULE = (() => {
                     )),
                     overflowCount.value ? (openBlock(), createElementBlock(
                       "span",
-                      _hoisted_429,
+                      _hoisted_431,
                       "+" + toDisplayString(overflowCount.value),
                       1
                       /* TEXT */
@@ -7172,7 +9289,7 @@ var WD_REAL_MODULE = (() => {
                       createCommentVNode(" \u5355\u9009 "),
                       createElementVNode(
                         "span",
-                        _hoisted_517,
+                        _hoisted_518,
                         toDisplayString(singleLabel.value),
                         1
                         /* TEXT */
@@ -7182,12 +9299,12 @@ var WD_REAL_MODULE = (() => {
                     /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
                   )) : (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_69,
+                    _hoisted_610,
                     toDisplayString(__props.placeholder),
                     1
                     /* TEXT */
                   )),
-                  createElementVNode("span", _hoisted_78, [
+                  createElementVNode("span", _hoisted_79, [
                     showClear.value ? (openBlock(), createElementBlock("button", {
                       key: 0,
                       type: "button",
@@ -7206,7 +9323,7 @@ var WD_REAL_MODULE = (() => {
                       size: 14
                     }, null, 8, ["class"])
                   ])
-                ], 10, _hoisted_154)
+                ], 10, _hoisted_155)
               ],
               34
               /* CLASS, NEED_HYDRATION */
@@ -7352,9 +9469,9 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSlider.ts
-  var _hoisted_155 = { class: "wd-slider" };
-  var _hoisted_244 = ["min", "max", "step", "value"];
-  var _hoisted_337 = {
+  var _hoisted_156 = { class: "wd-slider" };
+  var _hoisted_246 = ["min", "max", "step", "value"];
+  var _hoisted_339 = {
     key: 0,
     class: "wd-slider__value"
   };
@@ -7404,7 +9521,7 @@ var WD_REAL_MODULE = (() => {
         }
       );
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_155, [
+        return openBlock(), createElementBlock("div", _hoisted_156, [
           createElementVNode("input", {
             ref_key: "el",
             ref: el,
@@ -7415,10 +9532,10 @@ var WD_REAL_MODULE = (() => {
             value: current.value,
             style: normalizeStyle(trackStyle.value),
             onInput
-          }, null, 44, _hoisted_244),
+          }, null, 44, _hoisted_246),
           __props.showValue ? (openBlock(), createElementBlock(
             "span",
-            _hoisted_337,
+            _hoisted_339,
             toDisplayString(current.value),
             1
             /* TEXT */
@@ -7429,17 +9546,17 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSortableList.ts
-  var _hoisted_156 = ["onPointerdown"];
-  var _hoisted_245 = {
+  var _hoisted_157 = ["onPointerdown"];
+  var _hoisted_247 = {
     class: "wd-sortable__handle",
     "aria-hidden": "true"
   };
-  var _hoisted_338 = { class: "wd-sortable__label" };
-  var _hoisted_430 = {
+  var _hoisted_340 = { class: "wd-sortable__label" };
+  var _hoisted_433 = {
     class: "wd-sortable__handle",
     "aria-hidden": "true"
   };
-  var _hoisted_518 = { class: "wd-sortable__label" };
+  var _hoisted_519 = { class: "wd-sortable__label" };
   var DRAG_THRESHOLD = 4;
   var WdSortableList_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSortableList" },
@@ -7569,7 +9686,7 @@ var WD_REAL_MODULE = (() => {
                       }]),
                       onPointerdown: ($event) => onPointerDown($event, i)
                     }, [
-                      createElementVNode("span", _hoisted_245, [
+                      createElementVNode("span", _hoisted_247, [
                         createVNode(_component_wd_icon, {
                           name: "dots-drag",
                           size: 14
@@ -7577,12 +9694,12 @@ var WD_REAL_MODULE = (() => {
                       ]),
                       createElementVNode(
                         "span",
-                        _hoisted_338,
+                        _hoisted_340,
                         toDisplayString(labelOf(it)),
                         1
                         /* TEXT */
                       )
-                    ], 42, _hoisted_156);
+                    ], 42, _hoisted_157);
                   }),
                   128
                   /* KEYED_FRAGMENT */
@@ -7611,7 +9728,7 @@ var WD_REAL_MODULE = (() => {
                   style: normalizeStyle({ top: ghost.value.top + "px", left: ghost.value.left + "px", width: ghost.value.width + "px" })
                 },
                 [
-                  createElementVNode("span", _hoisted_430, [
+                  createElementVNode("span", _hoisted_433, [
                     createVNode(_component_wd_icon, {
                       name: "dots-drag",
                       size: 14
@@ -7619,7 +9736,7 @@ var WD_REAL_MODULE = (() => {
                   ]),
                   createElementVNode(
                     "span",
-                    _hoisted_518,
+                    _hoisted_519,
                     toDisplayString(ghost.value.label),
                     1
                     /* TEXT */
@@ -7715,22 +9832,22 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdStatistic.ts
-  var _hoisted_157 = { class: "wd-statistic" };
-  var _hoisted_246 = {
+  var _hoisted_158 = { class: "wd-statistic" };
+  var _hoisted_248 = {
     key: 0,
     class: "wd-statistic__title"
   };
-  var _hoisted_339 = { class: "wd-statistic__value" };
-  var _hoisted_431 = {
+  var _hoisted_341 = { class: "wd-statistic__value" };
+  var _hoisted_434 = {
     key: 0,
     class: "wd-statistic__affix"
   };
-  var _hoisted_519 = { class: "wd-statistic__num" };
-  var _hoisted_610 = {
+  var _hoisted_520 = { class: "wd-statistic__num" };
+  var _hoisted_611 = {
     key: 1,
     class: "wd-statistic__affix wd-statistic__affix--suffix"
   };
-  var _hoisted_79 = {
+  var _hoisted_710 = {
     key: 1,
     class: "wd-statistic__footer"
   };
@@ -7801,38 +9918,38 @@ var WD_REAL_MODULE = (() => {
         return sign + int + (dec ? "." + dec : "");
       });
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_157, [
+        return openBlock(), createElementBlock("div", _hoisted_158, [
           __props.title ? (openBlock(), createElementBlock(
             "div",
-            _hoisted_246,
+            _hoisted_248,
             toDisplayString(__props.title),
             1
             /* TEXT */
           )) : createCommentVNode("v-if", true),
-          createElementVNode("div", _hoisted_339, [
+          createElementVNode("div", _hoisted_341, [
             __props.prefix ? (openBlock(), createElementBlock(
               "span",
-              _hoisted_431,
+              _hoisted_434,
               toDisplayString(__props.prefix),
               1
               /* TEXT */
             )) : createCommentVNode("v-if", true),
             createElementVNode(
               "span",
-              _hoisted_519,
+              _hoisted_520,
               toDisplayString(text.value),
               1
               /* TEXT */
             ),
             __props.suffix ? (openBlock(), createElementBlock(
               "span",
-              _hoisted_610,
+              _hoisted_611,
               toDisplayString(__props.suffix),
               1
               /* TEXT */
             )) : createCommentVNode("v-if", true)
           ]),
-          _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_79, [
+          _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_710, [
             renderSlot(_ctx.$slots, "footer")
           ])) : createCommentVNode("v-if", true)
         ]);
@@ -7841,10 +9958,10 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSteps.ts
-  var _hoisted_158 = { class: "wd-steps" };
-  var _hoisted_247 = { class: "wd-steps__dot" };
-  var _hoisted_340 = { class: "wd-steps__label" };
-  var _hoisted_433 = {
+  var _hoisted_159 = { class: "wd-steps" };
+  var _hoisted_249 = { class: "wd-steps__dot" };
+  var _hoisted_343 = { class: "wd-steps__label" };
+  var _hoisted_435 = {
     key: 0,
     class: "wd-steps__desc"
   };
@@ -7867,7 +9984,7 @@ var WD_REAL_MODULE = (() => {
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_158, [
+        return openBlock(), createElementBlock("div", _hoisted_159, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -7882,7 +9999,7 @@ var WD_REAL_MODULE = (() => {
                       class: normalizeClass(["wd-steps__item", `wd-steps__item--${state(i)}`])
                     },
                     [
-                      createElementVNode("span", _hoisted_247, [
+                      createElementVNode("span", _hoisted_249, [
                         state(i) === "finish" ? (openBlock(), createBlock(_component_wd_icon, {
                           key: 0,
                           name: "check",
@@ -7901,7 +10018,7 @@ var WD_REAL_MODULE = (() => {
                           /* STABLE_FRAGMENT */
                         ))
                       ]),
-                      createElementVNode("span", _hoisted_340, [
+                      createElementVNode("span", _hoisted_343, [
                         createTextVNode(
                           toDisplayString(s.title) + " ",
                           1
@@ -7909,7 +10026,7 @@ var WD_REAL_MODULE = (() => {
                         ),
                         s.desc ? (openBlock(), createElementBlock(
                           "em",
-                          _hoisted_433,
+                          _hoisted_435,
                           toDisplayString(s.desc),
                           1
                           /* TEXT */
@@ -7943,7 +10060,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSwitch.ts
-  var _hoisted_159 = ["aria-checked", "data-controlled", "disabled"];
+  var _hoisted_160 = ["aria-checked", "data-controlled", "disabled"];
   var WdSwitch_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSwitch" },
     __name: "WdSwitch",
@@ -7985,25 +10102,25 @@ var WD_REAL_MODULE = (() => {
             -1
             /* CACHED */
           )
-        ])], 10, _hoisted_159);
+        ])], 10, _hoisted_160);
       };
     }
   });
 
   // .demo-build/WdTable.ts
-  var _hoisted_160 = {
+  var _hoisted_161 = {
     key: 0,
     class: "wd-table__th wd-table__th--check"
   };
-  var _hoisted_248 = ["aria-checked"];
-  var _hoisted_341 = ["aria-sort", "onClick"];
-  var _hoisted_434 = {
+  var _hoisted_250 = ["aria-checked"];
+  var _hoisted_344 = ["aria-sort", "onClick"];
+  var _hoisted_436 = {
     key: 0,
     class: "wd-table__sort"
   };
-  var _hoisted_520 = ["onClick"];
-  var _hoisted_611 = ["aria-checked", "onClick"];
-  var _hoisted_710 = {
+  var _hoisted_521 = ["onClick"];
+  var _hoisted_612 = ["aria-checked", "onClick"];
+  var _hoisted_711 = {
     key: 1,
     class: "wd-table__empty"
   };
@@ -8090,7 +10207,7 @@ var WD_REAL_MODULE = (() => {
               [
                 createElementVNode("thead", null, [
                   createElementVNode("tr", null, [
-                    __props.selectable ? (openBlock(), createElementBlock("th", _hoisted_160, [
+                    __props.selectable ? (openBlock(), createElementBlock("th", _hoisted_161, [
                       createElementVNode("button", {
                         type: "button",
                         class: normalizeClass(["wd-table__check", { "wd-table__check--on": allChecked.value, "wd-table__check--part": someChecked.value }]),
@@ -8108,7 +10225,7 @@ var WD_REAL_MODULE = (() => {
                           name: "check",
                           size: 10
                         })) : createCommentVNode("v-if", true)
-                      ], 10, _hoisted_248)
+                      ], 10, _hoisted_250)
                     ])) : createCommentVNode("v-if", true),
                     (openBlock(true), createElementBlock(
                       Fragment,
@@ -8126,14 +10243,14 @@ var WD_REAL_MODULE = (() => {
                             1
                             /* TEXT */
                           ),
-                          col.sortable ? (openBlock(), createElementBlock("span", _hoisted_434, [
+                          col.sortable ? (openBlock(), createElementBlock("span", _hoisted_436, [
                             createVNode(_component_wd_icon, {
                               name: sortKey.value !== col.key || sortDir.value === "asc" ? "arrow-up" : "arrow-down",
                               size: 12,
                               style: normalizeStyle({ color: sortKey.value === col.key ? "var(--wd-red)" : "var(--wd-ink-3)" })
                             }, null, 8, ["name", "style"])
                           ])) : createCommentVNode("v-if", true)
-                        ], 14, _hoisted_341);
+                        ], 14, _hoisted_344);
                       }),
                       128
                       /* KEYED_FRAGMENT */
@@ -8169,7 +10286,7 @@ var WD_REAL_MODULE = (() => {
                               name: "check",
                               size: 10
                             })) : createCommentVNode("v-if", true)
-                          ], 10, _hoisted_611)
+                          ], 10, _hoisted_612)
                         ])) : createCommentVNode("v-if", true),
                         (openBlock(true), createElementBlock(
                           Fragment,
@@ -8200,7 +10317,7 @@ var WD_REAL_MODULE = (() => {
                           128
                           /* KEYED_FRAGMENT */
                         ))
-                      ], 10, _hoisted_520);
+                      ], 10, _hoisted_521);
                     }),
                     128
                     /* KEYED_FRAGMENT */
@@ -8211,7 +10328,7 @@ var WD_REAL_MODULE = (() => {
               /* CLASS */
             )) : !__props.loading ? (openBlock(), createElementBlock(
               "div",
-              _hoisted_710,
+              _hoisted_711,
               toDisplayString(__props.emptyText),
               1
               /* TEXT */
@@ -8242,9 +10359,9 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTabs.ts
-  var _hoisted_161 = ["aria-selected", "disabled", "tabindex", "onClick"];
-  var _hoisted_249 = { class: "wd-tabs__label" };
-  var _hoisted_343 = ["aria-label", "onClick"];
+  var _hoisted_163 = ["aria-selected", "disabled", "tabindex", "onClick"];
+  var _hoisted_251 = { class: "wd-tabs__label" };
+  var _hoisted_345 = ["aria-label", "onClick"];
   var WdTabs_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdTabs" },
     __name: "WdTabs",
@@ -8324,7 +10441,7 @@ var WD_REAL_MODULE = (() => {
                 }, [
                   createElementVNode(
                     "span",
-                    _hoisted_249,
+                    _hoisted_251,
                     toDisplayString(t.label),
                     1
                     /* TEXT */
@@ -8340,8 +10457,8 @@ var WD_REAL_MODULE = (() => {
                       name: "close",
                       size: 10
                     })
-                  ], 8, _hoisted_343)) : createCommentVNode("v-if", true)
-                ], 10, _hoisted_161);
+                  ], 8, _hoisted_345)) : createCommentVNode("v-if", true)
+                ], 10, _hoisted_163);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -8368,7 +10485,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTag.ts
-  var _hoisted_163 = {
+  var _hoisted_164 = {
     key: 0,
     class: "wd-tag__dot"
   };
@@ -8389,7 +10506,7 @@ var WD_REAL_MODULE = (() => {
             "data-wd-hover": ""
           },
           [
-            __props.dot ? (openBlock(), createElementBlock("i", _hoisted_163)) : createCommentVNode("v-if", true),
+            __props.dot ? (openBlock(), createElementBlock("i", _hoisted_164)) : createCommentVNode("v-if", true),
             renderSlot(_ctx.$slots, "default")
           ],
           2
@@ -8400,13 +10517,13 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTimeline.ts
-  var _hoisted_164 = {
+  var _hoisted_165 = {
     key: 0,
     class: "wd-timeline__period"
   };
-  var _hoisted_250 = { class: "wd-timeline__body" };
-  var _hoisted_344 = { class: "wd-timeline__title" };
-  var _hoisted_435 = {
+  var _hoisted_252 = { class: "wd-timeline__body" };
+  var _hoisted_346 = { class: "wd-timeline__title" };
+  var _hoisted_437 = {
     key: 0,
     class: "wd-timeline__desc"
   };
@@ -8435,22 +10552,22 @@ var WD_REAL_MODULE = (() => {
                 }, [
                   it.period ? (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_164,
+                    _hoisted_165,
                     toDisplayString(it.period),
                     1
                     /* TEXT */
                   )) : createCommentVNode("v-if", true),
-                  createElementVNode("div", _hoisted_250, [
+                  createElementVNode("div", _hoisted_252, [
                     createElementVNode(
                       "h3",
-                      _hoisted_344,
+                      _hoisted_346,
                       toDisplayString(it.title),
                       1
                       /* TEXT */
                     ),
                     it.desc ? (openBlock(), createElementBlock(
                       "p",
-                      _hoisted_435,
+                      _hoisted_437,
                       toDisplayString(it.desc),
                       1
                       /* TEXT */
@@ -8537,16 +10654,16 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTransfer.ts
-  var _hoisted_165 = { class: "wd-transfer__panel" };
-  var _hoisted_251 = { class: "wd-transfer__head" };
-  var _hoisted_345 = { class: "wd-transfer__check-all" };
-  var _hoisted_436 = ["checked", ".indeterminate"];
-  var _hoisted_521 = { class: "wd-transfer__count" };
-  var _hoisted_612 = {
+  var _hoisted_166 = { class: "wd-transfer__panel" };
+  var _hoisted_253 = { class: "wd-transfer__head" };
+  var _hoisted_347 = { class: "wd-transfer__check-all" };
+  var _hoisted_438 = ["checked", ".indeterminate"];
+  var _hoisted_522 = { class: "wd-transfer__count" };
+  var _hoisted_613 = {
     key: 0,
     class: "wd-transfer__search"
   };
-  var _hoisted_711 = {
+  var _hoisted_712 = {
     key: 0,
     class: "wd-transfer__empty"
   };
@@ -8557,11 +10674,11 @@ var WD_REAL_MODULE = (() => {
     class: "wd-transfer__desc"
   };
   var _hoisted_1114 = { class: "wd-transfer__ops" };
-  var _hoisted_1210 = ["disabled"];
+  var _hoisted_1211 = ["disabled"];
   var _hoisted_1310 = ["disabled"];
   var _hoisted_1410 = { class: "wd-transfer__panel" };
   var _hoisted_1510 = { class: "wd-transfer__head" };
-  var _hoisted_166 = { class: "wd-transfer__check-all" };
+  var _hoisted_167 = { class: "wd-transfer__check-all" };
   var _hoisted_173 = ["checked", ".indeterminate"];
   var _hoisted_183 = { class: "wd-transfer__count" };
   var _hoisted_193 = {
@@ -8663,15 +10780,15 @@ var WD_REAL_MODULE = (() => {
           },
           [
             createCommentVNode(" ---------------- \u5DE6\u4FA7\uFF1A\u5F85\u9009 ---------------- "),
-            createElementVNode("div", _hoisted_165, [
-              createElementVNode("div", _hoisted_251, [
-                createElementVNode("label", _hoisted_345, [
+            createElementVNode("div", _hoisted_166, [
+              createElementVNode("div", _hoisted_253, [
+                createElementVNode("label", _hoisted_347, [
                   createElementVNode("input", {
                     type: "checkbox",
                     checked: isAllChecked(leftList.value, leftChecked.value),
                     ".indeterminate": leftChecked.value.size > 0 && !isAllChecked(leftList.value, leftChecked.value),
                     onChange: _cache[0] || (_cache[0] = ($event) => checkAll("left", leftList.value))
-                  }, null, 40, _hoisted_436),
+                  }, null, 40, _hoisted_438),
                   createElementVNode(
                     "span",
                     null,
@@ -8681,7 +10798,7 @@ var WD_REAL_MODULE = (() => {
                   )
                 ]),
                 createCommentVNode('\n          \u8BA1\u6570\u8BED\u4E49\uFF1A\u9ED8\u8BA4\u663E\u793A\u603B\u6570\uFF0C\u6709\u52FE\u9009\u65F6\u663E\u793A"\u5DF2\u52FE M / \u5171 N"\u3002\n          \u26A0\uFE0F \u4E4B\u524D\u5DE6\u53F3\u90FD\u5199 `\u52FE\u9009\u6570 / \u5217\u8868\u957F\u5EA6`\uFF0C\n          \u53F3\u4FA7\u5217\u8868\u957F\u5EA6\u5C31\u662F\u5DF2\u9009\u603B\u6570\uFF0C\u4E8E\u662F\u51FA\u73B0"0/2"\u8FD9\u79CD\n          \u770B\u8D77\u6765\u50CF"\u4E00\u4E2A\u90FD\u6CA1\u9009"\u7684\u8BEF\u5BFC\u6587\u6848 \u2014\u2014 \u5B9E\u9645\u662F\u6709 2 \u9879\u5DF2\u9009\u3002\n        '),
-                createElementVNode("span", _hoisted_521, [
+                createElementVNode("span", _hoisted_522, [
                   leftChecked.value.size ? (openBlock(), createElementBlock(
                     Fragment,
                     { key: 0 },
@@ -8702,7 +10819,7 @@ var WD_REAL_MODULE = (() => {
                   )
                 ])
               ]),
-              __props.filterable ? (openBlock(), createElementBlock("div", _hoisted_612, [
+              __props.filterable ? (openBlock(), createElementBlock("div", _hoisted_613, [
                 createVNode(_component_wd_input, {
                   modelValue: leftQuery.value,
                   "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => leftQuery.value = $event),
@@ -8720,7 +10837,7 @@ var WD_REAL_MODULE = (() => {
                 [
                   leftList.value.length === 0 ? (openBlock(), createElementBlock(
                     "p",
-                    _hoisted_711,
+                    _hoisted_712,
                     toDisplayString(__props.data.length === 0 ? "\u6682\u65E0\u6570\u636E" : "\u6CA1\u6709\u53EF\u79FB\u52A8\u9879"),
                     1
                     /* TEXT */
@@ -8782,7 +10899,7 @@ var WD_REAL_MODULE = (() => {
                   name: "arrow-right",
                   size: 16
                 })
-              ], 8, _hoisted_1210),
+              ], 8, _hoisted_1211),
               createElementVNode("button", {
                 type: "button",
                 class: "wd-transfer__op",
@@ -8799,7 +10916,7 @@ var WD_REAL_MODULE = (() => {
             createCommentVNode(" ---------------- \u53F3\u4FA7\uFF1A\u5DF2\u9009 ---------------- "),
             createElementVNode("div", _hoisted_1410, [
               createElementVNode("div", _hoisted_1510, [
-                createElementVNode("label", _hoisted_166, [
+                createElementVNode("label", _hoisted_167, [
                   createElementVNode("input", {
                     type: "checkbox",
                     checked: isAllChecked(rightList.value, rightChecked.value),
@@ -8906,15 +11023,15 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTree.ts
-  var _hoisted_167 = ["data-k", "tabindex", "aria-expanded", "aria-selected", "aria-disabled", "onClick", "onKeydown"];
-  var _hoisted_252 = ["onClick"];
-  var _hoisted_346 = ["checked", ".indeterminate", "disabled", "onChange"];
-  var _hoisted_437 = {
+  var _hoisted_168 = ["data-k", "tabindex", "aria-expanded", "aria-selected", "aria-disabled", "onClick", "onKeydown"];
+  var _hoisted_254 = ["onClick"];
+  var _hoisted_348 = ["checked", ".indeterminate", "disabled", "onChange"];
+  var _hoisted_439 = {
     key: 1,
     class: "wd-tree__icon"
   };
-  var _hoisted_522 = { class: "wd-tree__label" };
-  var _hoisted_613 = {
+  var _hoisted_523 = { class: "wd-tree__label" };
+  var _hoisted_614 = {
     key: 0,
     class: "wd-tree__empty"
   };
@@ -9121,7 +11238,7 @@ var WD_REAL_MODULE = (() => {
                       name: "chevron-right",
                       size: 10
                     })) : createCommentVNode("v-if", true)
-                  ], 10, _hoisted_252),
+                  ], 10, _hoisted_254),
                   __props.checkable ? (openBlock(), createElementBlock("label", {
                     key: 0,
                     class: "wd-tree__check",
@@ -9134,9 +11251,9 @@ var WD_REAL_MODULE = (() => {
                       ".indeterminate": isIndeterminate(entry.node),
                       disabled: entry.node.disabled,
                       onChange: ($event) => toggleCheck(entry.node)
-                    }, null, 40, _hoisted_346)
+                    }, null, 40, _hoisted_348)
                   ])) : createCommentVNode("v-if", true),
-                  entry.node.icon || _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_437, [
+                  entry.node.icon || _ctx.$slots.icon ? (openBlock(), createElementBlock("span", _hoisted_439, [
                     renderSlot(_ctx.$slots, "icon", {
                       node: entry.node
                     }, () => [
@@ -9147,7 +11264,7 @@ var WD_REAL_MODULE = (() => {
                       )
                     ])
                   ])) : createCommentVNode("v-if", true),
-                  createElementVNode("span", _hoisted_522, [
+                  createElementVNode("span", _hoisted_523, [
                     renderSlot(_ctx.$slots, "label", {
                       node: entry.node
                     }, () => [
@@ -9168,14 +11285,14 @@ var WD_REAL_MODULE = (() => {
                       node: entry.node
                     })
                   ])) : createCommentVNode("v-if", true)
-                ], 46, _hoisted_167);
+                ], 46, _hoisted_168);
               }),
               128
               /* KEYED_FRAGMENT */
             )),
             !flat.value.length ? (openBlock(), createElementBlock(
               "div",
-              _hoisted_613,
+              _hoisted_614,
               toDisplayString(__props.emptyText),
               1
               /* TEXT */
@@ -9189,22 +11306,22 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdUpload.ts
-  var _hoisted_168 = { class: "wd-upload" };
-  var _hoisted_253 = { class: "wd-upload__icon" };
-  var _hoisted_347 = {
+  var _hoisted_169 = { class: "wd-upload" };
+  var _hoisted_255 = { class: "wd-upload__icon" };
+  var _hoisted_349 = {
     key: 0,
     class: "wd-upload__hint"
   };
-  var _hoisted_438 = ["accept", "multiple"];
-  var _hoisted_523 = {
+  var _hoisted_440 = ["accept", "multiple"];
+  var _hoisted_524 = {
     key: 1,
     class: "wd-upload__error"
   };
-  var _hoisted_614 = {
+  var _hoisted_615 = {
     key: 0,
     class: "wd-upload__list"
   };
-  var _hoisted_712 = { class: "wd-upload__file-icon" };
+  var _hoisted_713 = { class: "wd-upload__file-icon" };
   var _hoisted_811 = { class: "wd-upload__info" };
   var _hoisted_99 = { class: "wd-upload__name" };
   var _hoisted_108 = { class: "wd-upload__meta" };
@@ -9212,7 +11329,7 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-upload__progress"
   };
-  var _hoisted_1211 = ["onClick"];
+  var _hoisted_1212 = ["onClick"];
   var WdUpload_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdUpload" },
     __name: "WdUpload",
@@ -9279,7 +11396,7 @@ var WD_REAL_MODULE = (() => {
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_168, [
+        return openBlock(), createElementBlock("div", _hoisted_169, [
           createElementVNode(
             "div",
             {
@@ -9290,7 +11407,7 @@ var WD_REAL_MODULE = (() => {
               onDrop
             },
             [
-              createElementVNode("span", _hoisted_253, [
+              createElementVNode("span", _hoisted_255, [
                 createVNode(_component_wd_icon, {
                   name: "upload",
                   size: 30
@@ -9308,7 +11425,7 @@ var WD_REAL_MODULE = (() => {
               )),
               __props.hint ? (openBlock(), createElementBlock(
                 "span",
-                _hoisted_347,
+                _hoisted_349,
                 toDisplayString(__props.hint),
                 1
                 /* TEXT */
@@ -9328,10 +11445,10 @@ var WD_REAL_MODULE = (() => {
                 accept: __props.accept,
                 multiple: __props.multiple,
                 onChange: onPick
-              }, null, 40, _hoisted_438),
+              }, null, 40, _hoisted_440),
               error.value ? (openBlock(), createElementBlock(
                 "span",
-                _hoisted_523,
+                _hoisted_524,
                 toDisplayString(error.value),
                 1
                 /* TEXT */
@@ -9340,7 +11457,7 @@ var WD_REAL_MODULE = (() => {
             34
             /* CLASS, NEED_HYDRATION */
           ),
-          __props.showList && files.value.length ? (openBlock(), createElementBlock("div", _hoisted_614, [
+          __props.showList && files.value.length ? (openBlock(), createElementBlock("div", _hoisted_615, [
             (openBlock(true), createElementBlock(
               Fragment,
               null,
@@ -9349,7 +11466,7 @@ var WD_REAL_MODULE = (() => {
                   key: i,
                   class: "wd-upload__item"
                 }, [
-                  createElementVNode("span", _hoisted_712, [
+                  createElementVNode("span", _hoisted_713, [
                     createVNode(_component_wd_icon, {
                       name: "file",
                       size: 16
@@ -9393,7 +11510,7 @@ var WD_REAL_MODULE = (() => {
                       name: "close",
                       size: 13
                     })
-                  ], 8, _hoisted_1211)
+                  ], 8, _hoisted_1212)
                 ]);
               }),
               128
@@ -9406,31 +11523,31 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdVideoPlayer.ts
-  var _hoisted_169 = ["poster", "loop", "muted", "autoplay"];
-  var _hoisted_254 = {
+  var _hoisted_170 = ["poster", "loop", "muted", "autoplay"];
+  var _hoisted_256 = {
     key: 0,
     class: "wd-vplayer__title"
   };
-  var _hoisted_348 = {
+  var _hoisted_350 = {
     key: 1,
     class: "wd-vplayer__live"
   };
-  var _hoisted_439 = { class: "wd-vplayer__overlay" };
-  var _hoisted_524 = {
+  var _hoisted_441 = { class: "wd-vplayer__overlay" };
+  var _hoisted_525 = {
     key: 1,
     class: "wd-vplayer__loading",
     "aria-hidden": "true"
   };
-  var _hoisted_615 = {
+  var _hoisted_616 = {
     key: 2,
     class: "wd-vplayer__error"
   };
-  var _hoisted_713 = ["aria-valuenow"];
+  var _hoisted_714 = ["aria-valuenow"];
   var _hoisted_812 = { class: "wd-vplayer__row" };
   var _hoisted_910 = ["aria-label"];
   var _hoisted_109 = ["disabled"];
   var _hoisted_1116 = ["disabled"];
-  var _hoisted_1212 = {
+  var _hoisted_1213 = {
     key: 1,
     class: "wd-vplayer__time"
   };
@@ -9832,7 +11949,7 @@ var WD_REAL_MODULE = (() => {
               }),
               onPlaying: _cache[5] || (_cache[5] = ($event) => errMsg.value = ""),
               onError
-            }, null, 40, _hoisted_169),
+            }, null, 40, _hoisted_170),
             createCommentVNode(" ===== \u70B9\u51FB\u5C42\uFF1A\u6574\u4E2A\u753B\u9762\u53EF\u6682\u505C\uFF08\u9F20\u6807\u6307\u9488\u4E0D\u663E\u793A\uFF09 ===== "),
             createElementVNode("div", {
               class: "wd-vplayer__hit",
@@ -9847,12 +11964,12 @@ var WD_REAL_MODULE = (() => {
               [
                 __props.title ? (openBlock(), createElementBlock(
                   "span",
-                  _hoisted_254,
+                  _hoisted_256,
                   toDisplayString(__props.title),
                   1
                   /* TEXT */
                 )) : createCommentVNode("v-if", true),
-                isLive.value ? (openBlock(), createElementBlock("span", _hoisted_348, [..._cache[10] || (_cache[10] = [
+                isLive.value ? (openBlock(), createElementBlock("span", _hoisted_350, [..._cache[10] || (_cache[10] = [
                   createElementVNode(
                     "i",
                     { class: "wd-vplayer__live-dot" },
@@ -9880,7 +11997,7 @@ var WD_REAL_MODULE = (() => {
               /* CLASS */
             ),
             createCommentVNode(" ===== \u753B\u9762\u8986\u76D6\u5C42\uFF1A\u5F39\u5E55 / \u81EA\u5B9A\u4E49\u5B57\u5E55 / \u6C34\u5370 ===== "),
-            createElementVNode("div", _hoisted_439, [
+            createElementVNode("div", _hoisted_441, [
               renderSlot(_ctx.$slots, "overlay", {
                 playing: playing.value,
                 current: current.value,
@@ -9902,7 +12019,7 @@ var WD_REAL_MODULE = (() => {
               }, null, 8, ["variant"])
             ])) : createCommentVNode("v-if", true),
             createCommentVNode(" \u52A0\u8F7D\u4E2D "),
-            !ready.value && !errMsg.value ? (openBlock(), createElementBlock("div", _hoisted_524, [..._cache[12] || (_cache[12] = [
+            !ready.value && !errMsg.value ? (openBlock(), createElementBlock("div", _hoisted_525, [..._cache[12] || (_cache[12] = [
               createElementVNode(
                 "span",
                 { class: "wd-vplayer__spinner" },
@@ -9912,7 +12029,7 @@ var WD_REAL_MODULE = (() => {
               )
             ])])) : createCommentVNode("v-if", true),
             createCommentVNode(" \u9519\u8BEF "),
-            errMsg.value ? (openBlock(), createElementBlock("div", _hoisted_615, [
+            errMsg.value ? (openBlock(), createElementBlock("div", _hoisted_616, [
               createVNode(_component_wd_icon, {
                 name: "warning-circle",
                 variant: __props.iconStyle,
@@ -9984,7 +12101,7 @@ var WD_REAL_MODULE = (() => {
                     4
                     /* STYLE */
                   )
-                ], 40, _hoisted_713)) : (openBlock(), createElementBlock(
+                ], 40, _hoisted_714)) : (openBlock(), createElementBlock(
                   Fragment,
                   { key: 1 },
                   [
@@ -10054,7 +12171,7 @@ var WD_REAL_MODULE = (() => {
                   )) : createCommentVNode("v-if", true),
                   !isLive.value ? (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_1212,
+                    _hoisted_1213,
                     toDisplayString(unref(formatDuration)(current.value)) + " / " + toDisplayString(unref(formatDuration)(duration.value)),
                     1
                     /* TEXT */
@@ -10245,7 +12362,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdVirtualList.ts
-  var _hoisted_170 = {
+  var _hoisted_171 = {
     key: 1,
     class: "wd-vlist__empty"
   };
@@ -10387,7 +12504,7 @@ var WD_REAL_MODULE = (() => {
               /* STYLE */
             )) : (openBlock(), createElementBlock(
               "div",
-              _hoisted_170,
+              _hoisted_171,
               toDisplayString(__props.emptyText),
               1
               /* TEXT */
@@ -10739,7 +12856,7 @@ var WD_REAL_MODULE = (() => {
   }
 
   // .demo-build/WdIcon.ts
-  var _hoisted_171 = ["innerHTML"];
+  var _hoisted_175 = ["innerHTML"];
   var WdIcon_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdIcon" },
     __name: "WdIcon",
@@ -10780,7 +12897,7 @@ var WD_REAL_MODULE = (() => {
           class: normalizeClass(["wd-icon", { "wd-icon--optical": factor.value !== 1 }]),
           style: normalizeStyle({ width: sizePx.value, height: sizePx.value }),
           innerHTML: svg.value
-        }, null, 14, _hoisted_171);
+        }, null, 14, _hoisted_175);
       };
     }
   });
@@ -10845,7 +12962,7 @@ var WD_REAL_MODULE = (() => {
 ;(function(){
   var M = (typeof WD_REAL_MODULE !== 'undefined' ? WD_REAL_MODULE : window.WD_REAL_MODULE) || {};
   window.WD_REAL = { ALL: [] };
-  ["WdAccordion","WdAccordionItem","WdAffix","WdAiMessage","WdAlert","WdAudioPlayer","WdAvatar","WdAvatarGroup","WdBacktop","WdBadge","WdBreadcrumb","WdButton","WdCard","WdCarousel","WdCheckbox","WdCollapse","WdCommand","WdContainer","WdDatePicker","WdDescriptions","WdDivider","WdDrawer","WdDropdown","WdEmpty","WdExplorer","WdFileList","WdForm","WdFormItem","WdGrid","WdGroup","WdImagePreview","WdInput","WdListItem","WdMarkdown","WdModal","WdNotification","WdOtp","WdPagination","WdPopconfirm","WdPopover","WdPostItem","WdProgress","WdRadioGroup","WdRate","WdResult","WdScrollbar","WdSegmented","WdSelect","WdSkeleton","WdSlider","WdSortableList","WdSpace","WdSpinner","WdStatistic","WdSteps","WdSwitch","WdTable","WdTabs","WdTag","WdTimeline","WdTooltip","WdTransfer","WdTree","WdUpload","WdVideoPlayer","WdVirtualList","WdWatermark","WdIcon"].forEach(function(n){
+  ["WdAccordion","WdAccordionItem","WdAffix","WdAiMessage","WdAlert","WdAudioPlayer","WdAvatar","WdAvatarGroup","WdBacktop","WdBadge","WdBreadcrumb","WdButton","WdCard","WdCarousel","WdCascader","WdCheckbox","WdCollapse","WdCommand","WdContainer","WdDatePicker","WdDescriptions","WdDivider","WdDrawer","WdDropdown","WdEmpty","WdExplorer","WdFileList","WdForm","WdFormItem","WdGrid","WdGroup","WdImagePreview","WdInput","WdListItem","WdMarkdown","WdModal","WdNotification","WdOtp","WdPagination","WdPopconfirm","WdPopover","WdPostItem","WdProgress","WdQRCode","WdRadioGroup","WdRate","WdResult","WdScrollbar","WdSegmented","WdSelect","WdSkeleton","WdSlider","WdSortableList","WdSpace","WdSpinner","WdStatistic","WdSteps","WdSwitch","WdTable","WdTabs","WdTag","WdTimeline","WdTooltip","WdTransfer","WdTree","WdUpload","WdVideoPlayer","WdVirtualList","WdWatermark","WdIcon"].forEach(function(n){
     if (M[n]) { window.WD_REAL[n] = M[n]; window.WD_REAL.ALL.push(M[n]); }
   });
   // 命令式 toast

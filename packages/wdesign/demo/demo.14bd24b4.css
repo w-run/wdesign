@@ -1747,6 +1747,297 @@ body {
   width: 100%;
 }
 
+.wd-qrcode {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: var(--wd-radius-sm);
+  overflow: hidden;
+}
+
+.wd-qrcode__svg {
+  display: block;
+  border-radius: var(--wd-radius-sm);
+  /*
+   * crispEdges：关闭抗锯齿。
+   * 二维码模块边缘若被平滑，在低分辨率下会出现灰色过渡带，
+   * 扫描器可能把边缘判成"不确定"而解码失败。
+   */
+  shape-rendering: crispEdges;
+}
+
+.wd-qrcode__skeleton {
+  border-radius: var(--wd-radius-sm);
+  background: linear-gradient(100deg, var(--wd-tint-1) 30%, var(--wd-tint-2) 50%, var(--wd-tint-1) 70%);
+  background-size: 200% 100%;
+  animation: wd-qrcode-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes wd-qrcode-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+.wd-qrcode__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--wd-radius-sm);
+  background: var(--wd-field);
+  color: var(--wd-ink-3);
+  font-size: 12px;
+}
+
+/* 中心插槽（logo）：绝对居中，不参与二维码绘制 */
+.wd-qrcode__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-qrcode__skeleton {
+    animation: none;
+  }
+}
+/* ---------------- 触发器 ---------------- */
+.wd-cascader {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+  max-width: 100%;
+  padding: 0 12px;
+  border-radius: var(--wd-radius-sm);
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-cascader--sm {
+  height: 32px;
+  font-size: 13px;
+}
+
+.wd-cascader--md {
+  height: 40px;
+}
+
+.wd-cascader--lg {
+  height: 48px;
+  font-size: 14.5px;
+}
+
+.wd-cascader:hover {
+  background: var(--wd-tint-2);
+}
+
+.wd-cascader.is-open {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
+}
+
+.wd-cascader:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+.wd-cascader.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.wd-cascader.is-disabled:hover {
+  background: var(--wd-field);
+}
+
+.wd-cascader__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-cascader__value.is-placeholder {
+  color: var(--wd-ink-3);
+}
+
+.wd-cascader__clear {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: var(--wd-ink-3);
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-cascader__clear:hover {
+  background: var(--wd-tint-3);
+  color: var(--wd-ink);
+}
+
+.wd-cascader__caret {
+  flex: none;
+  color: var(--wd-ink-3);
+  transition: transform var(--wd-dur) var(--wd-ease-out);
+}
+
+.wd-cascader__caret.is-open {
+  transform: rotate(180deg);
+}
+
+/* ---------------- 面板 ---------------- */
+.wd-cascader__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  display: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  /*
+   * 多列高度不一会参差，用 flex 让各列等高、内部各自滚动。
+   * align-items: stretch 是默认值，这里显式写出来是为了防止
+   * 后续有人加 align-items: flex-start 造成列高不齐。
+   */
+  align-items: stretch;
+  gap: 2px;
+}
+
+.wd-cascader__panel.is-open {
+  display: flex;
+}
+
+.wd-cascader__column {
+  flex: none;
+  min-width: 132px;
+  max-width: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* 列之间用一条极浅的分隔，暗示"层级推进"而不打断阅读 */
+  padding-right: 2px;
+  scrollbar-width: thin;
+}
+
+/*
+ * 列与列之间的分隔线。
+ * 只在非首列画，且用伪元素贴左边 —— 不占布局宽度（border 会）。
+ */
+.wd-cascader__column + .wd-cascader__column {
+  position: relative;
+  padding-left: 6px;
+}
+
+.wd-cascader__column + .wd-cascader__column::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--wd-tint-2);
+}
+
+.wd-cascader__option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-cascader__option:hover {
+  background: var(--wd-tint-1);
+}
+
+/* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
+.wd-cascader__option.is-active {
+  background: var(--wd-tint-2);
+  font-weight: 600;
+}
+
+/* 真正的选中项 */
+.wd-cascader__option.is-selected {
+  color: var(--wd-red-text);
+  font-weight: 700;
+}
+
+.wd-cascader__option.is-disabled {
+  color: var(--wd-ink-3);
+  cursor: not-allowed;
+}
+
+.wd-cascader__option.is-disabled:hover {
+  background: transparent;
+}
+
+.wd-cascader__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-cascader__arrow,
+.wd-cascader__check {
+  flex: none;
+  color: var(--wd-ink-3);
+}
+
+.wd-cascader__check {
+  color: var(--wd-red);
+}
+
+.wd-cascader__empty {
+  margin: 0;
+  padding: 16px 9px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--wd-ink-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-cascader,
+  .wd-cascader__caret,
+  .wd-cascader__option {
+    transition: none;
+  }
+}
 .wd-tabs {
   display: inline-flex;
   gap: 4px;

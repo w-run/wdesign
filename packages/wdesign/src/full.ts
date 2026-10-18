@@ -22,6 +22,7 @@ import WdBreadcrumb from './components/WdBreadcrumb.vue'
 import WdButton from './components/WdButton.vue'
 import WdCard from './components/WdCard.vue'
 import WdCarousel from './components/WdCarousel.vue'
+import WdCascader from './components/WdCascader.vue'
 import WdCheckbox from './components/WdCheckbox.vue'
 import WdCollapse from './components/WdCollapse.vue'
 import WdCommand from './components/WdCommand.vue'
@@ -50,6 +51,7 @@ import WdPopconfirm from './components/WdPopconfirm.vue'
 import WdPopover from './components/WdPopover.vue'
 import WdPostItem from './components/WdPostItem.vue'
 import WdProgress from './components/WdProgress.vue'
+import WdQRCode from './components/WdQRCode.vue'
 import WdRadioGroup from './components/WdRadioGroup.vue'
 import WdRate from './components/WdRate.vue'
 import WdResult from './components/WdResult.vue'
@@ -91,6 +93,7 @@ const components = [
   WdButton,
   WdCard,
   WdCarousel,
+  WdCascader,
   WdCheckbox,
   WdCollapse,
   WdCommand,
@@ -119,6 +122,7 @@ const components = [
   WdPopover,
   WdPostItem,
   WdProgress,
+  WdQRCode,
   WdRadioGroup,
   WdRate,
   WdResult,

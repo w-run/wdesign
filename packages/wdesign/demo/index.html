@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.6ccad07b.css">
+<link rel="stylesheet" href="demo.14bd24b4.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -1324,6 +1324,38 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
       </div>
     </div>
     <div class="demo-panel demo-panel--wide">
+      <h3>CASCADER 级联选择 / QRCODE 二维码</h3>
+      <span class="demo-cap">Cascader 多列联动；QRCode 用内嵌 MIT 版 qrcode-generator 编码，SVG 单 path 渲染。</span>
+      <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:1 1 300px">
+          <div class="demo-cap" style="margin-bottom:8px">cascader · 三级联动</div>
+          <wd-cascader v-model="cascVal" :options="cascOptions" placeholder="选择地区"></wd-cascader>
+          <span class="demo-cap" style="margin-top:8px">已选：{{ cascVal.join(' / ') || '（空）' }}</span>
+        </div>
+        <div class="demo-col">
+          <div class="demo-cap" style="margin-bottom:8px">qrcode · 基础</div>
+          <wd-qrcode text="https://github.com/w-run/wdesign" :size="140"></wd-qrcode>
+        </div>
+        <div class="demo-col">
+          <div class="demo-cap" style="margin-bottom:8px">qrcode · 中心 logo</div>
+          <wd-qrcode text="https://w-run.net" :size="140" :center-blank="22" :margin="2">
+            <template #center>
+              <div style="width:34px;height:34px;border-radius:8px;background:var(--wd-red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800">W</div>
+            </template>
+          </wd-qrcode>
+        </div>
+        <div class="demo-col">
+          <div class="demo-cap" style="margin-bottom:8px">qrcode · H 级纠错</div>
+          <wd-qrcode text="中文内容测试 WDesign" :size="140" level="H" :center-blank="18">
+            <template #center>
+              <div style="width:30px;height:30px;border-radius:50%;background:var(--wd-ink)"></div>
+            </template>
+          </wd-qrcode>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
       <h3>ACCORDION 折叠面板</h3>
       <span class="demo-cap">插槽驱动，每项可放任意组件。multiple 多项展开 / single 手风琴。</span>
       <div class="demo-row" style="gap:24px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
@@ -1567,8 +1599,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.b8a5a656.js"></script>
-<script src="demo.5ed26d28.js"></script>
+<script src="components.e642a0c5.js"></script>
+<script src="demo.a9b63911.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

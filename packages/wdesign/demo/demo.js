@@ -236,6 +236,29 @@ const app = createApp({
   data() {
     return {
       popSeg: '全部',
+      cascVal: ['zj', 'hz', 'xh'],
+      cascOptions: [
+        { value: 'zj', label: '浙江', children: [
+          { value: 'hz', label: '杭州', children: [
+            { value: 'xh', label: '西湖区' },
+            { value: 'sc', label: '上城区' },
+            { value: 'bj', label: '滨江区' },
+          ]},
+          { value: 'nb', label: '宁波', children: [
+            { value: 'hs', label: '海曙区' },
+            { value: 'yz', label: '鄞州区' },
+          ]},
+        ]},
+        { value: 'js', label: '江苏', children: [
+          { value: 'nj', label: '南京', children: [
+            { value: 'gl', label: '鼓楼区' },
+            { value: 'xw', label: '玄武区' },
+          ]},
+          { value: 'sz', label: '苏州', children: [
+            { value: 'gs', label: '姑苏区' },
+          ]},
+        ]},
+      ],
       transferVal: [2, 4],
       transferData: [
         { key: 1, label: '林小满', desc: '设计' },
@@ -661,7 +684,22 @@ import { WdMarkdown } from '@w-run/wdesign'
 // 镜像只在真实组件缺失时兜底 —— 镜像漏了 props 会让人误以为组件本身坏了。
 const REAL = window.WD_REAL || { ALL: [] }
 if (REAL.ALL.length) {
-  for (const c of REAL.ALL) if (c && c.name) app.component(c.name, c)
+  for (const c of REAL.ALL) {
+    if (!c || !c.name) continue
+    app.component(c.name, c)
+    /*
+     * 别名：kebab 标签 -> Vue 的解析流程是
+     *   <wd-qrcode>  →  camelize  →  'wdQrcode'  →  capitalize  →  'WdQrcode'
+     * 而组件名是 `WdQRCode`（中间 QR 连续大写），两者对不上就渲染不出来。
+     *
+     * 这里按 Vue 的实际算法反推：把组件名转成 kebab，再转回来，
+     * 得到 Vue 会查找的那个名字，然后注册成别名。
+     */
+    const kebab = c.name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+    const asVueResolves = kebab.replace(/-([a-z])/g, (_, ch) => ch.toUpperCase())
+      .replace(/^./, (ch) => ch.toUpperCase())
+    if (asVueResolves !== c.name) app.component(asVueResolves, c)
+  }
   console.log('[demo] 真实组件', REAL.ALL.length, '个')
 } else {
   for (const c of [WdIcon, WdButton, WdTag, WdCard, WdInput, WdSwitch, WdProgress, WdAvatar, WdAvatarGroup, WdListItem]) {
