@@ -72,6 +72,8 @@ for (const f of files) {
   writeFileSync(join(TMP, 'registry.ts'), readFileSync(join(ROOT, '../wdesign-icons/src/registry.ts'), 'utf8'))
   names.push('WdIcon')
   entry.push("export { default as WdIcon } from './WdIcon'")
+  // 命令式 toast：不是组件，需单独暴露
+  entry.push("export { toast } from '../src/components/toast'")
   entry.push("export { preloadIcons, getIcon, getIconSync, injectIcons, registerLoaders, clearIconCache, cachedIconCount } from './registry'")
   console.log('   + WdIcon（来自 wdesign-icons）')
 }
@@ -125,6 +127,8 @@ ${bundle}
   ${JSON.stringify(names)}.forEach(function(n){
     if (M[n]) { window.WD_REAL[n] = M[n]; window.WD_REAL.ALL.push(M[n]); }
   });
+  // 命令式 toast
+  window.WDtoast = M.toast;
   // 暴露图标注册表 API（预加载 / 缓存），供页面在 mount 前预热
   window.WdIcons = {
     preloadIcons: M.preloadIcons,

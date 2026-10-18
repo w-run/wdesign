@@ -201,3 +201,11 @@ tbody tr.is-hover { background: var(--wd-tint-1); }
   .hljs-exception, .hljs-regexp { color: #D16969; }
   .hljs-decorator { color: #6394BF; }
 }
+
+/*
+ * flush：嵌在已有 padding 的容器（如 WdCard）里时，
+ * 去掉外层内距，避免双重留白。
+ */
+.wd-markdown--flush {
+  padding: 0;
+}

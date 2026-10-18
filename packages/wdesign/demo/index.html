@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.a8038f6c.css">
+<link rel="stylesheet" href="demo.a363f66c.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -1324,6 +1324,76 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
       </div>
     </div>
     <div class="demo-panel demo-panel--wide">
+      <h3>POPOVER 气泡卡片</h3>
+      <span class="demo-cap">比 Tooltip 重、比 Dropdown 轻：可承载任意内容。定位走 anchor.ts（文档坐标）。</span>
+
+      <div class="demo-row" style="gap:16px; margin-top:16px; flex-wrap:wrap">
+        <div class="demo-col" style="min-width:260px">
+          <div class="demo-cap" style="margin-bottom:8px">click · 带标题与关闭</div>
+          <wd-popover title="筛选条件" closable placement="bottom-start">
+            <template #trigger>
+              <wd-button size="sm">打开筛选</wd-button>
+            </template>
+            <span class="wd-popover__hint">选一个维度后自动刷新列表。</span>
+            <wd-segmented v-model="popSeg" :options="['全部', '近7天', '近30天']" block></wd-segmented>
+          </wd-popover>
+        </div>
+
+        <div class="demo-col" style="min-width:260px">
+          <div class="demo-cap" style="margin-bottom:8px">hover · 纯说明</div>
+          <wd-popover trigger="hover" placement="bottom-start">
+            <template #trigger>
+              <wd-button size="sm" variant="tint">悬停查看</wd-button>
+            </template>
+            <strong>这是什么</strong>
+            <span class="wd-popover__hint">一个可以放任意内容的浮层，悬停 120ms 后延迟关闭。</span>
+          </wd-popover>
+        </div>
+
+        <div class="demo-col" style="min-width:260px">
+          <div class="demo-cap" style="margin-bottom:8px">top-start · 向上弹出</div>
+          <wd-popover title="向上" placement="top-start">
+            <template #trigger>
+              <wd-button size="sm" variant="ghost">上方气泡</wd-button>
+            </template>
+            <span class="wd-popover__hint">空间不足时会自动翻转到下方。</span>
+          </wd-popover>
+        </div>
+      </div>
+
+      <div class="demo-row" style="gap:16px; margin-top:20px; flex-wrap:wrap">
+        <div class="demo-col">
+          <div class="demo-cap" style="margin-bottom:8px">命令式 toast</div>
+          <wd-space>
+            <wd-button size="sm" @click="toast('已保存')">普通</wd-button>
+            <wd-button size="sm" variant="tint" @click="toast.success('部署成功')">成功</wd-button>
+            <wd-button size="sm" variant="ghost" @click="toast.warning('存储将满')">警告</wd-button>
+            <wd-button size="sm" variant="ghost" @click="toast.danger('同步失败')">错误</wd-button>
+          </wd-space>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>MARKDOWN 渲染</h3>
+      <span class="demo-cap">零依赖内置解析器（标题/列表/表格/代码/引用/链接），所有文本经 escapeHtml，可直接渲染 AI 输出。</span>
+      <div class="demo-row" style="gap:24px; margin-top:16px; flex-wrap:wrap">
+        <div class="demo-col" style="flex:1 1 420px; min-width:320px">
+          <div class="demo-cap" style="margin-bottom:8px">内置解析（source）</div>
+          <wd-card>
+            <wd-markdown :source="mdSample" flush></wd-markdown>
+          </wd-card>
+        </div>
+        <div class="demo-col" style="flex:1 1 320px; min-width:280px">
+          <div class="demo-cap" style="margin-bottom:8px">骨架 / 空态</div>
+          <wd-skeleton :rows="3"></wd-skeleton>
+          <div style="height:16px"></div>
+          <wd-empty text="还没有内容"></wd-empty>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
       <h3>图标墙（节选 {{ wall.length }} / 共 {{ iconCount }} 枚）</h3>
       <div class="demo-iconwall">
         <div class="ic" v-for="n in wall" :key="n">
@@ -1401,8 +1471,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.42ded2ea.js"></script>
-<script src="demo.b9442923.js"></script>
+<script src="components.5a08f6f9.js"></script>
+<script src="demo.a1d1ad27.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

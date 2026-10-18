@@ -235,6 +235,31 @@ if (window.WD_ICONS && window.WdIcons && window.WdIcons.injectIcons) {
 const app = createApp({
   data() {
     return {
+      popSeg: '全部',
+      mdSample: `# 组件说明
+
+**WdMarkdown** 用内置解析器渲染，不引第三方库。
+
+## 支持的语法
+
+- 标题、段落、**加粗**、*斜体*、~~删除线~~
+- 行内代码 \`const a = 1\`
+- 有序 / 无序列表、引用、分割线
+- 表格与链接
+
+> 所有文本都经过 escapeHtml，可直接渲染 AI 输出。
+
+| 能力 | 状态 |
+|:---|---:|
+| 零依赖 | 是 |
+| 安全转义 | 是 |
+
+\`\`\`js
+import { WdMarkdown } from '@w-run/wdesign'
+\`\`\``,
+      // 直接用 window.WDtoast：它是 Object.assign 出来的，带 .success/.warning 等属性方法。
+      // 用包装函数会把属性方法丢掉（toast.success 变成 undefined）。
+      toast: window.WDtoast || ((msg) => console.log(msg)),
       search: '',
       name: '林小满',
       on: true,

@@ -1,0 +1,78 @@
+// =============================================================
+//  WDesign — Backtop（回到顶部）
+//
+//  固定定位在视口右下角。滚动超过阈值才出现，用 opacity + translate
+//  做进出场，并配合 visibility 保证隐藏时不拦截点击。
+//
+//  ⚠️ 这里用 position: fixed 是正确的 —— 它就该永远贴在视口角落，
+//     与「锚定浮层」（absolute + 文档坐标）不是一回事。
+// =============================================================
+
+.wd-backtop {
+  position: fixed;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-card);
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  box-shadow: var(--wd-shadow-hover);
+
+  /*
+   * 隐藏态必须同时处理三件事：
+   *   opacity: 0    —— 视觉消失
+   *   visibility: hidden —— 不被读屏和 Tab 聚焦（也可用 tabindex，但双保险）
+   *   pointer-events: none —— 不拦截透明区域的点击
+   * 只写 opacity 是最常见的错误：按钮看不见但仍在最上层吃掉点击。
+   */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity var(--wd-dur-slow) ease,
+    transform var(--wd-dur-slow) ease,
+    visibility var(--wd-dur-slow) ease,
+    background var(--wd-dur-fast) ease,
+    color var(--wd-dur-fast) ease;
+}
+
+.wd-backtop.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.wd-backtop:hover {
+  background: var(--wd-card);
+  color: var(--wd-ink);
+  /* 悬停轻微抬起：给"可点"的反馈，但不夸张 */
+  transform: translateY(-2px);
+}
+
+.wd-backtop:active {
+  transform: translateY(0) scale(.96);
+}
+
+.wd-backtop:focus-visible {
+  outline: none;
+  box-shadow: var(--wd-shadow-hover), 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+/* 触屏设备上没有悬停，去掉抬起效果避免"点完还悬着"的错觉 */
+@media (hover: none) {
+  .wd-backtop:hover { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-backtop { transition: opacity var(--wd-dur-fast) ease; }
+  .wd-backtop.is-visible { transform: none; }
+  .wd-backtop:hover { transform: none; }
+}

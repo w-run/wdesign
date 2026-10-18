@@ -13,6 +13,7 @@ import WdAlert from './components/WdAlert.vue'
 import WdAudioPlayer from './components/WdAudioPlayer.vue'
 import WdAvatar from './components/WdAvatar.vue'
 import WdAvatarGroup from './components/WdAvatarGroup.vue'
+import WdBacktop from './components/WdBacktop.vue'
 import WdBadge from './components/WdBadge.vue'
 import WdBreadcrumb from './components/WdBreadcrumb.vue'
 import WdButton from './components/WdButton.vue'
@@ -37,11 +38,13 @@ import WdGroup from './components/WdGroup.vue'
 import WdImagePreview from './components/WdImagePreview.vue'
 import WdInput from './components/WdInput.vue'
 import WdListItem from './components/WdListItem.vue'
+import WdMarkdown from './components/WdMarkdown.vue'
 import WdModal from './components/WdModal.vue'
 import WdNotification from './components/WdNotification.vue'
 import WdOtp from './components/WdOtp.vue'
 import WdPagination from './components/WdPagination.vue'
 import WdPopconfirm from './components/WdPopconfirm.vue'
+import WdPopover from './components/WdPopover.vue'
 import WdPostItem from './components/WdPostItem.vue'
 import WdProgress from './components/WdProgress.vue'
 import WdRadioGroup from './components/WdRadioGroup.vue'
@@ -73,6 +76,7 @@ const components = [
   WdAudioPlayer,
   WdAvatar,
   WdAvatarGroup,
+  WdBacktop,
   WdBadge,
   WdBreadcrumb,
   WdButton,
@@ -97,11 +101,13 @@ const components = [
   WdImagePreview,
   WdInput,
   WdListItem,
+  WdMarkdown,
   WdModal,
   WdNotification,
   WdOtp,
   WdPagination,
   WdPopconfirm,
+  WdPopover,
   WdPostItem,
   WdProgress,
   WdRadioGroup,
