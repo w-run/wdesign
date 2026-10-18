@@ -1244,8 +1244,9 @@ body {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 12px 16px;
-  border-radius: var(--wd-radius-md);
+  padding: 12px 18px;
+  /* 可点击列表项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   transition: background var(--wd-dur-fast) ease;
 }
 
@@ -1616,10 +1617,11 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 11px 14px;
+  padding: 11px 16px;
   border: 0;
   background: transparent;
-  border-radius: var(--wd-radius-sm);
+  /* 可点击项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   font: inherit;
   font-size: 14.5px;
   color: var(--wd-ink);
@@ -2044,7 +2046,7 @@ body {
   aspect-ratio: 1;
   padding: 0;
   border: 0;
-  border-radius: var(--wd-radius-xs);
+  border-radius: 50%;
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
@@ -2217,7 +2219,7 @@ body {
   width: 100%;
   padding: 7px 8px;
   border: 0;
-  border-radius: var(--wd-radius-xs);
+  border-radius: var(--wd-radius-pill);
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
@@ -2768,7 +2770,7 @@ body {
   width: 100%;
   padding: 7px 9px;
   border: 0;
-  border-radius: var(--wd-radius-xs);
+  border-radius: var(--wd-radius-pill);
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
@@ -3114,7 +3116,19 @@ body {
 .wd-modal.is-open {
   display: flex;
   opacity: 1;
-  animation: wd-modal-in var(--wd-dur) var(--wd-ease-out) both;
+  /*
+   * ⚠️ 这里**不加 opacity 动画**。
+   *
+   * 踩过的坑：`.wd-modal` 基础态是 `opacity: 0`，靠 `.is-open` 改成 1，
+   * 再叠一条 `animation: wd-modal-in`（from opacity:0）。
+   * 在动画时钟停摆的环境里（后台标签页 / 无头渲染），
+   * 动画停在 from 帧 → 弹窗永久透明，看起来像"没样式"。
+   *
+   * 现在的做法：显隐完全由 display + opacity 的**静态值**决定，
+   * 不进动画。淡入的观感交给面板自身的 transform 过渡，
+   * 即使那段也不播，内容依然可见。
+   */
+  opacity: 1;
 }
 
 .wd-modal__mask {
@@ -3131,31 +3145,42 @@ body {
   background: var(--wd-card);
   border-radius: var(--wd-radius-xl);
   box-shadow: var(--wd-shadow-lg);
-  transform: translateY(-6px) scale(0.97);
-  opacity: 0;
+  /*
+   * 面板基础态就是**可见**的。
+   *
+   * ⚠️ 这里曾经写 `opacity: 0`，靠 `.is-open` 再改回 1 ——
+   * 那是"先隐藏再显示"的思路，一旦驱动显隐的那条路径出问题
+   * （动画时钟停摆、动画被中断、样式加载顺序变化），
+   * 面板就永久不可见。实测在无头渲染环境里正是如此：
+   * modal 的 opacity 是 1，面板却是 0，整个对话框看起来"没样式"。
+   *
+   * 原则：**默认可见**，只在需要时做动画。
+   * 这样任何异常都不会让内容消失。
+   */
+  opacity: 1;
 }
 
 .wd-modal.is-open .wd-modal__panel {
   transform: none;
-  opacity: 1;
-  animation: wd-modal-panel-in var(--wd-dur-slow) var(--wd-ease-out) both;
+  animation: wd-modal-panel-in var(--wd-dur-slow) var(--wd-ease-out);
 }
 
-@keyframes wd-modal-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+/*
+ * ⚠️ 关键帧里**不能有 opacity**。
+ *
+ * 只要 from 帧带 opacity:0，在任何"动画不推进"的环境里
+ * 面板就永久不可见 —— 而动画是否推进我们无法控制
+ * （后台标签页、无头渲染、系统省电模式都会停摆时钟）。
+ * 实测：animationPlayState 是 running，但 opacity 永远停在 0。
+ *
+ * 只做 transform 位移：即使动画卡住，最坏情况是位置略偏，
+ * 内容依然完全可见。这是"渐进增强"的正确方向。
+ */
 @keyframes wd-modal-panel-in {
   from {
-    opacity: 0;
     transform: translateY(-6px) scale(0.97);
   }
   to {
-    opacity: 1;
     transform: none;
   }
 }
@@ -3168,6 +3193,78 @@ body {
     transform: none;
   }
 }
+/* =============================================================
+ *  内部结构：head / title / close / body / foot
+ *
+ *  ⚠️ 这几条曾经完全缺失 —— 组件模板里用了 wd-modal__head / __title /
+ *  __close / __body / __foot，但样式表里一个都没有定义。
+ *  结果关闭按钮掉到标题下面、标题与正文挤在一起，
+ *  整个对话框像是"样式没加载"。
+ * ============================================================= */
+.wd-modal__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  /* 标题区与正文之间留出呼吸，不靠 margin 堆叠 */
+  margin-bottom: 14px;
+}
+
+.wd-modal__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  color: var(--wd-ink);
+}
+
+/*
+ * 关闭按钮：**圆形**。
+ * 全站约定「圆形 / 胶囊优先」—— 图标按钮用正圆，
+ * 文字按钮用胶囊，方形只留给内容块。
+ */
+.wd-modal__close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  /* 上移 2px 让图标与标题首行的视觉中线对齐（标题有行高留白） */
+  margin-top: -2px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-modal__close:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+.wd-modal__close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-modal__body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--wd-ink-2);
+}
+
+.wd-modal__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+}
+
 .wd-badge {
   position: relative;
   display: inline-flex;
@@ -3646,7 +3743,7 @@ body {
   padding: 10px 14px;
   border: 0;
   background: transparent;
-  border-radius: var(--wd-radius-sm);
+  border-radius: var(--wd-radius-pill);
   font: inherit;
   font-size: 14px;
   color: var(--wd-ink);
@@ -5159,7 +5256,7 @@ body {
   align-items: flex-start;
   gap: 8px;
   padding: 7px 8px;
-  border-radius: var(--wd-radius-sm);
+  border-radius: var(--wd-radius-pill);
   font-size: 13px;
   color: var(--wd-ink);
   cursor: pointer;

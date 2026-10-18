@@ -8,8 +8,9 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 12px 16px;
-  border-radius: var(--wd-radius-md);
+  padding: 12px 18px;
+  /* 可点击列表项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   transition: background var(--wd-dur-fast) ease;
 }
 .wd-list-item--clickable { cursor: pointer; }

@@ -77,7 +77,7 @@ function close() {
       <div ref="panel" class="wd-modal__panel" tabindex="-1" :style="{ maxWidth }">
         <div class="wd-modal__head">
           <div class="wd-modal__title">{{ title }}</div>
-          <button type="button" class="wd-icon-btn" aria-label="关闭" @click="close">
+          <button type="button" class="wd-modal__close" aria-label="关闭" @click="close">
             <wd-icon name="close" :size="15" />
           </button>
         </div>

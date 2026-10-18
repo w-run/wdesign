@@ -6388,7 +6388,7 @@ var WD_REAL_MODULE = (() => {
                   ),
                   createElementVNode("button", {
                     type: "button",
-                    class: "wd-icon-btn",
+                    class: "wd-modal__close",
                     "aria-label": "\u5173\u95ED",
                     onClick: close
                   }, [

@@ -100,7 +100,7 @@ return (_ctx: any,_cache: any) => {
           _createElementVNode("div", _hoisted_3, _toDisplayString(__props.title), 1 /* TEXT */),
           _createElementVNode("button", {
             type: "button",
-            class: "wd-icon-btn",
+            class: "wd-modal__close",
             "aria-label": "关闭",
             onClick: close
           }, [
