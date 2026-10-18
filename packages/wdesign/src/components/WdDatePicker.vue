@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
+import { useAnchoredPosition } from './anchor'
 
 // 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
 // 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
@@ -25,6 +26,14 @@ const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+const panelEl = ref<HTMLElement | null>(null)
+
+/** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
+const { pos } = useAnchoredPosition(open, root, panelEl, {
+  placement: 'bottom-start',
+  gap: 8,
+  width: 302,
+})
 
 /** 层栈：Esc 只关最上层 */
 useOverlayLayer(open, root, () => { open.value = false; return true })
@@ -113,8 +122,15 @@ onBeforeUnmount(() => {
       <wd-icon class="wd-datepicker__icon" name="calendar" :size="15" />
     </button>
 
-    <Transition name="wd-pop" :duration="POP_DURATION">
-      <div v-if="open" class="wd-datepicker__panel">
+  </div>
+
+  <Teleport to="body">
+    <div
+      ref="panelEl"
+      class="wd-datepicker__panel"
+      :class="{ 'is-open': open }"
+      :style="{ top: pos.top + 'px', left: pos.left + 'px' }"
+    >
         <div class="wd-datepicker__head">
           <span class="wd-datepicker__month">{{ monthLabel }}</span>
           <span class="wd-datepicker__nav">
@@ -146,7 +162,6 @@ onBeforeUnmount(() => {
         <div class="wd-datepicker__foot">
           <button type="button" class="wd-datepicker__todaybtn" @click="pickToday">回到今天</button>
         </div>
-      </div>
-    </Transition>
-  </div>
+    </div>
+  </Teleport>
 </template>

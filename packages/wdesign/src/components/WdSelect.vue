@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
+import { useAnchoredPosition } from './anchor'
 
 // <Transition> 依赖 transitionend 收尾；事件丢失时元素会停在 enter-from。
 // 显式给 duration，让 Vue 用定时器兜底。
@@ -52,6 +53,15 @@ const emit = defineEmits<{
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+const triggerEl = ref<HTMLElement | null>(null)
+const menuEl = ref<HTMLElement | null>(null)
+
+/** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
+const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
+  placement: 'bottom-start',
+  gap: 6,
+  matchWidth: true,
+})
 
 /** 层栈：Esc 只关最上层（弹窗里的选择器不会连带关弹窗） */
 useOverlayLayer(open, root, () => { open.value = false; return true })
@@ -178,6 +188,7 @@ watch(visible, (list) => {
     @keydown="onKeydown"
   >
     <button
+      ref="triggerEl"
       type="button"
       class="wd-select__trigger"
       :class="[`wd-select__trigger--${size}`, { 'wd-select__trigger--tags': multiple && hasValue }]"
@@ -223,8 +234,17 @@ watch(visible, (list) => {
       </span>
     </button>
 
-    <Transition name="wd-pop" :duration="POP_DURATION">
-      <div v-if="open" class="wd-select__menu" role="listbox" :aria-multiselectable="multiple || undefined">
+  </div>
+
+  <Teleport to="body">
+    <div
+      ref="menuEl"
+      class="wd-select__menu"
+      :class="{ 'is-open': open }"
+      :style="{ top: pos.top + 'px', left: pos.left + 'px', minWidth: '200px' }"
+      role="listbox"
+      :aria-multiselectable="multiple || undefined"
+    >
         <!-- 搜索框 -->
         <div v-if="filterable" class="wd-select__search">
           <input
@@ -257,7 +277,6 @@ watch(visible, (list) => {
         </button>
 
         <div v-if="!visible.length" class="wd-select__empty">无匹配项</div>
-      </div>
-    </Transition>
-  </div>
+    </div>
+  </Teleport>
 </template>

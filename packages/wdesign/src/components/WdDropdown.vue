@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
+import { useAnchoredPosition } from './anchor'
 
 // 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
 // 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
@@ -30,6 +31,18 @@ const emit = defineEmits<{ (e: 'select', value: string | number): void }>()
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+const triggerEl = ref<HTMLElement | null>(null)
+const menuEl = ref<HTMLElement | null>(null)
+
+/**
+ * Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切
+ * （表格单元格、卡片里是常态，不是边缘情况）。
+ */
+const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
+  placement: 'bottom-start',
+  gap: 6,
+  matchWidth: false,
+})
 
 /**
  * 挂到全局层栈：弹窗里再打开下拉时，按 Esc 只关下拉，
@@ -60,9 +73,17 @@ onBeforeUnmount(() => {
 
 <template>
   <span ref="root" class="wd-dropdown">
-    <span class="wd-dropdown__trigger" role="button" tabindex="0" :aria-haspopup="true" :aria-expanded="open" @keydown.enter.prevent="open = !open" @keydown.space.prevent="open = !open" @click="open = !open"><slot /></span>
-    <Transition name="wd-pop" :duration="POP_DURATION">
-      <div v-if="open" class="wd-dropdown__menu" role="menu">
+    <span ref="triggerEl" class="wd-dropdown__trigger" role="button" tabindex="0" :aria-haspopup="true" :aria-expanded="open" @keydown.enter.prevent="open = !open" @keydown.space.prevent="open = !open" @click="open = !open"><slot /></span>
+  </span>
+
+  <Teleport to="body">
+    <div
+      ref="menuEl"
+      class="wd-dropdown__menu"
+      :class="{ 'is-open': open }"
+      :style="{ top: pos.top + 'px', left: pos.left + 'px' }"
+      role="menu"
+    >
         <button
           v-for="it in props.items"
           :key="it.value"
@@ -75,7 +96,6 @@ onBeforeUnmount(() => {
         >
           {{ it.label }}
         </button>
-      </div>
-    </Transition>
-  </span>
+    </div>
+  </Teleport>
 </template>

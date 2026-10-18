@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { createCommentVNode as _createCommentVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, createTextVNode as _createTextVNode, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass, unref as _unref, vModelText as _vModelText, withModifiers as _withModifiers, withDirectives as _withDirectives, createBlock as _createBlock, Transition as _Transition, withCtx as _withCtx } from "vue"
+import { createCommentVNode as _createCommentVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, resolveComponent as _resolveComponent, createVNode as _createVNode, createTextVNode as _createTextVNode, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass, unref as _unref, vModelText as _vModelText, withModifiers as _withModifiers, withDirectives as _withDirectives, createBlock as _createBlock, normalizeStyle as _normalizeStyle, Teleport as _Teleport } from "vue"
 
 const _hoisted_1 = ["disabled", "aria-expanded"]
 const _hoisted_2 = {
@@ -30,6 +30,7 @@ const _hoisted_11 = {
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
+import { useAnchoredPosition } from './anchor'
 
 // <Transition> 依赖 transitionend 收尾；事件丢失时元素会停在 enter-from。
 // 显式给 duration，让 Vue 用定时器兜底。
@@ -67,6 +68,15 @@ const emit = __emit
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+const triggerEl = ref<HTMLElement | null>(null)
+const menuEl = ref<HTMLElement | null>(null)
+
+/** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
+const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
+  placement: 'bottom-start',
+  gap: 6,
+  matchWidth: true,
+})
 
 /** 层栈：Esc 只关最上层（弹窗里的选择器不会连带关弹窗） */
 useOverlayLayer(open, root, () => { open.value = false; return true })
@@ -187,139 +197,137 @@ watch(visible, (list) => {
 return (_ctx: any,_cache: any) => {
   const _component_wd_icon = _resolveComponent("wd-icon")!
 
-  return (_openBlock(), _createElementBlock("div", {
-    ref_key: "root",
-    ref: root,
-    class: _normalizeClass(["wd-select", { 'wd-select--open': open.value, 'wd-select--disabled': __props.disabled, 'wd-select--multiple': __props.multiple }]),
-    onKeydown: onKeydown
-  }, [
-    _createElementVNode("button", {
-      type: "button",
-      class: _normalizeClass(["wd-select__trigger", [`wd-select__trigger--${__props.size}`, { 'wd-select__trigger--tags': __props.multiple && hasValue.value }]]),
-      disabled: __props.disabled,
-      "aria-expanded": open.value,
-      "aria-haspopup": "listbox",
-      onClick: toggleOpen
+  return (_openBlock(), _createElementBlock(_Fragment, null, [
+    _createElementVNode("div", {
+      ref_key: "root",
+      ref: root,
+      class: _normalizeClass(["wd-select", { 'wd-select--open': open.value, 'wd-select--disabled': __props.disabled, 'wd-select--multiple': __props.multiple }]),
+      onKeydown: onKeydown
     }, [
-      _createCommentVNode(" 多选：标签堆叠 "),
-      (__props.multiple && hasValue.value)
-        ? (_openBlock(), _createElementBlock("span", _hoisted_2, [
-            (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(shownTags.value, (o) => {
-              return (_openBlock(), _createElementBlock("span", {
-                key: o.value,
-                class: "wd-select__tag"
+      _createElementVNode("button", {
+        ref_key: "triggerEl",
+        ref: triggerEl,
+        type: "button",
+        class: _normalizeClass(["wd-select__trigger", [`wd-select__trigger--${__props.size}`, { 'wd-select__trigger--tags': __props.multiple && hasValue.value }]]),
+        disabled: __props.disabled,
+        "aria-expanded": open.value,
+        "aria-haspopup": "listbox",
+        onClick: toggleOpen
+      }, [
+        _createCommentVNode(" 多选：标签堆叠 "),
+        (__props.multiple && hasValue.value)
+          ? (_openBlock(), _createElementBlock("span", _hoisted_2, [
+              (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(shownTags.value, (o) => {
+                return (_openBlock(), _createElementBlock("span", {
+                  key: o.value,
+                  class: "wd-select__tag"
+                }, [
+                  _createTextVNode(_toDisplayString(o.label) + " ", 1 /* TEXT */),
+                  (!__props.disabled)
+                    ? (_openBlock(), _createElementBlock("button", {
+                        key: 0,
+                        type: "button",
+                        class: "wd-select__tag-x",
+                        "aria-label": `移除 ${o.label}`,
+                        onClick: ($event: any) => (removeTag(o.value, $event))
+                      }, [
+                        _createVNode(_component_wd_icon, {
+                          name: "close",
+                          size: 10
+                        })
+                      ], 8 /* PROPS */, _hoisted_3))
+                    : _createCommentVNode("v-if", true)
+                ]))
+              }), 128 /* KEYED_FRAGMENT */)),
+              (overflowCount.value)
+                ? (_openBlock(), _createElementBlock("span", _hoisted_4, "+" + _toDisplayString(overflowCount.value), 1 /* TEXT */))
+                : _createCommentVNode("v-if", true)
+            ]))
+          : (!__props.multiple && hasValue.value)
+            ? (_openBlock(), _createElementBlock(_Fragment, { key: 1 }, [
+                _createCommentVNode(" 单选 "),
+                _createElementVNode("span", _hoisted_5, _toDisplayString(singleLabel.value), 1 /* TEXT */)
+              ], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */))
+            : (_openBlock(), _createElementBlock("span", _hoisted_6, _toDisplayString(__props.placeholder), 1 /* TEXT */)),
+        _createElementVNode("span", _hoisted_7, [
+          (showClear.value)
+            ? (_openBlock(), _createElementBlock("button", {
+                key: 0,
+                type: "button",
+                class: "wd-select__clear",
+                "aria-label": "清除",
+                onClick: clear
               }, [
-                _createTextVNode(_toDisplayString(o.label) + " ", 1 /* TEXT */),
-                (!__props.disabled)
-                  ? (_openBlock(), _createElementBlock("button", {
-                      key: 0,
-                      type: "button",
-                      class: "wd-select__tag-x",
-                      "aria-label": `移除 ${o.label}`,
-                      onClick: ($event: any) => (removeTag(o.value, $event))
-                    }, [
-                      _createVNode(_component_wd_icon, {
-                        name: "close",
-                        size: 10
-                      })
-                    ], 8 /* PROPS */, _hoisted_3))
-                  : _createCommentVNode("v-if", true)
+                _createVNode(_component_wd_icon, {
+                  name: "close",
+                  size: 12
+                })
               ]))
-            }), 128 /* KEYED_FRAGMENT */)),
-            (overflowCount.value)
-              ? (_openBlock(), _createElementBlock("span", _hoisted_4, "+" + _toDisplayString(overflowCount.value), 1 /* TEXT */))
-              : _createCommentVNode("v-if", true)
-          ]))
-        : (!__props.multiple && hasValue.value)
-          ? (_openBlock(), _createElementBlock(_Fragment, { key: 1 }, [
-              _createCommentVNode(" 单选 "),
-              _createElementVNode("span", _hoisted_5, _toDisplayString(singleLabel.value), 1 /* TEXT */)
-            ], 2112 /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */))
-          : (_openBlock(), _createElementBlock("span", _hoisted_6, _toDisplayString(__props.placeholder), 1 /* TEXT */)),
-      _createElementVNode("span", _hoisted_7, [
-        (showClear.value)
-          ? (_openBlock(), _createElementBlock("button", {
-              key: 0,
-              type: "button",
-              class: "wd-select__clear",
-              "aria-label": "清除",
-              onClick: clear
-            }, [
-              _createVNode(_component_wd_icon, {
-                name: "close",
-                size: 12
-              })
+            : _createCommentVNode("v-if", true),
+          _createVNode(_component_wd_icon, {
+            class: _normalizeClass(["wd-chevron", { 'wd-chevron--open': open.value }]),
+            name: "chevron-down",
+            size: 14
+          }, null, 8 /* PROPS */, ["class"])
+        ])
+      ], 10 /* CLASS, PROPS */, _hoisted_1)
+    ], 34 /* CLASS, NEED_HYDRATION */),
+    (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
+      _createElementVNode("div", {
+        ref_key: "menuEl",
+        ref: menuEl,
+        class: _normalizeClass(["wd-select__menu", { 'is-open': open.value }]),
+        style: _normalizeStyle({ top: _unref(pos).top + 'px', left: _unref(pos).left + 'px', minWidth: '200px' }),
+        role: "listbox",
+        "aria-multiselectable": __props.multiple || undefined
+      }, [
+        _createCommentVNode(" 搜索框 "),
+        (__props.filterable)
+          ? (_openBlock(), _createElementBlock("div", _hoisted_9, [
+              _withDirectives(_createElementVNode("input", {
+                ref_key: "searchEl",
+                ref: searchEl,
+                "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event: any) => ((search).value = $event)),
+                type: "text",
+                placeholder: "输入关键字筛选…",
+                onClick: _cache[1] || (_cache[1] = _withModifiers(() => {}, ["stop"]))
+              }, null, 512 /* NEED_PATCH */), [
+                [_vModelText, search.value]
+              ])
             ]))
           : _createCommentVNode("v-if", true),
-        _createVNode(_component_wd_icon, {
-          class: _normalizeClass(["wd-chevron", { 'wd-chevron--open': open.value }]),
-          name: "chevron-down",
-          size: 14
-        }, null, 8 /* PROPS */, ["class"])
-      ])
-    ], 10 /* CLASS, PROPS */, _hoisted_1),
-    _createVNode(_Transition, {
-      name: "wd-pop",
-      duration: _unref(POP_DURATION)
-    }, {
-      default: _withCtx(() => [
-        (open.value)
-          ? (_openBlock(), _createElementBlock("div", {
-              key: 0,
-              class: "wd-select__menu",
-              role: "listbox",
-              "aria-multiselectable": __props.multiple || undefined
-            }, [
-              _createCommentVNode(" 搜索框 "),
-              (__props.filterable)
-                ? (_openBlock(), _createElementBlock("div", _hoisted_9, [
-                    _withDirectives(_createElementVNode("input", {
-                      ref_key: "searchEl",
-                      ref: searchEl,
-                      "onUpdate:modelValue": _cache[0] || (_cache[0] = ($event: any) => ((search).value = $event)),
-                      type: "text",
-                      placeholder: "输入关键字筛选…",
-                      onClick: _cache[1] || (_cache[1] = _withModifiers(() => {}, ["stop"]))
-                    }, null, 512 /* NEED_PATCH */), [
-                      [_vModelText, search.value]
-                    ])
-                  ]))
-                : _createCommentVNode("v-if", true),
-              (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(visible.value, (o, i) => {
-                return (_openBlock(), _createElementBlock("button", {
-                  key: o.value,
-                  type: "button",
-                  role: "option",
-                  class: _normalizeClass(["wd-select__option", {
+        (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(visible.value, (o, i) => {
+          return (_openBlock(), _createElementBlock("button", {
+            key: o.value,
+            type: "button",
+            role: "option",
+            class: _normalizeClass(["wd-select__option", {
             'wd-select__option--active': selected.value.includes(o.value),
             'wd-select__option--hover': i === activeIndex.value,
             'wd-select__option--disabled': o.disabled,
           }]),
-                  "aria-selected": selected.value.includes(o.value),
-                  disabled: o.disabled,
-                  onClick: ($event: any) => (toggle(o.value)),
-                  onMouseenter: ($event: any) => (activeIndex.value = i)
-                }, [
-                  _createElementVNode("span", null, _toDisplayString(o.label), 1 /* TEXT */),
-                  (selected.value.includes(o.value))
-                    ? (_openBlock(), _createBlock(_component_wd_icon, {
-                        key: 0,
-                        class: "wd-select__option-mark",
-                        name: "check",
-                        size: 14
-                      }))
-                    : _createCommentVNode("v-if", true)
-                ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_10))
-              }), 128 /* KEYED_FRAGMENT */)),
-              (!visible.value.length)
-                ? (_openBlock(), _createElementBlock("div", _hoisted_11, "无匹配项"))
-                : _createCommentVNode("v-if", true)
-            ], 8 /* PROPS */, _hoisted_8))
+            "aria-selected": selected.value.includes(o.value),
+            disabled: o.disabled,
+            onClick: ($event: any) => (toggle(o.value)),
+            onMouseenter: ($event: any) => (activeIndex.value = i)
+          }, [
+            _createElementVNode("span", null, _toDisplayString(o.label), 1 /* TEXT */),
+            (selected.value.includes(o.value))
+              ? (_openBlock(), _createBlock(_component_wd_icon, {
+                  key: 0,
+                  class: "wd-select__option-mark",
+                  name: "check",
+                  size: 14
+                }))
+              : _createCommentVNode("v-if", true)
+          ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_10))
+        }), 128 /* KEYED_FRAGMENT */)),
+        (!visible.value.length)
+          ? (_openBlock(), _createElementBlock("div", _hoisted_11, "无匹配项"))
           : _createCommentVNode("v-if", true)
-      ]),
-      _: 1 /* STABLE */
-    }, 8 /* PROPS */, ["duration"])
-  ], 34 /* CLASS, NEED_HYDRATION */))
+      ], 14 /* CLASS, STYLE, PROPS */, _hoisted_8)
+    ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 

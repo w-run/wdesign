@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, unref as _unref, renderList as _renderList, Fragment as _Fragment, normalizeClass as _normalizeClass, Transition as _Transition, withCtx as _withCtx } from "vue"
+import { toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass, unref as _unref, renderList as _renderList, Fragment as _Fragment, normalizeStyle as _normalizeStyle, Teleport as _Teleport, createBlock as _createBlock } from "vue"
 
 const _hoisted_1 = ["disabled"]
 const _hoisted_2 = {
@@ -10,19 +10,16 @@ const _hoisted_3 = {
   key: 1,
   class: "wd-datepicker__placeholder"
 }
-const _hoisted_4 = {
-  key: 0,
-  class: "wd-datepicker__panel"
-}
-const _hoisted_5 = { class: "wd-datepicker__head" }
-const _hoisted_6 = { class: "wd-datepicker__month" }
-const _hoisted_7 = { class: "wd-datepicker__nav" }
-const _hoisted_8 = { class: "wd-datepicker__week" }
-const _hoisted_9 = { class: "wd-datepicker__grid" }
-const _hoisted_10 = ["onClick"]
+const _hoisted_4 = { class: "wd-datepicker__head" }
+const _hoisted_5 = { class: "wd-datepicker__month" }
+const _hoisted_6 = { class: "wd-datepicker__nav" }
+const _hoisted_7 = { class: "wd-datepicker__week" }
+const _hoisted_8 = { class: "wd-datepicker__grid" }
+const _hoisted_9 = ["onClick"]
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
+import { useAnchoredPosition } from './anchor'
 
 // 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
 // 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
@@ -52,6 +49,14 @@ const emit = __emit
 
 const open = ref(false)
 const root = ref<HTMLElement>()
+const panelEl = ref<HTMLElement | null>(null)
+
+/** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
+const { pos } = useAnchoredPosition(open, root, panelEl, {
+  placement: 'bottom-start',
+  gap: 8,
+  width: 302,
+})
 
 /** 层栈：Esc 只关最上层 */
 useOverlayLayer(open, root, () => { open.value = false; return true })
@@ -134,92 +139,91 @@ onBeforeUnmount(() => {
 return (_ctx: any,_cache: any) => {
   const _component_wd_icon = _resolveComponent("wd-icon")!
 
-  return (_openBlock(), _createElementBlock("div", {
-    ref_key: "root",
-    ref: root,
-    class: _normalizeClass(["wd-datepicker", { 'wd-datepicker--open': open.value }])
-  }, [
-    _createElementVNode("button", {
-      type: "button",
-      class: "wd-datepicker__trigger",
-      disabled: __props.disabled,
-      onClick: toggle
+  return (_openBlock(), _createElementBlock(_Fragment, null, [
+    _createElementVNode("div", {
+      ref_key: "root",
+      ref: root,
+      class: _normalizeClass(["wd-datepicker", { 'wd-datepicker--open': open.value }])
     }, [
-      (__props.modelValue)
-        ? (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(__props.modelValue), 1 /* TEXT */))
-        : (_openBlock(), _createElementBlock("span", _hoisted_3, _toDisplayString(__props.placeholder), 1 /* TEXT */)),
-      _createVNode(_component_wd_icon, {
-        class: "wd-datepicker__icon",
-        name: "calendar",
-        size: 15
-      })
-    ], 8 /* PROPS */, _hoisted_1),
-    _createVNode(_Transition, {
-      name: "wd-pop",
-      duration: _unref(POP_DURATION)
-    }, {
-      default: _withCtx(() => [
-        (open.value)
-          ? (_openBlock(), _createElementBlock("div", _hoisted_4, [
-              _createElementVNode("div", _hoisted_5, [
-                _createElementVNode("span", _hoisted_6, _toDisplayString(monthLabel.value), 1 /* TEXT */),
-                _createElementVNode("span", _hoisted_7, [
-                  _createElementVNode("button", {
-                    type: "button",
-                    class: "wd-icon-btn wd-icon-btn--sm",
-                    "aria-label": "上个月",
-                    onClick: prevMonth
-                  }, [
-                    _createVNode(_component_wd_icon, {
-                      name: "chevron-left",
-                      size: 14
-                    })
-                  ]),
-                  _createElementVNode("button", {
-                    type: "button",
-                    class: "wd-icon-btn wd-icon-btn--sm",
-                    "aria-label": "下个月",
-                    onClick: nextMonth
-                  }, [
-                    _createVNode(_component_wd_icon, {
-                      name: "chevron-right",
-                      size: 14
-                    })
-                  ])
-                ])
-              ]),
-              _createElementVNode("div", _hoisted_8, [
-                (_openBlock(), _createElementBlock(_Fragment, null, _renderList(WEEK, (w) => {
-                  return _createElementVNode("span", { key: w }, _toDisplayString(w), 1 /* TEXT */)
-                }), 64 /* STABLE_FRAGMENT */))
-              ]),
-              _createElementVNode("div", _hoisted_9, [
-                (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(days.value, (d) => {
-                  return (_openBlock(), _createElementBlock("button", {
-                    key: d.key,
-                    type: "button",
-                    class: _normalizeClass(["wd-datepicker__day", {
+      _createElementVNode("button", {
+        type: "button",
+        class: "wd-datepicker__trigger",
+        disabled: __props.disabled,
+        onClick: toggle
+      }, [
+        (__props.modelValue)
+          ? (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(__props.modelValue), 1 /* TEXT */))
+          : (_openBlock(), _createElementBlock("span", _hoisted_3, _toDisplayString(__props.placeholder), 1 /* TEXT */)),
+        _createVNode(_component_wd_icon, {
+          class: "wd-datepicker__icon",
+          name: "calendar",
+          size: 15
+        })
+      ], 8 /* PROPS */, _hoisted_1)
+    ], 2 /* CLASS */),
+    (_openBlock(), _createBlock(_Teleport, { to: "body" }, [
+      _createElementVNode("div", {
+        ref_key: "panelEl",
+        ref: panelEl,
+        class: _normalizeClass(["wd-datepicker__panel", { 'is-open': open.value }]),
+        style: _normalizeStyle({ top: _unref(pos).top + 'px', left: _unref(pos).left + 'px' })
+      }, [
+        _createElementVNode("div", _hoisted_4, [
+          _createElementVNode("span", _hoisted_5, _toDisplayString(monthLabel.value), 1 /* TEXT */),
+          _createElementVNode("span", _hoisted_6, [
+            _createElementVNode("button", {
+              type: "button",
+              class: "wd-icon-btn wd-icon-btn--sm",
+              "aria-label": "上个月",
+              onClick: prevMonth
+            }, [
+              _createVNode(_component_wd_icon, {
+                name: "chevron-left",
+                size: 14
+              })
+            ]),
+            _createElementVNode("button", {
+              type: "button",
+              class: "wd-icon-btn wd-icon-btn--sm",
+              "aria-label": "下个月",
+              onClick: nextMonth
+            }, [
+              _createVNode(_component_wd_icon, {
+                name: "chevron-right",
+                size: 14
+              })
+            ])
+          ])
+        ]),
+        _createElementVNode("div", _hoisted_7, [
+          (_openBlock(), _createElementBlock(_Fragment, null, _renderList(WEEK, (w) => {
+            return _createElementVNode("span", { key: w }, _toDisplayString(w), 1 /* TEXT */)
+          }), 64 /* STABLE_FRAGMENT */))
+        ]),
+        _createElementVNode("div", _hoisted_8, [
+          (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(days.value, (d) => {
+            return (_openBlock(), _createElementBlock("button", {
+              key: d.key,
+              type: "button",
+              class: _normalizeClass(["wd-datepicker__day", {
               'wd-datepicker__day--muted': d.muted,
               'wd-datepicker__day--today': d.today,
               'wd-datepicker__day--selected': d.selected,
             }]),
-                    onClick: ($event: any) => (pick(d.key))
-                  }, _toDisplayString(d.label), 11 /* TEXT, CLASS, PROPS */, _hoisted_10))
-                }), 128 /* KEYED_FRAGMENT */))
-              ]),
-              _createElementVNode("div", { class: "wd-datepicker__foot" }, [
-                _createElementVNode("button", {
-                  type: "button",
-                  class: "wd-datepicker__todaybtn",
-                  onClick: pickToday
-                }, "回到今天")
-              ])
-            ]))
-          : _createCommentVNode("v-if", true)
-      ]),
-      _: 1 /* STABLE */
-    }, 8 /* PROPS */, ["duration"])
-  ], 2 /* CLASS */))
+              onClick: ($event: any) => (pick(d.key))
+            }, _toDisplayString(d.label), 11 /* TEXT, CLASS, PROPS */, _hoisted_9))
+          }), 128 /* KEYED_FRAGMENT */))
+        ]),
+        _createElementVNode("div", { class: "wd-datepicker__foot" }, [
+          _createElementVNode("button", {
+            type: "button",
+            class: "wd-datepicker__todaybtn",
+            onClick: pickToday
+          }, "回到今天")
+        ])
+      ], 6 /* CLASS, STYLE */)
+    ]))
+  ], 64 /* STABLE_FRAGMENT */))
 }
 }
 

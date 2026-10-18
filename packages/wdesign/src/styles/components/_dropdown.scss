@@ -6,20 +6,24 @@
 }
 .wd-dropdown__trigger:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
+/*
+ * Teleport 到 body 后不再有触发器作参照，定位全部由 JS 计算，
+ * 这里只保留 fixed + 视觉样式。
+ * 被祖先 overflow:hidden 裁切是 dropdown 最常见的线上问题。
+ */
 .wd-dropdown__menu {
-  position: absolute;
-  z-index: 50;
-  top: calc(100% + 8px);
-  left: 0;
+  position: fixed;
+  z-index: 1200;
   min-width: 180px;
+  display: none;
   padding: 8px;
   background: var(--wd-card);
   border-radius: var(--wd-radius-md);
   box-shadow: var(--wd-shadow-hover);
-  display: flex;
   flex-direction: column;
   gap: 2px;
 }
+.wd-dropdown__menu.is-open { display: flex; }
 
 .wd-dropdown__item {
   display: flex;
