@@ -422,7 +422,7 @@ body {
  *    · 波形 64 根柱子被拉开成稀疏的栅栏
  * 卡片本身是「手机宽度」的组件原型，420px 附近才是它的自然尺寸。
  */
-.demo-stack > * { width: 100%; max-width: 420px; margin: 0 auto; }
+.demo-stack > * { width: 100%; max-width: 380px; margin: 0 auto; }
 .demo-cap {
   font-size: 11px;
   color: var(--wd-ink-2);

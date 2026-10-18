@@ -6051,16 +6051,17 @@ img.wd-theme-invert {
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  gap: 18px;
+  /* 元素本身放大了，垂直间距相应收缩 —— 否则整卡被撑高、读起来散 */
+  gap: 14px;
   /*
    * 内距：卡片是「留白型」组件，四周必须给足。
    *
-   * 演进过程：18/20 → 24/26 → **32/34**。
-   * 24/26 时在 420px 宽卡里看仍然贴边 —— 因为卡内元素本身就有 16px 的间距，
-   * 元素与边框之间的留白必须明显大于元素彼此的间距，卡片才「透气」。
-   * 底部 30 略小于顶部 32：视觉重心稍上移，与标题居中的光学习惯一致。
+   * 演进过程：18/20 → 24/26 → 32/34 → **36/40**。
+   * 卡片宽度同时收到 380px，内宽 300px —— 内距占卡宽 10.5%，
+   * 元素明显被"边框往里推"，不再是贴着边漂浮。
+   * 底部 34 略小于顶部 36：视觉重心稍上移，与标题居中的光学习惯一致。
    */
-  padding: 32px 34px 30px;
+  padding: 36px 40px 34px;
   border-radius: var(--wd-radius-xl);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow);
@@ -6213,7 +6214,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio--card .wd-audio__title {
-  font-size: 16px;
+  font-size: 17.5px;
   font-weight: 800;
   letter-spacing: -0.01em;
   line-height: 1.3;
@@ -6223,7 +6224,7 @@ img.wd-theme-invert {
 }
 
 .wd-audio--card .wd-audio__subtitle {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--wd-ink-2);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -6452,8 +6453,9 @@ img.wd-theme-invert {
  * `space-between` 在溢出时首项贴左、末项冲出右边界，
  * 表现为「整排控件偏右」（末位右留白 8.7px，本该 26px，和左侧不对称）。
  *
- * 修法：把尺寸收到能装下 —— 32×4 + 52 = 180，加 4×4px = 196 ≤ 199。
- * 并保留 space-between 做均分，两侧留白自然对称。
+ * 修法：先让内容能装下 —— 38×4 + 58 = 210，内宽 300px 有充足余量。
+ * 保留 space-between：内宽变窄后间隙自动从 43px 收到 **22.5px**，
+ * 控件不再被摊到两端（这是"又小又分散"的根源）。
  */
 .wd-audio__controls {
   display: flex;
@@ -6468,15 +6470,15 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
@@ -6496,8 +6498,8 @@ img.wd-theme-invert {
  * ⚠️ 改 .wd-audio__ctl 的宽高时，这里要同步。
  */
 .wd-audio__ctl-spacer {
-  width: 32px;
-  height: 32px;
+  width: 38px;
+  height: 38px;
   flex: none;
 }
 
@@ -6511,8 +6513,8 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   padding: 0;
   border: 0;
   border-radius: 50%;
@@ -8637,7 +8639,7 @@ body {
  */
 .demo-stack > * {
   width: 100%;
-  max-width: 420px;
+  max-width: 380px;
   margin: 0 auto;
 }
 
