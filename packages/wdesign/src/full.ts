@@ -33,6 +33,7 @@ import WdFileList from './components/WdFileList.vue'
 import WdForm from './components/WdForm.vue'
 import WdFormItem from './components/WdFormItem.vue'
 import WdGrid from './components/WdGrid.vue'
+import WdGroup from './components/WdGroup.vue'
 import WdImagePreview from './components/WdImagePreview.vue'
 import WdInput from './components/WdInput.vue'
 import WdListItem from './components/WdListItem.vue'
@@ -92,6 +93,7 @@ const components = [
   WdForm,
   WdFormItem,
   WdGrid,
+  WdGroup,
   WdImagePreview,
   WdInput,
   WdListItem,

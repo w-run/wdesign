@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.5a5c8d9c.css">
+<link rel="stylesheet" href="demo.34d05781.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -905,6 +905,99 @@
       </div>
     </div>
 
+    <div class="demo-panel demo-panel--wide">
+      <h3>GROUP 组合容器</h3>
+      <span class="demo-cap">把任意控件拼成一个整体：只保留外缘圆角、内部无缝、焦点环不互相遮挡。</span>
+
+      <div class="demo-row" style="gap:20px; flex-wrap:wrap; margin-top:16px; align-items:flex-start">
+        <div class="demo-col" style="min-width:280px">
+          <div class="demo-cap" style="margin-bottom:6px">输入 + 按钮（胶囊）</div>
+          <wd-group variant="capsule" label="搜索">
+            <wd-input v-model="grpSearch" placeholder="搜索点什么…"></wd-input>
+            <wd-button variant="primary" @click="grpSubmit">搜索</wd-button>
+          </wd-group>
+        </div>
+
+        <div class="demo-col" style="min-width:260px">
+          <div class="demo-cap" style="margin-bottom:6px">前置按钮 + 输入</div>
+          <wd-group variant="joined">
+            <wd-button variant="tint">https://</wd-button>
+            <wd-input v-model="grpUrl" placeholder="example.com"></wd-input>
+          </wd-group>
+        </div>
+      </div>
+
+      <div class="demo-row" style="gap:20px; flex-wrap:wrap; margin-top:22px; align-items:flex-start">
+        <div class="demo-col" style="min-width:260px">
+          <div class="demo-cap" style="margin-bottom:6px">多个按钮并列（等分）</div>
+          <wd-group variant="joined" equal block>
+            <wd-button variant="ghost">日</wd-button>
+            <wd-button variant="ghost">周</wd-button>
+            <wd-button variant="ghost">月</wd-button>
+            <wd-button variant="primary">年</wd-button>
+          </wd-group>
+        </div>
+
+        <div class="demo-col" style="min-width:260px">
+          <div class="demo-cap" style="margin-bottom:6px">内嵌分段（inset）</div>
+          <wd-group variant="inset" equal block>
+            <wd-button variant="ghost">全部</wd-button>
+            <wd-button variant="ghost">进行中</wd-button>
+            <wd-button variant="ghost">已完成</wd-button>
+          </wd-group>
+        </div>
+      </div>
+
+      <div class="demo-row" style="gap:20px; flex-wrap:wrap; margin-top:22px; align-items:flex-start">
+        <div class="demo-col" style="min-width:300px">
+          <div class="demo-cap" style="margin-bottom:6px">图标 + 输入 + 计数 + 按钮</div>
+          <wd-group variant="capsule">
+            <span class="grp-icon"><wd-icon name="search" :size="15" /></span>
+            <wd-input v-model="grpQ" placeholder="搜索…"></wd-input>
+            <span class="grp-count">{{ grpQ.length }}/20</span>
+            <wd-button variant="primary">Go</wd-button>
+          </wd-group>
+        </div>
+
+        <div class="demo-col" style="min-width:240px">
+          <div class="demo-cap" style="margin-bottom:6px">下拉 + 输入（拼接）</div>
+          <wd-group variant="joined" block>
+            <wd-select v-model="grpKind" :options="['标题', '作者', 'ISBN']" style="width:110px"></wd-select>
+            <wd-input v-model="grpTerm" placeholder="关键词"></wd-input>
+          </wd-group>
+        </div>
+      </div>
+
+      <div class="demo-row" style="gap:20px; flex-wrap:wrap; margin-top:22px; align-items:flex-start">
+        <div class="demo-col" style="min-width:220px">
+          <div class="demo-cap" style="margin-bottom:6px">纵向（分段占满）</div>
+          <wd-group variant="joined" direction="col" block>
+            <wd-button variant="ghost">上一步</wd-button>
+            <wd-button variant="ghost">下一步</wd-button>
+            <wd-button variant="primary">完成</wd-button>
+          </wd-group>
+        </div>
+
+        <div class="demo-col" style="min-width:220px">
+          <div class="demo-cap" style="margin-bottom:6px">三档尺寸</div>
+          <wd-group variant="capsule" size="sm" style="margin-bottom:8px">
+            <wd-input v-model="grpSm" placeholder="sm"></wd-input>
+            <wd-button variant="tint">→</wd-button>
+          </wd-group>
+          <wd-group variant="capsule" size="md" style="margin-bottom:8px">
+            <wd-input v-model="grpMd" placeholder="md"></wd-input>
+            <wd-button variant="tint">→</wd-button>
+          </wd-group>
+          <wd-group variant="capsule" size="lg">
+            <wd-input v-model="grpLg" placeholder="lg"></wd-input>
+            <wd-button variant="tint">→</wd-button>
+          </wd-group>
+        </div>
+      </div>
+
+      <span class="demo-cap" style="margin-top:14px" v-if="grpMsg">{{ grpMsg }}</span>
+    </div>
+
 <div class="demo-panel">
       <h3>TIMELINE 时间线</h3>
       <div class="demo-row" style="gap:40px; align-items:flex-start">
@@ -1240,8 +1333,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.b9755e6f.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.36bbfd44.js"></script>
-<script src="demo.97d7af31.js"></script>
+<script src="components.36492fcc.js"></script>
+<script src="demo.b9442923.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

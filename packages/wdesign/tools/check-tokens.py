@@ -30,6 +30,10 @@ INTERNAL = {
     '--wd-desc-span',
     '--wd-desc-cols',
     '--wd-tree-line-x',
+    # 组件内部尺寸变量（在 _group.scss 的 .wd-group--sm/md/lg 里定义）
+    '--wd-group-h',
+    '--wd-group-pad',
+    '--wd-group-fs',
 }
 
 

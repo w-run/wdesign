@@ -1,0 +1,292 @@
+// =============================================================
+//  WDesign — Group（通用分段组合容器）
+//
+//  ===== 解决什么 =====
+//  把**任意**若干控件拼成一个整体：输入框+按钮、多个按钮并列、
+//  图标+输入框+计数、下拉+输入+提交 …… 不只限于表单。
+//
+//  ===== 四个真正的难点 =====
+//
+//  1. **只留外缘圆角**
+//     首项左上/左下、尾项右上/右下，中间归零。
+//     不用 :first-child —— 插槽可能包 wrapper，且 v-if 会让空占位
+//     影响序号。组件在运行时给真实子节点打 --first/--last 标记。
+//
+//  2. **边框不叠成双线**
+//     相邻项各画边框 → 接缝 2px。解法是「只留上/左边框」：
+//     首项保留全部，其余去掉左边框（横向）/ 上边框（纵向）。
+//     比 margin:-1px 稳，不依赖边框恰好 1px。
+//
+//  3. **焦点环被裁 / 互相遮挡**
+//     容器不能设 overflow:hidden（会裁掉内部控件的 focus ring）。
+//     :focus-within 时把该项 z-index 提到 1，否则后一项背景会盖住前一项的环。
+//
+//  4. **子项自带外框 → 框里套框**
+//     组合容器自身提供统一的底与框，子项必须「缴械」：
+//     透明背景、无边框、无阴影、圆角归零。用 --seamless 统一处理，
+//     并覆盖到本库所有可能被组合的组件类名。
+// =============================================================
+.wd-group {
+  display: inline-flex;
+  align-items: stretch;
+  min-width: 0;
+  vertical-align: middle;
+  /* ⚠️ 不能 overflow:hidden —— 会裁掉子项的 focus ring */
+}
+
+.wd-group--block { display: flex; width: 100%; }
+.wd-group--col { flex-direction: column; align-items: stretch; }
+
+/* ---------------- 尺寸 ---------------- */
+.wd-group--sm { --wd-group-h: 32px; --wd-group-pad: 10px; --wd-group-fs: 12.5px; }
+.wd-group--md { --wd-group-h: 40px; --wd-group-pad: 14px; --wd-group-fs: 13px; }
+.wd-group--lg { --wd-group-h: 48px; --wd-group-pad: 18px; --wd-group-fs: 14px; }
+
+/* ---------------- 子项基础 ---------------- */
+.wd-group__item {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--wd-group-h);
+  font-size: var(--wd-group-fs);
+}
+
+.wd-group--equal .wd-group__item { flex: 1 1 0; }
+
+/* 让输入类子项能撑开 */
+.wd-group--block .wd-group__item { flex: 1 1 0; }
+
+/* ---------------- 子项「缴械」：去掉自带外框 ---------------- */
+/*
+ * 组合容器统一提供背景与边框，子项必须变成「透明内容块」。
+ * 覆盖范围要够宽 —— 任何自带底色/边框/圆角的组件放进来都要被压平，
+ * 否则会出现「胶囊里套小胶囊」。
+ */
+/*
+ * 「缴械」的边界要精确：
+ *   要去掉的是**容器级外框**（边框、阴影、外层圆角、块状底色）
+ *   要保留的是**组件语义色**（primary 按钮的红底、danger 的危险色）
+ *
+ * 第一版把 background 一刀切成 transparent，结果 primary 按钮
+ * 变成一片空白 —— 按钮还在，但看不出是按钮。
+ */
+.wd-group--seamless > .wd-group__item {
+  border-radius: 0;
+  min-height: var(--wd-group-h);
+}
+
+/* 输入类 / 选择器：这些的底色就是"外框"，要压平 */
+.wd-group--seamless > .wd-group__item > .wd-input,
+.wd-group--seamless > .wd-group__item > .wd-select {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  min-height: var(--wd-group-h);
+}
+
+/* 按钮：只去外框与圆角，保留 variant 决定的底色 */
+.wd-group--seamless > .wd-group__item > .wd-btn {
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  min-height: var(--wd-group-h);
+}
+
+/* 输入类：内边距统一，文字左对齐（居中会怪） */
+.wd-group--seamless > .wd-group__item > .wd-input,
+.wd-group--seamless > .wd-group__item > .wd-select {
+  justify-content: flex-start;
+  padding-left: var(--wd-group-pad);
+  padding-right: var(--wd-group-pad);
+  width: 100%;
+}
+.wd-group--seamless > .wd-group__item > .wd-input > input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* 按钮类：保留可点区域，去掉自身圆角与外框 */
+.wd-group--seamless > .wd-group__item > .wd-btn {
+  border-radius: 0;
+  height: 100%;
+  padding: 0 var(--wd-group-pad);
+}
+
+/* ---------------- 变体：胶囊 ---------------- */
+.wd-group--capsule {
+  background: var(--wd-field);
+  border-radius: var(--wd-radius-pill);
+  /* 1px 透明边框：让 joined 形态的边框逻辑能复用 */
+  border: 1px solid transparent;
+}
+
+/*
+ * ⚠️ 圆角必须同时压到**内层控件**。
+ * 只给 .wd-group__item 设圆角没用 —— 真正有背景的是里面的 .wd-btn，
+ * 它的直角会盖住父级圆角，表现为「按钮右端被切平」。
+ */
+/*
+ * 圆角覆盖要同时命中两种结构：
+ *   A) <div class="item"><button class="wd-btn">   ← 控件在内部
+ *   B) <button class="wd-btn item">                ← 控件本身就是 item
+ * B 更常见（按钮直接作为插槽子节点），第一版漏了它，
+ * 表现为「最后一个按钮右端被切平」。
+ */
+.wd-group--capsule > .wd-group__item--first,
+.wd-group--capsule > .wd-group__item--first > * {
+  border-radius: var(--wd-radius-pill) 0 0 var(--wd-radius-pill) !important;
+}
+.wd-group--capsule > .wd-group__item--last,
+.wd-group--capsule > .wd-group__item--last > * {
+  border-radius: 0 var(--wd-radius-pill) var(--wd-radius-pill) 0 !important;
+}
+.wd-group--capsule > .wd-group__item--only,
+.wd-group--capsule > .wd-group__item--only > * {
+  border-radius: var(--wd-radius-pill) !important;
+}
+
+.wd-group--capsule.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0; }
+.wd-group--capsule.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill); }
+/* 纵向时首尾只保留上下圆角，左右保持 0（否则会鼓出来） */
+.wd-group--capsule.wd-group--col > .wd-group__item { border-radius: 0; }
+.wd-group--capsule.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0; }
+.wd-group--capsule.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill); }
+
+/* 胶囊内的按钮：hover 时整块变浅，不单独做胶囊 */
+.wd-group--capsule > .wd-group__item > .wd-btn:hover:not(:disabled),
+.wd-group--capsule > .wd-group__item > .wd-btn:focus-visible {
+  background: var(--wd-tint-2);
+}
+
+/* ---------------- 变体：拼合 ---------------- */
+.wd-group--joined {
+  background: var(--wd-card);
+  border: 1px solid var(--wd-field);
+  border-radius: var(--wd-radius-md);
+}
+
+.wd-group--joined > .wd-group__item--first,
+.wd-group--joined > .wd-group__item--first > * {
+  border-radius: var(--wd-radius-md) 0 0 var(--wd-radius-md) !important;
+}
+.wd-group--joined > .wd-group__item--last,
+.wd-group--joined > .wd-group__item--last > * {
+  border-radius: 0 var(--wd-radius-md) var(--wd-radius-md) 0 !important;
+}
+.wd-group--joined > .wd-group__item--only,
+.wd-group--joined > .wd-group__item--only > * {
+  border-radius: var(--wd-radius-md) !important;
+}
+
+.wd-group--joined.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0; }
+.wd-group--joined.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md); }
+
+/* 拼合形态：子项之间用左边框（纵向用上边框）分隔，首项不加 */
+.wd-group--joined.wd-group--divided > .wd-group__item:not(.wd-group__item--first) {
+  border-left: 1px solid var(--wd-field);
+}
+.wd-group--joined.wd-group--col.wd-group--divided > .wd-group__item:not(.wd-group__item--first) {
+  border-left: 0;
+  border-top: 1px solid var(--wd-field);
+}
+
+/* ---------------- 变体：内嵌 ---------------- */
+/*
+ * 容器是「底色凹槽」，子项浮在上面。
+ * 适合：搜索框、分段切换、小工具条。
+ */
+.wd-group--inset {
+  background: var(--wd-field);
+  border-radius: var(--wd-radius-sm);
+  padding: 3px;
+  gap: 2px;
+}
+
+.wd-group--inset > .wd-group__item {
+  border-radius: var(--wd-radius-xs);
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-group--inset > .wd-group__item:hover {
+  background: var(--wd-tint-2);
+}
+
+/* 内嵌形态不画分割线（间距本身已是区分） */
+.wd-group--inset.wd-group--divided > .wd-group__item + .wd-group__item {
+  box-shadow: inset 1px 0 0 var(--wd-ink-5);
+}
+
+/* ---------------- 分隔线（胶囊形态） ---------------- */
+/*
+ * 胶囊是「连成一片」的，用伪元素画 1px 竖线。
+ * 画在 ::before 而不是 border 上：不影响布局尺寸，也不会与圆角冲突。
+ */
+.wd-group--capsule.wd-group--divided > .wd-group__item + .wd-group__item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 52%;
+  background: var(--wd-ink-5);
+  pointer-events: none;
+}
+
+.wd-group--capsule.wd-group--divided > .wd-group__item {
+  position: relative;
+}
+
+.wd-group--capsule.wd-group--col.wd-group--divided > .wd-group__item + .wd-group__item::before {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 52%;
+  height: 1px;
+}
+
+/* 纵向：每一项都要撑满宽度，否则会各自缩成一团 */
+.wd-group--col > .wd-group__item { width: 100%; }
+.wd-group--col > .wd-group__item > .wd-btn,
+.wd-group--col > .wd-group__item > .wd-input { width: 100%; }
+
+/* ---------------- 焦点与禁用 ---------------- */
+.wd-group:focus-within {
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+/*
+ * 焦点项提升层级：否则后一项的背景会盖住前一项的焦点环 ——
+ * 这在「拼接」布局里是必然发生的。
+ */
+.wd-group__item:focus-within {
+  position: relative;
+  z-index: 2;
+}
+
+/* 子项内部的焦点样式压掉，避免双重焦点环 */
+.wd-group--seamless > .wd-group__item > .wd-input:focus-within {
+  box-shadow: none;
+}
+
+.wd-group--disabled {
+  opacity: .55;
+  pointer-events: none;
+}
+
+/* ---------------- 子项是纯文字/图标时的对齐 ---------------- */
+.wd-group__item > span,
+.wd-group__item > svg {
+  flex: none;
+}
+
+.wd-group__item--static {
+  color: var(--wd-ink-2);
+  padding: 0 calc(var(--wd-group-pad) * 0.7);
+  font-weight: 600;
+  user-select: none;
+}

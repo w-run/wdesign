@@ -248,6 +248,8 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      grpSearch: '', grpUrl: '', grpQ: '', grpTerm: '', grpMd: '', grpSm: '', grpLg: '',
+      grpKind: '标题', grpMsg: '',
       ucLog: '',
       liveErr: '',
       channelIdx: 0,
@@ -537,6 +539,7 @@ const app = createApp({
       if (n !== this.vlistRendered) this.vlistRendered = n
     },
     onChangeEp(ep, i) { this.currentEp = ep.key },
+    grpSubmit() { this.grpMsg = '搜索：' + (this.grpSearch || '(空)') },
     uncontrolledLog(v) {
       this.ucLog = typeof v === 'boolean' ? (v ? '开' : '关') : String(v)
     },
