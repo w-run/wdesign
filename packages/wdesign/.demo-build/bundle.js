@@ -520,79 +520,83 @@ var WD_REAL_MODULE = (() => {
   };
   var _hoisted_122 = { class: "wd-audio__remain" };
   var _hoisted_132 = { class: "wd-audio__controls" };
-  var _hoisted_142 = ["aria-label"];
-  var _hoisted_15 = {
+  var _hoisted_142 = {
+    key: 0,
+    class: "wd-audio__rate-anchor"
+  };
+  var _hoisted_15 = ["aria-label"];
+  var _hoisted_16 = {
+    key: 0,
+    class: "wd-audio__rate-menu wd-audio__rate-menu--card"
+  };
+  var _hoisted_17 = ["onClick"];
+  var _hoisted_18 = {
     key: 1,
     class: "wd-audio__ctl-spacer"
   };
-  var _hoisted_16 = ["aria-label"];
-  var _hoisted_17 = ["aria-label"];
-  var _hoisted_18 = {
+  var _hoisted_19 = ["aria-label"];
+  var _hoisted_20 = ["aria-label"];
+  var _hoisted_21 = {
     key: 5,
     class: "wd-audio__ctl-spacer"
   };
-  var _hoisted_19 = {
+  var _hoisted_222 = {
     key: 1,
-    class: "wd-audio__rate-menu wd-audio__rate-menu--card"
-  };
-  var _hoisted_20 = ["onClick"];
-  var _hoisted_21 = {
-    key: 2,
     class: "wd-audio__err"
   };
-  var _hoisted_222 = ["aria-label"];
-  var _hoisted_232 = ["src"];
-  var _hoisted_24 = { class: "wd-audio__cover-play" };
-  var _hoisted_25 = {
+  var _hoisted_232 = ["aria-label"];
+  var _hoisted_24 = ["src"];
+  var _hoisted_25 = { class: "wd-audio__cover-play" };
+  var _hoisted_26 = {
     key: 0,
     class: "wd-audio__pulse"
   };
-  var _hoisted_26 = { class: "wd-audio__main" };
-  var _hoisted_27 = {
+  var _hoisted_27 = { class: "wd-audio__main" };
+  var _hoisted_28 = {
     key: 0,
     class: "wd-audio__meta"
   };
-  var _hoisted_28 = { class: "wd-audio__title" };
-  var _hoisted_29 = {
+  var _hoisted_29 = { class: "wd-audio__title" };
+  var _hoisted_30 = {
     key: 0,
     class: "wd-audio__subtitle"
   };
-  var _hoisted_30 = { class: "wd-audio__progress-row" };
-  var _hoisted_31 = { class: "wd-audio__time-cur" };
-  var _hoisted_322 = ["aria-valuenow"];
+  var _hoisted_31 = { class: "wd-audio__progress-row" };
+  var _hoisted_322 = { class: "wd-audio__time-cur" };
   var _hoisted_332 = ["aria-valuenow"];
-  var _hoisted_34 = { class: "wd-audio__time-total" };
-  var _hoisted_35 = {
+  var _hoisted_34 = ["aria-valuenow"];
+  var _hoisted_35 = { class: "wd-audio__time-total" };
+  var _hoisted_36 = {
     key: 2,
     class: "wd-audio__err"
   };
-  var _hoisted_36 = { class: "wd-audio__side" };
-  var _hoisted_37 = {
+  var _hoisted_37 = { class: "wd-audio__side" };
+  var _hoisted_38 = {
     key: 0,
     class: "wd-audio__vol"
   };
-  var _hoisted_38 = ["aria-label"];
-  var _hoisted_39 = {
+  var _hoisted_39 = ["aria-label"];
+  var _hoisted_40 = {
     key: 1,
     class: "wd-audio__rate"
   };
-  var _hoisted_40 = {
+  var _hoisted_41 = {
     key: 0,
     class: "wd-audio__rate-menu"
   };
-  var _hoisted_41 = ["onClick"];
-  var _hoisted_422 = ["href"];
-  var _hoisted_43 = ["aria-label"];
-  var _hoisted_44 = { class: "wd-audio__mini-main" };
-  var _hoisted_45 = { class: "wd-audio__mini-text" };
-  var _hoisted_46 = { class: "wd-audio__title" };
-  var _hoisted_47 = {
+  var _hoisted_422 = ["onClick"];
+  var _hoisted_43 = ["href"];
+  var _hoisted_44 = ["aria-label"];
+  var _hoisted_45 = { class: "wd-audio__mini-main" };
+  var _hoisted_46 = { class: "wd-audio__mini-text" };
+  var _hoisted_47 = { class: "wd-audio__title" };
+  var _hoisted_48 = {
     key: 0,
     class: "wd-audio__subtitle"
   };
-  var _hoisted_48 = ["aria-valuenow"];
-  var _hoisted_49 = { class: "wd-audio__mini-track" };
-  var _hoisted_50 = { class: "wd-audio__mini-time" };
+  var _hoisted_49 = ["aria-valuenow"];
+  var _hoisted_50 = { class: "wd-audio__mini-track" };
+  var _hoisted_51 = { class: "wd-audio__mini-time" };
   var WAVE_BARS_THICK = 30;
   var WAVE_BARS_FINE = 60;
   var WdAudioPlayer_default = /* @__PURE__ */ defineComponent({
@@ -894,13 +898,31 @@ var WD_REAL_MODULE = (() => {
                 ])) : createCommentVNode("v-if", true),
                 createCommentVNode(" \u63A7\u4EF6\uFF1A\u64AD\u653E\u952E\u4E3A\u7EDD\u5BF9\u4E3B\u4F53\uFF0C\u5176\u4F59\u6B21\u7EA7\u4E14\u5F31\u5316 "),
                 createElementVNode("div", _hoisted_132, [
-                  __props.playbackRate ? (openBlock(), createElementBlock("button", {
-                    key: 0,
-                    type: "button",
-                    class: "wd-audio__ctl wd-audio__ctl--text",
-                    "aria-label": `\u500D\u901F ${rate.value}x`,
-                    onClick: _cache[3] || (_cache[3] = ($event) => rateOpen.value = !rateOpen.value)
-                  }, toDisplayString(rate.value) + "\xD7", 9, _hoisted_142)) : (openBlock(), createElementBlock("span", _hoisted_15)),
+                  createCommentVNode('\n          \u500D\u901F\u83DC\u5355\u5FC5\u987B\u4EE5**\u8FD9\u4E2A\u6309\u94AE**\u4E3A\u951A\u70B9\u3002\n          \u26A0\uFE0F \u4E4B\u524D\u83DC\u5355\u5199\u5728 controls \u4E4B\u540E\u3001\u7528 `left:50%; bottom:74px` \u5B9A\u4F4D\uFF0C\n          \u90A3\u662F\u4EE5\u6574\u5F20\u5361\u7247\u4E3A\u53C2\u7167 \u2014\u2014 \u4E8E\u662F\u5B83\u8DD1\u5230\u5361\u7247\u6B63\u4E2D\u504F\u4E0A\uFF08"\u8DD1\u5230\u97F3\u9891\u5361\u7247\u4E0A\u65B9"\uFF09\u3002\n          \u73B0\u5728\u628A\u83DC\u5355\u632A\u8FDB\u6309\u94AE\u7684 wrapper\uFF0C\u5B9A\u4F4D\u4E0A\u4E0B\u6587\u5C31\u662F\u6309\u94AE\u672C\u8EAB\u3002\n        '),
+                  __props.playbackRate ? (openBlock(), createElementBlock("span", _hoisted_142, [
+                    createElementVNode("button", {
+                      type: "button",
+                      class: "wd-audio__ctl wd-audio__ctl--text",
+                      "aria-label": `\u500D\u901F ${rate.value}x`,
+                      onClick: _cache[3] || (_cache[3] = ($event) => rateOpen.value = !rateOpen.value)
+                    }, toDisplayString(rate.value) + "\xD7", 9, _hoisted_15),
+                    rateOpen.value ? (openBlock(), createElementBlock("div", _hoisted_16, [
+                      (openBlock(), createElementBlock(
+                        Fragment,
+                        null,
+                        renderList([0.75, 1, 1.25, 1.5, 2], (r) => {
+                          return createElementVNode("button", {
+                            key: r,
+                            type: "button",
+                            class: normalizeClass({ "is-on": r === rate.value }),
+                            onClick: ($event) => setRate(r)
+                          }, toDisplayString(r) + "\xD7", 11, _hoisted_17);
+                        }),
+                        64
+                        /* STABLE_FRAGMENT */
+                      ))
+                    ])) : createCommentVNode("v-if", true)
+                  ])) : (openBlock(), createElementBlock("span", _hoisted_18)),
                   __props.navigable ? (openBlock(), createElementBlock("button", {
                     key: 2,
                     type: "button",
@@ -925,7 +947,7 @@ var WD_REAL_MODULE = (() => {
                       variant: __props.iconStyle,
                       size: 25
                     }, null, 8, ["name", "variant"])
-                  ], 8, _hoisted_16),
+                  ], 8, _hoisted_19),
                   __props.navigable ? (openBlock(), createElementBlock("button", {
                     key: 3,
                     type: "button",
@@ -951,27 +973,11 @@ var WD_REAL_MODULE = (() => {
                       variant: __props.iconStyle,
                       size: 24
                     }, null, 8, ["name", "variant"])
-                  ], 8, _hoisted_17)) : (openBlock(), createElementBlock("span", _hoisted_18))
+                  ], 8, _hoisted_20)) : (openBlock(), createElementBlock("span", _hoisted_21))
                 ]),
-                rateOpen.value ? (openBlock(), createElementBlock("div", _hoisted_19, [
-                  (openBlock(), createElementBlock(
-                    Fragment,
-                    null,
-                    renderList([0.75, 1, 1.25, 1.5, 2], (r) => {
-                      return createElementVNode("button", {
-                        key: r,
-                        type: "button",
-                        class: normalizeClass({ "is-on": r === rate.value }),
-                        onClick: ($event) => setRate(r)
-                      }, toDisplayString(r) + "\xD7", 11, _hoisted_20);
-                    }),
-                    64
-                    /* STABLE_FRAGMENT */
-                  ))
-                ])) : createCommentVNode("v-if", true),
                 errMsg.value ? (openBlock(), createElementBlock(
                   "div",
-                  _hoisted_21,
+                  _hoisted_222,
                   toDisplayString(errMsg.value),
                   1
                   /* TEXT */
@@ -996,7 +1002,7 @@ var WD_REAL_MODULE = (() => {
                       key: 0,
                       src: __props.cover,
                       alt: ""
-                    }, null, 8, _hoisted_232)) : (openBlock(), createBlock(_component_wd_icon, {
+                    }, null, 8, _hoisted_24)) : (openBlock(), createBlock(_component_wd_icon, {
                       key: 1,
                       class: "wd-audio__cover-placeholder",
                       name: "music",
@@ -1004,14 +1010,14 @@ var WD_REAL_MODULE = (() => {
                       size: 22
                     }, null, 8, ["variant"]))
                   ]),
-                  createElementVNode("span", _hoisted_24, [
+                  createElementVNode("span", _hoisted_25, [
                     createVNode(_component_wd_icon, {
                       name: playing.value ? "pause" : "play",
                       variant: __props.iconStyle,
                       size: 16
                     }, null, 8, ["name", "variant"])
                   ]),
-                  playing.value ? (openBlock(), createElementBlock("span", _hoisted_25, [..._cache[8] || (_cache[8] = [
+                  playing.value ? (openBlock(), createElementBlock("span", _hoisted_26, [..._cache[8] || (_cache[8] = [
                     createElementVNode(
                       "i",
                       null,
@@ -1034,19 +1040,19 @@ var WD_REAL_MODULE = (() => {
                       /* CACHED */
                     )
                   ])])) : createCommentVNode("v-if", true)
-                ], 8, _hoisted_222),
-                createElementVNode("div", _hoisted_26, [
-                  __props.title || __props.subtitle || _ctx.$slots.info ? (openBlock(), createElementBlock("div", _hoisted_27, [
+                ], 8, _hoisted_232),
+                createElementVNode("div", _hoisted_27, [
+                  __props.title || __props.subtitle || _ctx.$slots.info ? (openBlock(), createElementBlock("div", _hoisted_28, [
                     createElementVNode(
                       "span",
-                      _hoisted_28,
+                      _hoisted_29,
                       toDisplayString(__props.title),
                       1
                       /* TEXT */
                     ),
                     __props.subtitle ? (openBlock(), createElementBlock(
                       "span",
-                      _hoisted_29,
+                      _hoisted_30,
                       toDisplayString(__props.subtitle),
                       1
                       /* TEXT */
@@ -1054,10 +1060,10 @@ var WD_REAL_MODULE = (() => {
                     renderSlot(_ctx.$slots, "info")
                   ])) : createCommentVNode("v-if", true),
                   createCommentVNode('\n          \u65F6\u95F4\u4E0E\u8FDB\u5EA6\u6761**\u540C\u4E00\u884C**\uFF0C\u4E0D\u5355\u72EC\u5360\u4E00\u884C\u3002\n          \u26A0\uFE0F \u4E4B\u524D\u65F6\u95F4\u53E6\u8D77\u4E00\u884C\uFF0C\u5BFC\u81F4\u53F3\u4FA7\u5185\u5BB9\u6BD4\u5DE6\u4FA7\u5C01\u9762\u9AD8\u51FA\u4E24\u884C\uFF0C\n          \u5C01\u9762\u663E\u5F97"\u77EE\u4E86\u4E00\u622A"\uFF0C\u6574\u6761\u91CD\u5FC3\u504F\u4E0A\u3002\n          \u73B0\u5728\uFF1A\u5DF2\u64AD\u65F6\u95F4 \u2192 \u8FDB\u5EA6\u6761 \u2192 \u603B\u65F6\u957F\uFF0C\u4E09\u8005\u5782\u76F4\u5C45\u4E2D\u4E8E\u4E00\u884C\u3002\n        '),
-                  createElementVNode("div", _hoisted_30, [
+                  createElementVNode("div", _hoisted_31, [
                     createElementVNode(
                       "span",
-                      _hoisted_31,
+                      _hoisted_322,
                       toDisplayString(unref(formatDuration)(current.value)),
                       1
                       /* TEXT */
@@ -1091,7 +1097,7 @@ var WD_REAL_MODULE = (() => {
                         128
                         /* KEYED_FRAGMENT */
                       ))
-                    ], 40, _hoisted_322)) : (openBlock(), createElementBlock("div", {
+                    ], 40, _hoisted_332)) : (openBlock(), createElementBlock("div", {
                       key: 1,
                       class: "wd-audio__scrub",
                       role: "slider",
@@ -1138,17 +1144,17 @@ var WD_REAL_MODULE = (() => {
                         4
                         /* STYLE */
                       )
-                    ], 40, _hoisted_332)),
+                    ], 40, _hoisted_34)),
                     createElementVNode(
                       "span",
-                      _hoisted_34,
+                      _hoisted_35,
                       toDisplayString(unref(formatDuration)(duration.value)),
                       1
                       /* TEXT */
                     ),
                     errMsg.value ? (openBlock(), createElementBlock(
                       "span",
-                      _hoisted_35,
+                      _hoisted_36,
                       toDisplayString(errMsg.value),
                       1
                       /* TEXT */
@@ -1156,8 +1162,8 @@ var WD_REAL_MODULE = (() => {
                   ]),
                   renderSlot(_ctx.$slots, "extra")
                 ]),
-                createElementVNode("div", _hoisted_36, [
-                  volume.value ? (openBlock(), createElementBlock("div", _hoisted_37, [
+                createElementVNode("div", _hoisted_37, [
+                  volume.value ? (openBlock(), createElementBlock("div", _hoisted_38, [
                     createElementVNode("button", {
                       type: "button",
                       class: "wd-audio__ibtn",
@@ -1169,7 +1175,7 @@ var WD_REAL_MODULE = (() => {
                         variant: __props.iconStyle,
                         size: 15
                       }, null, 8, ["name", "variant"])
-                    ], 8, _hoisted_38),
+                    ], 8, _hoisted_39),
                     createElementVNode("div", {
                       class: "wd-audio__vol-track",
                       onClick: setVolume
@@ -1186,7 +1192,7 @@ var WD_REAL_MODULE = (() => {
                       )
                     ])
                   ])) : createCommentVNode("v-if", true),
-                  __props.playbackRate ? (openBlock(), createElementBlock("div", _hoisted_39, [
+                  __props.playbackRate ? (openBlock(), createElementBlock("div", _hoisted_40, [
                     createElementVNode(
                       "button",
                       {
@@ -1198,7 +1204,7 @@ var WD_REAL_MODULE = (() => {
                       1
                       /* TEXT */
                     ),
-                    rateOpen.value ? (openBlock(), createElementBlock("div", _hoisted_40, [
+                    rateOpen.value ? (openBlock(), createElementBlock("div", _hoisted_41, [
                       (openBlock(), createElementBlock(
                         Fragment,
                         null,
@@ -1208,7 +1214,7 @@ var WD_REAL_MODULE = (() => {
                             type: "button",
                             class: normalizeClass({ "is-on": r === rate.value }),
                             onClick: ($event) => setRate(r)
-                          }, toDisplayString(r) + "\xD7", 11, _hoisted_41);
+                          }, toDisplayString(r) + "\xD7", 11, _hoisted_422);
                         }),
                         64
                         /* STABLE_FRAGMENT */
@@ -1227,7 +1233,7 @@ var WD_REAL_MODULE = (() => {
                       variant: __props.iconStyle,
                       size: 15
                     }, null, 8, ["variant"])
-                  ], 8, _hoisted_422)) : createCommentVNode("v-if", true),
+                  ], 8, _hoisted_43)) : createCommentVNode("v-if", true),
                   renderSlot(_ctx.$slots, "actions")
                 ])
               ],
@@ -1249,19 +1255,19 @@ var WD_REAL_MODULE = (() => {
                     variant: __props.iconStyle,
                     size: 14
                   }, null, 8, ["name", "variant"])
-                ], 8, _hoisted_43),
-                createElementVNode("div", _hoisted_44, [
-                  createElementVNode("div", _hoisted_45, [
+                ], 8, _hoisted_44),
+                createElementVNode("div", _hoisted_45, [
+                  createElementVNode("div", _hoisted_46, [
                     createElementVNode(
                       "span",
-                      _hoisted_46,
+                      _hoisted_47,
                       toDisplayString(__props.title),
                       1
                       /* TEXT */
                     ),
                     __props.subtitle ? (openBlock(), createElementBlock(
                       "span",
-                      _hoisted_47,
+                      _hoisted_48,
                       toDisplayString(__props.subtitle),
                       1
                       /* TEXT */
@@ -1276,7 +1282,7 @@ var WD_REAL_MODULE = (() => {
                     onClick: seekTo,
                     onKeydown: onScrubKey
                   }, [
-                    createElementVNode("span", _hoisted_49, [
+                    createElementVNode("span", _hoisted_50, [
                       createElementVNode(
                         "span",
                         {
@@ -1288,11 +1294,11 @@ var WD_REAL_MODULE = (() => {
                         /* STYLE */
                       )
                     ])
-                  ], 40, _hoisted_48)
+                  ], 40, _hoisted_49)
                 ]),
                 createElementVNode(
                   "span",
-                  _hoisted_50,
+                  _hoisted_51,
                   toDisplayString(unref(formatDuration)(current.value)) + " / " + toDisplayString(unref(formatDuration)(duration.value)),
                   1
                   /* TEXT */
@@ -2518,63 +2524,128 @@ var WD_REAL_MODULE = (() => {
   }
 
   // .demo-build/anchor.ts
+  function scrollOffset() {
+    const x = window.scrollX ?? window.pageXOffset ?? document.documentElement.scrollLeft ?? 0;
+    const y = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0;
+    return { x, y };
+  }
+  function viewportSize() {
+    const vv = window.visualViewport;
+    if (vv) return { width: vv.width, height: vv.height };
+    return { width: window.innerWidth, height: window.innerHeight };
+  }
   function useAnchoredPosition(open, anchor, panel, options = {}) {
     const pos = ref({ top: 0, left: 0 });
     const actual = ref(options.placement || "bottom-start");
     function place() {
-      const a = anchor.value?.getBoundingClientRect();
-      const p = panel.value?.getBoundingClientRect();
-      if (!a) return;
+      const el = anchor.value;
+      if (!el) return;
+      const a = el.getBoundingClientRect();
+      const pr = panel.value?.getBoundingClientRect();
       const gap = options.gap ?? 6;
-      const pw = options.matchWidth ? a.width : options.width ?? p?.width ?? 0;
-      const ph = p?.height ?? 0;
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      const pw = options.matchWidth ? a.width : options.width ?? pr?.width ?? 0;
+      const ph = pr?.height ?? 0;
+      const vp = viewportSize();
+      const s = scrollOffset();
+      const vTop = a.top;
+      const vBottom = a.bottom;
+      const dTop = a.top + s.y;
+      const dBottom = a.bottom + s.y;
+      const dLeft = a.left + s.x;
+      const dRight = a.right + s.x;
       let placement = options.placement || "bottom-start";
-      let { top, left } = { top: 0, left: 0 };
       const wantBottom = placement.startsWith("bottom");
-      const fitsBelow = a.bottom + gap + ph <= vh - 8;
-      const fitsAbove = a.top - gap - ph >= 8;
+      const fitsBelow = vBottom + gap + ph <= vp.height - 8;
+      const fitsAbove = vTop - gap - ph >= 8;
       const goBottom = wantBottom ? fitsBelow || !fitsAbove : !fitsAbove && fitsBelow;
+      let top;
       if (goBottom) {
-        top = a.bottom + gap;
+        top = dBottom + gap;
         placement = placement.replace("top", "bottom");
       } else {
-        top = a.top - gap - ph;
+        top = dTop - gap - ph;
         placement = placement.replace("bottom", "top");
       }
-      if (placement.endsWith("start")) left = a.left;
-      else if (placement.endsWith("end")) left = a.right - pw;
-      else left = a.left + a.width / 2 - pw / 2;
-      const maxLeft = vw - pw - 8;
-      left = Math.max(8, Math.min(left, Math.max(8, maxLeft)));
+      let left;
+      if (placement.endsWith("start")) left = dLeft;
+      else if (placement.endsWith("end")) left = dRight - pw;
+      else left = dLeft + a.width / 2 - pw / 2;
+      const minLeft = s.x + 8;
+      const maxLeft = s.x + vp.width - pw - 8;
+      left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft)));
       pos.value = { top, left };
       actual.value = placement;
     }
+    let raf = 0;
+    let timer = 0;
+    function schedule() {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        place();
+      });
+      clearTimeout(timer);
+      timer = window.setTimeout(place, 32);
+    }
+    function onScroll(e) {
+      const t = e.target;
+      if (t && panel.value && panel.value.contains(t)) return;
+      schedule();
+    }
+    let vv = null;
     function bind() {
-      window.addEventListener("scroll", place, true);
-      window.addEventListener("resize", place);
+      window.addEventListener("scroll", onScroll, true);
+      window.addEventListener("resize", schedule);
+      vv = window.visualViewport ?? null;
+      if (vv) {
+        vv.addEventListener("resize", schedule);
+        vv.addEventListener("scroll", schedule);
+      }
     }
     function unbind() {
-      window.removeEventListener("scroll", place, true);
-      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", schedule);
+      if (vv) {
+        vv.removeEventListener("resize", schedule);
+        vv.removeEventListener("scroll", schedule);
+        vv = null;
+      }
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+      clearTimeout(timer);
     }
     watch(open, async (v) => {
       if (v) {
         await nextTick();
         place();
         bind();
-        requestAnimationFrame(place);
-        setTimeout(place, 0);
+        schedule();
       } else {
         unbind();
       }
     });
+    let ro = null;
+    watch(panel, (el) => {
+      ro?.disconnect();
+      if (el && typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(() => schedule());
+        ro.observe(el);
+      }
+    });
+    onBeforeUnmount(() => {
+      ro?.disconnect();
+      ro = null;
+    });
     onMounted(() => {
-      if (open.value) bind();
+      if (open.value) {
+        place();
+        bind();
+      }
     });
     onBeforeUnmount(unbind);
-    return { pos, place, actual };
+    return { pos, place: schedule, actual };
   }
   function useDismiss(refs, close, enabled, event = "click") {
     function onDoc(e) {

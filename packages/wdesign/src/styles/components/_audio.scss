@@ -294,16 +294,16 @@
   height: 68px;
   gap: 3px;
   /*
-   * 左右各内缩 4px 做视觉补偿（上下保持 2px）。
+   * 左右各内缩 2px 做视觉补偿（上下保持 2px）。
    *
    * 波形是 `justify-content: space-between`，首末两根柱子紧贴容器边缘，
    * 而上下两行是纯文本 —— 文本有字形侧边距（side bearing），视觉上不贴边。
    * 柱状图是实心矩形，没有这层自然留白，几何对齐时**看起来更宽**。
    *
-   * 2px 只够抵消 side bearing 的理论值；实测仍偏宽，
-   * 因为柱宽本身还有 0.5~1px 的抗锯齿溢出。4px 才在视觉上真正齐平。
+   * ⚠️ 曾试过 4px，在真机上偏窄（波形比标题内缩太多、显得缩进去）。
+   * 2px 刚好抵消 side bearing，与视觉边界齐平。
    */
-  padding: 2px 4px;
+  padding: 2px 2px;
   justify-content: space-between;
 }
 
@@ -321,8 +321,8 @@
 .wd-audio__wave--fine {
   height: 44px;
   gap: 2px;
-  /* 与 --hero 用同一套视觉补偿：左右 4px。漏掉这里会导致带封面的卡片贴边。 */
-  padding: 0 4px;
+  /* 与 --hero 用同一套视觉补偿：左右 2px。漏掉这里会导致带封面的卡片贴边。 */
+  padding: 0 2px;
   justify-content: space-between;
 }
 
@@ -495,18 +495,39 @@
  */
 
 /* ---------------- 倍速菜单（card） ---------------- */
+/*
+ * 倍速菜单的定位上下文。
+ *
+ * ⚠️ 之前菜单直接挂在卡片上，用 `left:50% / bottom:74px` 定位 ——
+ * 那是相对**整张卡片**算的：水平在卡片正中、垂直在距底 74px 处。
+ * 结果菜单出现在卡片中央偏上，而不是「1× 按钮的上方」，
+ * 视觉上像是飘到了卡片的另一个区域。
+ *
+ * 修法：给按钮套一个 position:relative 的 wrapper，
+ * 菜单相对它绝对定位 —— 锚点就真正落在按钮上了。
+ */
+.wd-audio__rate-anchor {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+}
+
 .wd-audio__rate-menu--card {
   position: absolute;
   left: 50%;
-  bottom: 74px;
+  bottom: calc(100% + 6px);
   transform: translateX(-50%);
+  /* 纵向排列：5 个选项竖着放，横向并排会撑成一条长条越过卡片边界 */
   display: flex;
-  gap: 4px;
+  flex-direction: column;
+  gap: 2px;
   padding: 6px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow-pop);
   z-index: 5;
+  /* 菜单可能比按钮宽：用 min-content 保证每个选项不换行 */
+  white-space: nowrap;
 }
 .wd-audio__rate-menu--card button {
   padding: 6px 9px;

@@ -330,13 +330,24 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
 
       <!-- 控件：播放键为绝对主体，其余次级且弱化 -->
       <div class="wd-audio__controls">
-        <button
-          v-if="playbackRate"
-          type="button"
-          class="wd-audio__ctl wd-audio__ctl--text"
-          :aria-label="`倍速 ${rate}x`"
-          @click="rateOpen = !rateOpen"
-        >{{ rate }}×</button>
+        <!--
+          倍速菜单必须以**这个按钮**为锚点。
+          ⚠️ 之前菜单写在 controls 之后、用 `left:50%; bottom:74px` 定位，
+          那是以整张卡片为参照 —— 于是它跑到卡片正中偏上（"跑到音频卡片上方"）。
+          现在把菜单挪进按钮的 wrapper，定位上下文就是按钮本身。
+        -->
+        <span v-if="playbackRate" class="wd-audio__rate-anchor">
+          <button
+            type="button"
+            class="wd-audio__ctl wd-audio__ctl--text"
+            :aria-label="`倍速 ${rate}x`"
+            @click="rateOpen = !rateOpen"
+          >{{ rate }}×</button>
+          <div v-if="rateOpen" class="wd-audio__rate-menu wd-audio__rate-menu--card">
+            <button v-for="r in [0.75, 1, 1.25, 1.5, 2]" :key="r" type="button"
+              :class="{ 'is-on': r === rate }" @click="setRate(r)">{{ r }}×</button>
+          </div>
+        </span>
         <span v-else class="wd-audio__ctl-spacer"></span>
 
         <button v-if="navigable" type="button" class="wd-audio__ctl" aria-label="上一首" @click="emit('prev')">
@@ -361,11 +372,6 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="24" />
         </button>
         <span v-else class="wd-audio__ctl-spacer"></span>
-      </div>
-
-      <div v-if="rateOpen" class="wd-audio__rate-menu wd-audio__rate-menu--card">
-        <button v-for="r in [0.75, 1, 1.25, 1.5, 2]" :key="r" type="button"
-          :class="{ 'is-on': r === rate }" @click="setRate(r)">{{ r }}×</button>
       </div>
 
       <div v-if="errMsg" class="wd-audio__err">{{ errMsg }}</div>

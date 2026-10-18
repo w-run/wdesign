@@ -6,13 +6,30 @@
 //    这个库的浮层经常出现在表格单元格、卡片、滚动容器里，
 //    被裁是必然发生的，不是边缘情况。
 //
-//  为什么不能用 CSS 定位：
-//    Teleport 后面板在 body 下，与触发器不再有祖先关系，
-//    absolute 无从参照。必须用 JS 量出触发器的屏幕坐标，
-//    再以 position:fixed 摆放。
+//  ⭐ 核心决策：用「文档坐标 + position: absolute」，不用「视口坐标 + fixed」
 //
-//  这套逻辑之前散落在 Popconfirm 里（手写 place()），
-//  现在抽出来给 Dropdown / Select / DatePicker / Tooltip 共用。
+//  之前用 fixed + getBoundingClientRect()，在缩放/滚动时偏移巨大。原因是：
+//    · getBoundingClientRect() 返回**布局视口**坐标
+//    · position: fixed 相对**视觉视口**定位
+//    两者只在「无缩放、无平移」时才等价。移动端双指缩放、iOS 地址栏伸缩、
+//    soft keyboard、页面 zoom 都会让它们分离，偏移量正好是
+//    visualViewport.offsetLeft/offsetTop。
+//    想靠 visualViewport 换算补回来，等于手工重实现浏览器的坐标变换，
+//    而且每一帧都要重算 —— 又慢又容易错。
+//
+//  改用文档坐标后：
+//    target 定位 = rect.left + scrollX / rect.top + scrollY
+//    浮层 position: absolute → 参照系就是文档原点，与 rect 的参照系同源。
+//    **页面滚动、双指缩放、地址栏伸缩都不需要重算** —— 浏览器会把
+//    absolute 元素和它的锚点一起变换，相对关系天然守恒。
+//
+//  唯一还需要重算的情况：
+//    · 锚点在**内部滚动容器**里滚动（容器滚 → 锚点文档坐标变了 → 面板不跟）
+//    · 视口尺寸变化导致「放不下需要翻转」（键盘弹出等）
+//    · 面板自身尺寸变化（异步加载选项后高度从 0 变 300px）
+//
+//  ⚠️ 前提：body 不能有 transform / position:relative / zoom，
+//     否则 absolute 的参照系不再是文档原点。本库的全局样式不设这些。
 // =============================================================
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
@@ -29,9 +46,23 @@ export interface AnchorOptions {
   matchWidth?: boolean
 }
 
+/** 当前滚动偏移（兼容旧 Safari） */
+function scrollOffset() {
+  const x = window.scrollX ?? window.pageXOffset ?? document.documentElement.scrollLeft ?? 0
+  const y = window.scrollY ?? window.pageYOffset ?? document.documentElement.scrollTop ?? 0
+  return { x, y }
+}
+
+/** 视口尺寸：优先 visualViewport（键盘/缩放时它是真实可见区域） */
+function viewportSize() {
+  const vv = window.visualViewport
+  if (vv) return { width: vv.width, height: vv.height }
+  return { width: window.innerWidth, height: window.innerHeight }
+}
+
 /**
  * 计算面板位置。
- * 返回 fixed 定位的 top/left，以及实际采用的 placement
+ * 返回 **文档坐标**（配合 position: absolute 使用），以及实际采用的 placement
  * （空间不够时会自动翻转到另一侧）。
  */
 export function useAnchoredPosition(
@@ -45,53 +76,122 @@ export function useAnchoredPosition(
   const actual = ref<Placement>(options.placement || 'bottom-start')
 
   function place() {
-    const a = anchor.value?.getBoundingClientRect()
-    const p = panel.value?.getBoundingClientRect()
-    if (!a) return
+    const el = anchor.value
+    if (!el) return
+    // 布局视口坐标 —— 只用来判断「放不放得下」，不直接用于定位
+    const a = el.getBoundingClientRect()
+    const pr = panel.value?.getBoundingClientRect()
 
     const gap = options.gap ?? 6
-    const pw = options.matchWidth ? a.width : (options.width ?? p?.width ?? 0)
-    const ph = p?.height ?? 0
-    const vw = window.innerWidth
-    const vh = window.innerHeight
+    const pw = options.matchWidth ? a.width : (options.width ?? pr?.width ?? 0)
+    const ph = pr?.height ?? 0
+
+    const vp = viewportSize()
+    const s = scrollOffset()
+
+    /*
+     * 两套坐标各司其职：
+     *   视口坐标（a.top/a.bottom）→ 判断是否放得下、是否需要翻转
+     *   文档坐标（+ scrollY）       → 最终写进 top/left
+     *
+     * 混用会出错：文档坐标做翻转判断会把"页面已滚过的距离"算进可用空间，
+     * 页面滚到很下面时会误判为"下面放不下"。
+     */
+    const vTop = a.top
+    const vBottom = a.bottom
+    const dTop = a.top + s.y
+    const dBottom = a.bottom + s.y
+    const dLeft = a.left + s.x
+    const dRight = a.right + s.x
 
     let placement = options.placement || 'bottom-start'
-    let { top, left } = { top: 0, left: 0 }
 
-    // 垂直：先按请求的方向放，放不下就翻到另一侧
     const wantBottom = placement.startsWith('bottom')
-    const fitsBelow = a.bottom + gap + ph <= vh - 8
-    const fitsAbove = a.top - gap - ph >= 8
+    const fitsBelow = vBottom + gap + ph <= vp.height - 8
+    const fitsAbove = vTop - gap - ph >= 8
     const goBottom = wantBottom ? fitsBelow || !fitsAbove : !fitsAbove && fitsBelow
 
+    let top: number
     if (goBottom) {
-      top = a.bottom + gap
+      top = dBottom + gap
       placement = placement.replace('top', 'bottom') as Placement
     } else {
-      top = a.top - gap - ph
+      top = dTop - gap - ph
       placement = placement.replace('bottom', 'top') as Placement
     }
 
-    // 水平：按对齐方式算，再夹进视口
-    if (placement.endsWith('start')) left = a.left
-    else if (placement.endsWith('end')) left = a.right - pw
-    else left = a.left + a.width / 2 - pw / 2
+    let left: number
+    if (placement.endsWith('start')) left = dLeft
+    else if (placement.endsWith('end')) left = dRight - pw
+    else left = dLeft + a.width / 2 - pw / 2
 
-    const maxLeft = vw - pw - 8
-    left = Math.max(8, Math.min(left, Math.max(8, maxLeft)))
+    /*
+     * 水平夹进可见区域。
+     * 注意夹的边界要换算回**文档坐标**：可见区右边 = scrollX + vp.width。
+     */
+    const minLeft = s.x + 8
+    const maxLeft = s.x + vp.width - pw - 8
+    left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft)))
 
     pos.value = { top, left }
     actual.value = placement
   }
 
-  /** 打开时挂监听，关闭时摘掉 —— 避免常驻 scroll 监听拖慢滚动 */
+  /** 合并同一帧内的多次调用，避免滚动时反复强制布局 */
+  let raf = 0
+  let timer = 0
+  function schedule() {
+    if (raf) return
+    raf = requestAnimationFrame(() => {
+      raf = 0
+      place()
+    })
+    // rAF 在后台标签页 / 动画时钟停摆时不回调，补一个兜底
+    clearTimeout(timer)
+    timer = window.setTimeout(place, 32)
+  }
+
+  /**
+   * 滚动监听。
+   *
+   * ⚠️ 页面级滚动其实**不需要**重算（absolute 会自动跟随），
+   * 这里保留是为了覆盖「锚点在内部滚动容器里滚动」的情况 ——
+   * 那种情况下锚点的文档坐标会变，但面板不会跟着动。
+   * 重算是幂等的，页面滚动时算出同样的值，代价只有一次 rect 读取。
+   */
+  function onScroll(e: Event) {
+    const t = e.target as Node | null
+    // 面板自身的滚动（下拉选项列表）不该触发重定位
+    if (t && panel.value && panel.value.contains(t)) return
+    schedule()
+  }
+
+  /**
+   * 视口变化必须监听：
+   * 键盘弹出 / 地址栏伸缩 / 双指缩放后「放得下」的判断会变，
+   * 可能需要翻转或夹取。这类变化 window.resize 不一定触发。
+   */
+  let vv: VisualViewport | null = null
+
   function bind() {
-    window.addEventListener('scroll', place, true)
-    window.addEventListener('resize', place)
+    window.addEventListener('scroll', onScroll, true)
+    window.addEventListener('resize', schedule)
+    vv = window.visualViewport ?? null
+    if (vv) {
+      vv.addEventListener('resize', schedule)
+      vv.addEventListener('scroll', schedule)
+    }
   }
   function unbind() {
-    window.removeEventListener('scroll', place, true)
-    window.removeEventListener('resize', place)
+    window.removeEventListener('scroll', onScroll, true)
+    window.removeEventListener('resize', schedule)
+    if (vv) {
+      vv.removeEventListener('resize', schedule)
+      vv.removeEventListener('scroll', schedule)
+      vv = null
+    }
+    if (raf) { cancelAnimationFrame(raf); raf = 0 }
+    clearTimeout(timer)
   }
 
   watch(open, async (v) => {
@@ -99,18 +199,31 @@ export function useAnchoredPosition(
       await nextTick()
       place()
       bind()
-      // 面板内容异步变化（如选项加载）时重新量一次
-      requestAnimationFrame(place)
-      setTimeout(place, 0) // rAF 在时钟停摆时不回调，补一个定时器兜底
+      schedule()
     } else {
       unbind()
     }
   })
 
-  onMounted(() => { if (open.value) bind() })
+  /**
+   * 面板尺寸变化时重算。
+   * Select 的选项异步加载后高度从 0 变 300px，
+   * 不重算的话向上翻转的判断会用旧高度，面板被截掉一半。
+   */
+  let ro: ResizeObserver | null = null
+  watch(panel, (el) => {
+    ro?.disconnect()
+    if (el && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => schedule())
+      ro.observe(el)
+    }
+  })
+  onBeforeUnmount(() => { ro?.disconnect(); ro = null })
+
+  onMounted(() => { if (open.value) { place(); bind() } })
   onBeforeUnmount(unbind)
 
-  return { pos, place, actual }
+  return { pos, place: schedule, actual }
 }
 
 /**
