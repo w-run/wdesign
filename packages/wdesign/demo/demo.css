@@ -1747,6 +1747,738 @@ body {
   width: 100%;
 }
 
+.wd-splitter {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wd-splitter--vertical {
+  flex-direction: column;
+}
+
+.wd-splitter__pane {
+  position: relative;
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.wd-splitter__pane--second {
+  /* 宽度/高度由 flex 分配，min 归零避免内容撑破 */
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------------- 分隔条 ---------------- */
+.wd-splitter__bar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: col-resize;
+  outline: none;
+  /* 触摸设备上阻止滚动接管拖拽 */
+  touch-action: none;
+  z-index: 1;
+}
+
+.wd-splitter--vertical .wd-splitter__bar {
+  cursor: row-resize;
+}
+
+/*
+ * 视觉线：只有 2px，居中显示。
+ * 用伪元素而非本体背景，这样命中区（本体）可以比视觉宽。
+ */
+.wd-splitter__bar::before {
+  content: "";
+  position: absolute;
+  background: var(--wd-ink-5);
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-splitter--horizontal .wd-splitter__bar::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.wd-splitter--vertical .wd-splitter__bar::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+/*
+ * hover / 拖拽时线变主色 + 加粗。
+ * 这是拖拽类组件最重要的反馈：用户必须能在移动前确认
+ * "我抓到的是这根线"，否则会犹豫。
+ */
+.wd-splitter__bar:hover::before,
+.wd-splitter.is-dragging .wd-splitter__bar::before {
+  background: var(--wd-red);
+}
+
+.wd-splitter--horizontal .wd-splitter__bar:hover::before,
+.wd-splitter--horizontal.is-dragging .wd-splitter__bar::before {
+  width: 3px;
+}
+
+.wd-splitter--vertical .wd-splitter__bar:hover::before,
+.wd-splitter--vertical.is-dragging .wd-splitter__bar::before {
+  height: 3px;
+}
+
+.wd-splitter__bar:focus-visible::before {
+  background: var(--wd-red);
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-splitter.is-dragging {
+  /* 拖拽时整块区域都不响应 hover，避免途中高亮闪烁 */
+  user-select: none;
+}
+
+/* ---------------- 抓握提示 ---------------- */
+/*
+ * 三根短线的抓握把手。
+ * 视觉上很轻，只在 hover 时出现 —— 常驻会显得界面很"重"。
+ */
+.wd-splitter__grip {
+  position: relative;
+  z-index: 2;
+  width: 2px;
+  height: 18px;
+  border-radius: 1px;
+  background: var(--wd-ink-4);
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease;
+  pointer-events: none;
+}
+
+.wd-splitter--vertical .wd-splitter__grip {
+  width: 18px;
+  height: 2px;
+}
+
+.wd-splitter__grip.is-visible {
+  opacity: 0;
+}
+
+.wd-splitter__bar:hover .wd-splitter__grip.is-visible,
+.wd-splitter__bar:focus-visible .wd-splitter__grip.is-visible,
+.wd-splitter.is-dragging .wd-splitter__grip.is-visible {
+  opacity: 1;
+  background: var(--wd-red);
+}
+
+.wd-splitter.is-disabled .wd-splitter__bar {
+  cursor: default;
+}
+
+.wd-splitter.is-disabled .wd-splitter__bar::before {
+  background: var(--wd-tint-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-splitter__bar::before,
+  .wd-splitter__grip {
+    transition: none;
+  }
+}
+.wd-calendar {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 268px;
+  padding: 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  user-select: none;
+  outline: none;
+}
+
+.wd-calendar--sm {
+  width: 232px;
+  padding: 10px;
+  gap: 4px;
+}
+
+.wd-calendar:focus-visible {
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 头部 ---------------- */
+.wd-calendar__head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 2px 4px;
+}
+
+.wd-calendar__month {
+  flex: 1;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--wd-ink);
+  letter-spacing: -0.01em;
+}
+
+.wd-calendar--sm .wd-calendar__month {
+  font-size: 12.5px;
+}
+
+.wd-calendar__nav {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-calendar__nav:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-calendar__nav:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 星期表头 ---------------- */
+.wd-calendar__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.wd-calendar__weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--wd-ink-2);
+  padding: 4px 0;
+  letter-spacing: 0.02em;
+}
+
+/* ---------------- 日期网格 ---------------- */
+.wd-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.wd-calendar__cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-calendar--sm .wd-calendar__cell {
+  font-size: 11.5px;
+}
+
+.wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
+  background: var(--wd-tint-2);
+}
+
+/*
+ * 非本月日期：弱化但不隐藏。
+ * 完全隐藏会让用户失去"前后文"，太深又会和本月日期混淆 ——
+ * 用 ink-3 + 稍小字号，视觉上明确退一档。
+ */
+.wd-calendar__cell.is-out {
+  color: var(--wd-ink-3);
+  font-weight: 500;
+}
+
+.wd-calendar__cell.is-disabled {
+  color: var(--wd-ink-5);
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* 今天：底部一个小圆点，不抢选中态 */
+.wd-calendar__cell.is-today::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--wd-red);
+}
+
+.wd-calendar__cell.is-selected {
+  background: var(--wd-red);
+  color: #fff;
+  font-weight: 800;
+}
+
+/* 选中项若是今天，圆点改成白色，否则在红底上看不见 */
+.wd-calendar__cell.is-selected.is-today::after {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.wd-calendar__cell.is-selected.is-out {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.wd-calendar__cell:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-calendar__day {
+  line-height: 1;
+}
+
+/* ---------------- 底部 ---------------- */
+.wd-calendar__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.wd-calendar__action {
+  padding: 5px 10px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-calendar__action:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-calendar__action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-calendar__cell,
+  .wd-calendar__nav,
+  .wd-calendar__action {
+    transition: none;
+  }
+}
+.wd-mentions {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.wd-mentions.is-disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.wd-mentions__input {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.65;
+  resize: vertical;
+  min-height: 72px;
+  outline: none;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-mentions__input::placeholder {
+  color: var(--wd-ink-3);
+}
+
+.wd-mentions__input:focus {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 候选浮层 ---------------- */
+.wd-mentions__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  min-width: 200px;
+  max-width: 300px;
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 5px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  scrollbar-width: thin;
+}
+
+.wd-mentions__option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+/*
+ * 高亮态要同时覆盖「鼠标 hover」和「键盘上下选择」。
+ * 这两者共用 .is-active —— 鼠标移入时 JS 会同步 activeIndex，
+ * 所以永远只有一个高亮项，不会出现双高亮。
+ */
+.wd-mentions__option.is-active {
+  background: var(--wd-tint-2);
+}
+
+.wd-mentions__avatar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--wd-tint-3);
+}
+
+.wd-mentions__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 没有头像时用首字占位 —— 比灰色人像图标更易区分 */
+.wd-mentions__avatar--text {
+  color: var(--wd-red-text);
+  font-size: 11.5px;
+  font-weight: 800;
+  background: var(--wd-tint-2);
+}
+
+.wd-mentions__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-mentions__desc {
+  font-size: 11px;
+  color: var(--wd-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- 字数 ---------------- */
+.wd-mentions__count {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.wd-colorpicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 10px 4px 4px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-colorpicker:hover {
+  background: var(--wd-tint-2);
+}
+
+.wd-colorpicker.is-open {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
+}
+
+.wd-colorpicker:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+.wd-colorpicker.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.wd-colorpicker.is-disabled:hover {
+  background: var(--wd-field);
+}
+
+/* ---------------- 色块 ---------------- */
+.wd-colorpicker__swatch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  border-radius: var(--wd-radius-xs);
+  box-shadow: var(--wd-shadow-sm);
+  overflow: hidden;
+}
+
+/*
+ * 浅色（白/近白）色块在白底上没有边界，
+ * 用 inset 描边压一圈极淡的界线 —— 只在这里用，不影响其他组件。
+ */
+.wd-colorpicker__swatch-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+
+.wd-colorpicker__value {
+  font-size: 12.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--wd-ink);
+  letter-spacing: 0.02em;
+}
+
+.wd-colorpicker__caret {
+  flex: none;
+  color: var(--wd-ink-3);
+}
+
+/* ---------------- 面板 ---------------- */
+.wd-colorpicker__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  display: none;
+  width: 232px;
+  padding: 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wd-colorpicker__panel.is-open {
+  display: flex;
+}
+
+/* ---------------- SV 面板 ---------------- */
+.wd-colorpicker__sv {
+  position: relative;
+  height: 148px;
+  border-radius: var(--wd-radius-sm);
+  cursor: crosshair;
+  /* 触摸设备上避免拖动时页面跟着滚 */
+  touch-action: none;
+  overflow: hidden;
+}
+
+/*
+ * 两层渐变叠加做出"白 → 纯色 → 黑"的效果：
+ *   · 横向白色渐变（saturation）
+ *   · 纵向黑色渐变（value）
+ * 顺序不能反：先白后黑，否则暗部会把白渐变盖掉。
+ */
+.wd-colorpicker__sv-white {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+}
+
+.wd-colorpicker__sv-black {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
+}
+
+.wd-colorpicker__knob {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.28), 0 2px 5px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+
+/* ---------------- 色相条 ---------------- */
+.wd-colorpicker__hue {
+  position: relative;
+  height: 14px;
+  border-radius: var(--wd-radius-pill);
+  cursor: pointer;
+  touch-action: none;
+  background: linear-gradient(to right, #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%, #0000FF 67%, #FF00FF 83%, #FF0000 100%);
+}
+
+.wd-colorpicker__knob--hue {
+  top: 50%;
+  margin-top: -7px;
+}
+
+/* ---------------- 输入 ---------------- */
+.wd-colorpicker__inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.wd-colorpicker__field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  height: 30px;
+  border-radius: var(--wd-radius-xs);
+  background: var(--wd-field);
+}
+
+.wd-colorpicker__field > span {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--wd-ink-3);
+  letter-spacing: 0.04em;
+}
+
+.wd-colorpicker__field > input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  padding: 0;
+}
+
+.wd-colorpicker__field > input[readonly] {
+  color: var(--wd-ink-2);
+  cursor: default;
+}
+
+/* ---------------- 预设 ---------------- */
+.wd-colorpicker__presets {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.wd-colorpicker__preset {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-colorpicker__preset:hover {
+  transform: scale(1.12);
+}
+
+/*
+ * 选中态：外圈加一圈和面板同色的间隙 + 主色描边。
+ * 直接加压暗会把浅色块的辨识度拉低。
+ */
+.wd-colorpicker__preset.is-active::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--wd-radius-xs) + 2px);
+  box-shadow: 0 0 0 2px var(--wd-red);
+  pointer-events: none;
+}
+
+.wd-colorpicker__preset:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-colorpicker,
+  .wd-colorpicker__preset {
+    transition: none;
+  }
+}
 .wd-qrcode {
   position: relative;
   display: inline-flex;

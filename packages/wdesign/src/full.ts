@@ -20,11 +20,13 @@ import WdBacktop from './components/WdBacktop.vue'
 import WdBadge from './components/WdBadge.vue'
 import WdBreadcrumb from './components/WdBreadcrumb.vue'
 import WdButton from './components/WdButton.vue'
+import WdCalendar from './components/WdCalendar.vue'
 import WdCard from './components/WdCard.vue'
 import WdCarousel from './components/WdCarousel.vue'
 import WdCascader from './components/WdCascader.vue'
 import WdCheckbox from './components/WdCheckbox.vue'
 import WdCollapse from './components/WdCollapse.vue'
+import WdColorPicker from './components/WdColorPicker.vue'
 import WdCommand from './components/WdCommand.vue'
 import WdContainer from './components/WdContainer.vue'
 import WdDatePicker from './components/WdDatePicker.vue'
@@ -43,6 +45,7 @@ import WdImagePreview from './components/WdImagePreview.vue'
 import WdInput from './components/WdInput.vue'
 import WdListItem from './components/WdListItem.vue'
 import WdMarkdown from './components/WdMarkdown.vue'
+import WdMentions from './components/WdMentions.vue'
 import WdModal from './components/WdModal.vue'
 import WdNotification from './components/WdNotification.vue'
 import WdOtp from './components/WdOtp.vue'
@@ -63,6 +66,7 @@ import WdSlider from './components/WdSlider.vue'
 import WdSortableList from './components/WdSortableList.vue'
 import WdSpace from './components/WdSpace.vue'
 import WdSpinner from './components/WdSpinner.vue'
+import WdSplitter from './components/WdSplitter.vue'
 import WdStatistic from './components/WdStatistic.vue'
 import WdSteps from './components/WdSteps.vue'
 import WdSwitch from './components/WdSwitch.vue'
@@ -91,11 +95,13 @@ const components = [
   WdBadge,
   WdBreadcrumb,
   WdButton,
+  WdCalendar,
   WdCard,
   WdCarousel,
   WdCascader,
   WdCheckbox,
   WdCollapse,
+  WdColorPicker,
   WdCommand,
   WdContainer,
   WdDatePicker,
@@ -114,6 +120,7 @@ const components = [
   WdInput,
   WdListItem,
   WdMarkdown,
+  WdMentions,
   WdModal,
   WdNotification,
   WdOtp,
@@ -134,6 +141,7 @@ const components = [
   WdSortableList,
   WdSpace,
   WdSpinner,
+  WdSplitter,
   WdStatistic,
   WdSteps,
   WdSwitch,

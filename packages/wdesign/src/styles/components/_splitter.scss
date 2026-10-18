@@ -1,0 +1,155 @@
+// =============================================================
+//  WDesign — Splitter（可拖拽分栏）
+//
+//  ⚠️ 分隔条用「热区比视觉宽」的做法：
+//     视觉只有 2px 的线，但命中区域 6-10px。
+//     纯 2px 的情况下鼠标很难精确按到，体验很差。
+//     这里通过 __bar 的 padding 实现，视觉线用 __grip 画。
+// =============================================================
+
+.wd-splitter {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.wd-splitter--vertical {
+  flex-direction: column;
+}
+
+.wd-splitter__pane {
+  position: relative;
+  overflow: auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.wd-splitter__pane--second {
+  /* 宽度/高度由 flex 分配，min 归零避免内容撑破 */
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ---------------- 分隔条 ---------------- */
+.wd-splitter__bar {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: col-resize;
+  outline: none;
+  /* 触摸设备上阻止滚动接管拖拽 */
+  touch-action: none;
+  z-index: 1;
+}
+
+.wd-splitter--vertical .wd-splitter__bar {
+  cursor: row-resize;
+}
+
+/*
+ * 视觉线：只有 2px，居中显示。
+ * 用伪元素而非本体背景，这样命中区（本体）可以比视觉宽。
+ */
+.wd-splitter__bar::before {
+  content: '';
+  position: absolute;
+  background: var(--wd-ink-5);
+  transition: background var(--wd-dur-fast) ease;
+}
+
+.wd-splitter--horizontal .wd-splitter__bar::before {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.wd-splitter--vertical .wd-splitter__bar::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+/*
+ * hover / 拖拽时线变主色 + 加粗。
+ * 这是拖拽类组件最重要的反馈：用户必须能在移动前确认
+ * "我抓到的是这根线"，否则会犹豫。
+ */
+.wd-splitter__bar:hover::before,
+.wd-splitter.is-dragging .wd-splitter__bar::before {
+  background: var(--wd-red);
+}
+
+.wd-splitter--horizontal .wd-splitter__bar:hover::before,
+.wd-splitter--horizontal.is-dragging .wd-splitter__bar::before {
+  width: 3px;
+}
+
+.wd-splitter--vertical .wd-splitter__bar:hover::before,
+.wd-splitter--vertical.is-dragging .wd-splitter__bar::before {
+  height: 3px;
+}
+
+.wd-splitter__bar:focus-visible::before {
+  background: var(--wd-red);
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-splitter.is-dragging {
+  /* 拖拽时整块区域都不响应 hover，避免途中高亮闪烁 */
+  user-select: none;
+}
+
+/* ---------------- 抓握提示 ---------------- */
+/*
+ * 三根短线的抓握把手。
+ * 视觉上很轻，只在 hover 时出现 —— 常驻会显得界面很"重"。
+ */
+.wd-splitter__grip {
+  position: relative;
+  z-index: 2;
+  width: 2px;
+  height: 18px;
+  border-radius: 1px;
+  background: var(--wd-ink-4);
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease;
+  pointer-events: none;
+}
+
+.wd-splitter--vertical .wd-splitter__grip {
+  width: 18px;
+  height: 2px;
+}
+
+.wd-splitter__grip.is-visible {
+  opacity: 0;
+}
+
+.wd-splitter__bar:hover .wd-splitter__grip.is-visible,
+.wd-splitter__bar:focus-visible .wd-splitter__grip.is-visible,
+.wd-splitter.is-dragging .wd-splitter__grip.is-visible {
+  opacity: 1;
+  background: var(--wd-red);
+}
+
+.wd-splitter.is-disabled .wd-splitter__bar {
+  cursor: default;
+}
+
+.wd-splitter.is-disabled .wd-splitter__bar::before {
+  background: var(--wd-tint-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-splitter__bar::before,
+  .wd-splitter__grip { transition: none; }
+}

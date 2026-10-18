@@ -1,0 +1,145 @@
+// =============================================================
+//  WDesign — Mentions（@ 提及）
+//
+//  textarea + 候选浮层。浮层定位走 anchor.ts（文档坐标 + absolute）。
+//  候选列表用头像色块而非图片，避免每条都发一次网络请求。
+// =============================================================
+
+.wd-mentions {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.wd-mentions.is-disabled {
+  opacity: .55;
+  pointer-events: none;
+}
+
+.wd-mentions__input {
+  display: block;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.65;
+  resize: vertical;
+  min-height: 72px;
+  outline: none;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-mentions__input::placeholder {
+  color: var(--wd-ink-3);
+}
+
+.wd-mentions__input:focus {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 候选浮层 ---------------- */
+.wd-mentions__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  min-width: 200px;
+  max-width: 300px;
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 5px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  scrollbar-width: thin;
+}
+
+.wd-mentions__option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+/*
+ * 高亮态要同时覆盖「鼠标 hover」和「键盘上下选择」。
+ * 这两者共用 .is-active —— 鼠标移入时 JS 会同步 activeIndex，
+ * 所以永远只有一个高亮项，不会出现双高亮。
+ */
+.wd-mentions__option.is-active {
+  background: var(--wd-tint-2);
+}
+
+.wd-mentions__avatar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--wd-tint-3);
+}
+
+.wd-mentions__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 没有头像时用首字占位 —— 比灰色人像图标更易区分 */
+.wd-mentions__avatar--text {
+  color: var(--wd-red-text);
+  font-size: 11.5px;
+  font-weight: 800;
+  background: var(--wd-tint-2);
+}
+
+.wd-mentions__label {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-mentions__desc {
+  font-size: 11px;
+  color: var(--wd-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- 字数 ---------------- */
+.wd-mentions__count {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.14bd24b4.css">
+<link rel="stylesheet" href="demo.35efcb92.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -1324,6 +1324,62 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
       </div>
     </div>
     <div class="demo-panel demo-panel--wide">
+      <h3>COLORPICKER 取色器 / MENTIONS 提及</h3>
+      <span class="demo-cap">取色器含 SV 渐变面板与 HEX 输入；Mentions 支持 @ 触发、键盘上下选择。</span>
+      <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:0 0 auto">
+          <div class="demo-cap" style="margin-bottom:8px">colorpicker · md</div>
+          <wd-color-picker v-model="pickColor"></wd-color-picker>
+          <span class="demo-cap" style="margin-top:8px">当前：{{ pickColor }}</span>
+          <div style="margin-top:12px;height:44px;border-radius:10px" :style="{background:pickColor}"></div>
+        </div>
+        <div class="demo-col" style="flex:0 0 auto">
+          <div class="demo-cap" style="margin-bottom:8px">colorpicker · sm</div>
+          <wd-color-picker v-model="pickColor2" size="sm"></wd-color-picker>
+        </div>
+        <div class="demo-col" style="flex:1 1 320px; min-width:280px">
+          <div class="demo-cap" style="margin-bottom:8px">mentions · @ 提及成员</div>
+          <wd-mentions v-model="mentionText" :users="mentionUsers" :rows="4"></wd-mentions>
+          <span class="demo-cap" style="margin-top:8px">{{ mentionText.length }} 字</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>CALENDAR 日历 / SPLITTER 分栏</h3>
+      <span class="demo-cap">日历固定 6 行网格（翻月不跳动）；Splitter 可拖拽、双击复位、支持键盘调节。</span>
+      <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:0 0 auto">
+          <div class="demo-cap" style="margin-bottom:8px">calendar · md</div>
+          <wd-card style="padding:0">
+            <wd-calendar v-model="calDate"></wd-calendar>
+          </wd-card>
+          <span class="demo-cap" style="margin-top:8px">已选：{{ calDate || '（未选）' }}</span>
+        </div>
+        <div class="demo-col" style="flex:0 0 auto">
+          <div class="demo-cap" style="margin-bottom:8px">calendar · sm</div>
+          <wd-card style="padding:0">
+            <wd-calendar v-model="calDate2" size="sm"></wd-calendar>
+          </wd-card>
+        </div>
+        <div class="demo-col" style="flex:1 1 340px; min-width:300px; align-items:stretch">
+          <div class="demo-cap" style="margin-bottom:8px">splitter · 横向（可拖拽）</div>
+          <div style="height:220px; width:100%; border-radius:10px; overflow:hidden; background:var(--wd-field)">
+            <wd-splitter v-model="splitRatio" direction="horizontal">
+              <template #first>
+                <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--wd-ink-2)">左栏</div>
+              </template>
+              <template #second>
+                <div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--wd-ink-2)">右栏</div>
+              </template>
+            </wd-splitter>
+          </div>
+          <span class="demo-cap" style="margin-top:8px">{{ Math.round(splitRatio) }}% / {{ Math.round(100 - splitRatio) }}%（双击分隔条复位）</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
       <h3>CASCADER 级联选择 / QRCODE 二维码</h3>
       <span class="demo-cap">Cascader 多列联动；QRCode 用内嵌 MIT 版 qrcode-generator 编码，SVG 单 path 渲染。</span>
       <div class="demo-row" style="gap:28px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
@@ -1599,8 +1655,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.e642a0c5.js"></script>
-<script src="demo.a9b63911.js"></script>
+<script src="components.4c461b2e.js"></script>
+<script src="demo.e18f6b24.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

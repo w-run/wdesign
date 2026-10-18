@@ -236,6 +236,20 @@ const app = createApp({
   data() {
     return {
       popSeg: '全部',
+      pickColor: '#D62839',
+      pickColor2: '#3B82F6',
+      mentionText: '',
+      mentionUsers: [
+        { id: 1, label: '林小满', desc: '设计' },
+        { id: 2, label: '陈一鸣', desc: '前端' },
+        { id: 3, label: '苏哲', desc: '后端' },
+        { id: 4, label: '周未', desc: '产品' },
+        { id: 5, label: '何川', desc: '测试' },
+        { id: 6, label: '李维', desc: '运维' },
+      ],
+      calDate: '',
+      calDate2: '',
+      splitRatio: 50,
       cascVal: ['zj', 'hz', 'xh'],
       cascOptions: [
         { value: 'zj', label: '浙江', children: [

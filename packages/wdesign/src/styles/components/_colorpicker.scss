@@ -1,0 +1,240 @@
+// =============================================================
+//  WDesign — ColorPicker（取色器）
+//
+//  触发器：色块 + 色值文本 + 箭头
+//  面板：SV 渐变方块 + 色相条 + HEX/RGB 输入 + 预设色板
+//
+//  ⚠️ 面板定位走 anchor.ts（文档坐标 + absolute）。
+//     写 fixed 会导致页面滚动后飞出视口。
+// =============================================================
+
+.wd-colorpicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 10px 4px 4px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-colorpicker:hover { background: var(--wd-tint-2); }
+
+.wd-colorpicker.is-open {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
+}
+
+.wd-colorpicker:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+.wd-colorpicker.is-disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.wd-colorpicker.is-disabled:hover { background: var(--wd-field); }
+
+/* ---------------- 色块 ---------------- */
+.wd-colorpicker__swatch {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  border-radius: var(--wd-radius-xs);
+  box-shadow: var(--wd-shadow-sm);
+  overflow: hidden;
+}
+
+/*
+ * 浅色（白/近白）色块在白底上没有边界，
+ * 用 inset 描边压一圈极淡的界线 —— 只在这里用，不影响其他组件。
+ */
+.wd-colorpicker__swatch-inner {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+  pointer-events: none;
+}
+
+.wd-colorpicker__value {
+  font-size: 12.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--wd-ink);
+  letter-spacing: .02em;
+}
+
+.wd-colorpicker__caret {
+  flex: none;
+  color: var(--wd-ink-3);
+}
+
+/* ---------------- 面板 ---------------- */
+.wd-colorpicker__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  display: none;
+  width: 232px;
+  padding: 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wd-colorpicker__panel.is-open { display: flex; }
+
+/* ---------------- SV 面板 ---------------- */
+.wd-colorpicker__sv {
+  position: relative;
+  height: 148px;
+  border-radius: var(--wd-radius-sm);
+  cursor: crosshair;
+  /* 触摸设备上避免拖动时页面跟着滚 */
+  touch-action: none;
+  overflow: hidden;
+}
+
+/*
+ * 两层渐变叠加做出"白 → 纯色 → 黑"的效果：
+ *   · 横向白色渐变（saturation）
+ *   · 纵向黑色渐变（value）
+ * 顺序不能反：先白后黑，否则暗部会把白渐变盖掉。
+ */
+.wd-colorpicker__sv-white {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+}
+
+.wd-colorpicker__sv-black {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, #000, rgba(0, 0, 0, 0));
+}
+
+.wd-colorpicker__knob {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .28), 0 2px 5px rgba(0, 0, 0, .22);
+  pointer-events: none;
+}
+
+/* ---------------- 色相条 ---------------- */
+.wd-colorpicker__hue {
+  position: relative;
+  height: 14px;
+  border-radius: var(--wd-radius-pill);
+  cursor: pointer;
+  touch-action: none;
+  background: linear-gradient(
+    to right,
+    #FF0000 0%, #FFFF00 17%, #00FF00 33%, #00FFFF 50%,
+    #0000FF 67%, #FF00FF 83%, #FF0000 100%
+  );
+}
+
+.wd-colorpicker__knob--hue {
+  top: 50%;
+  margin-top: -7px;
+}
+
+/* ---------------- 输入 ---------------- */
+.wd-colorpicker__inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.wd-colorpicker__field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  height: 30px;
+  border-radius: var(--wd-radius-xs);
+  background: var(--wd-field);
+}
+
+.wd-colorpicker__field > span {
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--wd-ink-3);
+  letter-spacing: .04em;
+}
+
+.wd-colorpicker__field > input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  padding: 0;
+}
+
+.wd-colorpicker__field > input[readonly] {
+  color: var(--wd-ink-2);
+  cursor: default;
+}
+
+/* ---------------- 预设 ---------------- */
+.wd-colorpicker__presets {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.wd-colorpicker__preset {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-colorpicker__preset:hover {
+  transform: scale(1.12);
+}
+
+/*
+ * 选中态：外圈加一圈和面板同色的间隙 + 主色描边。
+ * 直接加压暗会把浅色块的辨识度拉低。
+ */
+.wd-colorpicker__preset.is-active::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: calc(var(--wd-radius-xs) + 2px);
+  box-shadow: 0 0 0 2px var(--wd-red);
+  pointer-events: none;
+}
+
+.wd-colorpicker__preset:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-colorpicker,
+  .wd-colorpicker__preset { transition: none; }
+}

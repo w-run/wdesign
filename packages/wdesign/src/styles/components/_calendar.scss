@@ -1,0 +1,215 @@
+// =============================================================
+//  WDesign — Calendar（独立日历面板）
+//
+//  与 WdDatePicker 的区别：
+//    DatePicker  = 输入框 + 弹层，面向表单
+//    Calendar    = 纯面板，可嵌在页面/侧栏/日程视图里
+//
+//  网格固定 6 行 42 格：不同月份天数不同，行数浮动会让面板高度
+//  在翻月时跳动 —— 固定行数是日历类组件的通用做法。
+// =============================================================
+
+.wd-calendar {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 268px;
+  padding: 12px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  user-select: none;
+  outline: none;
+}
+
+.wd-calendar--sm {
+  width: 232px;
+  padding: 10px;
+  gap: 4px;
+}
+
+.wd-calendar:focus-visible {
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 头部 ---------------- */
+.wd-calendar__head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 2px 4px;
+}
+
+.wd-calendar__month {
+  flex: 1;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--wd-ink);
+  letter-spacing: -.01em;
+}
+
+.wd-calendar--sm .wd-calendar__month { font-size: 12.5px; }
+
+.wd-calendar__nav {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-calendar__nav:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-calendar__nav:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 星期表头 ---------------- */
+.wd-calendar__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.wd-calendar__weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--wd-ink-2);
+  padding: 4px 0;
+  letter-spacing: .02em;
+}
+
+/* ---------------- 日期网格 ---------------- */
+.wd-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.wd-calendar__cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-calendar--sm .wd-calendar__cell { font-size: 11.5px; }
+
+.wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
+  background: var(--wd-tint-2);
+}
+
+/*
+ * 非本月日期：弱化但不隐藏。
+ * 完全隐藏会让用户失去"前后文"，太深又会和本月日期混淆 ——
+ * 用 ink-3 + 稍小字号，视觉上明确退一档。
+ */
+.wd-calendar__cell.is-out {
+  color: var(--wd-ink-3);
+  font-weight: 500;
+}
+
+.wd-calendar__cell.is-disabled {
+  color: var(--wd-ink-5);
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* 今天：底部一个小圆点，不抢选中态 */
+.wd-calendar__cell.is-today::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--wd-red);
+}
+
+.wd-calendar__cell.is-selected {
+  background: var(--wd-red);
+  color: #fff;
+  font-weight: 800;
+}
+
+/* 选中项若是今天，圆点改成白色，否则在红底上看不见 */
+.wd-calendar__cell.is-selected.is-today::after {
+  background: rgba(255, 255, 255, .85);
+}
+
+.wd-calendar__cell.is-selected.is-out {
+  color: rgba(255, 255, 255, .8);
+}
+
+.wd-calendar__cell:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-calendar__day {
+  line-height: 1;
+}
+
+/* ---------------- 底部 ---------------- */
+.wd-calendar__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.wd-calendar__action {
+  padding: 5px 10px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-calendar__action:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-calendar__action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-calendar__cell,
+  .wd-calendar__nav,
+  .wd-calendar__action { transition: none; }
+}
