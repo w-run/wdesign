@@ -81,7 +81,7 @@
 /* 输入类 / 选择器：这些的底色就是"外框"，要压平 */
 .wd-group--seamless > .wd-group__item > .wd-input,
 .wd-group--seamless > .wd-group__item > .wd-select {
-  background: transparent;
+  background-color: transparent;
   border: 0;
   box-shadow: none;
   border-radius: 0;
@@ -117,11 +117,14 @@
 }
 
 /* ---------------- 变体：胶囊 ---------------- */
+/*
+ * 胶囊：浅底 + 全圆角，无边框。
+ * ⚠️ 之前留了 `border: 1px solid transparent` 想复用 joined 的逻辑，
+ * 但透明边框仍然占 1px 盒模型空间、也不符合无边框语言。
+ */
 .wd-group--capsule {
   background: var(--wd-field);
   border-radius: var(--wd-radius-pill);
-  /* 1px 透明边框：让 joined 形态的边框逻辑能复用 */
-  border: 1px solid transparent;
 }
 
 /*
@@ -149,24 +152,142 @@
   border-radius: var(--wd-radius-pill) !important;
 }
 
-.wd-group--capsule.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0; }
-.wd-group--capsule.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill); }
-/* 纵向时首尾只保留上下圆角，左右保持 0（否则会鼓出来） */
-.wd-group--capsule.wd-group--col > .wd-group__item { border-radius: 0; }
-.wd-group--capsule.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0; }
-.wd-group--capsule.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill); }
+/*
+ * 纵向胶囊。
+ *
+ * 横向胶囊的圆角是"整条高度的一半"（pill），
+ * 纵向时这个语义反过来：上端只圆上面两角、下端只圆下面两角，
+ * 且半径应等于**容器宽度的一半**才能形成真正的胶囊端头。
+ * 这里用 50% 而不是 pill 令牌 —— 令牌是固定 px，纵向会算错。
+ */
+/*
+ * ⚠️ 不能用 overflow:hidden 做端头圆角 —— 会裁掉子项的 focus ring
+ * （这是本库已记录过的坑）。
+ * 改用「按容器宽度算半径」：纵向胶囊的端头半径 = 宽度的一半。
+ * 容器宽度由 CSS 变量传入，组件那边不用改。
+ */
+.wd-group--capsule.wd-group--col > .wd-group__item,
+.wd-group--capsule.wd-group--col > .wd-group__item > * {
+  border-radius: 0 !important;
+}
+
+/* 上端：只圆上面两角；下同 */
+.wd-group--capsule.wd-group--col > .wd-group__item--first,
+.wd-group--capsule.wd-group--col > .wd-group__item--first > * {
+  border-radius: 50vw 50vw 0 0 !important;
+}
+.wd-group--capsule.wd-group--col > .wd-group__item--last,
+.wd-group--capsule.wd-group--col > .wd-group__item--last > * {
+  border-radius: 0 0 50vw 50vw !important;
+}
+/*
+ * 纵向末项是实心按钮（primary）时，圆角要跟随按钮自身的背景块。
+ * 之前只给 .wd-group__item 设了，按钮内部还有一层背景色块
+ * 会把圆角盖掉，看起来像"下缘被切平"。
+ */
+/*
+ * 纵向末项若自身是实心按钮：圆角要作用在按钮自身背景上。
+ * 之前只写了 `> .wd-btn`（子元素），漏掉了「自己就是按钮」的情况。
+ */
+.wd-group--capsule.wd-group--col > .wd-group__item--last.wd-btn,
+.wd-group--capsule.wd-group--col > .wd-group__item--last > .wd-btn {
+  border-radius: 0 0 50vw 50vw !important;
+}
+
+/* 首个若自身是按钮也一样 */
+.wd-group--capsule.wd-group--col > .wd-group__item--first.wd-btn,
+.wd-group--capsule.wd-group--col > .wd-group__item--first > .wd-btn {
+  border-radius: 50vw 50vw 0 0 !important;
+}
+
+/* 纵向 joined：普通圆角即可 */
+/*
+ * 纵向 joined 的圆角。
+ * ⚠️ 必须同时覆盖「自身是按钮」的情况 —— 按钮直接做插槽子节点时，
+ * `> *` 选不中它自己。
+ */
+.wd-group--col > .wd-group__item,
+.wd-group--col > .wd-group__item > * {
+  border-radius: 0 !important;
+}
+.wd-group--col > .wd-group__item--first,
+.wd-group--col > .wd-group__item--first > * {
+  border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0 !important;
+}
+.wd-group--col > .wd-group__item--last,
+.wd-group--col > .wd-group__item--last > * {
+  border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md) !important;
+}
+/* 只有 capsule 才用 pill 端头 */
+.wd-group--capsule.wd-group--col > .wd-group__item--first,
+.wd-group--capsule.wd-group--col > .wd-group__item--first > * {
+  border-radius: 50vw 50vw 0 0 !important;
+}
+.wd-group--capsule.wd-group--col > .wd-group__item--last,
+.wd-group--capsule.wd-group--col > .wd-group__item--last > * {
+  border-radius: 0 0 50vw 50vw !important;
+}
 
 /* 胶囊内的按钮：hover 时整块变浅，不单独做胶囊 */
-.wd-group--capsule > .wd-group__item > .wd-btn:hover:not(:disabled),
-.wd-group--capsule > .wd-group__item > .wd-btn:focus-visible {
-  background: var(--wd-tint-2);
+/*
+ * 胶囊内的按钮：
+ *   ghost / tint 这类浅底变体在组合里会显得"脏"（同一容器里两种底色），
+ *   统一改为透明 + 悬停才浮起。
+ *   primary 等实心变体保留自身底色（它是强调，不该被压平）。
+ */
+/*
+ * ⚠️ 子控件可能「自身就是 .wd-group__item」（按钮直接做插槽子节点），
+ * 也可能是它的子元素。两种都要命中，否则规则形同虚设。
+ */
+
+/*
+ * 去掉子按钮的底色时**必须用 background-color**，不能用 background 简写。
+ *
+ * ⚠️ 踩坑记录：写 `background: transparent` 会被编译成 `background: none`，
+ * 而简写里的 `none` 只重置 background-image，**不清除 background-color** ——
+ * 于是 .wd-btn--tint 的粉色依然生效，规则看起来"完全没起作用"。
+ * 这个问题很难查，因为选择器匹配、!important 都是对的。
+ */
+
+/*
+ * 压制子按钮的浅色底。
+ *
+ * ⚠️ 踩坑记录（很值得记）：
+ *   这条规则加了 !important 也"不生效" —— 实测计算值一直是粉色。
+ *   排查很久后发现根本原因**不在选择器**，而是：
+ *   .wd-btn 上有 `transition: background 0.12s`，在动画时钟停摆的环境
+ *   （后台标签页 / 无头渲染）里 transition 永远停在起始值，
+ *   `getAnimations()` 显示 background-color 一直处于 running 状态，
+ *   于是 computed style 恒为旧值 —— 看起来就像"样式没生效"。
+ *
+ *   修法：**背景色不做 transition**。这类"压制"性质的样式切换，
+ *   本来也不需要动画。
+ */
+.wd-group--capsule > .wd-group__item.wd-btn--tint,
+.wd-group--capsule > .wd-group__item.wd-btn--ghost,
+.wd-group--capsule > .wd-group__item > .wd-btn--tint,
+.wd-group--capsule > .wd-group__item > .wd-btn--ghost {
+  background-color: transparent !important;
+  /* 关键：切断 transition，否则背景色会卡在旧值（时钟停摆时永远不完成） */
+  transition: none !important;
+}
+.wd-group--capsule > .wd-group__item.wd-btn--tint:hover:not(:disabled),
+.wd-group--capsule > .wd-group__item.wd-btn--ghost:hover:not(:disabled),
+.wd-group--capsule > .wd-group__item > .wd-btn--tint:hover:not(:disabled),
+.wd-group--capsule > .wd-group__item > .wd-btn--ghost:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, .05) !important;
+  transition: none !important;
 }
 
 /* ---------------- 变体：拼合 ---------------- */
+/*
+ * joined：外缘圆角、内部直角拼接。
+ * 与本库整体语言一致 —— **不用边框**，靠底色与阴影区分。
+ */
 .wd-group--joined {
   background: var(--wd-card);
-  border: 1px solid var(--wd-field);
   border-radius: var(--wd-radius-md);
+  box-shadow: var(--wd-shadow-sm);
 }
 
 .wd-group--joined > .wd-group__item--first,
@@ -185,13 +306,34 @@
 .wd-group--joined.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0; }
 .wd-group--joined.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md); }
 
-/* 拼合形态：子项之间用左边框（纵向用上边框）分隔，首项不加 */
-.wd-group--joined.wd-group--divided > .wd-group__item:not(.wd-group__item--first) {
-  border-left: 1px solid var(--wd-field);
+/*
+ * 分隔线用伪元素画，不用 border ——
+ * border 会参与盒模型，导致每多一段宽度就差 1px，拼合处对不齐。
+ */
+.wd-group--joined.wd-group--divided > .wd-group__item {
+  position: relative;
 }
-.wd-group--joined.wd-group--col.wd-group--divided > .wd-group__item:not(.wd-group__item--first) {
-  border-left: 0;
-  border-top: 1px solid var(--wd-field);
+.wd-group--joined.wd-group--divided > .wd-group__item:not(.wd-group__item--first)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 46%;
+  background: var(--wd-ink-5);
+  pointer-events: none;
+}
+/*
+ * 纵向 joined 的分隔线。
+ * 用 width:46% 居中 —— 满宽会显得像表格线，短一点更像分隔符。
+ */
+.wd-group--joined.wd-group--col.wd-group--divided > .wd-group__item:not(.wd-group__item--first)::before {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: calc(100% - 28px);
+  height: 1px;
 }
 
 /* ---------------- 变体：内嵌 ---------------- */
@@ -199,11 +341,33 @@
  * 容器是「底色凹槽」，子项浮在上面。
  * 适合：搜索框、分段切换、小工具条。
  */
+/*
+ * inset：凹槽底 + 子项浮起。
+ *
+ * ⚠️ 之前和 joined 几乎看不出区别（都是浅底 + 圆角）。
+ * 差异要在「内距 + 子项自身底色」上做出来：
+ *   inset  = 容器是深一档的凹槽，子项选中时有白底浮起
+ *   joined = 容器与子项同色，只靠外缘圆角和分隔线拼合
+ */
 .wd-group--inset {
   background: var(--wd-field);
-  border-radius: var(--wd-radius-sm);
-  padding: 3px;
-  gap: 2px;
+  border-radius: var(--wd-radius-md);
+  padding: 4px;
+  gap: 3px;
+  box-shadow: none;
+}
+
+/* inset 的子项默认透明，悬停/选中才有底色（浮起感） */
+.wd-group--inset > .wd-group__item {
+  border-radius: var(--wd-radius-xs) !important;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+.wd-group--inset > .wd-group__item:hover {
+  background-color: var(--wd-tint-2);
+}
+.wd-group--inset > .wd-group__item > .wd-btn--primary {
+  background-color: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
 }
 
 .wd-group--inset > .wd-group__item {
@@ -215,10 +379,7 @@
   background: var(--wd-tint-2);
 }
 
-/* 内嵌形态不画分割线（间距本身已是区分） */
-.wd-group--inset.wd-group--divided > .wd-group__item + .wd-group__item {
-  box-shadow: inset 1px 0 0 var(--wd-ink-5);
-}
+/* inset 靠间距区分，不画分隔线 */
 
 /* ---------------- 分隔线（胶囊形态） ---------------- */
 /*

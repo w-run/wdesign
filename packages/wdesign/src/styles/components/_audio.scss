@@ -42,29 +42,26 @@
  *  card —— 竖版卡片
  * ============================================================= */
 /*
- * card：必须能看出"这是一张卡片"。
+ * card —— 遵循本设计系统的「无边框」语言：
+ *   白底 + 大圆角 + 单层浅阴影 + 足够留白，不用任何 border。
  *
- * ⚠️ 之前 background: var(--wd-card) + box-shadow: none，
- * 而所在面板也是纯白 —— 卡片和背景完全同色，边界消失，
- * 所以看起来"贴"在页面上、没有层次。
+ * ⚠️ 之前我在这里加了 inset 1px 描边，与本库「无边框风」冲突。
+ * 整个组件的层次只靠阴影和留白建立（同 .wd-card 的做法）。
  *
- * 现在用三件套建立层次：
- *   1. 阴影（最轻的一档，不抢视觉）
- *   2. 内描边（深色主题里阴影几乎不可见，靠它托底）
- *   3. 与页面底色区分开的浅底（不是纯白）
+ * 间距设计（原来 18/20 挤在一起，缺少呼吸感）：
+ *   上下 20 / 左右 22 —— 与 .wd-card 的 22px 内距对齐
+ *   内部区块间距 16px —— 比 14 更松，让波形/时间/控件各自成组
  */
 .wd-audio--card {
   display: flex;
   flex-direction: column;
   width: 100%;
   box-sizing: border-box;
-  gap: 14px;
-  padding: 18px 20px 20px;
+  gap: 16px;
+  padding: 20px 22px;
   border-radius: var(--wd-radius-xl);
   background: var(--wd-card);
-  box-shadow: var(--wd-shadow-sm), var(--wd-shadow);
-  /* 内描边：深色主题 / 浅底上都能勾出边界 */
-  box-shadow: var(--wd-shadow-sm), var(--wd-shadow), inset 0 0 0 1px var(--wd-ink-5);
+  box-shadow: var(--wd-shadow);
   container-type: inline-size;
   container-name: wd-audio;
 }
@@ -82,7 +79,8 @@
 .wd-audio--card.wd-audio--inverse {
   background: var(--wd-dark);
   color: var(--wd-dark-text);
-  box-shadow: var(--wd-shadow-hover), inset 0 0 0 1px rgba(255, 255, 255, .06);
+  /* 深色卡片同样只用阴影，不加描边 */
+  box-shadow: var(--wd-shadow-lg);
 }
 
 .wd-audio--inverse .wd-audio__subtitle { color: var(--wd-on-dark); }
@@ -109,7 +107,7 @@
 .wd-audio--inverse .wd-audio__hero-cover { background: rgba(255, 255, 255, .06); }
 .wd-audio--inverse .wd-audio__rate-menu--card {
   background: var(--wd-dark);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .08);
+  box-shadow: var(--wd-shadow-lg);
   color: var(--wd-dark-text);
 }
 .wd-audio--inverse .wd-audio__rate-menu--card button { color: var(--wd-on-dark-2); }
@@ -469,13 +467,15 @@
 /* =============================================================
  *  bar —— 横条（封面 + 标题 + 细进度）
  * ============================================================= */
+/* bar：同样是白底 + 阴影的无边框卡片，内距略放松 */
 .wd-audio--bar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 14px;
+  padding: 12px 16px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
 }
 
 /*
@@ -727,11 +727,9 @@
  * 方角容器 + 圆按钮会很割裂。
  */
 /*
- * mini：卡片色，不用偏红的 tint。
- *
- * ⚠️ 之前用 --wd-tint-1（极浅的粉），整条看起来"泛红"，
- * 在白色页面里很显眼且与内容无关。
- * 改为卡片白 + 细描边 + 轻阴影，与其他卡片同一套层次语言。
+ * mini：胶囊 + 卡片色。
+ * 与其他卡片同一套语言：白底 + 阴影，无边框、无 tint 底色。
+ * 内距左右不对称（8 / 16）—— 让圆形播放键贴紧左端，视觉上更稳。
  */
 .wd-audio--mini {
   display: flex;
@@ -740,7 +738,7 @@
   padding: 7px 16px 7px 8px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-card);
-  box-shadow: var(--wd-shadow-sm), inset 0 0 0 1px var(--wd-ink-5);
+  box-shadow: var(--wd-shadow-sm);
 }
 
 .wd-audio__mini-play {
