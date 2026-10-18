@@ -191,8 +191,26 @@ const server = createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost')
   let path = decodeURIComponent(url.pathname)
 
+  /**
+   * 缓存策略按「文件名是否带内容指纹」区分：
+   *
+   *   带指纹（app.a1b2c3d4.js）→ immutable 长缓存。
+   *     名字由内容决定，内容一变名字就变，所以可以放心缓存一年。
+   *   不带指纹（HTML、虚拟模块）→ no-store。
+   *     这类资源名字固定，缓存住就永远看不到新内容。
+   *
+   * 这也正是 dev server 里保留指纹文件的意义：
+   * 能在开发期就验证「缓存策略是否真的生效」，而不是等到上线。
+   */
+  const isFingerprinted = /\.([0-9a-f]{8})\.(js|css)$/.test(path)
+
   const send = (code, body, type = 'text/plain; charset=utf-8') => {
-    res.writeHead(code, { 'Content-Type': type, 'Cache-Control': 'no-store' })
+    res.writeHead(code, {
+      'Content-Type': type,
+      'Cache-Control': isFingerprinted
+        ? 'public, max-age=31536000, immutable'
+        : 'no-store, must-revalidate',
+    })
     res.end(body)
   }
 

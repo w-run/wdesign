@@ -29,10 +29,11 @@
     "hover:check": "python3 tools/hover-js.py --check",
     "check:tokens": "python3 tools/check-tokens.py --strict",
     "check:icons": "python3 tools/check-icons.py --strict",
-    "build": "node tools/build-lib.mjs",
-    "build:demo": "node tools/build-demo-components.mjs",
+    "build": "node tools/build-lib.mjs && node tools/fingerprint.mjs lib",
+    "build:demo": "node tools/build-demo-components.mjs && node tools/fingerprint.mjs demo",
     "prepublishOnly": "npm run build",
-    "dev": "node tools/wd-dev.mjs"
+    "dev": "node tools/wd-dev.mjs",
+    "check:fingerprint": "node tools/fingerprint.mjs check"
   },
   "sideEffects": [
     "*.css",
