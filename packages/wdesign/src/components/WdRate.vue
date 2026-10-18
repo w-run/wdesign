@@ -1,20 +1,37 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useControllable } from './controllable'
 
 defineOptions({ name: 'WdRate' })
 
 const props = withDefaults(
   defineProps<{
     modelValue?: number
+    /** 非受控模式的初始值 */
+    defaultValue?: number
     count?: number
     disabled?: boolean
     /** 允许再次点击同一颗星清空（默认开启） */
     clearable?: boolean
   }>(),
-  { modelValue: 0, count: 5, disabled: false, clearable: true },
+  /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
+  { count: 5, disabled: false, clearable: true },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: number): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number): void
+  (e: 'change', value: number): void
+}>()
+
+const { value, set } = useControllable<number>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: 0,
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
 
 /** 悬停预览：-1 表示无预览 */
 const hover = ref(-1)
@@ -42,8 +59,8 @@ function pick(i: number) {
   if (props.disabled) return
   // 触摸后立刻清掉预览，避免高亮停留在被点的星上造成「没清空」的错觉
   hover.value = -1
-  const next = props.modelValue === i + 1 ? (props.clearable ? 0 : i + 1) : i + 1
-  emit('update:modelValue', next)
+  const next = value.value === i + 1 ? (props.clearable ? 0 : i + 1) : i + 1
+  set(next)
 }
 
 /** 展示用值：有预览看预览，否则看受控值 */
@@ -73,7 +90,7 @@ function onKeydown(e: KeyboardEvent) {
     class="wd-rate"
     :class="{ 'wd-rate--disabled': disabled }"
     role="radiogroup"
-    :aria-label="`评分，共 ${count} 星，当前 ${modelValue} 星`"
+    :aria-label="`评分，共 ${count} 星，当前 ${value} 星`"
     :aria-disabled="disabled || undefined"
     @mouseleave="hover = -1"
     @keydown="onKeydown"
@@ -85,9 +102,9 @@ function onKeydown(e: KeyboardEvent) {
       class="wd-rate__item"
       :class="{ 'wd-rate__item--on': i <= shown }"
       role="radio"
-      :aria-checked="i === modelValue"
+      :aria-checked="i === value"
       :aria-label="`${i} 星`"
-      :tabindex="disabled ? -1 : i === (modelValue || (hover >= 0 ? hover + 1 : 1)) ? 0 : -1"
+      :tabindex="disabled ? -1 : i === (value || (hover >= 0 ? hover + 1 : 1)) ? 0 : -1"
       :disabled="disabled"
       @pointerenter="onEnter(i - 1, $event)"
       @pointerleave="onLeave($event)"

@@ -3,18 +3,20 @@ import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlo
 
 const _hoisted_1 = ["value", "disabled", "onInput", "onKeydown"]
 
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useControllable } from './controllable'
 
 
 export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdOtp' },
   __name: 'WdOtp',
   props: {
-    modelValue: { type: String, required: false, default: '' },
+    modelValue: { type: String, required: false },
+    defaultValue: { type: String, required: false },
     length: { type: Number, required: false, default: 6 },
     disabled: { type: Boolean, required: false, default: false }
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
 
 
@@ -23,26 +25,36 @@ const props = __props
 
 const emit = __emit
 
+const { value, set } = useControllable<string>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: '',
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
+
 const boxes = ref<HTMLInputElement[]>([])
 
 function charAt(i: number) {
-  return props.modelValue[i] || ''
+  return value.value[i] || ''
 }
 
 function onInput(i: number, e: Event) {
   const el = e.target as HTMLInputElement
   const next = el.value.replace(/\D/g, '').slice(-1)
-  const arr = props.modelValue.split('')
+  const arr = value.value.split('')
   arr[i] = next
-  emit('update:modelValue', arr.join('').slice(0, props.length))
+  set(arr.join('').slice(0, props.length))
   if (next && i < props.length - 1) boxes.value[i + 1]?.focus()
 }
 
 function onKeydown(i: number, e: KeyboardEvent) {
   if (e.key === 'Backspace' && !charAt(i) && i > 0) {
-    const arr = props.modelValue.split('')
+    const arr = value.value.split('')
     arr[i - 1] = ''
-    emit('update:modelValue', arr.join(''))
+    set(arr.join(''))
     boxes.value[i - 1]?.focus()
   }
   if (e.key === 'ArrowLeft' && i > 0) boxes.value[i - 1]?.focus()
@@ -53,7 +65,7 @@ function onPaste(e: ClipboardEvent) {
   e.preventDefault()
   const text = (e.clipboardData?.getData('text') || '').replace(/\D/g, '').slice(0, props.length)
   if (!text) return
-  emit('update:modelValue', text)
+  set(text)
   boxes.value[Math.min(text.length, props.length - 1)]?.focus()
 }
 

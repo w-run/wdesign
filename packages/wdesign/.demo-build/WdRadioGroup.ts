@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, unref as _unref, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = {
   class: "wd-radio-group",
@@ -9,6 +9,7 @@ const _hoisted_2 = ["aria-checked", "disabled", "onClick"]
 const _hoisted_3 = { class: "wd-radio__label" }
 
 import { computed } from 'vue'
+import { useControllable } from './controllable'
 
 type Option = string | { label: string; value: string | number }
 
@@ -17,11 +18,12 @@ export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdRadioGroup' },
   __name: 'WdRadioGroup',
   props: {
-    modelValue: { type: [String, Number], required: false, default: '' },
+    modelValue: { type: [String, Number], required: false },
+    defaultValue: { type: [String, Number], required: false },
     options: { type: Array, required: false, default: () => [] },
     disabled: { type: Boolean, required: false, default: false }
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
 
 
@@ -30,12 +32,22 @@ const props = __props
 
 const emit = __emit
 
+const { value, set } = useControllable<string | number>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: '',
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
+
 const items = computed(() =>
   props.options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o)),
 )
 
 function pick(value: string | number) {
-  if (!props.disabled) emit('update:modelValue', value)
+  if (!props.disabled) set(value)
 }
 
 return (_ctx: any,_cache: any) => {
@@ -45,8 +57,8 @@ return (_ctx: any,_cache: any) => {
         key: o.value,
         type: "button",
         role: "radio",
-        class: _normalizeClass(["wd-radio", { 'wd-radio--checked': __props.modelValue === o.value, 'wd-radio--disabled': __props.disabled }]),
-        "aria-checked": __props.modelValue === o.value,
+        class: _normalizeClass(["wd-radio", { 'wd-radio--checked': _unref(value) === o.value, 'wd-radio--disabled': __props.disabled }]),
+        "aria-checked": _unref(value) === o.value,
         disabled: __props.disabled,
         onClick: ($event: any) => (pick(o.value))
       }, [

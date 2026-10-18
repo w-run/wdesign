@@ -1,22 +1,24 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, resolveComponent as _resolveComponent, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue"
+import { unref as _unref, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, resolveComponent as _resolveComponent, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = ["aria-label", "aria-disabled"]
 const _hoisted_2 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"]
 
 import { computed, ref } from 'vue'
+import { useControllable } from './controllable'
 
 
 export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdRate' },
   __name: 'WdRate',
   props: {
-    modelValue: { type: Number, required: false, default: 0 },
+    modelValue: { type: Number, required: false },
+    defaultValue: { type: Number, required: false },
     count: { type: Number, required: false, default: 5 },
     disabled: { type: Boolean, required: false, default: false },
     clearable: { type: Boolean, required: false, default: true }
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
 
 
@@ -24,6 +26,16 @@ export default /*@__PURE__*/_defineComponent({
 const props = __props
 
 const emit = __emit
+
+const { value, set } = useControllable<number>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: 0,
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
 
 /** 悬停预览：-1 表示无预览 */
 const hover = ref(-1)
@@ -51,8 +63,8 @@ function pick(i: number) {
   if (props.disabled) return
   // 触摸后立刻清掉预览，避免高亮停留在被点的星上造成「没清空」的错觉
   hover.value = -1
-  const next = props.modelValue === i + 1 ? (props.clearable ? 0 : i + 1) : i + 1
-  emit('update:modelValue', next)
+  const next = value.value === i + 1 ? (props.clearable ? 0 : i + 1) : i + 1
+  set(next)
 }
 
 /** 展示用值：有预览看预览，否则看受控值 */
@@ -83,7 +95,7 @@ return (_ctx: any,_cache: any) => {
     ref: root,
     class: _normalizeClass(["wd-rate", { 'wd-rate--disabled': __props.disabled }]),
     role: "radiogroup",
-    "aria-label": `评分，共 ${__props.count} 星，当前 ${__props.modelValue} 星`,
+    "aria-label": `评分，共 ${__props.count} 星，当前 ${_unref(value)} 星`,
     "aria-disabled": __props.disabled || undefined,
     onMouseleave: _cache[1] || (_cache[1] = ($event: any) => (hover.value = -1)),
     onKeydown: onKeydown
@@ -94,9 +106,9 @@ return (_ctx: any,_cache: any) => {
         type: "button",
         class: _normalizeClass(["wd-rate__item", { 'wd-rate__item--on': i <= shown.value }]),
         role: "radio",
-        "aria-checked": i === __props.modelValue,
+        "aria-checked": i === _unref(value),
         "aria-label": `${i} 星`,
-        tabindex: __props.disabled ? -1 : i === (__props.modelValue || (hover.value >= 0 ? hover.value + 1 : 1)) ? 0 : -1,
+        tabindex: __props.disabled ? -1 : i === (_unref(value) || (hover.value >= 0 ? hover.value + 1 : 1)) ? 0 : -1,
         disabled: __props.disabled,
         onPointerenter: ($event: any) => (onEnter(i - 1, $event)),
         onPointerleave: _cache[0] || (_cache[0] = ($event: any) => (onLeave($event))),

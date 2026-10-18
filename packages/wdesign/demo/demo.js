@@ -248,6 +248,7 @@ const app = createApp({
       date: '',
       page: 3,
       dropPick: '',
+      ucLog: '',
       liveErr: '',
       channelIdx: 0,
       channels: ['CCTV-1', 'CCTV-2', 'CCTV-13'],
@@ -536,6 +537,9 @@ const app = createApp({
       if (n !== this.vlistRendered) this.vlistRendered = n
     },
     onChangeEp(ep, i) { this.currentEp = ep.key },
+    uncontrolledLog(v) {
+      this.ucLog = typeof v === 'boolean' ? (v ? '开' : '关') : String(v)
+    },
     switchChannel() {
       this.channelIdx = (this.channelIdx + 1) % this.channels.length
       this.liveErr = ''

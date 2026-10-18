@@ -111,11 +111,11 @@ var WD_REAL_MODULE = (() => {
   var computed = G.computed;
   var withModifiers = G.withModifiers;
   var onMounted = G.onMounted;
+  var unref = G.unref;
   var vModelText = G.vModelText;
   var withDirectives = G.withDirectives;
   var Teleport = G.Teleport;
   var nextTick = G.nextTick;
-  var unref = G.unref;
   var vShow = G.vShow;
   var toRef = G.toRef;
   var watchEffect = G.watchEffect;
@@ -126,6 +126,7 @@ var WD_REAL_MODULE = (() => {
   var Transition = G.Transition;
   var withCtx = G.withCtx;
   var resolveDynamicComponent = G.resolveDynamicComponent;
+  var getCurrentInstance = G.getCurrentInstance;
 
   // .demo-build/WdAiMessage.ts
   var _hoisted_1 = { class: "wd-ai-msg__avatar" };
@@ -1583,6 +1584,42 @@ var WD_REAL_MODULE = (() => {
     }
   });
 
+  // .demo-build/controllable.ts
+  function useControllable(opts) {
+    const { modelValue, defaultValue, fallback, onChange } = opts;
+    const inst = getCurrentInstance();
+    const providedAtSetup = (() => {
+      if (opts.isProvided) return null;
+      const vp = inst?.vnode?.props;
+      if (!vp) return modelValue.value !== void 0;
+      return "modelValue" in vp || "model-value" in vp;
+    })();
+    const controlled = computed(
+      () => opts.isProvided ? opts.isProvided() : !!providedAtSetup
+    );
+    const inner = ref(
+      defaultValue?.value !== void 0 ? defaultValue.value : fallback
+    );
+    const value = computed(() => controlled.value ? modelValue.value : inner.value);
+    function set(next) {
+      if (!controlled.value) inner.value = next;
+      onChange?.(next);
+    }
+    watch(
+      () => modelValue.value,
+      (v) => {
+        if (controlled.value && v !== void 0) inner.value = v;
+      }
+    );
+    watch(
+      () => defaultValue?.value,
+      (v) => {
+        if (!controlled.value && v !== void 0) inner.value = v;
+      }
+    );
+    return { value, set, controlled, inner };
+  }
+
   // .demo-build/WdCheckbox.ts
   var _hoisted_116 = ["aria-checked", "disabled"];
   var _hoisted_28 = { class: "wd-checkbox__box" };
@@ -1594,24 +1631,34 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdCheckbox" },
     __name: "WdCheckbox",
     props: {
-      modelValue: { type: Boolean, required: false, default: false },
+      modelValue: { type: Boolean, required: false },
+      defaultValue: { type: Boolean, required: false },
       label: { type: String, required: false, default: "" },
       disabled: { type: Boolean, required: false, default: false }
     },
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const { value, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: false,
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
       function toggle() {
-        if (!props.disabled) emit("update:modelValue", !props.modelValue);
+        if (!props.disabled) set(!value.value);
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
         return openBlock(), createElementBlock("button", {
           type: "button",
           role: "checkbox",
-          class: normalizeClass(["wd-checkbox", { "wd-checkbox--checked": __props.modelValue, "wd-checkbox--disabled": __props.disabled }]),
-          "aria-checked": __props.modelValue,
+          class: normalizeClass(["wd-checkbox", { "wd-checkbox--checked": unref(value), "wd-checkbox--disabled": __props.disabled }]),
+          "aria-checked": unref(value),
           disabled: __props.disabled,
           onClick: toggle
         }, [
@@ -4309,31 +4356,41 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdOtp" },
     __name: "WdOtp",
     props: {
-      modelValue: { type: String, required: false, default: "" },
+      modelValue: { type: String, required: false },
+      defaultValue: { type: String, required: false },
       length: { type: Number, required: false, default: 6 },
       disabled: { type: Boolean, required: false, default: false }
     },
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const { value, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: "",
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
       const boxes = ref([]);
       function charAt(i) {
-        return props.modelValue[i] || "";
+        return value.value[i] || "";
       }
       function onInput(i, e) {
         const el = e.target;
         const next = el.value.replace(/\D/g, "").slice(-1);
-        const arr = props.modelValue.split("");
+        const arr = value.value.split("");
         arr[i] = next;
-        emit("update:modelValue", arr.join("").slice(0, props.length));
+        set(arr.join("").slice(0, props.length));
         if (next && i < props.length - 1) boxes.value[i + 1]?.focus();
       }
       function onKeydown(i, e) {
         if (e.key === "Backspace" && !charAt(i) && i > 0) {
-          const arr = props.modelValue.split("");
+          const arr = value.value.split("");
           arr[i - 1] = "";
-          emit("update:modelValue", arr.join(""));
+          set(arr.join(""));
           boxes.value[i - 1]?.focus();
         }
         if (e.key === "ArrowLeft" && i > 0) boxes.value[i - 1]?.focus();
@@ -4343,7 +4400,7 @@ var WD_REAL_MODULE = (() => {
         e.preventDefault();
         const text = (e.clipboardData?.getData("text") || "").replace(/\D/g, "").slice(0, props.length);
         if (!text) return;
-        emit("update:modelValue", text);
+        set(text);
         boxes.value[Math.min(text.length, props.length - 1)]?.focus();
       }
       return (_ctx, _cache) => {
@@ -4923,19 +4980,29 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdRadioGroup" },
     __name: "WdRadioGroup",
     props: {
-      modelValue: { type: [String, Number], required: false, default: "" },
+      modelValue: { type: [String, Number], required: false },
+      defaultValue: { type: [String, Number], required: false },
       options: { type: Array, required: false, default: () => [] },
       disabled: { type: Boolean, required: false, default: false }
     },
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const { value, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: "",
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
       const items = computed(
         () => props.options.map((o) => typeof o === "string" ? { label: o, value: o } : o)
       );
-      function pick(value) {
-        if (!props.disabled) emit("update:modelValue", value);
+      function pick(value2) {
+        if (!props.disabled) set(value2);
       }
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock("div", _hoisted_145, [
@@ -4947,8 +5014,8 @@ var WD_REAL_MODULE = (() => {
                 key: o.value,
                 type: "button",
                 role: "radio",
-                class: normalizeClass(["wd-radio", { "wd-radio--checked": __props.modelValue === o.value, "wd-radio--disabled": __props.disabled }]),
-                "aria-checked": __props.modelValue === o.value,
+                class: normalizeClass(["wd-radio", { "wd-radio--checked": unref(value) === o.value, "wd-radio--disabled": __props.disabled }]),
+                "aria-checked": unref(value) === o.value,
                 disabled: __props.disabled,
                 onClick: ($event) => pick(o.value)
               }, [
@@ -4985,15 +5052,25 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdRate" },
     __name: "WdRate",
     props: {
-      modelValue: { type: Number, required: false, default: 0 },
+      modelValue: { type: Number, required: false },
+      defaultValue: { type: Number, required: false },
       count: { type: Number, required: false, default: 5 },
       disabled: { type: Boolean, required: false, default: false },
       clearable: { type: Boolean, required: false, default: true }
     },
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const { value, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: 0,
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
       const hover = ref(-1);
       function isHoverPointer(e) {
         return e.pointerType === "mouse" || e.pointerType === "pen";
@@ -5009,8 +5086,8 @@ var WD_REAL_MODULE = (() => {
       function pick(i) {
         if (props.disabled) return;
         hover.value = -1;
-        const next = props.modelValue === i + 1 ? props.clearable ? 0 : i + 1 : i + 1;
-        emit("update:modelValue", next);
+        const next = value.value === i + 1 ? props.clearable ? 0 : i + 1 : i + 1;
+        set(next);
       }
       const shown = computed(() => hover.value >= 0 ? hover.value + 1 : props.modelValue);
       const root = ref(null);
@@ -5034,7 +5111,7 @@ var WD_REAL_MODULE = (() => {
           ref: root,
           class: normalizeClass(["wd-rate", { "wd-rate--disabled": __props.disabled }]),
           role: "radiogroup",
-          "aria-label": `\u8BC4\u5206\uFF0C\u5171 ${__props.count} \u661F\uFF0C\u5F53\u524D ${__props.modelValue} \u661F`,
+          "aria-label": `\u8BC4\u5206\uFF0C\u5171 ${__props.count} \u661F\uFF0C\u5F53\u524D ${unref(value)} \u661F`,
           "aria-disabled": __props.disabled || void 0,
           onMouseleave: _cache[1] || (_cache[1] = ($event) => hover.value = -1),
           onKeydown
@@ -5048,9 +5125,9 @@ var WD_REAL_MODULE = (() => {
                 type: "button",
                 class: normalizeClass(["wd-rate__item", { "wd-rate__item--on": i <= shown.value }]),
                 role: "radio",
-                "aria-checked": i === __props.modelValue,
+                "aria-checked": i === unref(value),
                 "aria-label": `${i} \u661F`,
-                tabindex: __props.disabled ? -1 : i === (__props.modelValue || (hover.value >= 0 ? hover.value + 1 : 1)) ? 0 : -1,
+                tabindex: __props.disabled ? -1 : i === (unref(value) || (hover.value >= 0 ? hover.value + 1 : 1)) ? 0 : -1,
                 disabled: __props.disabled,
                 onPointerenter: ($event) => onEnter(i - 1, $event),
                 onPointerleave: _cache[0] || (_cache[0] = ($event) => onLeave($event)),
@@ -5835,19 +5912,29 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdSlider" },
     __name: "WdSlider",
     props: {
-      modelValue: { type: Number, required: false, default: 0 },
+      modelValue: { type: Number, required: false },
+      defaultValue: { type: Number, required: false },
       min: { type: Number, required: false, default: 0 },
       max: { type: Number, required: false, default: 100 },
       step: { type: Number, required: false, default: 1 },
       showValue: { type: Boolean, required: false, default: true }
     },
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
       const props = __props;
       const emit = __emit;
       const el = ref(null);
+      const { value: ctl, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: 0,
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
       const live = ref(null);
-      const current = computed(() => live.value !== null ? live.value : props.modelValue);
+      const current = computed(() => live.value !== null ? live.value : ctl.value);
       const percent = computed(() => {
         const span = props.max - props.min || 1;
         return Math.max(0, Math.min(100, (current.value - props.min) / span * 100));
@@ -5858,7 +5945,7 @@ var WD_REAL_MODULE = (() => {
       function onInput(e) {
         const v = Number(e.target.value);
         live.value = v;
-        emit("update:modelValue", v);
+        set(v);
       }
       watch(
         () => props.modelValue,
@@ -6406,26 +6493,41 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSwitch.ts
-  var _hoisted_155 = ["aria-checked", "disabled"];
+  var _hoisted_155 = ["aria-checked", "data-controlled", "disabled"];
   var WdSwitch_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSwitch" },
     __name: "WdSwitch",
     props: {
-      modelValue: { type: Boolean, required: false, default: false },
+      modelValue: { type: Boolean, required: false },
+      defaultValue: { type: Boolean, required: false },
       disabled: { type: Boolean, required: false, default: false }
     },
-    emits: ["update:modelValue"],
+    emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
+      const props = __props;
       const emit = __emit;
+      const { value, set, controlled } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: false,
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
+      function toggle() {
+        if (!props.disabled) set(!value.value);
+      }
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock("button", {
           type: "button",
           role: "switch",
-          class: normalizeClass(["wd-switch", { "wd-switch--off": !__props.modelValue }]),
-          "aria-checked": __props.modelValue,
+          class: normalizeClass(["wd-switch", { "wd-switch--off": !unref(value) }]),
+          "aria-checked": unref(value),
+          "data-controlled": unref(controlled) ? "true" : "false",
           disabled: __props.disabled,
-          onClick: _cache[0] || (_cache[0] = ($event) => emit("update:modelValue", !__props.modelValue))
-        }, [..._cache[1] || (_cache[1] = [
+          onClick: toggle
+        }, [..._cache[0] || (_cache[0] = [
           createElementVNode(
             "span",
             { class: "wd-switch__knob" },

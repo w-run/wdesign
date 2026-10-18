@@ -155,6 +155,25 @@
         <div class="demo-col"><wd-switch :model-value="false" disabled></wd-switch><span class="demo-cap">禁用·关</span></div>
       </div>
       <span class="demo-cap" style="margin-top:10px">当前：{{ on ? '已开启' : '已关闭' }}</span>
+
+      <div class="demo-row" style="gap:24px; align-items:center; margin-top:22px; padding-top:18px; border-top:1px dashed var(--wd-ink-5)">
+        <div class="demo-col">
+          <wd-switch :default-value="true" @change="uncontrolledLog" />
+          <span class="demo-cap">非受控：default-value</span>
+        </div>
+        <div class="demo-col">
+          <wd-checkbox :default-value="true" label="非受控复选框" @change="uncontrolledLog" />
+          <span class="demo-cap">无需 v-model</span>
+        </div>
+        <div class="demo-col">
+          <wd-slider :default-value="30" :min="0" :max="100" @change="uncontrolledLog" style="width:140px" />
+          <span class="demo-cap">default-value=30</span>
+        </div>
+        <span class="demo-cap" v-if="ucLog">最近：{{ ucLog }}</span>
+      </div>
+      <span class="demo-cap" style="margin-top:8px">
+        不传 model-value 时组件自己持有状态，只需监听 change —— 表单里少写一半 state。
+      </span>
     </div>
 
     <div class="demo-panel">
@@ -1221,8 +1240,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.b9755e6f.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.0c2b36bc.js"></script>
-<script src="demo.5292bd58.js"></script>
+<script src="components.36bbfd44.js"></script>
+<script src="demo.97d7af31.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

@@ -1,20 +1,27 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { useControllable } from './controllable'
 
 defineOptions({ name: 'WdSlider' })
 
 const props = withDefaults(
   defineProps<{
     modelValue?: number
+    /** 非受控模式的初始值 */
+    defaultValue?: number
     min?: number
     max?: number
     step?: number
     showValue?: boolean
   }>(),
-  { modelValue: 0, min: 0, max: 100, step: 1, showValue: true },
+  /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
+  { min: 0, max: 100, step: 1, showValue: true },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: number): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number): void
+  (e: 'change', value: number): void
+}>()
 
 const el = ref<HTMLInputElement | null>(null)
 
@@ -26,8 +33,24 @@ const el = ref<HTMLInputElement | null>(null)
  * 滑块能拖、红色进度却停在原地。
  * 这里用 `live` 记录用户拖出来的值，保证视觉与滑块位置始终一致。
  */
+/**
+ * 受控 / 非受控由 useControllable 统一处理：
+ *  · 传了 modelValue → 以父级为准（父级不更新时，本地仍即时反映拖动）
+ *  · 没传 → 组件自己持有状态
+ * 这里保留 live 覆盖，是为了「受控但父级不更新」的静态示例也能拖动。
+ */
+const { value: ctl, set } = useControllable<number>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: 0,
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
+
 const live = ref<number | null>(null)
-const current = computed(() => (live.value !== null ? live.value : props.modelValue))
+const current = computed(() => (live.value !== null ? live.value : ctl.value))
 
 const percent = computed(() => {
   const span = props.max - props.min || 1
@@ -41,7 +64,7 @@ const trackStyle = computed(() => ({
 function onInput(e: Event) {
   const v = Number((e.target as HTMLInputElement).value)
   live.value = v                 // 立即驱动视觉，不等父级回传
-  emit('update:modelValue', v)
+  set(v)
 }
 
 // 外部值变化时清除本地覆盖（父级真正接管后以 props 为准）

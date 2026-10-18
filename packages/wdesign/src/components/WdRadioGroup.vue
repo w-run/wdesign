@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useControllable } from './controllable'
 
 defineOptions({ name: 'WdRadioGroup' })
 
@@ -8,20 +9,36 @@ type Option = string | { label: string; value: string | number }
 const props = withDefaults(
   defineProps<{
     modelValue?: string | number
+    /** 非受控模式的初始值 */
+    defaultValue?: string | number
     options?: Option[]
     disabled?: boolean
   }>(),
-  { modelValue: '', options: () => [], disabled: false },
+  /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
+  { options: () => [], disabled: false },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: string | number): void }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string | number): void
+  (e: 'change', value: string | number): void
+}>()
+
+const { value, set } = useControllable<string | number>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: '',
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
 
 const items = computed(() =>
   props.options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o)),
 )
 
 function pick(value: string | number) {
-  if (!props.disabled) emit('update:modelValue', value)
+  if (!props.disabled) set(value)
 }
 </script>
 
@@ -33,8 +50,8 @@ function pick(value: string | number) {
       type="button"
       role="radio"
       class="wd-radio"
-      :class="{ 'wd-radio--checked': modelValue === o.value, 'wd-radio--disabled': disabled }"
-      :aria-checked="modelValue === o.value"
+      :class="{ 'wd-radio--checked': value === o.value, 'wd-radio--disabled': disabled }"
+      :aria-checked="value === o.value"
       :disabled="disabled"
       @click="pick(o.value)"
     >
