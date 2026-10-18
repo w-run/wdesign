@@ -40,17 +40,32 @@ const bubble = ref<HTMLElement | null>(null)
 const pos = ref({ top: 0, left: 0 })
 
 /**
- * 用 fixed 定位：气泡常出现在表格/列表里，父级一旦 overflow:hidden 就会被裁掉。
- * fixed + 滚动时跟随重算，能稳定浮在最上层。
+ * 定位：**文档坐标 + position: absolute**（CSS 侧已同步）。
+ *
+ * ⚠️ 原来用 fixed + rect（视口坐标）。rect 是布局视口坐标，fixed 相对视觉视口，
+ * 移动端缩放 / iOS 地址栏伸缩 / 软键盘会让两者分离 → 气泡偏移。
+ * 而且它没有滚动监听，页面一滚气泡就停在原地。
+ *
+ * 改成文档坐标后：滚轮/缩放不需要重算，浏览器自动跟随。
+ * 翻转判断仍用视口坐标（要判断的是"会不会跑出屏幕"）。
  */
 function place() {
   const t = trigger.value?.getBoundingClientRect()
   if (!t) return
+  const sx = window.scrollX ?? window.pageXOffset ?? 0
+  const sy = window.scrollY ?? window.pageYOffset ?? 0
+  const vv = window.visualViewport
+  const vw = vv?.width ?? window.innerWidth
+
   const w = props.width
-  let left = t.left + t.width / 2 - w / 2
-  left = Math.max(8, Math.min(left, window.innerWidth - w - 8))
+  let left = t.left + sx + t.width / 2 - w / 2
+  // 夹进可见区：边界要换算回文档坐标
+  const minLeft = sx + 8
+  const maxLeft = sx + vw - w - 8
+  left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft)))
+
   const gap = 10
-  const top = props.placement === 'top' ? t.top - gap : t.bottom + gap
+  const top = props.placement === 'top' ? t.top + sy - gap : t.bottom + sy + gap
   pos.value = { top, left }
 }
 

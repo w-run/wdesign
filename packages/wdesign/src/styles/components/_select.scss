@@ -37,7 +37,7 @@
 .wd-select__menu.is-open { display: flex; }
 
 .wd-select__menu {
-  position: fixed;
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
   z-index: 1200;
   padding: 8px;
   display: none;

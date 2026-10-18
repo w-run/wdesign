@@ -12,7 +12,7 @@
  * 被祖先 overflow:hidden 裁切是 dropdown 最常见的线上问题。
  */
 .wd-dropdown__menu {
-  position: fixed;
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
   z-index: 1200;
   min-width: 180px;
   display: none;

@@ -5172,11 +5172,17 @@ var WD_REAL_MODULE = (() => {
       function place() {
         const t = trigger.value?.getBoundingClientRect();
         if (!t) return;
+        const sx = window.scrollX ?? window.pageXOffset ?? 0;
+        const sy = window.scrollY ?? window.pageYOffset ?? 0;
+        const vv = window.visualViewport;
+        const vw = vv?.width ?? window.innerWidth;
         const w = props.width;
-        let left = t.left + t.width / 2 - w / 2;
-        left = Math.max(8, Math.min(left, window.innerWidth - w - 8));
+        let left = t.left + sx + t.width / 2 - w / 2;
+        const minLeft = sx + 8;
+        const maxLeft = sx + vw - w - 8;
+        left = Math.max(minLeft, Math.min(left, Math.max(minLeft, maxLeft)));
         const gap = 10;
-        const top = props.placement === "top" ? t.top - gap : t.bottom + gap;
+        const top = props.placement === "top" ? t.top + sy - gap : t.bottom + sy + gap;
         pos.value = { top, left };
       }
       useDismiss([bubble, trigger], hide, open);

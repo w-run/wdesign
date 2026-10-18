@@ -6,7 +6,7 @@
 .wd-tooltip { display: inline-flex; }
 
 .wd-tooltip__bubble {
-  position: fixed;
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
   z-index: 1200;
   background: var(--wd-dark);
   color: var(--wd-dark-text);
