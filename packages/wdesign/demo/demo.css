@@ -6347,15 +6347,16 @@ img.wd-theme-invert {
   height: 68px;
   gap: 3px;
   /*
-   * 左右各内缩 2px 做视觉补偿。
+   * 左右各内缩 4px 做视觉补偿（上下保持 2px）。
    *
-   * 波形是 `justify-content: space-between`，首末两根柱子会紧贴容器边缘，
-   * 而上面的标题、下面的时间都是纯文本 —— 文本有字形侧边距（side bearing），
-   * 视觉上并不贴边。柱状图没有这层"自然留白"，直接顶到边界会显得
-   * 比上下两行更宽、撑破了卡片的对齐框。
-   * 内缩 2px 让三者的**视觉边界**对齐（不是几何边界对齐）。
+   * 波形是 `justify-content: space-between`，首末两根柱子紧贴容器边缘，
+   * 而上下两行是纯文本 —— 文本有字形侧边距（side bearing），视觉上不贴边。
+   * 柱状图是实心矩形，没有这层自然留白，几何对齐时**看起来更宽**。
+   *
+   * 2px 只够抵消 side bearing 的理论值；实测仍偏宽，
+   * 因为柱宽本身还有 0.5~1px 的抗锯齿溢出。4px 才在视觉上真正齐平。
    */
-  padding: 2px 2px;
+  padding: 2px 4px;
   justify-content: space-between;
 }
 
@@ -6377,6 +6378,8 @@ img.wd-theme-invert {
 .wd-audio__wave--fine {
   height: 44px;
   gap: 2px;
+  /* 与 --hero 用同一套视觉补偿：左右 4px。漏掉这里会导致带封面的卡片贴边。 */
+  padding: 0 4px;
   justify-content: space-between;
 }
 
