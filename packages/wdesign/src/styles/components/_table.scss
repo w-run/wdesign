@@ -89,3 +89,207 @@
   background: color-mix(in srgb, var(--wd-card) 55%, transparent);
   border-radius: inherit;
 }
+
+/* =============================================================
+ *  增强：尺寸 / 固定列 / 树形 / 行展开
+ * ============================================================= */
+
+/* ---------------- 展开列 / 勾选列固定宽度 ---------------- */
+/*
+ * ⚠️ 这两列的宽度必须与 JS 里计算固定列偏移时用的一致
+ * （leftOffsets 里按 40 / 44 累加）。改这里要同步改 WdTable.vue 的常量。
+ */
+.wd-table__th--expand,
+.wd-table__td--expand {
+  width: 40px;
+  min-width: 40px;
+  max-width: 40px;
+  padding-left: 10px !important;
+  padding-right: 0 !important;
+}
+
+.wd-table__th--check,
+.wd-table__td--check {
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+/* ---------------- 尺寸 ---------------- */
+.wd-table--sm th,
+.wd-table--sm td {
+  padding: 9px 12px;
+  font-size: 12.5px;
+}
+
+/* ---------------- 固定列 ---------------- */
+/*
+ * 固定列必须有不透明背景，否则下方滚动的单元格会透出来。
+ * ⚠️ 不能只用 background: var(--wd-bg) —— 斑马纹行有自己的底色，
+ * 固定列如果写死背景色，会与斑马纹错位。
+ * 这里用 inherit 让固定列跟随行的背景（行有底色时继承行的）。
+ */
+.wd-table-wrap--fixed .wd-table__th--fixed-left,
+.wd-table-wrap--fixed .wd-table__th--fixed-right {
+  background: var(--wd-card);
+  /* 表头层级最高，压住固定单元格 */
+  z-index: 4;
+}
+
+.wd-table-wrap--fixed .wd-table__td--fixed-left,
+.wd-table-wrap--fixed .wd-table__td--fixed-right {
+  background: inherit;
+}
+
+.wd-table-wrap--fixed tbody tr {
+  /* 固定列 inherit 的基准 */
+  background-color: var(--wd-card);
+}
+
+.wd-table-wrap--fixed.wd-table--striped tbody tr:nth-child(even),
+.wd-table-wrap--fixed .wd-table--striped tbody tr:nth-child(even) {
+  background-color: var(--wd-bg);
+}
+
+/*
+ * 固定列边缘的阴影：暗示"这里可以横向滚动，内容在下面"。
+ * 只在有固定列的一侧加，两侧都有就各加一条。
+ */
+.wd-table__th--fixed-left::after,
+.wd-table__td--fixed-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -6px;
+  width: 6px;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0, 0, 0, .06), transparent);
+  opacity: 0;
+  transition: opacity var(--wd-dur-fast) ease;
+}
+
+.wd-table__th--fixed-right::after,
+.wd-table__td--fixed-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6px;
+  width: 6px;
+  pointer-events: none;
+  background: linear-gradient(to left, rgba(0, 0, 0, .06), transparent);
+}
+
+/* 只在滚动时显示阴影 —— 停在最左/最右时不该有 */
+.wd-table-tbl--scrolled-x .wd-table__td--fixed-left::after {
+  opacity: 1;
+}
+
+/* ---------------- 省略号 ---------------- */
+.wd-table__th--ellipsis,
+.wd-table__td--ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 0; /* 配合 table-layout:fixed 才能生效 */
+}
+
+/* ---------------- 树形 ---------------- */
+.wd-table__indent {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.wd-table__tree-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-right: 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-table__tree-toggle:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-table__tree-toggle svg {
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-table__tree-toggle.is-open svg {
+  transform: rotate(90deg);
+}
+
+/* 叶子节点的占位：与箭头同宽，保证同级文字左对齐 */
+.wd-table__tree-spacer {
+  display: inline-block;
+  width: 18px;
+  margin-right: 4px;
+}
+
+/* ---------------- 行展开 ---------------- */
+.wd-table__expander {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-table__expander:hover {
+  background: var(--wd-tint-2);
+  color: var(--wd-ink);
+}
+
+.wd-table__expander svg {
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-table__expander.is-open svg {
+  transform: rotate(90deg);
+}
+
+.wd-table__row--expanded {
+  background: var(--wd-tint-1);
+}
+
+/*
+ * 展开详情行：
+ * 用浅底 + 内缩，明确表示"这一块属于上一行"。
+ * 不加边框 —— 本库无边框。
+ */
+.wd-table__expand-row td {
+  padding: 0;
+  background: var(--wd-bg);
+}
+
+.wd-table__expand-cell {
+  padding: 14px 18px !important;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+}
+
+.wd-table__expand-empty {
+  color: var(--wd-ink-3);
+  font-size: 12.5px;
+}

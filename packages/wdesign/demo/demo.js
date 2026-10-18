@@ -236,6 +236,71 @@ const app = createApp({
   data() {
     return {
       popSeg: '全部',
+      tlItems: [
+        { period: '2026 Q4', title: '设计系统 v2', desc: '令牌层重构，dark 主题优先级修正', icon: 'star', active: true },
+        { period: '2026 Q3', title: '组件扩充', desc: '从 49 个到 73 个，覆盖表单/数据/反馈' },
+        { period: '2026 Q2', title: '构建体系', desc: '常驻构建服务 + 内容指纹 + 冒烟测试' },
+      ],
+      tlHorizontal: [
+        { period: '周一', title: '需求评审' },
+        { period: '周二', title: '技术方案' },
+        { period: '周三', title: '开发' },
+        { period: '周四', title: '联调' },
+        { period: '周五', title: '上线' },
+      ],
+      tlColored: [
+        { period: '10:02', title: '构建开始', color: '#3B82F6', icon: 'check' },
+        { period: '10:14', title: '测试通过', color: '#4CAF50', icon: 'check' },
+        { period: '10:20', title: '部署中', color: '#F2A93B', active: true },
+        { period: '—', title: '等待审批', color: '#D62839', disabled: true },
+      ],
+      tlCollapsible: [
+        { period: 'v1.0', title: '首个版本', desc: '基础组件 20 个', detail: '包含按钮、输入框、卡片、标签等基础组件，确立了无边框设计语言。' },
+        { period: 'v1.4', title: '视觉成熟度', desc: '对比度与令牌修复', detail: '修复了 41 处红色文字对比度不足、锚点面令牌族缺口、说明文字过浅等问题。' },
+        { period: 'v2.0', title: '当前', desc: '73 个组件', detail: '新增图表、编辑器、高级数据展示等组件，建立完整的测试与构建体系。' },
+      ],
+      treeCols: [
+        { key: 'name', title: '名称', width: '240px' },
+        { key: 'type', title: '类型', width: '120px' },
+        { key: 'size', title: '体积', width: '100px', align: 'right' },
+      ],
+      treeRows: [
+        { id: 's', name: 'src/components', type: '目录', size: '—', children: [
+          { id: 's1', name: 'form', type: '目录', size: '—', children: [
+            { id: 's1a', name: 'WdInput.vue', type: '组件', size: '4.2 KB' },
+            { id: 's1b', name: 'WdSelect.vue', type: '组件', size: '8.1 KB' },
+          ]},
+          { id: 's2', name: 'data', type: '目录', size: '—', children: [
+            { id: 's2a', name: 'WdTable.vue', type: '组件', size: '15.6 KB' },
+            { id: 's2b', name: 'WdTree.vue', type: '组件', size: '9.3 KB' },
+          ]},
+        ]},
+        { id: 'p', name: 'package.json', type: '文件', size: '1.1 KB' },
+      ],
+      expCols: [
+        { key: 'name', title: '构建任务', width: '180px' },
+        { key: 'status', title: '状态', width: '110px' },
+        { key: 'time', title: '耗时', width: '100px', align: 'right' },
+      ],
+      expRows: [
+        { id: 1, name: 'check:tokens', status: '通过', time: '0.2s', detail: '校验 111 个令牌，无未定义变量引用。' },
+        { id: 2, name: 'build:demo', status: '通过', time: '12.4s', detail: '编译 73 个组件与 62 个样式文件。' },
+        { id: 3, name: 'test:smoke', status: '通过', time: '3.1s', detail: '381 项断言全部通过。' },
+      ],
+      fixedCols: [
+        { key: 'id', title: '编号', width: '90px', fixed: 'left' },
+        { key: 'name', title: '组件名', width: '150px', fixed: 'left' },
+        { key: 'desc', title: '说明', width: '320px' },
+        { key: 'author', title: '负责人', width: '120px' },
+        { key: 'updated', title: '更新时间', width: '140px' },
+      ],
+      fixedRows: Array.from({length:8},(_,i)=>({
+        id: 'C' + String(i+1).padStart(3,'0'),
+        name: ['WdButton','WdInput','WdTable','WdSelect','WdModal','WdTree','WdCard','WdTag'][i],
+        desc: '组件说明文字，横向滚动时可以对比首列是否固定',
+        author: ['林小满','陈一鸣','苏哲','周未'][i%4],
+        updated: '2026-10-' + String(10+i).padStart(2,'0'),
+      })),
       pickColor: '#D62839',
       pickColor2: '#3B82F6',
       mentionText: '',

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.35efcb92.css">
+<link rel="stylesheet" href="demo.7ffc5399.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -1066,15 +1066,6 @@
       <span class="demo-cap" style="margin-top:12px" v-if="ucLog">最近变化：{{ ucLog }}</span>
     </div>
 
-<div class="demo-panel">
-      <h3>TIMELINE 时间线</h3>
-      <div class="demo-row" style="gap:40px; align-items:flex-start">
-        <wd-timeline :items="timelineItems"></wd-timeline>
-        <wd-timeline :items="timelineItems" line style="padding-left:8px"></wd-timeline>
-        <span class="demo-cap">默认 / line 竖线变体</span>
-      </div>
-    </div>
-
     <div class="demo-panel">
       <h3>POSTITEM 文章项</h3>
       <div class="demo-col" style="width:100%">
@@ -1323,6 +1314,62 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
         <span class="demo-cap">尺寸 / 主题红 / 深底白 —— currentColor 全由 CSS 驱动</span>
       </div>
     </div>
+    <div class="demo-panel demo-panel--wide">
+      <h3>TIMELINE 时间线（三种布局）</h3>
+      <span class="demo-cap">vertical 单列 / alternate 左右交替 / horizontal 横向。支持节点颜色、图标、折叠详情。</span>
+
+      <div class="demo-row" style="gap:32px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:1 1 280px; min-width:260px">
+          <div class="demo-cap" style="margin-bottom:12px">vertical · 纵向（默认）</div>
+          <wd-timeline :items="tlItems" line></wd-timeline>
+        </div>
+        <div class="demo-col" style="flex:1 1 280px; min-width:260px">
+          <div class="demo-cap" style="margin-bottom:12px">dashed 虚线 + 自定义颜色</div>
+          <wd-timeline :items="tlColored" line-style="dashed" line></wd-timeline>
+        </div>
+        <div class="demo-col" style="flex:1 1 280px; min-width:260px">
+          <div class="demo-cap" style="margin-bottom:12px">collapsible · 点击展开详情</div>
+          <wd-timeline :items="tlCollapsible" collapsible line></wd-timeline>
+        </div>
+      </div>
+
+      <!--
+        交替布局必须占满整行。
+        三列均分时每侧只有 (宽-节点)/2，400px 容器下每侧不到 190px，
+        长一点的标题会挤成竖排单字 —— 这是布局本身的性质，不是 bug。
+      -->
+      <div class="demo-cap" style="margin-top:26px; margin-bottom:12px">alternate · 左右交替（需较宽容器）</div>
+      <wd-timeline :items="tlItems" mode="alternate" line></wd-timeline>
+
+      <div class="demo-cap" style="margin-top:26px; margin-bottom:12px">horizontal · 横向（可滚动）</div>
+      <wd-timeline :items="tlHorizontal" mode="horizontal" line></wd-timeline>
+
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>TABLE 表格增强</h3>
+      <span class="demo-cap">新增：固定列 / 树形数据 / 行展开 / 尺寸。原有排序、勾选、加载态保持兼容。</span>
+
+      <div class="demo-cap" style="margin-top:16px; margin-bottom:10px">树形数据（点击箭头展开层级）</div>
+      <div style="max-width:720px">
+        <wd-table :columns="treeCols" :rows="treeRows" tree row-key="id" default-expand-all size="sm"></wd-table>
+      </div>
+
+      <div class="demo-cap" style="margin-top:26px; margin-bottom:10px">行展开（点击最左侧箭头）</div>
+      <div style="max-width:720px">
+        <wd-table :columns="expCols" :rows="expRows" expandable row-key="id" size="sm">
+          <template #expand="{ row }">
+            <strong>{{ row.name }}</strong> 的详情：{{ row.detail }}
+          </template>
+        </wd-table>
+      </div>
+
+      <div class="demo-cap" style="margin-top:26px; margin-bottom:10px">固定列（横向滚动时首列固定）</div>
+      <div style="max-width:720px">
+        <wd-table :columns="fixedCols" :rows="fixedRows" row-key="id" size="sm" :max-height="260"></wd-table>
+      </div>
+    </div>
+
     <div class="demo-panel demo-panel--wide">
       <h3>COLORPICKER 取色器 / MENTIONS 提及</h3>
       <span class="demo-cap">取色器含 SV 渐变面板与 HEX 输入；Mentions 支持 @ 触发、键盘上下选择。</span>
@@ -1655,8 +1702,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.4c461b2e.js"></script>
-<script src="demo.e18f6b24.js"></script>
+<script src="components.276b5345.js"></script>
+<script src="demo.38955a65.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>
