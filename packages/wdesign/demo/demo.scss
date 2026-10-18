@@ -49,6 +49,7 @@
 @import '../src/styles/components/markdown';
 @import '../src/styles/components/table';
 @import '../src/styles/components/breadcrumb';
+@import '../src/styles/components/nav';
 @import '../src/styles/components/collapse';
 @import '../src/styles/components/transfer';
 @import '../src/styles/components/watermark';
@@ -645,4 +646,29 @@ html { scroll-behavior: smooth; }
  * ============================================================= */
 .demo-panel > h3::before {
   background: var(--wd-ink-4); /* 兜底：JS 未执行时仍是中性灰 */
+}
+
+/* Nav demo 里的退出项：与 wd-nav__item 保持同样的尺寸语言 */
+.demo-nav-foot-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: var(--wd-radius-sm);
+  color: var(--wd-ink-3);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+.demo-nav-foot-item:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+.wd-nav--vertical.is-collapsed .demo-nav-foot-item {
+  justify-content: center;
+  padding: 0;
+}
+.wd-nav--vertical.is-collapsed .demo-nav-foot-item span {
+  display: none;
 }

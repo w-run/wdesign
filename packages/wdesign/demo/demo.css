@@ -4695,6 +4695,316 @@ body {
   user-select: none;
 }
 
+.wd-nav {
+  display: flex;
+  font-size: 13px;
+  color: var(--wd-ink-2);
+}
+
+/* ---------------- 品牌 ---------------- */
+.wd-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.wd-nav__brand-text {
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--wd-ink);
+  white-space: nowrap;
+}
+
+/* ---------------- 项 ---------------- */
+.wd-nav__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-nav__item.is-disabled {
+  color: var(--wd-ink-4);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.wd-nav__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+/* 未提供图标时的首字占位 */
+.wd-nav__icon-fallback {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--wd-ink-3);
+}
+
+/* 未读小圆点 */
+.wd-nav__dot {
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--wd-red);
+  box-shadow: 0 0 0 2px var(--wd-card);
+}
+
+.wd-nav__group {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wd-ink-3);
+  padding: 0 10px;
+  margin-top: 6px;
+}
+
+/* =============================================================
+ *  横栏
+ * ============================================================= */
+.wd-nav--horizontal {
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 10px 0;
+}
+
+.wd-nav--horizontal.is-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/*
+ * ⚠️ 吸顶时必须有背景，否则内容会从导航下面透出来。
+ * 用不透明的卡片色（不用半透明 —— 半透明在滚动时会让文字发糊）。
+ */
+.wd-nav--horizontal.is-sticky {
+  background: var(--wd-bg);
+}
+
+.wd-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.wd-nav__list::-webkit-scrollbar {
+  display: none;
+}
+
+.wd-nav--horizontal .wd-nav__item {
+  height: var(--wd-size-sm);
+  padding: 0 13px;
+  /* 横栏用胶囊 —— 与全站的按钮/输入框一致 */
+  border-radius: var(--wd-radius-pill);
+}
+
+.wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled) {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+/*
+ * 横栏选中态：深色实心胶囊。
+ *
+ * 为什么不用主题红：导航是最高频的操作，
+ * 每一项都染红会让页面变成"警示灯阵列"。
+ * 深色块在黑白灰体系里已经足够明确，且不与 danger 语义混淆。
+ */
+.wd-nav--horizontal .wd-nav__item.is-active {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font-weight: 600;
+}
+
+.wd-nav--horizontal .wd-nav__item.is-active .wd-nav__icon-fallback {
+  color: var(--wd-card);
+}
+
+.wd-nav--horizontal .wd-nav__item.is-active .wd-nav__dot {
+  background: var(--wd-red-on-dark);
+  box-shadow: 0 0 0 2px var(--wd-ink);
+}
+
+/* 横栏底部区域：与列表推到两端 */
+.wd-nav--horizontal .wd-nav__footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+/* =============================================================
+ *  竖栏
+ *
+ *  竖栏的宽度是关键：展开 200px / 折叠 58px。
+ *  折叠后仍要容得下图标 + 左右内距，否则图标会被挤到边。
+ * ============================================================= */
+.wd-nav--vertical {
+  flex-direction: column;
+  gap: 6px;
+  width: 208px;
+  height: 100%;
+  padding: 18px 12px;
+  border-radius: var(--wd-radius-lg);
+  background: var(--wd-card);
+  transition: width var(--wd-dur) var(--wd-ease-out);
+  overflow: hidden;
+}
+
+.wd-nav--vertical.is-collapsed {
+  width: 60px;
+}
+
+.wd-nav--vertical .wd-nav__brand {
+  padding: 0 6px;
+  margin-bottom: 14px;
+  justify-content: space-between;
+}
+
+.wd-nav--vertical.is-collapsed .wd-nav__brand {
+  justify-content: center;
+  padding: 0;
+}
+
+.wd-nav__collapse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-nav__collapse:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+.wd-nav--vertical .wd-nav__list {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  /* 列表可滚动，footer 固定在底部 */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.wd-nav--vertical .wd-nav__list::-webkit-scrollbar {
+  display: none;
+}
+
+.wd-nav--vertical .wd-nav__item {
+  height: 38px;
+  padding: 0 10px;
+  border-radius: var(--wd-radius-sm);
+  gap: 11px;
+}
+
+.wd-nav--vertical.is-collapsed .wd-nav__item {
+  justify-content: center;
+  padding: 0;
+}
+
+.wd-nav--vertical .wd-nav__item:hover:not(.is-disabled) {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+/*
+ * 竖栏选中态：中性色浮起 + 深色文字 + 左侧短竖线。
+ *
+ * 左侧短竖线是导航的经典语汇（表示"你在这里"），
+ * 用深灰而非主题红 —— 它已经足够显眼，不需要色彩加码。
+ */
+.wd-nav--vertical .wd-nav__item.is-active {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font-weight: 700;
+}
+
+.wd-nav--vertical .wd-nav__item.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--wd-ink);
+}
+
+.wd-nav--vertical.is-collapsed .wd-nav__item.is-active::before {
+  left: -4px;
+}
+
+.wd-nav--vertical .wd-nav__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wd-nav--vertical .wd-nav__footer {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wd-nav--vertical.is-collapsed .wd-nav__footer {
+  align-items: center;
+}
+
+/* ---------------- 尺寸 ---------------- */
+.wd-nav--sm.wd-nav--horizontal .wd-nav__item {
+  height: 30px;
+  padding: 0 11px;
+  font-size: 12.5px;
+}
+
+.wd-nav--vertical.wd-nav--sm .wd-nav__item {
+  height: 34px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-nav__item,
+  .wd-nav--vertical,
+  .wd-nav__collapse {
+    transition: none;
+  }
+}
 .wd-collapse {
   display: flex;
   flex-direction: column;
@@ -11040,4 +11350,32 @@ html {
  * ============================================================= */
 .demo-panel > h3::before {
   background: var(--wd-ink-4); /* 兜底：JS 未执行时仍是中性灰 */
+}
+
+/* Nav demo 里的退出项：与 wd-nav__item 保持同样的尺寸语言 */
+.demo-nav-foot-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: var(--wd-radius-sm);
+  color: var(--wd-ink-3);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.demo-nav-foot-item:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+.wd-nav--vertical.is-collapsed .demo-nav-foot-item {
+  justify-content: center;
+  padding: 0;
+}
+
+.wd-nav--vertical.is-collapsed .demo-nav-foot-item span {
+  display: none;
 }

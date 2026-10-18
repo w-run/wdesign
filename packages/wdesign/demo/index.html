@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.150ef124.css">
+<link rel="stylesheet" href="demo.98a4cd0b.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -1484,6 +1484,74 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
 
     <div class="demo-panel demo-panel--wide">
+      <h3>NAV 导航（横栏 / 竖栏）</h3>
+      <span class="demo-cap">
+        容器无底色无边框；选中态靠浮起底色表达，不用主题红（导航是高频操作，红色会读成警告）。
+      </span>
+
+      <div class="demo-cap" style="margin-top:18px; margin-bottom:10px">horizontal · 顶部横栏</div>
+      <wd-card style="padding:0 20px">
+        <wd-nav
+          v-model:active="navTopActive"
+          :items="navTopItems"
+          brand="WDesign"
+          size="sm"
+        >
+          <template #footer>
+            <wd-button size="sm" variant="ghost" icon-only aria-label="设置">
+              <wd-icon name="gear" :size="15" />
+            </wd-button>
+          </template>
+        </wd-nav>
+      </wd-card>
+
+      <div class="demo-row" style="gap:24px; margin-top:26px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:0 0 auto">
+          <div class="demo-cap" style="margin-bottom:10px">vertical · 侧边栏（可折叠）</div>
+          <div style="height:400px">
+            <wd-nav
+              v-model:active="navSideActive"
+              v-model:collapsed="navCollapsed"
+              direction="vertical"
+              :items="navSideItems"
+              brand="Dodolan"
+            >
+              <template #footer>
+                <a class="demo-nav-foot-item" href="#top">
+                  <wd-icon name="power" :size="17" />
+                  <span>退出</span>
+                </a>
+              </template>
+            </wd-nav>
+          </div>
+        </div>
+
+        <div class="demo-col" style="flex:0 0 auto">
+          <div class="demo-cap" style="margin-bottom:10px">icon-only · 纯图标</div>
+          <div style="height:400px">
+            <wd-nav
+              v-model:active="navIconActive"
+              direction="vertical"
+              icon-only
+              :items="navIconItems"
+            ></wd-nav>
+          </div>
+        </div>
+
+        <div class="demo-col" style="flex:1 1 260px; min-width:240px">
+          <div class="demo-cap" style="margin-bottom:10px">说明</div>
+          <ul style="margin:0;padding-left:18px;font-size:13px;line-height:1.9;color:var(--wd-ink-2)">
+            <li>横栏选中态：深色实心胶囊</li>
+            <li>竖栏选中态：中性浮起 + 左侧短竖线</li>
+            <li>竖栏可折叠（60px）/ 纯图标模式</li>
+            <li>支持分组标题、未读小圆点、禁用项</li>
+            <li>横栏可吸顶，竖栏可独立滚动</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
       <h3>COLLAPSE 折叠面板</h3>
       <span class="demo-cap">数据驱动。默认多项可同时展开；加 accordion 切到手风琴模式（只开一项）。</span>
       <div class="demo-row" style="gap:24px; margin-top:16px; align-items:flex-start; flex-wrap:wrap">
@@ -1713,8 +1781,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.36c654ed.js"></script>
-<script src="demo.bfed88fc.js"></script>
+<script src="components.c902e97c.js"></script>
+<script src="demo.6b50d890.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

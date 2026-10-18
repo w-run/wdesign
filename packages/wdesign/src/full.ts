@@ -45,6 +45,7 @@ import WdListItem from './components/WdListItem.vue'
 import WdMarkdown from './components/WdMarkdown.vue'
 import WdMentions from './components/WdMentions.vue'
 import WdModal from './components/WdModal.vue'
+import WdNav from './components/WdNav.vue'
 import WdNotification from './components/WdNotification.vue'
 import WdOtp from './components/WdOtp.vue'
 import WdPagination from './components/WdPagination.vue'
@@ -118,6 +119,7 @@ const components = [
   WdMarkdown,
   WdMentions,
   WdModal,
+  WdNav,
   WdNotification,
   WdOtp,
   WdPagination,

@@ -236,6 +236,32 @@ const app = createApp({
   data() {
     return {
       popSeg: '全部',
+      navTopActive: 'guide',
+      navTopItems: [
+        { key: 'guide', label: '指南' },
+        { key: 'components', label: '组件' },
+        { key: 'tokens', label: '令牌' },
+        { key: 'icons', label: '图标' },
+        { key: 'changelog', label: '更新', dot: true },
+      ],
+      navSideActive: 'dashboard',
+      navCollapsed: false,
+      navSideItems: [
+        { key: 'dashboard', label: '概览', icon: 'layout-dashboard', group: '主导航' },
+        { key: 'calendar', label: '日程', icon: 'calendar', group: '主导航' },
+        { key: 'projects', label: '项目', icon: 'folder', group: '主导航' },
+        { key: 'clients', label: '客户', icon: 'user-group', group: '主导航', dot: true },
+        { key: 'files', label: '文件', icon: 'file', group: '资源' },
+        { key: 'settings', label: '设置', icon: 'settings', group: '资源' },
+      ],
+      navIconActive: 'chart',
+      navIconItems: [
+        { key: 'chart', label: '概览', icon: 'layout-dashboard' },
+        { key: 'calendar', label: '日程', icon: 'calendar' },
+        { key: 'folder', label: '项目', icon: 'folder' },
+        { key: 'users', label: '客户', icon: 'user-group', dot: true },
+        { key: 'gear', label: '设置', icon: 'settings' },
+      ],
       tlItems: [
         { period: '2026 Q4', title: '设计系统 v2', desc: '令牌层重构，dark 主题优先级修正', icon: 'star', active: true },
         { period: '2026 Q3', title: '组件扩充', desc: '从 49 个到 73 个，覆盖表单/数据/反馈' },
