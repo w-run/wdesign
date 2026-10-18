@@ -83,16 +83,28 @@ for (const f of files) {
   if (camelEvt.length) fail(`${name} 事件名用了 camelCase`, camelEvt.join(', '))
   else ok(`${name} 事件命名规范`)
 
-  // 4. 不允许手写 SVG（必须走 WdIcon，否则无法跟随图标库迭代）
+  /*
+   * 4. 不允许手写 SVG（必须走 WdIcon，否则无法跟随图标库迭代）。
+   *
+   * ⚠️ 例外：WdQRCode。它的 SVG 不是图标，而是**数据可视化的载体** ——
+   * 每个黑模块对应二维码的一个比特，必须由矩阵动态生成，
+   * 不可能做成图标组件。这类"内容本身是图形"的组件允许手写 SVG，
+   * 但必须显式列在这里，避免规则被悄悄绕过。
+   */
+  const SVG_EXEMPT = new Set(['WdQRCode'])
   //    例外：图标组件自身
   if (name !== 'WdIcon') {
     const stripped = src
       .replace(/<!--[\s\S]*?-->/g, '')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/^\s*\/\/.*$/gm, '')
-    const svgs = (stripped.match(/<svg[\s>]/g) || []).length
-    if (svgs > 0) fail(`${name} 含 ${svgs} 处手写 SVG`, '应改用 <wd-icon>')
-    else ok(`${name} 无手写 SVG`)
+    if (SVG_EXEMPT.has(name)) {
+      ok(`${name} 手写 SVG（已列入白名单：内容即图形）`)
+    } else {
+      const svgs = (stripped.match(/<svg[\s>]/g) || []).length
+      if (svgs > 0) fail(`${name} 含 ${svgs} 处手写 SVG`, '应改用 <wd-icon>')
+      else ok(`${name} 无手写 SVG`)
+    }
   }
 
   // 5. 浮层必须 Teleport
