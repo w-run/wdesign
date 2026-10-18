@@ -5756,28 +5756,23 @@ var WD_REAL_MODULE = (() => {
         dropdownOpen.value = false;
         return true;
       });
-      let sliderPlaced = false;
+      const sliderSettled = ref(false);
       function updateSlider() {
         const t = track.value;
         const s = slider.value;
         if (!t || !s || mode.value === "dropdown") return;
         const active = t.querySelector(".wd-segmented__item--active");
         if (!active) return;
-        if (!sliderPlaced) {
-          const prev = s.style.transition;
-          s.style.transition = "none";
+        if (!sliderSettled.value) {
+          s.classList.add("is-initial");
           place(active, s);
-          void s.offsetWidth;
-          requestAnimationFrame(() => {
-            s.style.transition = prev || "";
-            sliderPlaced = true;
-          });
-          setTimeout(() => {
-            if (!sliderPlaced) {
-              s.style.transition = prev || "";
-              sliderPlaced = true;
-            }
-          }, 80);
+          const settle = () => {
+            if (sliderSettled.value) return;
+            s.classList.remove("is-initial");
+            sliderSettled.value = true;
+          };
+          requestAnimationFrame(settle);
+          setTimeout(settle, 60);
           return;
         }
         place(active, s);

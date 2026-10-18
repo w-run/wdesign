@@ -56,12 +56,25 @@ useOverlayLayer(dropdownOpen, wrap, () => { dropdownOpen.value = false; return t
 
 /* ---------------- 滑块（选中项平移） ---------------- */
 /**
- * 是否已完成首次定位。
- * ⚠️ 首次定位必须**禁用过渡**，否则页面加载时滑块会从 x=0
- * 一路滑到选中项 —— 用户看到的是一个莫名其妙的横移动画。
- * 那是「初始状态」而不是「状态变化」，不该有过渡。
+ * 首帧禁过渡。
+ *
+ * 为什么需要：页面加载时滑块初始在 x=0（CSS 的 left:0），
+ * 若首次设置 transform 时已有 transition，用户会看到一个
+ * 「从左滑到选中项」的动画 —— 那是初始状态，不是状态变化。
+ *
+ * ⚠️ 踩坑记录：
+ * 最初用 `s.style.transition = 'none'` → rAF 里恢复。两个问题：
+ *   1. rAF 在无头/后台环境**完全不回调**（document.hidden=true 时
+ *      浏览器不调度渲染帧），滑块永远停在 transition:none
+ *   2. `sliderPlaced` 是模块级变量，多个实例共享 —— 第一个实例
+ *      置位后，第二个实例就跳过了首帧处理
+ *
+ * 现在改用**类名 + CSS** 控制，不碰内联样式：
+ *   · 首帧给滑块加 `.is-initial`，CSS 里 `transition: none`
+ *   · 用双 rAF + setTimeout 双保险移除（任一先到即可）
+ *   · 标志位改成每个实例自己的 ref
  */
-let sliderPlaced = false
+const sliderSettled = ref(false)
 
 function updateSlider() {
   const t = track.value
@@ -70,21 +83,17 @@ function updateSlider() {
   const active = t.querySelector<HTMLElement>('.wd-segmented__item--active')
   if (!active) return
 
-  // 首帧：先关掉过渡，落位后再恢复（下一帧开，避免同一帧内又被捕捉）
-  if (!sliderPlaced) {
-    const prev = s.style.transition
-    s.style.transition = 'none'
+  if (!sliderSettled.value) {
+    s.classList.add('is-initial')
     place(active, s)
-    // 强制一次样式计算，让"无过渡的初始位置"先提交
-    void s.offsetWidth
-    requestAnimationFrame(() => {
-      s.style.transition = prev || ''
-      sliderPlaced = true
-    })
-    // rAF 在时钟停摆时不回调 —— 兜底直接恢复
-    setTimeout(() => {
-      if (!sliderPlaced) { s.style.transition = prev || ''; sliderPlaced = true }
-    }, 80)
+    const settle = () => {
+      if (sliderSettled.value) return
+      s.classList.remove('is-initial')
+      sliderSettled.value = true
+    }
+    // rAF 优先（有渲染的环境最准），setTimeout 兜底（后台/无头环境）
+    requestAnimationFrame(settle)
+    setTimeout(settle, 60)
     return
   }
   place(active, s)

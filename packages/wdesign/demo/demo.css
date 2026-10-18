@@ -3643,6 +3643,16 @@ body {
   transition: transform var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), width var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), height var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1);
 }
 
+/*
+ * 首帧落位：禁用过渡。
+ * 页面加载时滑块初始在 x=0，首次设置 transform 若有过渡，
+ * 会看到"从左滑进来"的动画 —— 那是初始状态，不该有过渡。
+ * 定位完成后由 JS 移除该类，后续切换恢复正常动画。
+ */
+.wd-segmented__slider.is-initial {
+  transition: none;
+}
+
 .wd-segmented--dark {
   background: var(--wd-dark-2);
 }
