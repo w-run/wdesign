@@ -998,6 +998,30 @@
       <span class="demo-cap" style="margin-top:14px" v-if="grpMsg">{{ grpMsg }}</span>
     </div>
 
+    <div class="demo-panel demo-panel--wide">
+      <h3>CONFIG 非受控模式</h3>
+      <span class="demo-cap">不传 model-value 时组件自己持有状态，只需监听 change —— 表单里少写一半 state。</span>
+      <div class="demo-row" style="gap:24px; flex-wrap:wrap; margin-top:16px; align-items:flex-start">
+        <div class="demo-col" style="min-width:200px">
+          <wd-input default-value="初始文本" placeholder="非受控输入" @change="ucLog = $event"></wd-input>
+          <span class="demo-cap">Input · default-value</span>
+        </div>
+        <div class="demo-col" style="min-width:180px">
+          <wd-select default-value="选项二" :options="['选项一','选项二','选项三']" @change="ucLog = String($event)"></wd-select>
+          <span class="demo-cap">Select · default-value</span>
+        </div>
+        <div class="demo-col" style="min-width:180px">
+          <wd-switch :default-value="true" @change="ucLog = $event ? '开' : '关'"></wd-switch>
+          <span class="demo-cap">Switch · default-value</span>
+        </div>
+        <div class="demo-col" style="min-width:160px">
+          <wd-slider :default-value="60" @change="ucLog = String($event)"></wd-slider>
+          <span class="demo-cap">Slider · default-value</span>
+        </div>
+      </div>
+      <span class="demo-cap" style="margin-top:12px" v-if="ucLog">最近变化：{{ ucLog }}</span>
+    </div>
+
 <div class="demo-panel">
       <h3>TIMELINE 时间线</h3>
       <div class="demo-row" style="gap:40px; align-items:flex-start">
@@ -1333,7 +1357,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.b9755e6f.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.616361a2.js"></script>
+<script src="components.09b060f8.js"></script>
 <script src="demo.b9442923.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

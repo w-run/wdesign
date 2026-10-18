@@ -4068,7 +4068,8 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdInput" },
     __name: "WdInput",
     props: {
-      modelValue: { type: String, required: false, default: "" },
+      modelValue: { type: String, required: false },
+      defaultValue: { type: String, required: false },
       placeholder: { type: String, required: false, default: "" },
       shape: { type: String, required: false, default: "pill" },
       type: { type: String, required: false, default: "text" },
@@ -4079,29 +4080,38 @@ var WD_REAL_MODULE = (() => {
       showCount: { type: Boolean, required: false, default: false },
       readonly: { type: Boolean, required: false, default: false }
     },
-    emits: ["update:modelValue", "clear", "enter"],
+    emits: ["update:modelValue", "change", "clear", "enter"],
     setup(__props, { expose: __expose, emit: __emit }) {
       const props = __props;
       const emit = __emit;
+      const { value, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: "",
+        onChange: (v) => {
+          emit("update:modelValue", v);
+          emit("change", v);
+        }
+      });
       const el = ref(null);
-      const hasValue = computed(() => props.modelValue.length > 0);
+      const hasValue = computed(() => value.value.length > 0);
       const showClear = computed(() => props.clearable && hasValue.value && !props.disabled && !props.readonly);
-      const count = computed(() => props.showCount && props.maxlength ? `${props.modelValue.length}/${props.maxlength}` : "");
+      const count = computed(() => props.showCount && props.maxlength ? `${value.value.length}/${props.maxlength}` : "");
       function onInput(event) {
         let v = event.target.value;
         if (props.maxlength && v.length > props.maxlength) {
           v = v.slice(0, props.maxlength);
           event.target.value = v;
         }
-        emit("update:modelValue", v);
+        set(v);
       }
       function clear() {
-        emit("update:modelValue", "");
+        set("");
         emit("clear");
         el.value?.focus();
       }
       function onKeydown(e) {
-        if (e.key === "Enter") emit("enter", props.modelValue);
+        if (e.key === "Enter") emit("enter", value.value);
       }
       __expose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() });
       return (_ctx, _cache) => {
@@ -4124,7 +4134,7 @@ var WD_REAL_MODULE = (() => {
               ref_key: "el",
               ref: el,
               type: __props.type,
-              value: __props.modelValue,
+              value: unref(value),
               placeholder: __props.placeholder,
               disabled: __props.disabled,
               readonly: __props.readonly,
@@ -5601,7 +5611,8 @@ var WD_REAL_MODULE = (() => {
     ...{ name: "WdSelect" },
     __name: "WdSelect",
     props: {
-      modelValue: { type: [String, Number, Array], required: false, default: "" },
+      modelValue: { type: [String, Number, Array], required: false },
+      defaultValue: { type: [String, Number, Array], required: false },
       options: { type: Array, required: false, default: () => [] },
       placeholder: { type: String, required: false, default: "\u8BF7\u9009\u62E9" },
       disabled: { type: Boolean, required: false, default: false },
@@ -5639,9 +5650,18 @@ var WD_REAL_MODULE = (() => {
       const items = computed(
         () => props.options.map((o) => typeof o === "string" ? { label: o, value: o, disabled: false } : { disabled: false, ...o })
       );
+      const { value: ctlValue, set } = useControllable({
+        modelValue: computed(() => props.modelValue),
+        defaultValue: computed(() => props.defaultValue),
+        fallback: props.multiple ? [] : "",
+        onChange: (v) => {
+          set(v);
+        }
+      });
       const selected = computed(() => {
-        if (props.multiple) return Array.isArray(props.modelValue) ? props.modelValue : [];
-        return props.modelValue === "" || props.modelValue === void 0 ? [] : [props.modelValue];
+        const v = ctlValue.value;
+        if (props.multiple) return Array.isArray(v) ? v : [];
+        return v === "" || v === void 0 || Array.isArray(v) ? [] : [v];
       });
       const selectedItems = computed(() => selected.value.map((v) => items.value.find((o) => o.value === v)).filter(Boolean));
       const visible = computed(() => {
@@ -5658,14 +5678,12 @@ var WD_REAL_MODULE = (() => {
         const opt = items.value.find((o) => o.value === v);
         if (opt?.disabled) return;
         if (props.multiple) {
-          const set = new Set(selected.value);
-          set.has(v) ? set.delete(v) : set.add(v);
-          const next = Array.from(set);
-          emit("update:modelValue", next);
-          emit("change", next);
+          const set2 = new Set(selected.value);
+          set2.has(v) ? set2.delete(v) : set2.add(v);
+          const next = Array.from(set2);
+          set2(next);
         } else {
-          emit("update:modelValue", v);
-          emit("change", v);
+          set(v);
           open.value = false;
         }
         search.value = "";
@@ -5674,14 +5692,12 @@ var WD_REAL_MODULE = (() => {
         e.stopPropagation();
         if (props.disabled) return;
         const next = selected.value.filter((x) => x !== v);
-        emit("update:modelValue", next);
-        emit("change", next);
+        set(next);
       }
       function clear(e) {
         e?.stopPropagation();
         const next = props.multiple ? [] : "";
-        emit("update:modelValue", next);
-        emit("change", next);
+        set(next);
         emit("clear");
       }
       async function toggleOpen() {

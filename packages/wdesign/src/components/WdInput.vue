@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useControllable } from './controllable'
 
 defineOptions({ name: 'WdInput' })
 
 const props = withDefaults(
   defineProps<{
     modelValue?: string
+    /** 非受控模式的初始值（不传 modelValue 时生效） */
+    defaultValue?: string
     placeholder?: string
     shape?: 'pill' | 'rounded'
     type?: string
@@ -21,7 +24,7 @@ const props = withDefaults(
     readonly?: boolean
   }>(),
   {
-    modelValue: '',
+    /* ⚠️ 不给 modelValue 默认值：否则 `vnode.props` 判断受控会失效 */
     placeholder: '',
     shape: 'pill',
     type: 'text',
@@ -35,15 +38,31 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
+  (e: 'change', value: string): void
   (e: 'clear'): void
   (e: 'enter', value: string): void
 }>()
 
+/**
+ * 受控 / 非受控。
+ * 非受控模式下组件自己持有输入值，只需监听 @change ——
+ * 搜索框这类「用完就走」的场景不必再维护一个 ref。
+ */
+const { value, set } = useControllable<string>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: '',
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
+
 const el = ref<HTMLInputElement | null>(null)
 
-const hasValue = computed(() => props.modelValue.length > 0)
+const hasValue = computed(() => value.value.length > 0)
 const showClear = computed(() => props.clearable && hasValue.value && !props.disabled && !props.readonly)
-const count = computed(() => (props.showCount && props.maxlength ? `${props.modelValue.length}/${props.maxlength}` : ''))
+const count = computed(() => (props.showCount && props.maxlength ? `${value.value.length}/${props.maxlength}` : ''))
 
 function onInput(event: Event) {
   let v = (event.target as HTMLInputElement).value
@@ -52,17 +71,17 @@ function onInput(event: Event) {
     v = v.slice(0, props.maxlength)
     ;(event.target as HTMLInputElement).value = v
   }
-  emit('update:modelValue', v)
+  set(v)
 }
 
 function clear() {
-  emit('update:modelValue', '')
+  set('')
   emit('clear')
   el.value?.focus()
 }
 
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Enter') emit('enter', props.modelValue)
+  if (e.key === 'Enter') emit('enter', value.value)
 }
 
 defineExpose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
@@ -82,7 +101,7 @@ defineExpose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
     <input
       ref="el"
       :type="type"
-      :value="modelValue"
+      :value="value"
       :placeholder="placeholder"
       :disabled="disabled"
       :readonly="readonly"

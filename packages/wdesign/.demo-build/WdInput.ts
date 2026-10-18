@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, withModifiers as _withModifiers, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
+import { renderSlot as _renderSlot, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, unref as _unref, createElementVNode as _createElementVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, withModifiers as _withModifiers, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = {
   key: 0,
@@ -12,13 +12,15 @@ const _hoisted_3 = {
 }
 
 import { computed, ref } from 'vue'
+import { useControllable } from './controllable'
 
 
 export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdInput' },
   __name: 'WdInput',
   props: {
-    modelValue: { type: String, required: false, default: '' },
+    modelValue: { type: String, required: false },
+    defaultValue: { type: String, required: false },
     placeholder: { type: String, required: false, default: '' },
     shape: { type: String, required: false, default: 'pill' },
     type: { type: String, required: false, default: 'text' },
@@ -29,7 +31,7 @@ export default /*@__PURE__*/_defineComponent({
     showCount: { type: Boolean, required: false, default: false },
     readonly: { type: Boolean, required: false, default: false }
   },
-  emits: ["update:modelValue", "clear", "enter"],
+  emits: ["update:modelValue", "change", "clear", "enter"],
   setup(__props: any, { expose: __expose, emit: __emit }) {
 
 
@@ -38,11 +40,26 @@ const props = __props
 
 const emit = __emit
 
+/**
+ * 受控 / 非受控。
+ * 非受控模式下组件自己持有输入值，只需监听 @change ——
+ * 搜索框这类「用完就走」的场景不必再维护一个 ref。
+ */
+const { value, set } = useControllable<string>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: '',
+  onChange: (v) => {
+    emit('update:modelValue', v)
+    emit('change', v)
+  },
+})
+
 const el = ref<HTMLInputElement | null>(null)
 
-const hasValue = computed(() => props.modelValue.length > 0)
+const hasValue = computed(() => value.value.length > 0)
 const showClear = computed(() => props.clearable && hasValue.value && !props.disabled && !props.readonly)
-const count = computed(() => (props.showCount && props.maxlength ? `${props.modelValue.length}/${props.maxlength}` : ''))
+const count = computed(() => (props.showCount && props.maxlength ? `${value.value.length}/${props.maxlength}` : ''))
 
 function onInput(event: Event) {
   let v = (event.target as HTMLInputElement).value
@@ -51,17 +68,17 @@ function onInput(event: Event) {
     v = v.slice(0, props.maxlength)
     ;(event.target as HTMLInputElement).value = v
   }
-  emit('update:modelValue', v)
+  set(v)
 }
 
 function clear() {
-  emit('update:modelValue', '')
+  set('')
   emit('clear')
   el.value?.focus()
 }
 
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Enter') emit('enter', props.modelValue)
+  if (e.key === 'Enter') emit('enter', value.value)
 }
 
 __expose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
@@ -86,7 +103,7 @@ return (_ctx: any,_cache: any) => {
       ref_key: "el",
       ref: el,
       type: __props.type,
-      value: __props.modelValue,
+      value: _unref(value),
       placeholder: __props.placeholder,
       disabled: __props.disabled,
       readonly: __props.readonly,

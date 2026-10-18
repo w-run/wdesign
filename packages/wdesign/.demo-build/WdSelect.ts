@@ -31,6 +31,7 @@ const _hoisted_11 = {
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
 import { useAnchoredPosition, useDismiss } from './anchor'
+import { useControllable } from './controllable'
 
 // <Transition> 依赖 transitionend 收尾；事件丢失时元素会停在 enter-from。
 // 显式给 duration，让 Vue 用定时器兜底。
@@ -45,7 +46,8 @@ export default /*@__PURE__*/_defineComponent({
   ...{ name: 'WdSelect' },
   __name: 'WdSelect',
   props: {
-    modelValue: { type: [String, Number, Array], required: false, default: '' },
+    modelValue: { type: [String, Number, Array], required: false },
+    defaultValue: { type: [String, Number, Array], required: false },
     options: { type: Array, required: false, default: () => [] },
     placeholder: { type: String, required: false, default: '请选择' },
     disabled: { type: Boolean, required: false, default: false },
@@ -96,10 +98,27 @@ const items = computed(() =>
   props.options.map((o) => (typeof o === 'string' ? { label: o, value: o, disabled: false } : { disabled: false, ...o })),
 )
 
+/**
+ * 受控 / 非受控。
+ *
+ * ⚠️ fallback 与 Model 的类型随 multiple 变化：
+ *   单选是 OptionValue（'' 表示空），多选是 OptionValue[]。
+ *   所以用 computed 包一层默认值，不能写死。
+ */
+const { value: ctlValue, set } = useControllable<Model>({
+  modelValue: computed(() => props.modelValue),
+  defaultValue: computed(() => props.defaultValue),
+  fallback: (props.multiple ? [] : '') as Model,
+  onChange: (v) => {
+    set(v)
+  },
+})
+
 /** 当前选中值集合（统一成数组便于判断） */
 const selected = computed<OptionValue[]>(() => {
-  if (props.multiple) return Array.isArray(props.modelValue) ? props.modelValue : []
-  return props.modelValue === '' || props.modelValue === undefined ? [] : [props.modelValue as OptionValue]
+  const v = ctlValue.value
+  if (props.multiple) return Array.isArray(v) ? v : []
+  return v === '' || v === undefined || Array.isArray(v) ? [] : [v as OptionValue]
 })
 
 const selectedItems = computed(() => selected.value.map((v) => items.value.find((o) => o.value === v)).filter(Boolean) as typeof items.value)
@@ -128,12 +147,10 @@ function toggle(v: OptionValue) {
     const set = new Set(selected.value)
     set.has(v) ? set.delete(v) : set.add(v)
     const next = Array.from(set)
-    emit('update:modelValue', next)
-    emit('change', next)
+    set(next)
     // 多选不关闭面板，便于连续选择
   } else {
-    emit('update:modelValue', v)
-    emit('change', v)
+    set(v)
     open.value = false
   }
   search.value = ''
@@ -143,15 +160,13 @@ function removeTag(v: OptionValue, e: MouseEvent) {
   e.stopPropagation()
   if (props.disabled) return
   const next = selected.value.filter((x) => x !== v)
-  emit('update:modelValue', next)
-  emit('change', next)
+  set(next)
 }
 
 function clear(e?: MouseEvent) {
   e?.stopPropagation()
   const next = props.multiple ? [] : ''
-  emit('update:modelValue', next)
-  emit('change', next)
+  set(next)
   emit('clear')
 }
 
