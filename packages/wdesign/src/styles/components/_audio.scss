@@ -179,7 +179,7 @@
 }
 
 .wd-audio--card .wd-audio__title {
-  font-size: 17.5px;
+  font-size: 19px;
   font-weight: 800;
   letter-spacing: -.01em;
   line-height: 1.3;
@@ -293,7 +293,16 @@
 .wd-audio__wave--hero {
   height: 68px;
   gap: 3px;
-  padding: 2px 0;
+  /*
+   * 左右各内缩 2px 做视觉补偿。
+   *
+   * 波形是 `justify-content: space-between`，首末两根柱子会紧贴容器边缘，
+   * 而上面的标题、下面的时间都是纯文本 —— 文本有字形侧边距（side bearing），
+   * 视觉上并不贴边。柱状图没有这层"自然留白"，直接顶到边界会显得
+   * 比上下两行更宽、撑破了卡片的对齐框。
+   * 内缩 2px 让三者的**视觉边界**对齐（不是几何边界对齐）。
+   */
+  padding: 2px 2px;
   justify-content: space-between;
 }
 
