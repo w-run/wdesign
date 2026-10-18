@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
-import { useAnchoredPosition } from './anchor'
+import { useAnchoredPosition, useDismiss } from './anchor'
 
 // 显式声明过渡时长：<Transition> 依赖 transitionend 收尾，若该事件因
 // 渲染器暂停/动画时钟冻结而丢失，元素会永远停在 enter-from（视觉上=从不显示）。
@@ -30,9 +30,13 @@ const props = withDefaults(
 const emit = defineEmits<{ (e: 'select', value: string | number): void }>()
 
 const open = ref(false)
+
 const root = ref<HTMLElement>()
 const triggerEl = ref<HTMLElement | null>(null)
 const menuEl = ref<HTMLElement | null>(null)
+/** 点击外部关闭：统一走 anchor.ts 的实现（mousedown，比 click 更早、更可靠） */
+useDismiss([root], () => { open.value = false }, open)
+
 
 /**
  * Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切
@@ -56,17 +60,12 @@ function pick(item: WdDropdownItem) {
   open.value = false
 }
 
-function onDocClick(e: MouseEvent) {
-  if (root.value && !root.value.contains(e.target as Node)) open.value = false
-}
 function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
-  document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKey)
 })
 onBeforeUnmount(() => {
-  document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onKey)
 })
 </script>

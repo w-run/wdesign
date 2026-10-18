@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { formatDuration } from './time'
 
 defineOptions({ name: 'WdVideoPlayer' })
 
@@ -292,14 +293,6 @@ function togglePlay() {
   }
 }
 
-function fmtTime(t: number): string {
-  if (!isFinite(t) || t < 0) t = 0
-  const h = Math.floor(t / 3600)
-  const m = Math.floor((t % 3600) / 60)
-  const s = Math.floor(t % 60)
-  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-  return `${m}:${String(s).padStart(2, '0')}`
-}
 
 const progress = computed(() => {
   // 直播的 duration 是 Infinity，算出来是 NaN —— 必须挡掉，
@@ -617,7 +610,7 @@ onBeforeUnmount(() => {
         </template>
 
         <span v-if="!isLive" class="wd-vplayer__time">
-          {{ fmtTime(current) }} / {{ fmtTime(duration) }}
+          {{ formatDuration(current) }} / {{ formatDuration(duration) }}
         </span>
         <!-- 直播的 currentTime 是相对起播的偏移，不是节目时间，
              显示 "已直播 00:00" 会让用户困惑 → 改显示当前时刻 -->

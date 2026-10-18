@@ -112,10 +112,10 @@ var WD_REAL_MODULE = (() => {
   var renderSlot = G.renderSlot;
   var createBlock = G.createBlock;
   var normalizeStyle = G.normalizeStyle;
+  var unref = G.unref;
   var computed = G.computed;
   var withModifiers = G.withModifiers;
   var onMounted = G.onMounted;
-  var unref = G.unref;
   var vModelText = G.vModelText;
   var withDirectives = G.withDirectives;
   var Teleport = G.Teleport;
@@ -485,6 +485,18 @@ var WD_REAL_MODULE = (() => {
     }
   });
 
+  // .demo-build/time.ts
+  function formatDuration(seconds, forceHours = false) {
+    if (!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+    const total = Math.floor(seconds);
+    const h = Math.floor(total / 3600);
+    const m = Math.floor(total % 3600 / 60);
+    const s = total % 60;
+    const pad = (n) => String(n).padStart(2, "0");
+    if (h > 0 || forceHours) return `${h}:${pad(m)}:${pad(s)}`;
+    return `${m}:${pad(s)}`;
+  }
+
   // .demo-build/WdAudioPlayer.ts
   var _hoisted_14 = ["src", "loop"];
   var _hoisted_23 = {
@@ -565,12 +577,6 @@ var WD_REAL_MODULE = (() => {
       const ready = ref(false);
       const errMsg = ref("");
       const rateOpen = ref(false);
-      function fmtTime(t) {
-        if (!isFinite(t) || t < 0) t = 0;
-        const m = Math.floor(t / 60);
-        const s = Math.floor(t % 60);
-        return `${m}:${String(s).padStart(2, "0")}`;
-      }
       const progress = computed(() => duration.value > 0 ? current.value / duration.value * 100 : 0);
       const bufferedPct = computed(() => duration.value > 0 ? buffered.value / duration.value * 100 : 0);
       const remain = computed(() => Math.max(0, duration.value - current.value));
@@ -870,7 +876,7 @@ var WD_REAL_MODULE = (() => {
                 createElementVNode(
                   "span",
                   null,
-                  toDisplayString(fmtTime(current.value)),
+                  toDisplayString(unref(formatDuration)(current.value)),
                   1
                   /* TEXT */
                 ),
@@ -884,7 +890,7 @@ var WD_REAL_MODULE = (() => {
                 createElementVNode(
                   "span",
                   null,
-                  toDisplayString(fmtTime(duration.value)),
+                  toDisplayString(unref(formatDuration)(duration.value)),
                   1
                   /* TEXT */
                 ),
@@ -2255,6 +2261,18 @@ var WD_REAL_MODULE = (() => {
     onBeforeUnmount(unbind);
     return { pos, place, actual };
   }
+  function useDismiss(refs, close, enabled, event = "click") {
+    function onDoc(e) {
+      if (!enabled.value) return;
+      const t = e.target;
+      if (refs.some((r) => r.value?.contains(t))) return;
+      close();
+    }
+    if (typeof document !== "undefined") document.addEventListener(event, onDoc);
+    onBeforeUnmount(() => {
+      if (typeof document !== "undefined") document.removeEventListener(event, onDoc);
+    });
+  }
 
   // .demo-build/pop-duration.ts
   var reduce = () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2294,6 +2312,9 @@ var WD_REAL_MODULE = (() => {
       const open = ref(false);
       const root = ref();
       const panelEl = ref(null);
+      useDismiss([root], () => {
+        open.value = false;
+      }, open);
       const { pos } = useAnchoredPosition(open, root, panelEl, {
         placement: "bottom-start",
         gap: 8,
@@ -2358,17 +2379,12 @@ var WD_REAL_MODULE = (() => {
           }
         }
       }
-      function onDocClick(e) {
-        if (root.value && !root.value.contains(e.target)) open.value = false;
-      }
       function onKey(e) {
       }
       onMounted(() => {
-        document.addEventListener("click", onDocClick);
         document.addEventListener("keydown", onKey);
       });
       onBeforeUnmount(() => {
-        document.removeEventListener("click", onDocClick);
         document.removeEventListener("keydown", onKey);
       });
       return (_ctx, _cache) => {
@@ -2948,6 +2964,9 @@ var WD_REAL_MODULE = (() => {
       const root = ref();
       const triggerEl = ref(null);
       const menuEl = ref(null);
+      useDismiss([root], () => {
+        open.value = false;
+      }, open);
       const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
         placement: "bottom-start",
         gap: 6,
@@ -2962,17 +2981,12 @@ var WD_REAL_MODULE = (() => {
         emit("select", item.value);
         open.value = false;
       }
-      function onDocClick(e) {
-        if (root.value && !root.value.contains(e.target)) open.value = false;
-      }
       function onKey(e) {
       }
       onMounted(() => {
-        document.addEventListener("click", onDocClick);
         document.addEventListener("keydown", onKey);
       });
       onBeforeUnmount(() => {
-        document.removeEventListener("click", onDocClick);
         document.removeEventListener("keydown", onKey);
       });
       return (_ctx, _cache) => {
@@ -4771,6 +4785,7 @@ var WD_REAL_MODULE = (() => {
         const top = props.placement === "top" ? t.top - gap : t.bottom + gap;
         pos.value = { top, left };
       }
+      useDismiss([bubble, trigger], hide, open);
       async function show() {
         if (props.disabled) return;
         mounted.value = true;
@@ -4795,12 +4810,6 @@ var WD_REAL_MODULE = (() => {
         hide();
         emit("cancel");
       }
-      function onDocDown(e) {
-        if (!open.value) return;
-        const target = e.target;
-        if (bubble.value?.contains(target) || trigger.value?.contains(target)) return;
-        hide();
-      }
       function onKey(e) {
         if (open.value && e.key === "Escape") hide();
       }
@@ -4813,10 +4822,8 @@ var WD_REAL_MODULE = (() => {
           window.removeEventListener("resize", place);
         }
       });
-      document.addEventListener("mousedown", onDocDown);
       document.addEventListener("keydown", onKey);
       onBeforeUnmount(() => {
-        document.removeEventListener("mousedown", onDocDown);
         document.removeEventListener("keydown", onKey);
         window.removeEventListener("scroll", place, true);
         window.removeEventListener("resize", place);
@@ -5339,6 +5346,9 @@ var WD_REAL_MODULE = (() => {
       const canLeft = ref(false);
       const canRight = ref(false);
       const dropdownOpen = ref(false);
+      useDismiss([wrap], () => {
+        dropdownOpen.value = false;
+      }, dropdownOpen);
       useOverlayLayer(dropdownOpen, wrap, () => {
         dropdownOpen.value = false;
         return true;
@@ -5410,9 +5420,6 @@ var WD_REAL_MODULE = (() => {
         emit("update:modelValue", v);
         dropdownOpen.value = false;
       }
-      function onDocClick(e) {
-        if (wrap.value && !wrap.value.contains(e.target)) dropdownOpen.value = false;
-      }
       function onKey(e) {
       }
       let ro;
@@ -5420,7 +5427,6 @@ var WD_REAL_MODULE = (() => {
         await nextTick();
         measure();
         window.addEventListener("resize", measure);
-        document.addEventListener("click", onDocClick);
         document.addEventListener("keydown", onKey);
         if (typeof ResizeObserver !== "undefined" && wrap.value) {
           ro = new ResizeObserver(() => measure());
@@ -5429,7 +5435,6 @@ var WD_REAL_MODULE = (() => {
       });
       onBeforeUnmount(() => {
         window.removeEventListener("resize", measure);
-        document.removeEventListener("click", onDocClick);
         document.removeEventListener("keydown", onKey);
         ro?.disconnect();
       });
@@ -5628,6 +5633,10 @@ var WD_REAL_MODULE = (() => {
         return true;
       });
       const search = ref("");
+      useDismiss([root], () => {
+        open.value = false;
+        search.value = "";
+      }, open);
       const searchEl = ref(null);
       const activeIndex = ref(-1);
       const items = computed(
@@ -5709,14 +5718,6 @@ var WD_REAL_MODULE = (() => {
           if (opt) toggle(opt.value);
         }
       }
-      function onDocClick(e) {
-        if (root.value && !root.value.contains(e.target)) {
-          open.value = false;
-          search.value = "";
-        }
-      }
-      onMounted(() => document.addEventListener("click", onDocClick));
-      onBeforeUnmount(() => document.removeEventListener("click", onDocClick));
       watch(visible, (list) => {
         if (activeIndex.value >= list.length) activeIndex.value = list.length - 1;
       });
@@ -7859,14 +7860,6 @@ var WD_REAL_MODULE = (() => {
           v.pause();
         }
       }
-      function fmtTime(t) {
-        if (!isFinite(t) || t < 0) t = 0;
-        const h = Math.floor(t / 3600);
-        const m = Math.floor(t % 3600 / 60);
-        const s = Math.floor(t % 60);
-        if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-        return `${m}:${String(s).padStart(2, "0")}`;
-      }
       const progress = computed(() => {
         if (isLive.value || !isFinite(duration.value) || duration.value <= 0) return 0;
         return current.value / duration.value * 100;
@@ -8313,7 +8306,7 @@ var WD_REAL_MODULE = (() => {
                   !isLive.value ? (openBlock(), createElementBlock(
                     "span",
                     _hoisted_1211,
-                    toDisplayString(fmtTime(current.value)) + " / " + toDisplayString(fmtTime(duration.value)),
+                    toDisplayString(unref(formatDuration)(current.value)) + " / " + toDisplayString(unref(formatDuration)(duration.value)),
                     1
                     /* TEXT */
                   )) : (openBlock(), createElementBlock(

@@ -30,7 +30,7 @@ const _hoisted_11 = {
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
-import { useAnchoredPosition } from './anchor'
+import { useAnchoredPosition, useDismiss } from './anchor'
 
 // <Transition> 依赖 transitionend 收尾；事件丢失时元素会停在 enter-from。
 // 显式给 duration，让 Vue 用定时器兜底。
@@ -78,9 +78,17 @@ const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
   matchWidth: true,
 })
 
+
 /** 层栈：Esc 只关最上层（弹窗里的选择器不会连带关弹窗） */
 useOverlayLayer(open, root, () => { open.value = false; return true })
 const search = ref('')
+
+/** 点击外部关闭：顺带清空搜索词，否则下次打开还留着上次的过滤条件 */
+useDismiss([root], () => {
+  open.value = false
+  search.value = ''
+}, open)
+
 const searchEl = ref<HTMLInputElement | null>(null)
 const activeIndex = ref(-1)
 
@@ -179,15 +187,7 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
-function onDocClick(e: MouseEvent) {
-  if (root.value && !root.value.contains(e.target as Node)) {
-    open.value = false
-    search.value = ''
-  }
-}
 
-onMounted(() => document.addEventListener('click', onDocClick))
-onBeforeUnmount(() => document.removeEventListener('click', onDocClick))
 
 // 选项变化后把高亮索引夹到范围内
 watch(visible, (list) => {

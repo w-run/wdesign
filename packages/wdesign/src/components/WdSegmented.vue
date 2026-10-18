@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useDismiss } from './anchor'
 import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdSegmented' })
@@ -37,6 +38,7 @@ const activeLabel = computed(
 )
 
 const wrap = ref<HTMLElement>()
+/** 点击外部关闭 */
 const track = ref<HTMLElement>()
 const slider = ref<HTMLElement>()
 
@@ -44,6 +46,10 @@ const mode = ref<Mode>('flat')
 const canLeft = ref(false)
 const canRight = ref(false)
 const dropdownOpen = ref(false)
+/** 点击外部关闭：统一走 anchor.ts（click 事件，与触发器一致） */
+useDismiss([wrap], () => { dropdownOpen.value = false }, dropdownOpen)
+
+
 
 /** 层栈：Esc 只关最上层 */
 useOverlayLayer(dropdownOpen, wrap, () => { dropdownOpen.value = false; return true })
@@ -130,9 +136,6 @@ function pick(v: string | number) {
   emit('update:modelValue', v)
   dropdownOpen.value = false
 }
-function onDocClick(e: MouseEvent) {
-  if (wrap.value && !wrap.value.contains(e.target as Node)) dropdownOpen.value = false
-}
 function onKey(e: KeyboardEvent) {
   // Esc 由层栈统一调度（见下方 useOverlayLayer），这里不再单独处理
 }
@@ -143,7 +146,6 @@ onMounted(async () => {
   await nextTick()
   measure()
   window.addEventListener('resize', measure)
-  document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKey)
   // 容器尺寸变化（侧栏展开/窗口缩放）时重新判定模式
   if (typeof ResizeObserver !== 'undefined' && wrap.value) {
@@ -154,7 +156,6 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', measure)
-  document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onKey)
   ro?.disconnect()
 })

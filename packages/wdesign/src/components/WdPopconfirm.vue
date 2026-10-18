@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { useDismiss } from './anchor'
 import { popDuration } from './pop-duration'
 
 const POP_DURATION = popDuration()
@@ -53,6 +54,9 @@ function place() {
   pos.value = { top, left }
 }
 
+/** 点击外部关闭：统一走 anchor.ts（含面板与触发器两个受保护区域） */
+useDismiss([bubble, trigger], hide, open)
+
 async function show() {
   if (props.disabled) return
   mounted.value = true
@@ -74,12 +78,6 @@ function hide() {
 function confirm() { hide(); emit('confirm') }
 function cancel() { hide(); emit('cancel') }
 
-function onDocDown(e: MouseEvent) {
-  if (!open.value) return
-  const target = e.target as Node
-  if (bubble.value?.contains(target) || trigger.value?.contains(target)) return
-  hide()
-}
 
 function onKey(e: KeyboardEvent) {
   if (open.value && e.key === 'Escape') hide()
@@ -95,10 +93,8 @@ watch(open, (v) => {
   }
 })
 
-document.addEventListener('mousedown', onDocDown)
 document.addEventListener('keydown', onKey)
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocDown)
   document.removeEventListener('keydown', onKey)
   window.removeEventListener('scroll', place, true)
   window.removeEventListener('resize', place)

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { formatDuration } from './time'
 
 defineOptions({ name: 'WdAudioPlayer' })
 
@@ -66,12 +67,6 @@ const ready = ref(false)
 const errMsg = ref('')
 const rateOpen = ref(false)
 
-function fmtTime(t: number): string {
-  if (!isFinite(t) || t < 0) t = 0
-  const m = Math.floor(t / 60)
-  const s = Math.floor(t % 60)
-  return `${m}:${String(s).padStart(2, '0')}`
-}
 
 const progress = computed(() => (duration.value > 0 ? (current.value / duration.value) * 100 : 0))
 const bufferedPct = computed(() => (duration.value > 0 ? (buffered.value / duration.value) * 100 : 0))
@@ -255,9 +250,9 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
       </div>
 
       <div class="wd-audio__time">
-        <span>{{ fmtTime(current) }}</span>
+        <span>{{ formatDuration(current) }}</span>
         <span class="wd-audio__time-sep">/</span>
-        <span>{{ fmtTime(duration) }}</span>
+        <span>{{ formatDuration(duration) }}</span>
         <span v-if="errMsg" class="wd-audio__err">{{ errMsg }}</span>
         <!-- 时间行右侧扩展位 -->
         <slot name="extra" />

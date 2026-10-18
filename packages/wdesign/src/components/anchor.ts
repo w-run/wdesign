@@ -122,15 +122,26 @@ export function useDismiss(
   refs: Ref<HTMLElement | null>[],
   close: () => void,
   enabled: Ref<boolean>,
+  event: 'click' | 'mousedown' = 'click',
 ) {
+  /**
+   * 默认用 click 而不是 mousedown。
+   *
+   * 曾经改成 mousedown 想「更早响应」，结果和触发器的 click 打架：
+   * 按下 → mousedown 判为外部 → 关闭；抬起 → click → 又打开。
+   * 表现为「点了没反应」。三者（触发器 click、面板内点击、外部点击）
+   * 用同一种事件类型才不会出现时序错位。
+   *
+   * mousedown 只在需要「拖动开始时立即关闭」的场景才显式传。
+   */
   function onDoc(e: MouseEvent) {
     if (!enabled.value) return
     const t = e.target as Node
     if (refs.some((r) => r.value?.contains(t))) return
     close()
   }
-  if (typeof document !== 'undefined') document.addEventListener('mousedown', onDoc)
+  if (typeof document !== 'undefined') document.addEventListener(event, onDoc)
   onBeforeUnmount(() => {
-    if (typeof document !== 'undefined') document.removeEventListener('mousedown', onDoc)
+    if (typeof document !== 'undefined') document.removeEventListener(event, onDoc)
   })
 }
