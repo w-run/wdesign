@@ -6453,9 +6453,9 @@ img.wd-theme-invert {
  * `space-between` 在溢出时首项贴左、末项冲出右边界，
  * 表现为「整排控件偏右」（末位右留白 8.7px，本该 26px，和左侧不对称）。
  *
- * 修法：先让内容能装下 —— 38×4 + 58 = 210，内宽 300px 有充足余量。
- * 保留 space-between：内宽变窄后间隙自动从 43px 收到 **22.5px**，
- * 控件不再被摊到两端（这是"又小又分散"的根源）。
+ * 修法：先让内容能装下 —— 44×4 + 66 = 242，内宽 300px 有余量。
+ * 保留 space-between：间隙按剩余空间均分 ——
+ *   (300 - 242) / 4 = **14.5px**，控件紧凑不散。
  */
 .wd-audio__controls {
   display: flex;
@@ -6470,15 +6470,15 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 12.5px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
@@ -6498,8 +6498,8 @@ img.wd-theme-invert {
  * ⚠️ 改 .wd-audio__ctl 的宽高时，这里要同步。
  */
 .wd-audio__ctl-spacer {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   flex: none;
 }
 
@@ -6513,8 +6513,13 @@ img.wd-theme-invert {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 58px;
-  height: 58px;
+  /*
+   * 主键 66px / 次级 44px = **精确 2/3**。
+   * 播放键是绝对视觉主体，其余控件必须明显退一档；
+   * 之前 62/42 = 67.7% 虽接近，但图标占比 80%（25 vs 20）把层级拉平了。
+   */
+  width: 66px;
+  height: 66px;
   padding: 0;
   border: 0;
   border-radius: 50%;

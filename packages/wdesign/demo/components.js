@@ -914,7 +914,7 @@ var WD_REAL_MODULE = (() => {
                     createVNode(_component_wd_icon, {
                       name: "skip-previous",
                       variant: __props.iconStyle,
-                      size: 17
+                      size: 19
                     }, null, 8, ["variant"])
                   ])) : createCommentVNode("v-if", true),
                   createElementVNode("button", {
@@ -926,7 +926,7 @@ var WD_REAL_MODULE = (() => {
                     createVNode(_component_wd_icon, {
                       name: playing.value ? "pause" : "play",
                       variant: __props.iconStyle,
-                      size: 22
+                      size: 26
                     }, null, 8, ["name", "variant"])
                   ], 8, _hoisted_16),
                   __props.navigable ? (openBlock(), createElementBlock("button", {
@@ -939,7 +939,7 @@ var WD_REAL_MODULE = (() => {
                     createVNode(_component_wd_icon, {
                       name: "skip-next",
                       variant: __props.iconStyle,
-                      size: 17
+                      size: 19
                     }, null, 8, ["variant"])
                   ])) : createCommentVNode("v-if", true),
                   volume.value ? (openBlock(), createElementBlock("button", {
@@ -952,7 +952,7 @@ var WD_REAL_MODULE = (() => {
                     createVNode(_component_wd_icon, {
                       name: muted.value ? "volume-mute" : "volume-up",
                       variant: __props.iconStyle,
-                      size: 17
+                      size: 20
                     }, null, 8, ["name", "variant"])
                   ], 8, _hoisted_17)) : (openBlock(), createElementBlock("span", _hoisted_18))
                 ]),

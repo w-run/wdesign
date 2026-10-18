@@ -340,15 +340,15 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
         <span v-else class="wd-audio__ctl-spacer"></span>
 
         <button v-if="navigable" type="button" class="wd-audio__ctl" aria-label="上一首" @click="emit('prev')">
-          <wd-icon name="skip-previous" :variant="iconStyle" :size="17" />
+          <wd-icon name="skip-previous" :variant="iconStyle" :size="19" />
         </button>
 
         <button type="button" class="wd-audio__main-btn" :aria-label="playing ? '暂停' : '播放'" @click="togglePlay">
-          <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="22" />
+          <wd-icon :name="playing ? 'pause' : 'play'" :variant="iconStyle" :size="26" />
         </button>
 
         <button v-if="navigable" type="button" class="wd-audio__ctl" aria-label="下一首" @click="emit('next')">
-          <wd-icon name="skip-next" :variant="iconStyle" :size="17" />
+          <wd-icon name="skip-next" :variant="iconStyle" :size="19" />
         </button>
 
         <button
@@ -358,7 +358,7 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           :aria-label="muted ? '取消静音' : '静音'"
           @click="toggleMute"
         >
-          <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="17" />
+          <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="20" />
         </button>
         <span v-else class="wd-audio__ctl-spacer"></span>
       </div>
