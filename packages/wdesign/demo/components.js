@@ -5756,12 +5756,33 @@ var WD_REAL_MODULE = (() => {
         dropdownOpen.value = false;
         return true;
       });
+      let sliderPlaced = false;
       function updateSlider() {
         const t = track.value;
         const s = slider.value;
         if (!t || !s || mode.value === "dropdown") return;
         const active = t.querySelector(".wd-segmented__item--active");
         if (!active) return;
+        if (!sliderPlaced) {
+          const prev = s.style.transition;
+          s.style.transition = "none";
+          place(active, s);
+          void s.offsetWidth;
+          requestAnimationFrame(() => {
+            s.style.transition = prev || "";
+            sliderPlaced = true;
+          });
+          setTimeout(() => {
+            if (!sliderPlaced) {
+              s.style.transition = prev || "";
+              sliderPlaced = true;
+            }
+          }, 80);
+          return;
+        }
+        place(active, s);
+      }
+      function place(active, s) {
         s.style.transform = `translate(${active.offsetLeft - s.offsetLeft}px, ${active.offsetTop - s.offsetTop}px)`;
         s.style.width = `${active.offsetWidth}px`;
         s.style.height = `${active.offsetHeight}px`;
@@ -5772,9 +5793,7 @@ var WD_REAL_MODULE = (() => {
         if (!t || !w) return;
         if (props.overflow === "wrap") {
           mode.value = "flat";
-          return;
-        }
-        if (props.overflow === "scroll") {
+        } else if (props.overflow === "scroll") {
           mode.value = "scroll";
         } else {
           const cs = getComputedStyle(t);

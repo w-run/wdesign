@@ -55,14 +55,44 @@ useDismiss([wrap], () => { dropdownOpen.value = false }, dropdownOpen)
 useOverlayLayer(dropdownOpen, wrap, () => { dropdownOpen.value = false; return true })
 
 /* ---------------- 滑块（选中项平移） ---------------- */
+/**
+ * 是否已完成首次定位。
+ * ⚠️ 首次定位必须**禁用过渡**，否则页面加载时滑块会从 x=0
+ * 一路滑到选中项 —— 用户看到的是一个莫名其妙的横移动画。
+ * 那是「初始状态」而不是「状态变化」，不该有过渡。
+ */
+let sliderPlaced = false
+
 function updateSlider() {
   const t = track.value
   const s = slider.value
   if (!t || !s || mode.value === 'dropdown') return
   const active = t.querySelector<HTMLElement>('.wd-segmented__item--active')
   if (!active) return
+
+  // 首帧：先关掉过渡，落位后再恢复（下一帧开，避免同一帧内又被捕捉）
+  if (!sliderPlaced) {
+    const prev = s.style.transition
+    s.style.transition = 'none'
+    place(active, s)
+    // 强制一次样式计算，让"无过渡的初始位置"先提交
+    void s.offsetWidth
+    requestAnimationFrame(() => {
+      s.style.transition = prev || ''
+      sliderPlaced = true
+    })
+    // rAF 在时钟停摆时不回调 —— 兜底直接恢复
+    setTimeout(() => {
+      if (!sliderPlaced) { s.style.transition = prev || ''; sliderPlaced = true }
+    }, 80)
+    return
+  }
+  place(active, s)
+}
+
+/** 把滑块移到激活项的位置（绝对值，不累积漂移） */
+function place(active: HTMLElement, s: HTMLElement) {
   // 滑块与激活项同处 track 坐标系；offsetLeft/Top 不受 transform 影响
-  // → 位移是绝对值，永不累积漂移
   s.style.transform = `translate(${active.offsetLeft - s.offsetLeft}px, ${active.offsetTop - s.offsetTop}px)`
   s.style.width = `${active.offsetWidth}px`
   s.style.height = `${active.offsetHeight}px`
@@ -73,11 +103,20 @@ function measure() {
   const w = wrap.value
   const t = track.value
   if (!t || !w) return
+
+  /*
+   * ⚠️ 这里每条分支都必须走到 updateSlider()。
+   *
+   * 曾经 `overflow === 'wrap'`（默认值）分支直接 `return` 了 ——
+   * 于是**默认模式的分段控制在初始化时滑块从不定位**，
+   * 必须点一下别的选项（触发 watch(modelValue)）才出现。
+   * 非默认模式反而正常，所以这个 bug 很容易被忽略。
+   *
+   * 统一在函数末尾 nextTick 里更新，任何分支都不提前返回。
+   */
   if (props.overflow === 'wrap') {
     mode.value = 'flat'
-    return
-  }
-  if (props.overflow === 'scroll') {
+  } else if (props.overflow === 'scroll') {
     mode.value = 'scroll'
   } else {
     // auto：内容自然宽度 vs 容器可用宽度
