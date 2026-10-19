@@ -395,39 +395,45 @@
  * 由 group 统一表达"这里有焦点"。这也符合"一个整体只有一个边界"的语义。
  */
 /**
- * 焦点环 = 4px 外扩环 + **曲线呼吸**。
+ * 焦点环 = 4px 外扩环 + **收放呼吸**。
  *
- * 呼吸的目的：静态的环容易被忽略（尤其在密集表单里），
- * 极缓慢的明暗往返能让人无意识感知"光标在这里"，
- * 又不像闪烁那样干扰阅读。
+ * ===== 效果 =====
+ *   环从正常亮度 → 收缩变透明 → 恢复 → 再收缩... 无缝往复。
+ *   同时环宽在 4px ↔ 2px 之间轻微收缩，让"收缩"这件事有实体感，
+ *   不只是明暗变化（纯透明度变化像呼吸灯，加上尺寸收缩才像"心跳"）。
  *
- * ===== 为什么用自定义贝塞尔而不是 ease-in-out =====
- * ease-in-out 是「加速-减速」的对称曲线，观感上像**机械地淡入淡出**。
- * 真实的呼吸是「吸气快、屏息、呼气慢」的非对称节奏，
- * 所以用 cubic-bezier 拉出这种不对称：
+ * ===== 节奏 =====
+ *   1.4s 单程 —— 比常见的 2.6s 快一倍。
+ *   太慢会像"故障闪烁"或"加载中"，快一点才灵动。
  *
- *   cubic-bezier(.45, 0, .25, 1)
- *     前段 .45,0    → 起步稳健、不突兀
- *     后段 .25,1    → 收尾极缓，像"慢慢松开"
- *
- * 另外用 `alternate` 让动画往返播放（而不是在关键帧里写 0%/50%/100%），
- * 这样一次吸气 / 一次呼气是两个独立周期，
- * 比单个 0%→50%→100% 循环更接近真实呼吸的节奏感。
+ * ===== 曲线 =====
+ *   cubic-bezier(.4, 0, .3, 1)
+ *     起步 .4,0  → 稍缓，不会"啪"地开始
+ *     中段 加速   → 快速收缩，这是"灵动"的来源
+ *     收尾 .3,1   → 柔和落定
+ *   配合 alternate 实现无缝往复（0→1→0），不会有循环接缝的顿挫。
  */
 .wd-group:focus-within {
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
-/* 环的宽窄也不变，只调制不透明度 —— 改尺寸会引起重排 */
 @media (prefers-reduced-motion: no-preference) {
   .wd-group:focus-within {
-    animation: wd-group-focus-breathe 2.6s cubic-bezier(.45, 0, .25, 1) infinite alternate;
+    animation: wd-group-focus-breathe 1.4s cubic-bezier(.4, 0, .3, 1) infinite alternate;
   }
 }
 
 @keyframes wd-group-focus-breathe {
-  from { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
-  to   { box-shadow: 0 0 0 4px var(--wd-focus-ring-faint); }
+  from {
+    box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  }
+  to {
+    /*
+     * 收缩到 2px 且完全透明。
+     * 用 transparent 而非写死 rgba(...,0)：换主题色时不用改这里。
+     */
+    box-shadow: 0 0 0 2px transparent;
+  }
 }
 
 /* 组内子控件统统缴械：不管它是 input、select、button 还是自定义控件 */
