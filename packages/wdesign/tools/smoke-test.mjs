@@ -354,6 +354,155 @@ const plainRefs = ['components.js', 'demo.js', 'demo.css'].filter((n) =>
 if (plainRefs.length) fail('demo 资源未带指纹', plainRefs.join(', '))
 else ok('demo 资源引用均带指纹')
 
+/* ============================================================
+ * 13. 组合式 API 必须已 import
+ *
+ * ===== 为什么需要 =====
+ * 写了 `onMounted(() => {...})` 但忘了从 vue import ——
+ * 运行时 ReferenceError → **整个组件不渲染**。
+ *
+ * 这个 bug 特别难查：
+ *   · 构建期不报错（onMounted 只是未定义的标识符）
+ *   · 运行时不显示在控制台（Vue 会捕获 setup 里的异常）
+ *   · 页面结构看起来正常，只有组件位置是空的
+ *
+ * 实测踩过一次：WdAudioPlayer 因此整个消失，10 个音频组件全空。
+ * ========================================================== */
+
+/** 所有需要从 vue import 的组合式 API */
+const VUE_APIS = [
+  'ref', 'computed', 'reactive', 'watch', 'watchEffect', 'watchPostEffect',
+  'onMounted', 'onBeforeMount', 'onUnmounted', 'onBeforeUnmount',
+  'onUpdated', 'onBeforeUpdate', 'onActivated', 'onDeactivated',
+  'onErrorCaptured', 'nextTick', 'provide', 'inject', 'defineAsyncComponent',
+  'toRef', 'toRefs', 'toRaw', 'markRaw', 'shallowRef', 'shallowReactive',
+  'triggerRef', 'customRef', 'readonly', 'isRef', 'unref', 'useSlots', 'useAttrs',
+]
+
+{
+  const problems = []
+
+  for (const f of readdirSync(COMP).filter((x) => x.endsWith('.vue')).sort()) {
+    const name = basename(f, '.vue')
+    const src = readFileSync(join(COMP, f), 'utf8')
+
+    // 只处理 <script setup> 块
+    const m = /<script setup[^>]*>([\s\S]*?)<\/script>/.exec(src)
+    if (!m) continue
+    const script = m[1]
+
+    // 去掉注释和字符串字面量，避免注释里的 API 名误报
+    // 去掉注释即可（保留字符串 —— 它们不影响"是否调用了 API"的判断）
+    const clean = script
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\/\/[^\n]*/g, '')
+
+    /*
+     * 收集已 import 的名字。
+     *
+     * ⚠️ 必须在**原始 script** 上匹配，不能用清理后的 clean ——
+     * 清理会把 `from 'vue'` 里的字符串换成 `''`，
+     * 导致这条 import 根本匹配不到（误报 181 处）。
+     */
+    const imported = new Set()
+    for (const im of script.matchAll(/import\s*\{([^}]*)\}\s*from\s*['"]vue['"]/g)) {
+      for (const part of im[1].split(',')) {
+        // 处理 `ref as myRef` 形式
+        const n = part.trim().split(/\s+as\s+/)[0].trim()
+        if (n) imported.add(n)
+      }
+    }
+
+    // 检查每个被**调用**的 API 是否已 import
+    for (const api of VUE_APIS) {
+      // 匹配 api( 或 api<...>(（泛型形式）
+      const used = new RegExp(`(?<![.\\w])${api}(?:<[^>]*>)?\\s*\\(`).test(clean)
+      if (!used) continue
+      if (!imported.has(api)) {
+        problems.push(`${name}: ${api}()`)
+      }
+    }
+  }
+
+  if (problems.length) {
+    fail(
+      '组合式 API 未 import（组件会整个不渲染）',
+      problems.slice(0, 6).join(' | ') +
+        (problems.length > 6 ? ` …共 ${problems.length} 处` : ''),
+    )
+  } else {
+    ok('组合式 API 均已正确 import')
+  }
+}
+
+/* ============================================================
+ * 14. 定位元素不得用 transform: scale 做尺寸变化
+ *
+ * ===== 为什么需要 =====
+ * `position: fixed/absolute` + `top/left` 定位的是**布局盒**，
+ * 而 `transform: scale()` 是布局后的视觉变换 ——
+ * 以元素中心为原点，视觉位置相对指针偏移约 scale 差值的一半。
+ *
+ * 表现：拖动时的克隆块 / 下拉面板"跟着手指但始终差一点"。
+ * 项目里踩了三次（dropdown / 浮层 / sortable 克隆块）。
+ *
+ * ===== 只查真正的 JS 定位浮层 =====
+ * 静态流内元素的按压反馈（如 .wd-btn:active { scale(.985) }）
+ * 不涉及定位偏移，是合法的 —— 不要误报。
+ * ========================================================== */
+{
+  const problems = []
+
+  /*
+   * 需要同时满足两个条件才算问题：
+   *   1. 该规则链上有 position: fixed 或 absolute
+   *   2. 该规则里有 transform: scale(...)
+   * 并且**只看样式，不看注释**。
+   */
+  for (const f of readdirSync(join(ROOT, 'src/styles/components')).filter((x) => x.endsWith('.scss'))) {
+    const src = readFileSync(join(ROOT, 'src/styles/components', f), 'utf8')
+    // 去注释（含块注释与行注释）—— 注释里提到 transform: scale 不算
+    const clean = src
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/\/\/[^\n]*/g, '')
+
+    const lines = clean.split('\n')
+    let selector = ''
+    let depth = 0
+    let hasPositioning = false
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim()
+
+      // 进入新规则块（任意深度）时重置状态
+      const isRuleStart = /\{$/.test(line) && !line.startsWith('@')
+      if (isRuleStart) {
+        // 顶层块换选择器，嵌套块继承外层选择器
+        if (depth === 0) {
+          selector = line.replace(/\s*\{$/, '')
+          hasPositioning = false
+        }
+      }
+
+      if (/position:\s*(fixed|absolute)/.test(line)) hasPositioning = true
+
+      if (/transform:\s*scale\(/.test(line) && hasPositioning) {
+        problems.push(`${f}:${i + 1} ${selector || '(嵌套规则)'}`)
+      }
+
+      depth += (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length
+      if (depth <= 0) { depth = 0; hasPositioning = false; selector = '' }
+    }
+  }
+
+  const uniq = [...new Set(problems)]
+  if (uniq.length) {
+    fail('定位元素使用了 transform: scale（会导致偏移）', uniq.slice(0, 5).join(' | '))
+  } else {
+    ok('定位元素未误用 transform: scale')
+  }
+}
+
 /* ============================================================ */
 console.log(`\n${'='.repeat(52)}`)
 console.log(`  冒烟测试：${pass} 通过 / ${fails.length} 失败`)

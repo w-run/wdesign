@@ -185,6 +185,303 @@
 **规则**：用 `flex: 0 1 auto; max-width: 40%`，让标签按内容收缩；
 值区保底 `min-width: 3.5em`。
 
+## 12. `position` + `top/left` 定位的元素不能用 `transform: scale` 做尺寸变化
+
+**症状**：拖动时的克隆块 / 下拉面板 / 浮层"跟着指针但始终差一点"，
+偏移量约 3%（元素宽高的一半 × scale 的变化量）。
+
+**根因**：`position: fixed/absolute` + `top/left` 定位的是**布局盒**，
+而 `transform` 是布局完成后的视觉变换。`scale()` 以元素中心为原点，
+视觉尺寸比布局盒大 `n%`，于是视觉位置相对指针偏移 `n/2%`。
+
+**这个坑在项目里踩了三次**：dropdown 面板、通用浮层、sortable 克隆块。
+
+```scss
+/* ❌ 看起来只是"放大一点"，实际整个定位都会偏 */
+.wd-sortable__clone { position: fixed; transform: scale(1.06); }
+
+/* ✅ 改用不参与定位的属性表达"被抓起" */
+.wd-sortable__clone {
+  position: fixed;
+  outline: 1px solid var(--wd-ink-5);
+  box-shadow: var(--wd-shadow-lg);
+}
+```
+
+如果确实需要视觉放大，只有两条路：
+1. 用 `transform-origin: top left` + 手动补偿偏移（脆弱）
+2. **改布局尺寸**（padding / width），让布局盒与视觉一致（推荐）
+
+---
+
+## 13. 可见性不能依赖动画，必须由静态属性决定
+
+**症状**：面板"打开了但看不见"、`opacity` 永远是 0、
+`animationPlayState` 显示 `running` 但元素纹丝不动。
+
+**根因**：动画时钟在以下环境会停摆 —— 后台标签页、无头渲染、
+系统省电模式、`prefers-reduced-motion` 被强制。此时：
+
+- `animation ... both` 把元素钉在起始帧
+- `transition` 卡在旧值
+- **关键帧里带 `opacity: 0` 的 `from` 帧 → 元素永久不可见**
+
+**项目里踩过四次**：hero 渐变、Modal 面板、选集抽屉、group 交互。
+
+```scss
+/* ❌ 三种都会在时钟停摆时失效 */
+.is-open { animation: fade-in both; }         /* 钉在 from 帧 */
+.panel { opacity: 0 } .is-open { opacity: 1 } /* transition 卡住 */
+@keyframes in { from { opacity: 0 } }          /* 停在 from */
+
+/* ✅ 显隐由 display 决定，静态属性直接给最终值 */
+.panel { display: none; }
+.panel.is-open { display: flex; opacity: 1; }
+```
+
+**判据**：如果去掉所有 `animation` / `transition` 后元素会消失，
+说明可见性依赖了动画 —— 必须改造。
+
+动画只做锦上添花：位置偏移、缩放、颜色过渡。
+**任何情况下都不能让"内容是否可见"依赖它。**
+
+---
+
+## 14. SCSS 嵌套不能展开 `&::-webkit-*` 伪元素
+
+**症状**：写了十几个 `&::-webkit-media-controls-* { display: none }`，
+编译后只剩 3 条有效规则。
+
+**根因**：Sass 对 `&` 后跟 `::-webkit-*` 这类非标准伪元素的展开
+在某些版本下会静默丢弃（不报错）。
+
+```scss
+/* ❌ 编译后大量丢失 */
+.wd-vplayer__el {
+  &::-webkit-media-controls-panel { display: none !important; }
+}
+
+/* ✅ 写完整选择器 */
+.wd-vplayer__el::-webkit-media-controls-panel { display: none !important; }
+```
+
+**排查手法**：`grep -c "webkit-media-controls" demo/demo.css`，
+数量应该等于你写的规则条数。
+
+---
+
+## 15. 自定义属性里不能放 `color-mix()`
+
+**症状**：`background: var(--x)` 整条失效，元素变透明。
+
+**根因**：自定义属性的值是「未解析的 token 序列」，
+`--x: color-mix(in srgb, var(--y) 50%, transparent)` 定义时**不求值**，
+等到 `background: var(--x)` 时浏览器拿到的是字面量，无法解析 → 丢弃。
+
+```scss
+/* ❌ 整条 background 会被丢弃 */
+.wd-slider { --track: color-mix(in srgb, var(--wd-red) 22%, transparent); }
+.wd-slider input { background: var(--track); }
+
+/* ✅ 直接写在用它的属性上 */
+.wd-slider input {
+  background: color-mix(in srgb, var(--wd-slider-color) 22%, transparent);
+}
+
+/* ✅ 或者用 rgba 字面量（需要跟随主题时用方案二） */
+.wd-group { --ring: rgba(214, 40, 57, .07); }
+```
+
+⚠️ 例外：`color-mix()` **写在属性值里**是正常工作的
+（`box-shadow: 0 0 0 4px color-mix(...)`），只是别放进 `--var` 定义。
+
+---
+
+## 16. 组内子控件必须「缴械」自己的焦点环
+
+**症状**：输入框聚焦时出现一圈粗重、边缘不齐的框。
+
+**根因**：三层焦点环叠在一起 ——
+`.wd-input:focus-within`（4px）+ `.wd-group:focus-within`（4px）
++ 子项自己的 `outline`。三者同色但半径/圆角不同，叠起来就成了毛边。
+
+**规则**：一个整体只有一个边界。
+
+```scss
+/* 容器负责表达焦点 */
+.wd-group:focus-within { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
+
+/* 组内所有子控件放弃自己的环 */
+.wd-group .wd-input:focus-within,
+.wd-group .wd-select:focus-within,
+.wd-group .wd-btn:focus-visible,
+.wd-group [class*='__item']:focus-within {
+  box-shadow: none !important;
+  outline: none !important;
+}
+```
+
+新增可聚焦子控件时，记得同步加进这份清单 —— 漏一个就复发。
+
+---
+
+## 17. `flex-wrap: wrap` 会让控制条高度跳变
+
+**症状**：窄容器里控件换行，播放器/工具栏突然变高。
+
+**根因**：换行改变的是**行数**，直接影响高度。而控件的挤压
+只是视觉变窄，不会改变容器尺寸。
+
+**规则**：横向控制条一律 `flex-wrap: nowrap`，
+超窄时**按优先级层层隐藏**次要控件：
+
+```scss
+.wd-vplayer__row { flex-wrap: nowrap; }
+
+@container vplayer (max-width: 460px) { .wd-vplayer__vol { display: none; } }
+@container vplayer (max-width: 380px) { .wd-vplayer__btn--text { display: none; } }
+@container vplayer (max-width: 320px) { .wd-vplayer__panel-wrap { display: none; } }
+```
+
+用 `@container` 而非 `@media` —— 组件可能嵌在任意宽度的容器里
+（侧栏、弹窗、卡片网格），与视口宽度无关。
+
+---
+
+## 18. 需要"展开动效"又不想挤压邻居：定宽 + transform
+
+**症状**：音量滑条 hover 展开时，把时间、倍速等后续控件整体推右。
+
+**根因**：动画 `width: 0 → 62px`。**`width` 参与布局**，
+变更会触发重排，邻居跟着移位。
+
+**规则**：容器里"展开"的元素必须**始终占据最终宽度**，
+用不参与布局的属性做动效。
+
+```scss
+/* ❌ 会挤压邻居 */
+.slider { width: 0; transition: width .12s; }
+.wrap:hover .slider { width: 62px; }
+
+/* ✅ 固定宽度占位，只动 transform / opacity */
+.slider {
+  width: 62px;              /* 始终占位 */
+  opacity: 0;
+  transform: translateX(14px);
+  pointer-events: none;
+  transition: opacity .18s var(--wd-ease-out), transform .18s var(--wd-ease-out);
+}
+.wrap:hover .slider { opacity: 1; transform: translateX(0); pointer-events: auto; }
+```
+
+⚠️ 不要用 `scaleX(0.2)` 代替宽度变化 —— 它会把圆角横向压扁
+（2px 半径变 0.4px），展开过程中圆头像"刀片"。
+
+---
+
+## 19. 面板不能放在带 `overflow` 的滚动容器里
+
+**症状**：倍速 / 选集面板点开后在 DOM 里存在、高度正常，但**看不见**。
+
+**根因**（三层套娃，修一层露一层）：
+1. 播放器容器 `.wd-vplayer { overflow: hidden }` —— 为裁圆角
+2. 控制条 `.wd-vplayer__row { overflow-x: auto }` ——
+   **一个轴设 `auto`，另一轴会自动变成 `auto` 而非 `visible`**（CSS 规范）
+3. 后面残留的 `overflow-y: hidden` 覆盖了刚写的 `overflow: visible`
+
+**规则**：
+- 浮层不要放在滚动容器内；必须放在最外层的定位上下文里
+- 圆角裁切改由**内容元素自己**负责（`video`、`img` 各自 `border-radius`），
+  容器不设 `overflow: hidden`
+- 修改 `overflow` 后，用 `getComputedStyle` 确认**三个轴**都是期望值
+
+```js
+// 排查用：沿祖先链找谁在裁切
+let el = panel.parentElement
+while (el) {
+  const cs = getComputedStyle(el)
+  if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') {
+    console.log('裁切来源：', el.className, cs.overflowX, cs.overflowY)
+  }
+  el = el.parentElement
+}
+```
+
+---
+
+## 20. `.vue` 里用新的组合式 API，必须同步改 import
+
+**症状**：组件**完全不渲染** —— 面板标题和结构都在，只有组件位置是空的。
+控制台没有明显报错（Vue 吞掉了 setup 里的异常）。
+
+**根因**：写了 `onMounted(() => {...})` 但忘了从 vue import。
+
+```ts
+// ❌ 用了 onMounted 但没 import → 运行时 ReferenceError → 整个组件挂掉
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
+onMounted(() => { /* ... */ })
+
+// ✅
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+```
+
+**为什么难查**：
+- 构建期不报错（`onMounted` 只是未定义的标识符）
+- 运行时不显示在控制台（Vue 的 setup 异常会被捕获）
+- 页面结构看起来正常，只有组件位置是空的
+
+**排查手法**：组件"消失"时，先 grep 用到的 API 是否都在 import 列表里。
+
+---
+
+## 21. 批量改样式：宁可手工，不要写"智能"脚本
+
+**教训**：为了给全库 27 处 `:hover` 加 `@media (hover: hover)`，
+我写了一个"扫描顶层 hover 规则并自动包裹"的脚本。结果：
+
+- 逗号分隔的多选择器被整块包进 `@media`，语义改变
+- 嵌套在其它 `@media` 里的规则被二次包裹，结构破坏
+- 编译直接报 `expected selector`
+
+**规则**：
+- 批量改写只处理**结构最确定**的形态（单行规则、单选择器）
+- 改完**立刻编译**，报错就回滚
+- **不确定的一律留给人工** —— 脚本漏改是可发现的，改错是静默的
+- 改写前先 `cp -r` 备份
+
+判断标准：**如果脚本无法用一句话说清它改哪些、不改哪些，就不要写。**
+
+---
+
+## 22. 组件名与样式文件的实际块名可能不一致
+
+**症状**：加类名检查时，`WdAiMessage` 被报"串用了 `wd-ai-msg__*`"。
+
+**根因**：块名不能从组件名机械推导 ——
+`WdAiMessage → wd-ai-msg`、`WdVideoPlayer → wd-vplayer`，
+都不是标准的 kebab 转换。
+
+**规则**：检查工具应从**样式文件实际内容**反查块名，
+而不是从组件名推导。同理，新增组件时块名一旦定下就不要随意改。
+
+---
+
+## 23. 检查器修完必须验证没有「放水」
+
+给 `check-icons.py` 加负向后顾修掉 `:name="icon"` 误报后，
+必须确认它**仍能抓到真错误**：
+
+```sh
+# 注入一个不存在的图标名，确认检查仍然失败
+sed -i 's/name="folder-open"/name="fake-icon-xyz"/' src/components/WdEmpty.vue
+python3 tools/check-icons.py   # 应该报错
+git checkout src/components/WdEmpty.vue
+```
+
+**规则**：任何"降低误报"的修改，都要用一个**已知的真错误**验证
+检查器没被削弱。否则下一次它静默失效，比误报更危险。
+
+
 ---
 
 # 三、提交前检查

@@ -68,12 +68,11 @@
   width: 44px;
   height: 48px;
   font-size: 20px;
-  /* 分隔线：用右边框，最后一格去掉 */
-  /* 分隔线用 ink-4：ink-5 在 field 底上几乎看不见 */
-  box-shadow: inset -1px 0 0 var(--wd-ink-4);
-}
-
-.wd-otp--pill .wd-otp__box:last-child {
+  /*
+   * **不要分隔线**。
+   * 胶囊的语义是"一个整体"，格与格之间靠字符间距自然分段即可；
+   * 加竖线会把它读成一排独立小格，失去"连体"的意思。
+   */
   box-shadow: none;
 }
 
@@ -85,21 +84,49 @@
 }
 
 /* ---------------- underline：底部横线 ---------------- */
-.wd-otp--underline { gap: 18px; }
-
-.wd-otp--underline .wd-otp__box {
-  width: 44px;
-  height: 52px;
-  background: transparent;
-  border-radius: 0;
-  /* 只留底线，用 inset shadow 而非 border —— 不参与盒模型，聚焦加粗时不跳 */
-  /* 底线用 ink-4，比 ink-5 清晰 */
-  box-shadow: inset 0 -2px 0 var(--wd-ink-4);
-  padding-bottom: 6px;
+/*
+ * **六个格连成一条完整底线**，不是六条短线。
+ *
+ * 做法：容器画一条横线（::after），格子自己不带任何边框。
+ * 无论格数多少、间距多大，底线永远是一条连续的线。
+ *
+ * ⚠️ 不能每格各画一段：格间 gap 会让线断开，
+ *    看起来像六个独立输入框，而不是一个"验证码输入区"。
+ */
+.wd-otp--underline {
+  position: relative;
+  gap: 6px;
+  /* 给底线留位置，避免压住文字 */
+  padding-bottom: 10px;
 }
 
-.wd-otp--underline .wd-otp__box:focus {
-  box-shadow: inset 0 -3px 0 var(--wd-red);
+/* 整条底线：横跨容器全宽 */
+.wd-otp--underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--wd-ink-4);
+  transition: background var(--wd-dur-fast) ease, height var(--wd-dur-fast) ease;
+}
+
+/* 聚焦时整条线变主题红并加粗 —— 焦点属于"这一组" */
+.wd-otp--underline:focus-within::after {
+  height: 3px;
+  background: var(--wd-red);
+}
+
+.wd-otp--underline .wd-otp__box {
+  width: 40px;
+  height: 46px;
+  background: transparent;
+  border-radius: 0;
+  /* 格子自身完全无边框 */
+  box-shadow: none;
+  padding-bottom: 4px;
 }
 
 /* ---------------- 禁用 ---------------- */
