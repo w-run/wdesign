@@ -13402,3 +13402,63 @@ html {
   font-size: 12.5px;
   color: var(--wd-ink-2);
 }
+
+/* ==== wdesign-icons/style.css（构建期自动拼接，勿手改）==== */
+/* =============================================================
+ *  wdesign-icons — 图标组件样式
+ *
+ *  ===== 为什么单独出一个 CSS 文件 =====
+ *  WdIcon.vue 里有 <style> 块，正常情况下会随组件自动注入。
+ *  但这条路在某些场景不可靠：
+ *    · 打包器把 .vue 的 style 抽成单独 chunk，但消费方没引入
+ *    · SSR / 手工编译（如本仓库的 demo 构建走 compileScript，
+ *      **不含 style**）→ 样式直接丢失
+ *    · 消费方用 unplugin 按需加载组件，style 可能没跟着走
+ *
+ *  所以提供两条路：
+ *    1. 自动：Vue 的 SFC 机制（默认，无需配置）
+ *    2. 显式：`import '@w-run/wdesign-icons/style.css'`
+ *       —— 任何构建配置下都保证样式到位
+ *
+ *  两条路的内容必须保持一致，改动时同步。
+ * ============================================================= */
+
+.wd-icon {
+  display: inline-flex;
+  flex: none;
+  vertical-align: middle;
+}
+
+.wd-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: inherit;
+}
+
+/* =============================================================
+ *  线条加粗（weight）
+ *
+ *  本库图标都是**填充路径**（fill: currentColor），没有可调的
+ *  stroke-width —— 填充图形天生只有一个"粗细"。
+ *
+ *  加粗的实现：给图形叠一层**同色 stroke**，向外扩一圈。
+ *  视觉上等于把线条加粗，而不是改成描边风格。
+ *
+ *  ⚠️ 三个关键细节：
+ *    1. `paint-order: stroke fill` —— 描边必须在填充**下面**，
+ *       否则会盖住图形内部镂空（check 的内角、圆环的中空）。
+ *    2. 不能用 `vector-effect: non-scaling-stroke` ——
+ *       那会让描边不随 viewBox 缩放，大小图标的粗细就不一致了。
+ *    3. 变量默认 0 —— weight='thin' 的图标完全不受影响，
+ *       所以这段样式对不加粗的图标是零成本的。
+ * ============================================================= */
+.wd-icon svg :is(path, circle, rect, line, polyline, polygon, ellipse) {
+  stroke: currentColor;
+  stroke-width: var(--wd-icon-stroke, 0);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  paint-order: stroke fill;
+}
+
+/* ==== /wdesign-icons ==== */
