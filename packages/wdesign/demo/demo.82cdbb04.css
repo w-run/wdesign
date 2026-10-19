@@ -8474,49 +8474,31 @@ body {
   position: relative;
 }
 
-/* 节点：列内左对齐，圆心 = 自身宽度的一半 */
-.wd-timeline--vertical .wd-timeline__node {
-  flex: none;
-  /* 在 --tl-node-col 宽的列里水平居中：
-     左右各留 (列宽 - 节点宽) / 2 的空白。
-     节点的宽度是 min-width 撑出来的，这里用 auto margin 更稳。 */
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 3px;
-}
-
 /*
- * 竖线：挂在节点上，`left: 50%` 保证永远穿过圆心。
- * 用 `top: 100%`（节点底边）到"item 底边"——
- * 但节点不知道 item 有多高，所以改用固定高度 + item 的 padding-bottom 配合。
+ * ===== 节点：必须是正方形 =====
  *
- * ⚠️ 更稳的做法是让 item 画线并用 CSS 变量接收节点的实际圆心位置，
- * 但那需要 JS 测量。这里退一步：**统一让节点占据整列宽度**，
- * 这样圆心恒为 --tl-node-col / 2，item 画线就能对齐。
+ * ⚠️ 这轮踩的坑：为了让竖线穿过圆心，我把节点宽度强行设成了
+ *    `width: var(--tl-node-col)`（22px），但高度仍是 `--tl-dot`（10px）——
+ *    结果节点变成 **22×10 的扁椭圆**。
+ *
+ *    列宽 ≠ 节点宽。列宽是布局占位，节点是视觉图形，
+ *    两者绑在一起必然出问题（节点被拉成椭圆）。
+ *
+ * 正解：节点保持自身尺寸（正方形），用 **margin 在列内居中**，
+ *      圆心 = 列宽/2，线也按列宽/2 定位，两者自然对齐。
  */
 .wd-timeline--vertical .wd-timeline__node {
-  /*
-   * 关键：用 flex-basis 固定列宽，而不是 width。
-   * 父级是 flex 容器，`flex: none` 的项按内容宽度收缩 ——
-   * 写 width 会被 content 覆盖（实测无图标时仍是 10px）。
-   * `flex: 0 0 var(--tl-node-col)` 才是硬约束。
-   *
-   * 节点因此恒占 22px 宽的列，圆心恒为 11px，
-   * 无论里面是小圆点还是图标徽章。
-   */
-  flex: 0 0 var(--tl-node-col);
-  width: var(--tl-node-col);
+  /* 不参与 flex 拉伸/收缩 */
+  flex: none;
+  /* 正方形：宽高都跟 --tl-dot */
+  width: var(--tl-dot);
   height: var(--tl-dot);
-  margin-left: 0;
-  /* 内圈内容在列内居中 */
+  /* 在 --tl-node-col 宽的列里水平居中 */
+  margin-left: calc((var(--tl-node-col) - var(--tl-dot)) / 2);
+  margin-right: 0;
+  margin-top: 3px;
+  /* 内圈内容居中 */
   justify-content: center;
-}
-
-/* 无图标时：小圆点本身仍只有 --tl-dot 大，视觉上不被拉宽 */
-.wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) {
-  background: transparent;
-  box-shadow: none;
-  height: var(--tl-dot);
 }
 
 .wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) .wd-timeline__dot {
@@ -8534,18 +8516,44 @@ body {
  *    在列宽约束下会被横向压缩 —— 表现为"图标都扁了"。
  *    这里显式锁死图标的宽高比，并禁止 shrink。
  */
+/*
+ * 有图标时：徽章放大到 26px（比 --tl-node-col 的 22px 更宽松）。
+ * 22px 里塞 15px 图标只剩 3.5px 边距，看起来发挤。
+ */
+/* 有图标：正方形 26px，margin 跟着重算（列宽也是 26，所以居中 = 0） */
 .wd-timeline--vertical .wd-timeline__node:has(> .wd-icon) {
-  min-width: var(--tl-node-col);
-  min-height: var(--tl-node-col);
-  height: var(--tl-node-col);
+  width: 26px;
+  height: 26px;
+  margin-left: 0;
 }
 
+/* 列宽同步放大，保证圆心不变 */
+.wd-timeline--vertical .wd-timeline__item:has(.wd-timeline__node > .wd-icon) {
+  --tl-node-col: 26px;
+  --tl-node-h: 26px;
+}
+
+/*
+ * 节点内的图标。
+ *
+ * ⚠️ 两个都要管：
+ *   1. **不能被压扁** —— 之前只给了容器尺寸，图标作为 flex 子项
+ *      在固定列宽下被横向压缩（表现为"图标都扁了"）。
+ *      用 aspect-ratio + flex: none 锁死比例。
+ *   2. **不能太小** —— 原来按 :size 传入 13~15px，
+ *      在 22px 的圆形徽章里只占 60%，看起来空。
+ *      放大到约 68%（15px），视觉重量才和徽章匹配。
+ *
+ * 尺寸用 em 相对节点，这样改 --tl-dot 时图标自动跟随。
+ */
 .wd-timeline--vertical .wd-timeline__node > .wd-icon {
   flex: none;
-  /* 锁死正方形：不给它被父级 flex 压扁的机会 */
   width: auto;
   height: auto;
   aspect-ratio: 1;
+  /* 撑到徽章内径的 ~68%：再大就贴边，再小显得空 */
+  min-width: 15px;
+  min-height: 15px;
 }
 
 /*
