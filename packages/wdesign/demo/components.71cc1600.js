@@ -779,8 +779,8 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_55 = ["aria-valuenow"];
   var _hoisted_56 = { class: "wd-audio__mini-track" };
   var _hoisted_57 = { class: "wd-audio__mini-time" };
-  var WAVE_BARS_THICK = 30;
-  var WAVE_BARS_FINE = 60;
+  var BAR_PITCH_THICK = 7;
+  var BAR_PITCH_FINE = 4;
   var WdAudioPlayer_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdAudioPlayer" },
     __name: "WdAudioPlayer",
@@ -827,7 +827,30 @@ var WD_REAL_MODULE = (() => {
         () => duration.value > 0 ? buffered.value / duration.value * 100 : 0
       );
       const hasCover = computed(() => !!props.cover);
-      const waveCount = computed(() => hasCover.value ? WAVE_BARS_FINE : WAVE_BARS_THICK);
+      const waveWidth = ref(0);
+      const waveEl = ref(null);
+      let waveRO = null;
+      onMounted(() => {
+        const el = waveEl.value;
+        if (!el || typeof ResizeObserver === "undefined") return;
+        try {
+          waveRO = new ResizeObserver((entries) => {
+            for (const e of entries) waveWidth.value = Math.round(e.contentRect.width);
+          });
+          waveRO.observe(el);
+        } catch {
+          waveRO = null;
+        }
+      });
+      onBeforeUnmount(() => {
+        waveRO?.disconnect();
+        waveRO = null;
+      });
+      const waveCount = computed(() => {
+        const pitch = hasCover.value ? BAR_PITCH_FINE : BAR_PITCH_THICK;
+        if (!waveWidth.value) return hasCover.value ? 60 : 30;
+        return Math.max(12, Math.floor(waveWidth.value / pitch));
+      });
       const autoWave = ref([]);
       const waveLoading = ref(false);
       watch(
@@ -1063,6 +1086,8 @@ var WD_REAL_MODULE = (() => {
                 createCommentVNode(" \u6CE2\u5F62\u98CE\u683C\uFF08\u9ED8\u8BA4\uFF09 "),
                 __props.progressStyle === "waveform" ? (openBlock(), createElementBlock("div", {
                   key: 0,
+                  ref_key: "waveEl",
+                  ref: waveEl,
                   class: normalizeClass(["wd-audio__wave", hasCover.value ? "wd-audio__wave--fine" : "wd-audio__wave--hero"]),
                   role: "slider",
                   tabindex: "0",

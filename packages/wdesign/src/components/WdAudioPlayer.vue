@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { formatDuration } from './time'
 
 defineOptions({ name: 'WdAudioPlayer' })
@@ -151,11 +151,55 @@ const hasCover = computed(() => !!props.cover)
  *   无封面（波形是主体）→ 30 根，粗、间距大，像参考图的绿色版
  *   有封面（波形是辅助）→ 90 根，细密，像白色版
  */
-const WAVE_BARS_THICK = 30
-const WAVE_BARS_FINE = 60
+/**
+ * 波形柱数与柱宽。
+ *
+ * ⚠️ 原来是写死的 30 / 60 根 —— 不随容器宽度变化。
+ *    播放器从 320px 拉伸到 600px 时，柱子间距会越拉越大，
+ *    看起来像"稀疏的栅栏"，不像真实波形。
+ *
+ * 现在按容器实际宽度算：柱宽固定，柱数 = floor(宽度 / 步距)。
+ * 用 ResizeObserver 监听宽度变化，卡片换列/旋转屏幕时自动重算。
+ */
+const BAR_PITCH_THICK = 7   // 无封面：柱宽 + 间距
+const BAR_PITCH_FINE = 4    // 有封面：更细密
 
-/** 没有真实波形数据时，生成一条稳定可复现的示意波（不用随机，避免每次重渲染跳动） */
-const waveCount = computed(() => (hasCover.value ? WAVE_BARS_FINE : WAVE_BARS_THICK))
+const waveWidth = ref(0)
+const waveEl = ref<HTMLElement | null>(null)
+let waveRO: ResizeObserver | null = null
+
+onMounted(() => {
+  /*
+   * ⚠️ 三重保护，缺一不可：
+   *   1. 环境可能没有 ResizeObserver（老 WebView / 某些测试环境）
+   *   2. waveEl 可能为 null（progressStyle='bar' 时波形容器不渲染）
+   *   3. 任一步抛错都会让**整个组件的挂载中断**，
+   *      表现为"组件完全不渲染"—— 很难查，因为控制台没有明显报错。
+   */
+  const el = waveEl.value
+  if (!el || typeof ResizeObserver === 'undefined') return
+  try {
+    waveRO = new ResizeObserver((entries) => {
+      for (const e of entries) waveWidth.value = Math.round(e.contentRect.width)
+    })
+    waveRO.observe(el)
+  } catch {
+    // 监听失败就退回固定柱数，不影响功能
+    waveRO = null
+  }
+})
+
+onBeforeUnmount(() => {
+  waveRO?.disconnect()
+  waveRO = null
+})
+
+/** 当前应显示的柱数：宽度未测量时回落到 30，避免首帧空白 */
+const waveCount = computed(() => {
+  const pitch = hasCover.value ? BAR_PITCH_FINE : BAR_PITCH_THICK
+  if (!waveWidth.value) return hasCover.value ? 60 : 30
+  return Math.max(12, Math.floor(waveWidth.value / pitch))
+})
 
 /** 自动提取的真实波形（autoWaveform 开启时填充） */
 const autoWave = ref<number[]>([])
@@ -373,6 +417,7 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
       <!-- 波形风格（默认） -->
       <div
         v-if="progressStyle === 'waveform'"
+        ref="waveEl"
         class="wd-audio__wave"
         :class="hasCover ? 'wd-audio__wave--fine' : 'wd-audio__wave--hero'"
         role="slider"

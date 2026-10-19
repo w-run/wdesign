@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.39124176.css">
+<link rel="stylesheet" href="demo.6f993f74.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -953,6 +953,7 @@
             src="media/audio.mp3"
             title="Unsayable"
             subtitle="Brambles"
+            auto-waveform
             @prev="ucLog = '上一首'" @next="ucLog = '下一首'"
           ></wd-audio-player>
         </div>
@@ -1010,6 +1011,34 @@
             <wd-audio-player variant="mini" src="media/audio.mp3" title="第 1 段录音" subtitle="今天 14:20"></wd-audio-player>
             <wd-audio-player variant="mini" src="media/audio.mp3" title="第 2 段录音" subtitle="昨天"></wd-audio-player>
             <wd-audio-player variant="mini" src="media/audio.mp3" title="第 3 段录音" subtitle="10-16"></wd-audio-player>
+          </div>
+        </div>
+      </div>
+
+      <!--
+        进度风格对比：waveform（波形）/ bar（细进度条）
+        波形是"内容可视化"，进度条是"纯粹的位置读取" ——
+        信息密度高的卡片用 bar 更克制。
+      -->
+      <div class="demo-col" style="width:100%; max-width:420px; align-items:stretch; gap:10px; margin-top:26px">
+        <div class="demo-cap">progressStyle · 波形 vs 细进度条</div>
+        <div class="demo-stage demo-stage--tight">
+          <div class="demo-col" style="gap:16px; align-items:stretch">
+            <wd-audio-player
+              variant="card"
+              src="media/audio.mp3"
+              title="波形（auto-waveform 真实提取）"
+              subtitle="progressStyle = waveform"
+              auto-waveform
+              progress-style="waveform"
+            ></wd-audio-player>
+            <wd-audio-player
+              variant="card"
+              src="media/audio.mp3"
+              title="细进度条"
+              subtitle="progressStyle = bar"
+              progress-style="bar"
+            ></wd-audio-player>
           </div>
         </div>
       </div>
@@ -1845,7 +1874,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.48f13b77.js"></script>
+<script src="components.71cc1600.js"></script>
 <script src="demo.f978ee8c.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

@@ -397,10 +397,12 @@
  * 整体往右推，窄容器下直接换行。
  *
  * 现在的做法：
- *   width 固定 62px，收起态用 scaleX(0) + opacity:0
- *   transform 不参与布局，所以其他控件纹丝不动。
- *   transform-origin 设在右端（靠按钮一侧），
- *   展开时像从按钮里"抽"出来，动效比单纯淡入更自然。
+ *   width 固定 62px，收起态用 opacity + transform，
+ *   都不参与布局，所以其他控件纹丝不动。
+ *
+ * ⚠️ 不用 scaleX(0.2)：那会把圆角横向压扁（2px 半径变成 0.4px），
+ *    展开过程中圆头看起来像"刀片"。改用 translateX + 透明度，
+ *    形状始终保持不变，只是从按钮里"滑出来"。
  */
 .wd-vplayer__vol {
   display: flex;
@@ -417,21 +419,20 @@
   background: var(--wd-on-dark-3);
   cursor: pointer;
   overflow: hidden;
-  /* 收起态：不可见、不可点，但仍占位 */
+  /* 收起态：滑到按钮后面藏起来，不可见、不可点，但仍占位 */
   opacity: 0;
-  transform: scaleX(.2);
-  transform-origin: right center;
+  transform: translateX(14px);
   pointer-events: none;
   transition:
-    opacity var(--wd-dur-fast) var(--wd-ease-out),
-    transform var(--wd-dur-fast) var(--wd-ease-out);
+    opacity var(--wd-dur) var(--wd-ease-out),
+    transform var(--wd-dur) var(--wd-ease-out);
 }
 
 .wd-vplayer__vol:hover .wd-vplayer__vol-slider,
 .wd-vplayer__vol-slider:focus-within,
 .wd-vplayer__vol.is-open .wd-vplayer__vol-slider {
   opacity: 1;
-  transform: scaleX(1);
+  transform: translateX(0);
   pointer-events: auto;
 }
 .wd-vplayer__vol-fill {
