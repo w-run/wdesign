@@ -30,12 +30,13 @@
     "check:tokens": "python3 tools/check-tokens.py --strict",
     "check:icons": "python3 tools/check-icons.py --strict",
     "build": "node tools/build-lib.mjs && node tools/fingerprint.mjs lib",
-    "build:demo": "node tools/build-demo-components.mjs && node tools/fingerprint.mjs demo",
+    "build:demo": "node tools/build-demo-components.mjs && node tools/append-icon-style.mjs && node tools/fingerprint.mjs demo",
     "prepublishOnly": "npm run build",
     "dev": "node tools/wd-dev.mjs",
     "check:fingerprint": "node tools/fingerprint.mjs check",
     "test": "node tools/smoke-test.mjs",
-    "test:all": "npm run check:tokens && npm run check:icons && npm run check:fingerprint && npm run test"
+    "test:all": "npm run check:tokens && npm run check:icons && npm run check:fingerprint && npm run test",
+    "append:icon-style": "node tools/append-icon-style.mjs"
   },
   "sideEffects": [
     "*.css",

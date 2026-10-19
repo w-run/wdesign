@@ -33,6 +33,7 @@ const files = readdirSync(COMP).filter(f => f.endsWith('.vue')).sort()
 const helpers = readdirSync(COMP).filter(f => f.endsWith('.ts'))
 // 图标组件在独立包里，也要一并编译（demo 用 window.WD_ICONS 内联数据）
 const ICON_SRC = join(ROOT, '../wdesign-icons/src/WdIcon.vue')
+const ICON_STYLE = join(ROOT, '../wdesign-icons/src/style.css')
 const ICON_OPT = join(ROOT, '../wdesign-icons/src/optical.js')
 const names = []
 const entry = []

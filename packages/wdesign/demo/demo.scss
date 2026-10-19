@@ -4,6 +4,7 @@
 //  编译：sassc demo.scss demo.css
 // =============================================================
 // ⚠️ vars 是唯一的 :root 发射点（CSS 变量）——必须最先引入，且全站只此一次
+
 @import '../src/styles/vars';
 @import '../src/styles/tokens';
 @import '../src/styles/base';   // 全局：滚动条统一 / 点击高亮去除 / reduced-motion
@@ -704,8 +705,17 @@ body {
 }
 
 // ── Icons ──────────────────────────────────────────────────────
-.wd-icon { display: inline-flex; flex: none; vertical-align: middle; }
-.wd-icon svg { width: 100%; height: 100%; display: block; }
+/*
+ * 图标组件样式（.wd-icon / weight 加粗）由构建流程注入：
+ *   tools/build-demo.mjs 在编译完 SCSS 后，
+ *   把 wdesign-icons/src/style.css 的内容拼接进 demo.css。
+ *
+ * 为什么不在这里 @import/@use：
+ *   · Sass 的 @use 不支持 .css 文件
+ *   · @import '*.css' 会被原样保留成 CSS @import，
+ *     相对路径相对产物目录解析，部署后容易 404
+ * 构建期拼接是最可靠的方式，也保证与图标包用**同一个**文件。
+ */
 .demo-iconwall {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));

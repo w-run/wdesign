@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.ec15ff3e.css">
+<link rel="stylesheet" href="demo.8a657494.css">
 </head>
 <body>
   <!--
@@ -1422,17 +1422,25 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     <div class="demo-grid">
     <div class="demo-panel" style="margin-top: 0;">
       <h3>WDICON 用法</h3>
-      <div class="demo-row" style="align-items: center; gap: 22px;">
-        <wd-icon name="home" style="color: var(--wd-ink-2);"></wd-icon>
-        <wd-icon name="search" :size="28" style="color: var(--wd-ink-2);"></wd-icon>
-        <wd-icon name="heart" :size="32" style="color: var(--wd-red);"></wd-icon>
-        <wd-icon name="bell" filled :size="28" style="color: var(--wd-red);"></wd-icon>
-        <span style="background: var(--wd-dark); border-radius: 14px; padding: 10px 14px; display: inline-flex; gap: 14px; align-items: center;">
-          <wd-icon name="moon" filled :size="22" style="color: #fff;"></wd-icon>
-          <wd-icon name="star" :size="22" style="color: #fff;"></wd-icon>
-          <wd-icon name="layout-grid" :size="22" style="color: var(--wd-red-text);"></wd-icon>
-        </span>
-        <span class="demo-cap">尺寸 / 主题红 / 深底白 —— currentColor 全由 CSS 驱动</span>
+      <!-- 线条粗细：本库图标是填充路径，靠叠同色 stroke 向外扩来加粗 -->
+      <div class="demo-cap" style="margin-bottom:10px">weight · thin / normal / medium / bold</div>
+      <div class="demo-row" style="gap:28px; align-items:flex-end">
+        <div v-for="w in ['thin','normal','medium','bold']" :key="w" class="demo-col" style="align-items:center; gap:6px">
+          <div class="demo-row" style="gap:14px">
+            <wd-icon name="check" :weight="w" :size="32"></wd-icon>
+            <wd-icon name="search" :weight="w" :size="32"></wd-icon>
+            <wd-icon name="chevron-down" :weight="w" :size="32"></wd-icon>
+          </div>
+          <span class="demo-cap">{{ w }}</span>
+        </div>
+      </div>
+      <div class="demo-cap" style="margin-top:8px">小尺寸下 bold 更清晰（例：16px 勾选图标）</div>
+      <div class="demo-row" style="gap:16px; margin-top:6px; align-items:center">
+        <wd-icon name="check" weight="thin" :size="16"></wd-icon>
+        <wd-icon name="check" weight="medium" :size="16"></wd-icon>
+        <wd-icon name="check" weight="bold" :size="16"></wd-icon>
+        <span class="demo-cap">thin / medium / bold @16px</span>
+      </div>
       </div>
     </div>
     <div class="demo-panel demo-panel--wide">
@@ -2004,7 +2012,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.acf2618c.js"></script>
+<script src="components.66c82982.js"></script>
 <script src="demo.89486619.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

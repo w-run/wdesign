@@ -15270,12 +15270,20 @@ var WD_REAL_MODULE = (() => {
       variant: { type: String, required: false, default: "outlined" },
       size: { type: [Number, String], required: false, default: 24 },
       filled: { type: Boolean, required: false, default: false },
-      optical: { type: Boolean, required: false, default: true }
+      optical: { type: Boolean, required: false, default: true },
+      weight: { type: String, required: false, default: "thin" }
     },
     setup(__props) {
       const props = __props;
       const svg = ref("");
       const resolvedStyle = computed(() => props.filled ? "filled" : props.variant);
+      const WEIGHT_STROKE = {
+        thin: 0,
+        normal: 6,
+        medium: 12,
+        bold: 20
+      };
+      const strokeWidth = computed(() => WEIGHT_STROKE[props.weight] ?? 0);
       const factor = computed(() => props.optical ? opticalFactor(props.name) : 1);
       const sizePx = computed(() => {
         const base = typeof props.size === "number" ? props.size : parseFloat(props.size) || 24;
@@ -15299,8 +15307,16 @@ var WD_REAL_MODULE = (() => {
       });
       return (_ctx, _cache) => {
         return openBlock(), createElementBlock("span", {
-          class: normalizeClass(["wd-icon", { "wd-icon--optical": factor.value !== 1 }]),
-          style: normalizeStyle({ width: sizePx.value, height: sizePx.value }),
+          class: normalizeClass(["wd-icon", [
+            { "wd-icon--optical": factor.value !== 1 },
+            `wd-icon--w-${__props.weight}`
+          ]]),
+          style: normalizeStyle({
+            width: sizePx.value,
+            height: sizePx.value,
+            // 传给 CSS 变量，由样式表统一应用到 svg 内的所有图形
+            "--wd-icon-stroke": String(strokeWidth.value)
+          }),
           innerHTML: svg.value
         }, null, 14, _hoisted_186);
       };

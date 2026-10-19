@@ -503,6 +503,114 @@ const VUE_APIS = [
   }
 }
 
+
+/* ============================================================
+ * 15. 组件样式不能只存在于 demo 里
+ *
+ * ===== 为什么需要 =====
+ * WdIcon 的 `.wd-icon` 布局与 `weight` 加粗曾经只写在 demo.scss，
+ * 结果是：
+ *   · 其他项目引用图标包时拿不到这些样式（只能赌 SFC 的 <style> 注入）
+ *   · demo 与真实包的样式会逐渐漂移
+ *
+ * 规则：任何 `.wd-*` 选择器（组件命名空间）都不该出现在 demo 样式里。
+ * demo 只能定义自己的 `demo-*` / 页面专用辅助类。
+ *
+ * 例外：允许"依赖"组件状态修饰符来调整 demo 元素，例如
+ *   `.wd-nav--vertical.is-collapsed .demo-nav-foot-item { ... }`
+ * 这类规则的主语是 demo 元素，只是条件里引用了组件类名。
+ * ========================================================== */
+{
+  const demoScss = readFileSync(join(ROOT, 'demo/demo.scss'), 'utf8')
+  const problems = []
+
+  const lines = demoScss.split('\n')
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim()
+    // 只看选择器行：以 . 或 & 开头，且包含 {（单行规则也包含）
+    if (!/^[.&]/.test(line)) continue
+    if (!line.includes('{')) continue
+
+    /*
+     * 取 { 之前的部分作为选择器。
+     * ⚠️ 必须兼容单行规则 `.foo { color: red; }` ——
+     *    之前只认"以 { 结尾"，单行规则因为后面还有内容是漏网之鱼。
+     */
+    const selector = line.slice(0, line.indexOf('{')).trim()
+    // 拆逗号分组，逐条判断
+    for (const part of selector.split(',')) {
+      const sel = part.trim()
+      if (!sel) continue
+
+      /*
+       * 主语 = **最右边**的复合选择器（真正被样式化的那个元素）。
+       *
+       * 例：`.wd-nav--vertical.is-collapsed .demo-nav-foot-item { ... }`
+       *   → 主语是 .demo-nav-foot-item（demo 元素），合法
+       *     .wd-nav--vertical 只是条件，不是被样式化的目标
+       *
+       * 之前错用"第一个"，把那两条合法规则误判成问题。
+       */
+      const parts = sel.split(/[\s>+~]+/).filter(Boolean)
+      const subject = parts[parts.length - 1] || ''
+
+      /*
+       * 允许"在外层容器里定制组件内部子元素"的写法：
+       *   `.hero-go .wd-icon { transform: translateX(3px) }`
+       * 主语虽然是组件类，但它是**被 demo 容器限定**的局部定制，
+       * 不会影响组件在别处的表现。
+       *
+       * 判据：选择器里存在一个 demo 自己的祖先（demo-* / hero-* / nav-* 等）。
+       * 真正该报的是「无条件定义组件类」，那才会污染全局。
+       */
+      const hasDemoAncestor = parts
+        .slice(0, -1)
+        .some((p) => /^\.(demo-|hero-|nav-|side-|sec-|foot-|vp-|grp-|ap-|vlist-|ic)/.test(p))
+
+      if (/^\.wd-/.test(subject) && !hasDemoAncestor) {
+        problems.push(`demo.scss:${i + 1} ${sel.slice(0, 50)}`)
+      }
+    }
+  }
+
+  if (problems.length) {
+    fail(
+      '组件样式写在 demo 里（其他项目拿不到）',
+      problems.slice(0, 5).join(' | ') + (problems.length > 5 ? ` …共 ${problems.length} 处` : ''),
+    )
+  } else {
+    ok('组件样式未混入 demo（.wd-* 主语规则为 0）')
+  }
+}
+
+/* ============================================================
+ * 16. 图标包必须有独立的样式出口
+ *
+ * WdIcon 的样式如果只存在于 .vue 的 <style> 块，
+ * 打包器抽离 / 手工编译 / SSR 场景下会丢失。
+ * 必须同时提供可显式 import 的 style.css。
+ * ========================================================== */
+{
+  const iconStyle = join(ROOT, '../wdesign-icons/src/style.css')
+  const pkgPath = join(ROOT, '../wdesign-icons/package.json')
+
+  if (!existsSync(iconStyle)) {
+    fail('图标包缺少独立样式出口', 'wdesign-icons/src/style.css 不存在')
+  } else {
+    const css = readFileSync(iconStyle, 'utf8')
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
+    const exported = pkg.exports?.['./style.css']
+
+    if (!exported) {
+      fail('图标包 style.css 未在 package.json exports 中声明', '消费方无法 import')
+    } else if (!css.includes('--wd-icon-stroke')) {
+      fail('图标包 style.css 缺少 weight 加粗规则', '样式与 WdIcon.vue 不同步')
+    } else {
+      ok('图标包样式出口完整（style.css + exports + weight 规则）')
+    }
+  }
+}
+
 /* ============================================================ */
 console.log(`\n${'='.repeat(52)}`)
 console.log(`  冒烟测试：${pass} 通过 / ${fails.length} 失败`)

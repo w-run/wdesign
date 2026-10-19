@@ -22,12 +22,46 @@ const props = withDefaults(
      * 设 false 可拿到严格的几何尺寸（如需要像素级对齐）。
      */
     optical?: boolean
+    /**
+     * 线条粗细：thin | normal | medium | bold
+     *
+     * ===== 为什么需要 =====
+     * 本库所有图标都是**填充路径**（fill: currentColor），
+     * 没有可调的 stroke-width —— 填充图形天生只有一个"粗细"。
+     *
+     * 实现方式：给填充路径叠一层**同色 stroke**，
+     * 让它向外扩一圈，视觉上等于加粗。
+     * 配 `paint-order: stroke fill` 保证描边在填充下方，
+     * 不会糊住内部细节。
+     *
+     * 数值按 256 画布换算：
+     *   thin   0   （原样）
+     *   normal 6   （+2.3%，几乎无感，用于一致性）
+     *   medium 12  （+4.7%，明显更实）
+     *   bold   20  （+7.8%，小尺寸下也清晰）
+     */
+    weight?: 'thin' | 'normal' | 'medium' | 'bold'
   }>(),
-  { variant: 'outlined', size: 24, filled: false, optical: true },
+  { variant: 'outlined', size: 24, filled: false, optical: true, weight: 'thin' },
 )
 
 const svg = ref('')
 const resolvedStyle = computed(() => (props.filled ? 'filled' : props.variant))
+
+/**
+ * 描边宽度（按 256 viewBox 换算）。
+ *
+ * ⚠️ 只对**填充**图标有意义：本库没有真正的 stroke 图标，
+ *    所以这里的 stroke 是"向外扩张"的模拟加粗，
+ *    不是描边风的线条。
+ */
+const WEIGHT_STROKE: Record<string, number> = {
+  thin: 0,
+  normal: 6,
+  medium: 12,
+  bold: 20,
+}
+const strokeWidth = computed(() => WEIGHT_STROKE[props.weight] ?? 0)
 
 const factor = computed(() => (props.optical ? opticalFactor(props.name) : 1))
 
@@ -68,13 +102,31 @@ watchEffect(() => {
 <template>
   <span
     class="wd-icon"
-    :class="{ 'wd-icon--optical': factor !== 1 }"
-    :style="{ width: sizePx, height: sizePx }"
+    :class="[
+      { 'wd-icon--optical': factor !== 1 },
+      `wd-icon--w-${weight}`,
+    ]"
+    :style="{
+      width: sizePx,
+      height: sizePx,
+      // 传给 CSS 变量，由样式表统一应用到 svg 内的所有图形
+      '--wd-icon-stroke': String(strokeWidth),
+    }"
     v-html="svg"
   ></span>
 </template>
 
 <style>
+/*
+ * ⚠️ 这份样式与 src/style.css **必须保持一致**。
+ *
+ * 为什么两处都要写：
+ *   · 这里是"自动路径"—— Vue 的 SFC 机制会随组件注入，无需配置
+ *   · style.css 是"显式路径"—— 打包器抽离 style / 手工编译 / SSR
+ *     等场景下自动注入可能失效，消费方需要能显式 import
+ *
+ * 改这里时，同步改 src/style.css。
+ */
 .wd-icon {
   display: inline-flex;
   flex: none;
@@ -85,5 +137,14 @@ watchEffect(() => {
   height: 100%;
   display: block;
   color: inherit;
+}
+
+/* 线条加粗：叠同色 stroke 向外扩，详见 style.css 的注释 */
+.wd-icon svg :is(path, circle, rect, line, polyline, polygon, ellipse) {
+  stroke: currentColor;
+  stroke-width: var(--wd-icon-stroke, 0);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  paint-order: stroke fill;
 }
 </style>
