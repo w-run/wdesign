@@ -56,3 +56,64 @@ body {
     transition-duration: .01ms !important;
   }
 }
+
+/* =============================================================
+ *  焦点环呼吸（全局）
+ *
+ *  ===== 效果 =====
+ *    环从正常亮度 → 收缩变淡 → 恢复 → 再收缩... 无缝往复。
+ *    环宽 4px ↔ 1.33px，透明度 100% ↔ 33%。
+ *
+ *  ===== 节奏与曲线 =====
+ *    1.4s 单程。太慢像"故障闪烁"或"加载中"，这个速度才灵动。
+ *    cubic-bezier(.4, 0, .3, 1)：
+ *      起步 .4,0  → 稍缓，不会"啪"地开始
+ *      中段 加速   → 快速收缩，这是"灵动"的来源
+ *      收尾 .3,1   → 柔和落定
+ *    配合 alternate 无缝往复（不在关键帧里写 0/50/100，
+ *    那样循环接缝处会有顿挫）。
+ *
+ *  ===== 为什么是全局 =====
+ *    焦点环表达"光标在这里"，几乎每个可交互控件都有。
+ *    如果只有 group 会呼吸、按钮和输入框不会，就变成一种
+ *    "某个组件特有的怪癖"，而不是语言。
+ *
+ *    统一到全局后，任何一个带 --wd-focus-ring-* 的控件
+ *    都获得同样的呼吸节奏 —— 这是设计系统该有的方式：
+ *    定义一次，处处一致。
+ *
+ *  ⚠️ 只调制 box-shadow，不碰 display / opacity ——
+ *     时钟停摆时最坏情况是停在某个中间值，元素仍清晰可见。
+ * ============================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  .wd-btn:focus-visible,
+  .wd-input:focus-within,
+  .wd-select:focus-within,
+  .wd-group:focus-within,
+  .wd-checkbox:focus-visible,
+  .wd-radio:focus-visible,
+  .wd-switch:focus-visible,
+  .wd-otp__box:focus,
+  .wd-rate__item:focus-visible,
+  .wd-pagination__btn:focus-visible,
+  .wd-tree__node:focus-visible,
+  .wd-tabs__item:focus-visible {
+    animation: wd-focus-breathe 1.4s cubic-bezier(.4, 0, .3, 1) infinite alternate;
+  }
+}
+
+@keyframes wd-focus-breathe {
+  from {
+    box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  }
+  to {
+    /*
+     * 极点保留 1/3，不完全消失：
+     *   环宽 4px → 1.33px，透明度 → 33%
+     * 到 0 的话每轮谷底都像"焦点丢了"，闪烁感太强；
+     * 保留 1/3 才有"帧还在、只是暗下去"的连续感。
+     */
+    box-shadow: 0 0 0 calc(4px / 3)
+      color-mix(in srgb, var(--wd-focus-ring-soft) 33%, transparent);
+  }
+}

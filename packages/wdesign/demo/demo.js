@@ -237,6 +237,8 @@ const app = createApp({
     return {
       popSeg: '全部',
       danmakuOn: true,
+      otp2: '',
+      otp3: '',
       /*
        * 彩虹序列：与 src/styles/_rainbow.scss 的 10 个色相一一对应。
        * red 就是主题红本身，green 是 #0DBC79（两个锚点色）。

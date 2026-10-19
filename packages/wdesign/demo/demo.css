@@ -220,6 +220,64 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+/* =============================================================
+ *  焦点环呼吸（全局）
+ *
+ *  ===== 效果 =====
+ *    环从正常亮度 → 收缩变淡 → 恢复 → 再收缩... 无缝往复。
+ *    环宽 4px ↔ 1.33px，透明度 100% ↔ 33%。
+ *
+ *  ===== 节奏与曲线 =====
+ *    1.4s 单程。太慢像"故障闪烁"或"加载中"，这个速度才灵动。
+ *    cubic-bezier(.4, 0, .3, 1)：
+ *      起步 .4,0  → 稍缓，不会"啪"地开始
+ *      中段 加速   → 快速收缩，这是"灵动"的来源
+ *      收尾 .3,1   → 柔和落定
+ *    配合 alternate 无缝往复（不在关键帧里写 0/50/100，
+ *    那样循环接缝处会有顿挫）。
+ *
+ *  ===== 为什么是全局 =====
+ *    焦点环表达"光标在这里"，几乎每个可交互控件都有。
+ *    如果只有 group 会呼吸、按钮和输入框不会，就变成一种
+ *    "某个组件特有的怪癖"，而不是语言。
+ *
+ *    统一到全局后，任何一个带 --wd-focus-ring-* 的控件
+ *    都获得同样的呼吸节奏 —— 这是设计系统该有的方式：
+ *    定义一次，处处一致。
+ *
+ *  ⚠️ 只调制 box-shadow，不碰 display / opacity ——
+ *     时钟停摆时最坏情况是停在某个中间值，元素仍清晰可见。
+ * ============================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  .wd-btn:focus-visible,
+  .wd-input:focus-within,
+  .wd-select:focus-within,
+  .wd-group:focus-within,
+  .wd-checkbox:focus-visible,
+  .wd-radio:focus-visible,
+  .wd-switch:focus-visible,
+  .wd-otp__box:focus,
+  .wd-rate__item:focus-visible,
+  .wd-pagination__btn:focus-visible,
+  .wd-tree__node:focus-visible,
+  .wd-tabs__item:focus-visible {
+    animation: wd-focus-breathe 1.4s cubic-bezier(0.4, 0, 0.3, 1) infinite alternate;
+  }
+}
+@keyframes wd-focus-breathe {
+  from {
+    box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  }
+  to {
+    /*
+     * 极点保留 1/3，不完全消失：
+     *   环宽 4px → 1.33px，透明度 → 33%
+     * 到 0 的话每轮谷底都像"焦点丢了"，闪烁感太强；
+     * 保留 1/3 才有"帧还在、只是暗下去"的连续感。
+     */
+    box-shadow: 0 0 0 1.3333333333px color-mix(in srgb, var(--wd-focus-ring-soft) 33%, transparent);
+  }
+}
 .wd-dot {
   display: inline-block;
   width: 8px;
@@ -333,14 +391,29 @@ body {
   transition: transform var(--wd-dur) ease, color var(--wd-dur) ease;
 }
 
+/*
+ * 三种朝向的状态机。
+ *
+ * 图标本身固定用 chevron-down（朝下），靠容器旋转得到不同朝向：
+ *   .wd-chevron           朝下   → 展开时转 180°（朝上）
+ *   .wd-chevron--right    朝右   → 展开时转 90°（朝下）
+ *
+ * ⚠️ 之前漏了 `.wd-chevron--right` 的**初始旋转**
+ *   （应为 -90deg，把朝下的图标转成朝右），
+ *   于是未展开时箭头朝下、展开后转 90° 变成朝左 —— 方向完全错乱。
+ */
+.wd-chevron--right {
+  transform: rotate(-90deg);
+}
+
 .wd-chevron--open {
   transform: rotate(180deg);
   color: var(--wd-red-text);
 }
 
-/* 右向箭头（如文件列表）：展开转 90°（优先级高于默认 180°） */
+/* 右向箭头展开：从 -90° 转到 0°（朝下），即旋转 90° */
 .wd-chevron--right.wd-chevron--open {
-  transform: rotate(90deg);
+  transform: rotate(0deg);
   color: var(--wd-red-text);
 }
 
@@ -6641,7 +6714,22 @@ body {
   border-radius: var(--wd-radius-sm);
   box-shadow: var(--wd-shadow-lg);
   opacity: 0.95;
-  transform: scale(1.06);
+  /*
+   * ⚠️ 不要用 transform: scale() 做"抓起来放大"。
+   *
+   * 原因：`position: fixed` + `top/left` 定位的是**布局盒**，
+   * 而 transform 是布局后的视觉变换 ——
+   * scale(1.06) 会让视觉尺寸比布局盒大 6%，且以元素中心为原点，
+   * 于是视觉位置相对指针偏移约 3%（宽高各一半）。
+   * 拖拽时表现为"弹出层跟着手指但始终偏一点"，
+   * 这正是之前 dropdown 踩过的同一个坑。
+   *
+   * 替代方案：用**更大的布局尺寸**模拟"放大"——
+   * 通过 padding 或 width 微调，让布局盒与视觉一致，偏移就消失了。
+   * 这里保持原尺寸，只用阴影和透明度表达"被抓起"。
+   */
+  outline: 1px solid var(--wd-ink-5);
+  outline-offset: 0;
   cursor: grabbing;
 }
 
@@ -6674,14 +6762,13 @@ body {
 
 .wd-otp {
   display: flex;
-  gap: 10px;
 }
 
+/* ---------------- 基础格 ---------------- */
 .wd-otp__box {
   width: 52px;
   height: 56px;
   border: 0;
-  border-radius: var(--wd-radius-sm);
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
@@ -6690,16 +6777,97 @@ body {
   font-weight: 700;
   text-align: center;
   outline: none;
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
-}
-
-.wd-otp__box:focus {
-  background: var(--wd-card);
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  /* 去掉数字输入框的上下箭头 */
+  appearance: none;
+  -moz-appearance: textfield;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease, border-color var(--wd-dur-fast) ease;
 }
 
 .wd-otp__box::placeholder {
   color: var(--wd-ink-2);
+}
+
+.wd-otp__box::-webkit-outer-spin-button,
+.wd-otp__box::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+/* ---------------- separate：独立方块 ---------------- */
+.wd-otp--separate {
+  gap: 10px;
+}
+
+.wd-otp--separate .wd-otp__box {
+  border-radius: var(--wd-radius-sm);
+}
+
+.wd-otp--separate .wd-otp__box:focus {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- pill：连体胶囊 ---------------- */
+/*
+ * 整体一个胶囊：只给容器画圆角和底色，格子本身透明，
+ * 格与格之间用 1px 分隔线暗示分段。
+ *
+ * ⚠️ 不给每个格子单独圆角再用负 margin 拼 ——
+ *    那样焦点态的高亮会被相邻格盖住，且拼接处会出现双线。
+ */
+.wd-otp--pill {
+  gap: 0;
+  padding: 4px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+}
+
+.wd-otp--pill .wd-otp__box {
+  background: transparent;
+  border-radius: 0;
+  width: 44px;
+  height: 48px;
+  font-size: 20px;
+  /* 分隔线：用右边框，最后一格去掉 */
+  /* 分隔线用 ink-4：ink-5 在 field 底上几乎看不见 */
+  box-shadow: inset -1px 0 0 var(--wd-ink-4);
+}
+
+.wd-otp--pill .wd-otp__box:last-child {
+  box-shadow: none;
+}
+
+/* 聚焦格：圆角胶囊高亮，不破坏整体轮廓 */
+.wd-otp--pill .wd-otp__box:focus {
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-pill);
+  box-shadow: var(--wd-shadow-sm);
+}
+
+/* ---------------- underline：底部横线 ---------------- */
+.wd-otp--underline {
+  gap: 18px;
+}
+
+.wd-otp--underline .wd-otp__box {
+  width: 44px;
+  height: 52px;
+  background: transparent;
+  border-radius: 0;
+  /* 只留底线，用 inset shadow 而非 border —— 不参与盒模型，聚焦加粗时不跳 */
+  /* 底线用 ink-4，比 ink-5 清晰 */
+  box-shadow: inset 0 -2px 0 var(--wd-ink-4);
+  padding-bottom: 6px;
+}
+
+.wd-otp--underline .wd-otp__box:focus {
+  box-shadow: inset 0 -3px 0 var(--wd-red);
+}
+
+/* ---------------- 禁用 ---------------- */
+.wd-otp--disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .wd-otp__box:disabled {
@@ -8926,7 +9094,14 @@ img.wd-theme-invert {
 }
 
 .wd-audio {
-  --wd-audio-accent: var(--wd-card);
+  /*
+   * accent 是"强调色"，浅色卡片上应该是**深色**（ink），不是白色。
+   *
+   * ⚠️ 之前默认 --wd-card（白色）：那是给反色深卡片用的，
+   *    浅底上直接等同于背景色 —— 细进度条的已播放部分因此完全看不见。
+   *    反色卡片会在 .wd-audio--inverse 里单独覆盖成白色。
+   */
+  --wd-audio-accent: var(--wd-ink);
   position: relative;
   color: var(--wd-ink);
   user-select: none;
@@ -11640,50 +11815,6 @@ img.wd-theme-invert {
  * 规则：**组内所有子控件一律放弃自己的焦点环**，
  * 由 group 统一表达"这里有焦点"。这也符合"一个整体只有一个边界"的语义。
  */
-/**
- * 焦点环 = 4px 外扩环 + **收放呼吸**。
- *
- * ===== 效果 =====
- *   环从正常亮度 → 收缩变透明 → 恢复 → 再收缩... 无缝往复。
- *   同时环宽在 4px ↔ 2px 之间轻微收缩，让"收缩"这件事有实体感，
- *   不只是明暗变化（纯透明度变化像呼吸灯，加上尺寸收缩才像"心跳"）。
- *
- * ===== 节奏 =====
- *   1.4s 单程 —— 比常见的 2.6s 快一倍。
- *   太慢会像"故障闪烁"或"加载中"，快一点才灵动。
- *
- * ===== 曲线 =====
- *   cubic-bezier(.4, 0, .3, 1)
- *     起步 .4,0  → 稍缓，不会"啪"地开始
- *     中段 加速   → 快速收缩，这是"灵动"的来源
- *     收尾 .3,1   → 柔和落定
- *   配合 alternate 实现无缝往复（0→1→0），不会有循环接缝的顿挫。
- */
-.wd-group:focus-within {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .wd-group:focus-within {
-    animation: wd-group-focus-breathe 1.4s cubic-bezier(0.4, 0, 0.3, 1) infinite alternate;
-  }
-}
-@keyframes wd-group-focus-breathe {
-  from {
-    box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
-  }
-  to {
-    /*
-     * 极点**不是完全消失**，保留 1/3：
-     *   环宽  4px      → 1.33px（≈ 原来的 1/3）
-     *   透明度 0.14    → 0.047（color-mix 取 33%）
-     *
-     * 到 0 的话，每一轮的谷底都像"焦点丢了"，
-     * 闪烁感太强；保留 1/3 才有"帧还在、只是暗下去"的连续感。
-     */
-    box-shadow: 0 0 0 1.3333333333px color-mix(in srgb, var(--wd-focus-ring-soft) 33%, transparent);
-  }
-}
 /* 组内子控件统统缴械：不管它是 input、select、button 还是自定义控件 */
 .wd-group .wd-input:focus-within,
 .wd-group .wd-select:focus-within,

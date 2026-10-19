@@ -6,7 +6,20 @@
   color: var(--wd-ink-3);
   transition: transform var(--wd-dur) ease, color var(--wd-dur) ease;
 }
+/*
+ * 三种朝向的状态机。
+ *
+ * 图标本身固定用 chevron-down（朝下），靠容器旋转得到不同朝向：
+ *   .wd-chevron           朝下   → 展开时转 180°（朝上）
+ *   .wd-chevron--right    朝右   → 展开时转 90°（朝下）
+ *
+ * ⚠️ 之前漏了 `.wd-chevron--right` 的**初始旋转**
+ *   （应为 -90deg，把朝下的图标转成朝右），
+ *   于是未展开时箭头朝下、展开后转 90° 变成朝左 —— 方向完全错乱。
+ */
+.wd-chevron--right { transform: rotate(-90deg); }
+
 .wd-chevron--open { transform: rotate(180deg); color: var(--wd-red-text); }
 
-/* 右向箭头（如文件列表）：展开转 90°（优先级高于默认 180°） */
-.wd-chevron--right.wd-chevron--open { transform: rotate(90deg); color: var(--wd-red-text); }
+/* 右向箭头展开：从 -90° 转到 0°（朝下），即旋转 90° */
+.wd-chevron--right.wd-chevron--open { transform: rotate(0deg); color: var(--wd-red-text); }

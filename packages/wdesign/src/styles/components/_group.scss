@@ -394,52 +394,6 @@
  * 规则：**组内所有子控件一律放弃自己的焦点环**，
  * 由 group 统一表达"这里有焦点"。这也符合"一个整体只有一个边界"的语义。
  */
-/**
- * 焦点环 = 4px 外扩环 + **收放呼吸**。
- *
- * ===== 效果 =====
- *   环从正常亮度 → 收缩变透明 → 恢复 → 再收缩... 无缝往复。
- *   同时环宽在 4px ↔ 2px 之间轻微收缩，让"收缩"这件事有实体感，
- *   不只是明暗变化（纯透明度变化像呼吸灯，加上尺寸收缩才像"心跳"）。
- *
- * ===== 节奏 =====
- *   1.4s 单程 —— 比常见的 2.6s 快一倍。
- *   太慢会像"故障闪烁"或"加载中"，快一点才灵动。
- *
- * ===== 曲线 =====
- *   cubic-bezier(.4, 0, .3, 1)
- *     起步 .4,0  → 稍缓，不会"啪"地开始
- *     中段 加速   → 快速收缩，这是"灵动"的来源
- *     收尾 .3,1   → 柔和落定
- *   配合 alternate 实现无缝往复（0→1→0），不会有循环接缝的顿挫。
- */
-.wd-group:focus-within {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .wd-group:focus-within {
-    animation: wd-group-focus-breathe 1.4s cubic-bezier(.4, 0, .3, 1) infinite alternate;
-  }
-}
-
-@keyframes wd-group-focus-breathe {
-  from {
-    box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
-  }
-  to {
-    /*
-     * 极点**不是完全消失**，保留 1/3：
-     *   环宽  4px      → 1.33px（≈ 原来的 1/3）
-     *   透明度 0.14    → 0.047（color-mix 取 33%）
-     *
-     * 到 0 的话，每一轮的谷底都像"焦点丢了"，
-     * 闪烁感太强；保留 1/3 才有"帧还在、只是暗下去"的连续感。
-     */
-    box-shadow: 0 0 0 calc(4px / 3) color-mix(in srgb, var(--wd-focus-ring-soft) 33%, transparent);
-  }
-}
-
 /* 组内子控件统统缴械：不管它是 input、select、button 还是自定义控件 */
 .wd-group .wd-input:focus-within,
 .wd-group .wd-select:focus-within,

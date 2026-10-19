@@ -31,7 +31,14 @@
 // =============================================================
 
 .wd-audio {
-  --wd-audio-accent: var(--wd-card);
+  /*
+   * accent 是"强调色"，浅色卡片上应该是**深色**（ink），不是白色。
+   *
+   * ⚠️ 之前默认 --wd-card（白色）：那是给反色深卡片用的，
+   *    浅底上直接等同于背景色 —— 细进度条的已播放部分因此完全看不见。
+   *    反色卡片会在 .wd-audio--inverse 里单独覆盖成白色。
+   */
+  --wd-audio-accent: var(--wd-ink);
   position: relative;
   color: var(--wd-ink);
   user-select: none;

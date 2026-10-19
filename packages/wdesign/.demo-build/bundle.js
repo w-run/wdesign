@@ -7140,7 +7140,8 @@ var WD_REAL_MODULE = (() => {
       modelValue: { type: String, required: false },
       defaultValue: { type: String, required: false },
       length: { type: Number, required: false, default: 6 },
-      disabled: { type: Boolean, required: false, default: false }
+      disabled: { type: Boolean, required: false, default: false },
+      variant: { type: String, required: false, default: "separate" }
     },
     emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
@@ -7188,7 +7189,10 @@ var WD_REAL_MODULE = (() => {
         return openBlock(), createElementBlock(
           "div",
           {
-            class: "wd-otp",
+            class: normalizeClass(["wd-otp", [
+              `wd-otp--${__props.variant}`,
+              { "wd-otp--disabled": __props.disabled }
+            ]]),
             onPaste
           },
           [
@@ -7215,8 +7219,8 @@ var WD_REAL_MODULE = (() => {
               /* KEYED_FRAGMENT */
             ))
           ],
-          32
-          /* NEED_HYDRATION */
+          34
+          /* CLASS, NEED_HYDRATION */
         );
       };
     }

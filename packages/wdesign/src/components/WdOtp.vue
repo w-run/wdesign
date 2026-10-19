@@ -11,9 +11,16 @@ const props = withDefaults(
     defaultValue?: string
     length?: number
     disabled?: boolean
+    /**
+     * 视觉形态：
+     *   separate  — 独立方块（默认）
+     *   pill      — 连在一起的胶囊（首尾圆头，中间直角拼接）
+     *   underline — 只保留底部横线，无底色
+     */
+    variant?: 'separate' | 'pill' | 'underline'
   }>(),
   /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
-  { length: 6, disabled: false },
+  { length: 6, disabled: false, variant: 'separate' },
 )
 
 const emit = defineEmits<{
@@ -67,7 +74,14 @@ function onPaste(e: ClipboardEvent) {
 </script>
 
 <template>
-  <div class="wd-otp" @paste="onPaste">
+  <div
+    class="wd-otp"
+    :class="[
+      `wd-otp--${variant}`,
+      { 'wd-otp--disabled': disabled },
+    ]"
+    @paste="onPaste"
+  >
     <input
       v-for="i in length"
       :key="i"

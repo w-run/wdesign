@@ -58,7 +58,22 @@
   border-radius: var(--wd-radius-sm);
   box-shadow: var(--wd-shadow-lg);
   opacity: .95;
-  transform: scale(1.06);
+  /*
+   * ⚠️ 不要用 transform: scale() 做"抓起来放大"。
+   *
+   * 原因：`position: fixed` + `top/left` 定位的是**布局盒**，
+   * 而 transform 是布局后的视觉变换 ——
+   * scale(1.06) 会让视觉尺寸比布局盒大 6%，且以元素中心为原点，
+   * 于是视觉位置相对指针偏移约 3%（宽高各一半）。
+   * 拖拽时表现为"弹出层跟着手指但始终偏一点"，
+   * 这正是之前 dropdown 踩过的同一个坑。
+   *
+   * 替代方案：用**更大的布局尺寸**模拟"放大"——
+   * 通过 padding 或 width 微调，让布局盒与视觉一致，偏移就消失了。
+   * 这里保持原尺寸，只用阴影和透明度表达"被抓起"。
+   */
+  outline: 1px solid var(--wd-ink-5);
+  outline-offset: 0;
   cursor: grabbing;
 }
 

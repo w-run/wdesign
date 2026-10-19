@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue"
+import { renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, normalizeClass as _normalizeClass } from "vue"
 
 const _hoisted_1 = ["value", "disabled", "onInput", "onKeydown"]
 
@@ -14,7 +14,8 @@ export default /*@__PURE__*/_defineComponent({
     modelValue: { type: String, required: false },
     defaultValue: { type: String, required: false },
     length: { type: Number, required: false, default: 6 },
-    disabled: { type: Boolean, required: false, default: false }
+    disabled: { type: Boolean, required: false, default: false },
+    variant: { type: String, required: false, default: 'separate' }
   },
   emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
@@ -71,7 +72,10 @@ function onPaste(e: ClipboardEvent) {
 
 return (_ctx: any,_cache: any) => {
   return (_openBlock(), _createElementBlock("div", {
-    class: "wd-otp",
+    class: _normalizeClass(["wd-otp", [
+      `wd-otp--${__props.variant}`,
+      { 'wd-otp--disabled': __props.disabled },
+    ]]),
     onPaste: onPaste
   }, [
     (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(__props.length, (i) => {
@@ -90,7 +94,7 @@ return (_ctx: any,_cache: any) => {
         onKeydown: ($event: any) => (onKeydown(i - 1, $event))
       }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_1))
     }), 128 /* KEYED_FRAGMENT */))
-  ], 32 /* NEED_HYDRATION */))
+  ], 34 /* CLASS, NEED_HYDRATION */))
 }
 }
 
