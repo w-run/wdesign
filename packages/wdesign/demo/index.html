@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.68c3ec18.css">
+<link rel="stylesheet" href="demo.754d5330.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -199,6 +199,24 @@
         <wd-progress :value="40" on-dark></wd-progress>
         <span class="demo-cap" style="color:var(--wd-on-dark)">on-dark · 深色面上使用</span>
       </div>
+
+      <!--
+        自定义颜色：用彩虹令牌演示一整套。
+        rainbow-red 就是主题红本身（见 _rainbow.scss 的锚点色定义）。
+      -->
+      <div class="demo-cap" style="margin-top:20px; margin-bottom:10px">color · 彩虹序列</div>
+      <div class="demo-col" style="width:100%; max-width:420px; gap:7px">
+        <wd-progress
+          v-for="c in rainbowColors"
+          :key="c.name"
+          :value="65"
+          thin
+          :color="`var(--wd-rainbow-${c.name})`"
+        ></wd-progress>
+      </div>
+      <div class="demo-row" style="margin-top:10px; gap:8px">
+        <span v-for="c in rainbowColors" :key="c.name" class="demo-cap">{{ c.label }}</span>
+      </div>
     </div>
 
     <div class="demo-panel">
@@ -260,6 +278,22 @@
         <wd-checkbox :model-value="false" disabled label="禁用·未选"></wd-checkbox>
       </div>
       <span class="demo-cap" style="margin-top:10px">checkbox · {{ agree ? '已同意' : '未同意' }}</span>
+
+      <!-- 自定义勾选色：hover / 禁用态会由 color-mix 自动跟随 -->
+      <div class="demo-cap" style="margin-top:18px; margin-bottom:8px">color · 彩虹序列</div>
+      <div class="demo-row" style="gap:14px 18px">
+        <wd-checkbox
+          v-for="c in rainbowColors"
+          :key="c.name"
+          :model-value="true"
+          :color="`var(--wd-rainbow-${c.name})`"
+          :label="c.label"
+        ></wd-checkbox>
+      </div>
+      <div class="demo-row" style="gap:14px 18px; margin-top:10px">
+        <wd-checkbox :model-value="true" color="var(--wd-rainbow-green)" disabled label="禁用·已选"></wd-checkbox>
+        <wd-checkbox :model-value="false" color="var(--wd-rainbow-green)" disabled label="禁用·未选"></wd-checkbox>
+      </div>
     </div>
 
     <div class="demo-panel">
@@ -474,6 +508,16 @@
         <span class="demo-cap">0–10 step 0.5 · 值：{{ sliderFine }}</span>
         <wd-slider :model-value="30" :show-value="false" style="margin-top:10px"></wd-slider>
         <span class="demo-cap">showValue=false</span>
+
+        <div class="demo-cap" style="margin-top:20px; margin-bottom:6px">color · 彩虹序列</div>
+        <wd-slider
+          v-for="c in rainbowColors"
+          :key="c.name"
+          :model-value="60"
+          :show-value="false"
+          :color="`var(--wd-rainbow-${c.name})`"
+          style="margin-top:2px"
+        ></wd-slider>
       </div>
     </div>
 
@@ -848,6 +892,8 @@
             mode="vod"
             :episodes="episodes"
             :current-episode="currentEp"
+            danmaku-src="media/danmaku.xml"
+            v-model:danmaku-on="danmakuOn"
             @change-episode="onChangeEp"
           >
             <!-- 顶部右侧扩展：清晰度 -->
@@ -860,15 +906,9 @@
             <template #overlay>
               <span class="vp-watermark">WDesign</span>
             </template>
-            <!-- 控制条右侧扩展：弹幕开关 -->
-            <template #controls-end>
-              <button type="button" class="vp-btn-mini" :class="{ 'is-on': danmaku }" @click="danmaku = !danmaku">
-                弹
-              </button>
-            </template>
           </wd-video-player>
           <span class="demo-cap" style="margin-top:8px">
-            控件播放中 2.6s 后自动淡出，鼠标一动即回来；全屏时隐藏光标。
+            控件播放中 2.6s 后自动淡出 · 弹幕来自 <code>danmaku-src</code>（B 站 XML 格式，20 条）
           </span>
         </div>
 
@@ -1805,8 +1845,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.bfb17117.js"></script>
-<script src="demo.5f802d72.js"></script>
+<script src="components.4c3c8a28.js"></script>
+<script src="demo.f978ee8c.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

@@ -236,6 +236,23 @@ const app = createApp({
   data() {
     return {
       popSeg: '全部',
+      danmakuOn: true,
+      /*
+       * 彩虹序列：与 src/styles/_rainbow.scss 的 10 个色相一一对应。
+       * red 就是主题红本身，green 是 #0DBC79（两个锚点色）。
+       */
+      rainbowColors: [
+        { name: 'red',    label: '红' },
+        { name: 'orange', label: '橙' },
+        { name: 'amber',  label: '琥珀' },
+        { name: 'lime',   label: '黄绿' },
+        { name: 'green',  label: '绿' },
+        { name: 'teal',   label: '青' },
+        { name: 'blue',   label: '蓝' },
+        { name: 'indigo', label: '靛' },
+        { name: 'violet', label: '紫' },
+        { name: 'pink',   label: '粉' },
+      ],
       navTopActive: 'guide',
       navTopItems: [
         { key: 'guide', label: '指南' },

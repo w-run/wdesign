@@ -978,3 +978,118 @@
   .wd-audio--card .wd-audio__ctl-spacer { width: 30px; height: 30px; }
   .wd-audio__main-btn { width: 46px; height: 46px; }
 }
+
+/* =============================================================
+ *  音量弹层
+ *
+ *  点音量按钮弹出纵向浮层：静音键 + 滑块 + 数值。
+ *  ⚠️ 之前按钮直接绑 toggleMute —— 一次点击就全静音，
+ *     想微调音量必须先静音，交互反直觉。
+ * ============================================================= */
+.wd-audio__vol {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+}
+
+.wd-audio__vol-pop {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+/* 反色卡片（深底）上的浮层保持深色 */
+.wd-audio--inverse .wd-audio__vol-pop {
+  background: rgba(28, 28, 30, .96);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+}
+
+.wd-audio__vol-mute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-audio__vol-mute:hover {
+    background: var(--wd-field);
+  }
+}
+
+.wd-audio--inverse .wd-audio__vol-mute { color: var(--wd-on-dark-2); }
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__vol-mute:hover { background: rgba(255, 255, 255, .12); }
+}
+
+/*
+ * 纵向滑块：用 writing-mode 把原生 range 转成竖直。
+ * ⚠️ 不要用 transform: rotate(-90deg) —— 那会让点击区域也旋转，
+ *    拖动方向和视觉方向对不上。writing-mode 是标准做法。
+ */
+.wd-audio__vol-slider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  width: 26px;
+}
+
+.wd-audio__vol-slider input[type='range'] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  height: 92px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 999px;
+  background: var(--wd-field);
+  cursor: pointer;
+}
+
+.wd-audio__vol-slider input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  box-shadow: 0 0 0 2px var(--wd-card);
+  cursor: grab;
+}
+
+.wd-audio--inverse .wd-audio__vol-slider input[type='range'] {
+  background: rgba(255, 255, 255, .2);
+}
+
+.wd-audio--inverse .wd-audio__vol-slider input[type='range']::-webkit-slider-thumb {
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(28, 28, 30, .9);
+}
+
+.wd-audio__vol-num {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-audio--inverse .wd-audio__vol-num { color: var(--wd-on-dark-3); }

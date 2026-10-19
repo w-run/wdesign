@@ -13,11 +13,23 @@
 // =============================================================
 .wd-vplayer {
   position: relative;
+  /* 面板用 cqw/cqh 相对播放器定宽 —— 需要这个容器类型 */
+  container-type: size;
+  container-name: vplayer;
   width: 100%;
   aspect-ratio: 16 / 9;
   background: #000;
   border-radius: var(--wd-radius-md);
-  overflow: hidden;
+  /*
+   * ⚠️ 这里**不能** overflow: hidden。
+   * 倍速 / 选集面板是向上弹出的，会被容器裁掉一大半
+   * （实测面板 top 超出容器 23px、left 超出 27px，
+   *  看起来就是"点了没反应"）。
+   *
+   * 圆角裁切改由内层负责：
+   *   · video 元素自己裁（它才是需要贴合圆角的那个）
+   *   · 控制条 / 顶部条是不透明色块，本来就在圆角内
+   */
   color: var(--wd-on-dark-text);
   /* 播放器内部不再继承页面字体，避免外部 line-height 影响垂直居中 */
   line-height: 1.4;
@@ -52,6 +64,8 @@
   height: 100%;
   object-fit: contain;
   background: #000;
+  /* 圆角裁切移到这里：容器不再 hidden */
+  border-radius: var(--wd-radius-md);
 }
 
 .wd-vplayer__el::-webkit-media-controls,
@@ -278,16 +292,30 @@
 .wd-vplayer__row {
   display: flex;
   align-items: center;
-  gap: 2px;
-  height: 34px;
-  /* 窄容器下允许控件横向滚动，而不是把时间文字压成一团 */
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
+  gap: 4px;
+  min-height: 34px;
+  /*
+   * ⚠️ 不能用 overflow-x: auto。
+   * 按 CSS 规范，一个轴设为 auto 时另一个轴会自动变成 auto（而非 visible），
+   * 于是倍速/选集面板被这条滚动容器裁掉 —— 面板向上弹出、
+   * 超出 row 的上边界就看不见了（实测面板顶部超出 23px）。
+   *
+   * 代价：极窄容器下控件不会横向滚动，但会换行（见下面 flex-wrap）。
+   * 播放器本来就不该窄到这个程度，换个策略更合理。
+   */
+  flex-wrap: wrap;
+  /*
+   * 明确声明两个轴都是 visible。
+   * ⚠️ 这里曾经残留一条 `overflow-y: hidden`，它会把上面刚写的
+   * `overflow: visible` 覆盖掉（同为声明属性，后出现的胜出），
+   * 面板照样被裁 —— 排查时非常容易漏看。
+   */
+  overflow: visible;
+  overflow-x: visible;
+  overflow-y: visible;
   /* 关键：禁止 flex 子项被压缩 —— 每个按钮都是固定尺寸的点击目标，
      被压窄会变成"看得见但点不准"，比溢出更糟 */
 }
-.wd-vplayer__row::-webkit-scrollbar { display: none; }
 .wd-vplayer__row > * { flex-shrink: 0; }
 
 .wd-vplayer__btn {
@@ -410,11 +438,29 @@
 }
 
 /* 选集面板 */
+/*
+ * 选集面板：宽度**跟随播放器**，而不是用固定的 400px。
+ *
+ * ⚠️ 固定宽度在窄播放器里会溢出到容器外
+ *   （实测播放器 453px、面板 400px + 按钮定位偏移 → 左侧超出 27px）。
+ * 用容器查询单位 cqw 让它恒为播放器宽度的 92%，最宽 420px。
+ * 不支持 cqw 的环境回落到 vw。
+ */
 .wd-vplayer__panel--eps {
-  width: min(400px, 84vw);
-  max-height: 300px;
+  width: min(400px, 88cqw, 88vw);
+  max-height: min(280px, 50cqh);
   display: flex;
   flex-direction: column;
+  /*
+   * ⚠️ 面板挂在「选集」按钮的 wrap 上，而该按钮靠近右端 ——
+   * 直接 `right: 0` 只是相对按钮，面板比按钮宽就会向左溢出
+   * （实测左侧超出播放器 48px）。
+   *
+   * 正解：用固定偏移把面板右边缘**对到播放器右边缘**。
+   * 播放器右侧内距是 12px（控制条 padding），按钮宽 32px，
+   * 所以从按钮右缘再往右 12px 即可。
+   */
+  right: -12px;
 }
 .wd-vplayer__eps-head {
   flex: none;
@@ -531,4 +577,9 @@
   background: rgba(0, 0, 0, .72);
   color: var(--wd-on-dark-text);
   font-size: 13px;
+}
+
+/* 弹幕开关的关闭态：文字变灰，与"已开启"区分 */
+.wd-vplayer__btn--text.is-muted {
+  color: var(--wd-on-dark-3);
 }

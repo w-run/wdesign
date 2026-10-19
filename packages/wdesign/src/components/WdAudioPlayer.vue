@@ -87,6 +87,14 @@ const duration = ref(0)
 const buffered = ref(0)
 const volume = ref(props.initialVolume)
 const muted = ref(false)
+/**
+ * 音量弹层的开关。
+ *
+ * ⚠️ 之前音量按钮直接绑 toggleMute —— 一次点击就静音，
+ * 用户想调小音量必须先静音再调，交互很反直觉。
+ * 改成：点按钮弹出纵向滑块，滑块上方另有静音按钮。
+ */
+const volOpen = ref(false)
 const rate = ref(1)
 const errMsg = ref('')
 const rateOpen = ref(false)
@@ -213,6 +221,22 @@ function toggleMute() {
   a.muted = !a.muted
   muted.value = a.muted
   if (!a.muted && a.volume === 0) { a.volume = 0.5; volume.value = 0.5 }
+}
+
+/**
+ * 音量滑块输入。
+ * 拖动到 0 时自动静音（与浏览器原生行为一致），
+ * 拖回非 0 时解除静音。
+ */
+function onVolumeInput(e: Event) {
+  const a = audio.value
+  if (!a) return
+  const r = Number((e.target as HTMLInputElement).value) / 100
+  const v = Math.max(0, Math.min(1, r))
+  volume.value = v
+  a.volume = v
+  a.muted = v === 0
+  muted.value = a.muted
 }
 
 function setRate(r: number) {
@@ -368,15 +392,40 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           <wd-icon name="skip-next" :variant="iconStyle" :size="24" />
         </button>
 
-        <button
-          v-if="volume"
-          type="button"
-          class="wd-audio__ctl"
-          :aria-label="muted ? '取消静音' : '静音'"
-          @click="toggleMute"
-        >
-          <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="24" />
-        </button>
+        <!-- 音量：点按钮弹出纵向滑块，而不是直接静音 -->
+        <div v-if="volume" class="wd-audio__vol">
+          <button
+            type="button"
+            class="wd-audio__ctl"
+            :aria-label="volOpen ? '收起音量' : '调节音量'"
+            :aria-expanded="volOpen"
+            @click.stop="volOpen = !volOpen"
+          >
+            <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="24" />
+          </button>
+
+          <div v-if="volOpen" class="wd-audio__vol-pop" @click.stop>
+            <button
+              type="button"
+              class="wd-audio__vol-mute"
+              :aria-label="muted ? '取消静音' : '静音'"
+              @click="toggleMute"
+            >
+              <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="15" />
+            </button>
+            <div class="wd-audio__vol-slider">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                :value="Math.round(volume * 100)"
+                aria-label="音量"
+                @input="onVolumeInput"
+              />
+            </div>
+            <span class="wd-audio__vol-num">{{ Math.round(volume * 100) }}</span>
+          </div>
+        </div>
         <span v-else class="wd-audio__ctl-spacer"></span>
       </div>
 

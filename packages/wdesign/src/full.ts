@@ -27,6 +27,7 @@ import WdCollapse from './components/WdCollapse.vue'
 import WdColorPicker from './components/WdColorPicker.vue'
 import WdCommand from './components/WdCommand.vue'
 import WdContainer from './components/WdContainer.vue'
+import WdDanmaku from './components/WdDanmaku.vue'
 import WdDatePicker from './components/WdDatePicker.vue'
 import WdDescriptions from './components/WdDescriptions.vue'
 import WdDivider from './components/WdDivider.vue'
@@ -101,6 +102,7 @@ const components = [
   WdColorPicker,
   WdCommand,
   WdContainer,
+  WdDanmaku,
   WdDatePicker,
   WdDescriptions,
   WdDivider,

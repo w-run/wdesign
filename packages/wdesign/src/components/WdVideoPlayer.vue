@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import WdDanmaku from './WdDanmaku.vue'
+import type { DanmakuItem } from './WdDanmaku.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { formatDuration } from './time'
 
@@ -74,6 +76,21 @@ const props = withDefaults(
      * 缺失 filled 变体的图标会由 WdIcon 自动回退 outlined。
      */
     iconStyle?: 'filled' | 'outlined'
+    /** 弹幕列表（已解析） */
+    danmaku?: DanmakuItem[]
+    /**
+     * 弹幕数据源 URL。支持 B 站 XML / JSON / 纯文本，自动识别。
+     * ⚠️ 跨域需自备代理。
+     */
+    danmakuSrc?: string
+    /** 原始弹幕文本（XML / JSON / CSV），本地解析 */
+    danmakuRaw?: string
+    /** 弹幕开关 */
+    danmakuOn?: boolean
+    /** 弹幕滚动速度（px/s，仅作参考，实际由 CSS 时长控制） */
+    danmakuSpeed?: number
+    /** 弹幕轨道行数 */
+    danmakuRows?: number
   }>(),
   {
     src: '',
@@ -93,7 +110,18 @@ const props = withDefaults(
     hls: 'auto',
     liveSync: true,
     iconStyle: 'filled',
+    danmaku: () => [],
+    danmakuSrc: '',
+    danmakuRaw: '',
+    danmakuOn: true,
+    danmakuSpeed: 120,
+    danmakuRows: 6,
   },
+)
+
+/** 三种弹幕来源任一存在即视为"有弹幕" */
+const hasDanmaku = computed(
+  () => props.danmaku.length > 0 || !!props.danmakuSrc || !!props.danmakuRaw,
 )
 
 const emit = defineEmits<{
@@ -105,6 +133,7 @@ const emit = defineEmits<{
   /** 切集（组件只发事件，换源交给调用方；若 episode 带 src 则组件自行切换） */
   (e: 'change-episode', ep: WdEpisode, index: number): void
   (e: 'rate-change', rate: number): void
+  (e: 'update:danmakuOn', value: boolean): void
 }>()
 
 const video = ref<HTMLVideoElement | null>(null)
@@ -197,6 +226,8 @@ function mountSource() {
   // 非 m3u8（mp4/webm）或明确关闭 HLS 处理 → 直接交给浏览器
   if (props.hls === 'off' || !isM3u8.value) {
     v.src = props.src
+    // ⚠️ 设完 src 立即重申内联属性：load() 会重置 iOS 的内联判定
+    enforceInline()
     return
   }
 
@@ -465,36 +496,53 @@ watch(() => props.src, async () => {
 })
 
 // 首次挂载：等 video 元素就绪后再决定用哪种方式加载
-onMounted(() => {
-  /*
-   * iOS 内联播放的三重保险。
-   *
-   * ⚠️ 为什么模板上写了 playsinline 还不够：
-   *   1. Vue 对 `webkit-playsinline` 这类带连字符的小写属性，
-   *      在某些编译路径下会被当成普通 attribute 丢掉（不会报错）。
-   *   2. iOS 的判定发生在**元素创建时**，若属性在挂载后才补上就无效 ——
-   *      所以必须趁刚 mounted、尚未 load 的时机用 setAttribute 强写。
-   *   3. iOS 10+ 需要 `playsinline`，iOS 9 需要 `webkit-playsinline`，
-   *      微信/QQ 内置浏览器（X5）需要 `x5-playsinline`。
-   *      三个都设才能覆盖主流容器。
-   *
-   * 另外：任一属性缺失时，iOS 会在**点击播放时**进入系统全屏播放器，
-   * 表现就是"视频弹出去、我们的控件消失"。
-   */
+/**
+ * iOS 内联播放的强制设置。
+ *
+ * ⚠️ 为什么模板上写了 playsinline 还不够：
+ *   1. Vue 对 `webkit-playsinline` 这类连字符小写属性，在某些编译路径下
+ *      会被当成普通 attribute 丢掉（不报错）。
+ *   2. **`v.load()` 会重置内联判定** —— iOS 在加载新源时重新决定
+ *      要不要走系统全屏播放器。所以每次挂源之后都必须重新设置一遍。
+ *   3. iOS 10+ 认 `playsinline`，iOS 9 认 `webkit-playsinline`，
+ *      微信/QQ 的 X5 内核认 `x5-playsinline`，三个都要设。
+ *
+ * 任一缺失，iOS 就会在点击播放时进入系统全屏 ——
+ * 表现正是"视频弹出去、我们的控件消失"。
+ */
+function enforceInline() {
   const v = video.value
-  if (v) {
-    v.setAttribute('playsinline', '')
-    v.setAttribute('webkit-playsinline', '')
-    v.setAttribute('x5-playsinline', '')
-    v.setAttribute('x5-video-player-type', 'h5')
-    v.setAttribute('disablepictureinpicture', '')
-    // 部分老 WebView 需要这个非标准属性才认内联
-    ;(v as unknown as Record<string, unknown>).playsInline = true
-  }
+  if (!v) return
+  v.setAttribute('playsinline', 'true')
+  v.setAttribute('webkit-playsinline', 'true')
+  v.setAttribute('x5-playsinline', 'true')
+  v.setAttribute('x5-video-player-type', 'h5')
+  v.setAttribute('disablepictureinpicture', 'true')
+  v.setAttribute('disableremoteplayback', 'true')
+  // 非标准属性：部分老 WebView 只认这个 JS 属性
+  ;(v as unknown as Record<string, unknown>).playsInline = true
+  // iOS Safari 的另一条路径：显式声明不要内联以外的方式
+  ;(v as unknown as Record<string, unknown>).webkitPlaysInline = true
+}
 
+onMounted(() => {
+  // 先设属性，再挂源 —— 顺序不能反
+  enforceInline()
   mountSource()
   if (props.autoplay) armLoadTimeout()
   document.addEventListener('fullscreenchange', onFsChange)
+
+  /*
+   * 兜底：iOS 会在 load / 切换源时重新判定内联，
+   * 所以监听这几个事件，每次发生后立刻把属性再写一遍。
+   * 用 { passive: true } 避免影响滚动性能。
+   */
+  const v = video.value
+  if (v) {
+    for (const evt of ['loadstart', 'loadedmetadata', 'canplay', 'play'] as const) {
+      v.addEventListener(evt, enforceInline, { passive: true })
+    }
+  }
 })
 
 watch(() => props.muted, (m) => { if (video.value) video.value.muted = m })
@@ -557,7 +605,19 @@ onBeforeUnmount(() => {
       <slot name="top-right" />
     </div>
 
-    <!-- ===== 画面覆盖层：弹幕 / 自定义字幕 / 水印 ===== -->
+    <!-- ===== 弹幕层（内置） ===== -->
+    <wd-danmaku
+      v-if="hasDanmaku"
+      :items="danmaku"
+      :src="danmakuSrc"
+      :raw="danmakuRaw"
+      :current="current"
+      :visible="danmakuOn"
+      :paused="!playing"
+      :rows="danmakuRows"
+    />
+
+    <!-- ===== 画面覆盖层：自定义字幕 / 水印 ===== -->
     <div class="wd-vplayer__overlay">
       <slot name="overlay" :playing="playing" :current="current" :duration="duration" />
     </div>
@@ -647,6 +707,19 @@ onBeforeUnmount(() => {
         <span v-else class="wd-vplayer__time">{{ liveClock }}</span>
 
         <span class="wd-vplayer__spacer"></span>
+
+        <!-- 弹幕开关 -->
+        <button
+          v-if="hasDanmaku"
+          type="button"
+          class="wd-vplayer__btn wd-vplayer__btn--text"
+          :class="{ 'is-muted': !danmakuOn }"
+          :aria-pressed="danmakuOn"
+          aria-label="弹幕"
+          @click.stop="emit('update:danmakuOn', !danmakuOn)"
+        >
+          弹
+        </button>
 
         <!-- 右侧扩展位：字幕、音轨、清晰度等（在原生控件之前） -->
         <slot name="controls-end" />

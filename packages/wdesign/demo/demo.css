@@ -117,36 +117,36 @@
   --wd-space-10: 40px;
   --wd-space-12: 48px;
   --wd-space-16: 64px;
-  --wd-rainbow-red: #E05361;
-  --wd-rainbow-orange: #E88442;
-  --wd-rainbow-amber: #D9A441;
-  --wd-rainbow-lime: #8BAE3F;
-  --wd-rainbow-green: #3FA06A;
-  --wd-rainbow-teal: #2F9E9A;
-  --wd-rainbow-blue: #3B82C4;
-  --wd-rainbow-indigo: #5B6BC0;
-  --wd-rainbow-violet: #8B5FBF;
-  --wd-rainbow-pink: #C95FA0;
-  --wd-rainbow-red-soft: #FCEDEF;
-  --wd-rainbow-orange-soft: #FDF2E9;
-  --wd-rainbow-amber-soft: #FBF5E6;
-  --wd-rainbow-lime-soft: #F1F6E8;
-  --wd-rainbow-green-soft: #EAF5EF;
-  --wd-rainbow-teal-soft: #E6F5F4;
-  --wd-rainbow-blue-soft: #EBF3FA;
-  --wd-rainbow-indigo-soft: #EDEFF9;
-  --wd-rainbow-violet-soft: #F3EDF9;
-  --wd-rainbow-pink-soft: #FAEDF5;
-  --wd-rainbow-red-ink: #B02E3D;
-  --wd-rainbow-orange-ink: #A9561F;
-  --wd-rainbow-amber-ink: #8A6417;
-  --wd-rainbow-lime-ink: #52701C;
-  --wd-rainbow-green-ink: #1F6B44;
-  --wd-rainbow-teal-ink: #166863;
-  --wd-rainbow-blue-ink: #1F558A;
-  --wd-rainbow-indigo-ink: #39458A;
-  --wd-rainbow-violet-ink: #64408A;
-  --wd-rainbow-pink-ink: #8E3D70;
+  --wd-rainbow-red: #D62839;
+  --wd-rainbow-orange: #E2632E;
+  --wd-rainbow-amber: #D9962B;
+  --wd-rainbow-lime: #7FB03A;
+  --wd-rainbow-green: #0DBC79;
+  --wd-rainbow-teal: #0FA3A0;
+  --wd-rainbow-blue: #3B7FD4;
+  --wd-rainbow-indigo: #5A63C4;
+  --wd-rainbow-violet: #8B55C0;
+  --wd-rainbow-pink: #C94E9B;
+  --wd-rainbow-red-soft: #FBEAEC;
+  --wd-rainbow-orange-soft: #FCEEE6;
+  --wd-rainbow-amber-soft: #FAF3E3;
+  --wd-rainbow-lime-soft: #F1F6E7;
+  --wd-rainbow-green-soft: #E4F8F0;
+  --wd-rainbow-teal-soft: #E3F5F5;
+  --wd-rainbow-blue-soft: #EAF2FB;
+  --wd-rainbow-indigo-soft: #ECEDF9;
+  --wd-rainbow-violet-soft: #F3ECF9;
+  --wd-rainbow-pink-soft: #FAEAF3;
+  --wd-rainbow-red-ink: #A81D2C;
+  --wd-rainbow-orange-ink: #A8461A;
+  --wd-rainbow-amber-ink: #8A5D14;
+  --wd-rainbow-lime-ink: #4E6F1B;
+  --wd-rainbow-green-ink: #06704A;
+  --wd-rainbow-teal-ink: #0A6462;
+  --wd-rainbow-blue-ink: #1F5490;
+  --wd-rainbow-indigo-ink: #38418C;
+  --wd-rainbow-violet-ink: #613A88;
+  --wd-rainbow-pink-ink: #91376C;
 }
 
 /* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
@@ -10034,13 +10034,145 @@ img.wd-theme-invert {
     height: 46px;
   }
 }
+/* =============================================================
+ *  音量弹层
+ *
+ *  点音量按钮弹出纵向浮层：静音键 + 滑块 + 数值。
+ *  ⚠️ 之前按钮直接绑 toggleMute —— 一次点击就全静音，
+ *     想微调音量必须先静音，交互反直觉。
+ * ============================================================= */
+.wd-audio__vol {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+}
+
+.wd-audio__vol-pop {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+/* 反色卡片（深底）上的浮层保持深色 */
+.wd-audio--inverse .wd-audio__vol-pop {
+  background: rgba(28, 28, 30, 0.96);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.wd-audio__vol-mute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-audio__vol-mute:hover {
+    background: var(--wd-field);
+  }
+}
+.wd-audio--inverse .wd-audio__vol-mute {
+  color: var(--wd-on-dark-2);
+}
+
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__vol-mute:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+/*
+ * 纵向滑块：用 writing-mode 把原生 range 转成竖直。
+ * ⚠️ 不要用 transform: rotate(-90deg) —— 那会让点击区域也旋转，
+ *    拖动方向和视觉方向对不上。writing-mode 是标准做法。
+ */
+.wd-audio__vol-slider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  width: 26px;
+}
+
+.wd-audio__vol-slider input[type=range] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  height: 92px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 999px;
+  background: var(--wd-field);
+  cursor: pointer;
+}
+
+.wd-audio__vol-slider input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  box-shadow: 0 0 0 2px var(--wd-card);
+  cursor: grab;
+}
+
+.wd-audio--inverse .wd-audio__vol-slider input[type=range] {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.wd-audio--inverse .wd-audio__vol-slider input[type=range]::-webkit-slider-thumb {
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(28, 28, 30, 0.9);
+}
+
+.wd-audio__vol-num {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-audio--inverse .wd-audio__vol-num {
+  color: var(--wd-on-dark-3);
+}
+
 .wd-vplayer {
   position: relative;
+  /* 面板用 cqw/cqh 相对播放器定宽 —— 需要这个容器类型 */
+  container-type: size;
+  container-name: vplayer;
   width: 100%;
   aspect-ratio: 16/9;
   background: #000;
   border-radius: var(--wd-radius-md);
-  overflow: hidden;
+  /*
+   * ⚠️ 这里**不能** overflow: hidden。
+   * 倍速 / 选集面板是向上弹出的，会被容器裁掉一大半
+   * （实测面板 top 超出容器 23px、left 超出 27px，
+   *  看起来就是"点了没反应"）。
+   *
+   * 圆角裁切改由内层负责：
+   *   · video 元素自己裁（它才是需要贴合圆角的那个）
+   *   · 控制条 / 顶部条是不透明色块，本来就在圆角内
+   */
   color: var(--wd-on-dark-text);
   /* 播放器内部不再继承页面字体，避免外部 line-height 影响垂直居中 */
   line-height: 1.4;
@@ -10077,6 +10209,8 @@ img.wd-theme-invert {
   height: 100%;
   object-fit: contain;
   background: #000;
+  /* 圆角裁切移到这里：容器不再 hidden */
+  border-radius: var(--wd-radius-md);
 }
 
 .wd-vplayer__el::-webkit-media-controls,
@@ -10342,18 +10476,29 @@ img.wd-theme-invert {
 .wd-vplayer__row {
   display: flex;
   align-items: center;
-  gap: 2px;
-  height: 34px;
-  /* 窄容器下允许控件横向滚动，而不是把时间文字压成一团 */
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
+  gap: 4px;
+  min-height: 34px;
+  /*
+   * ⚠️ 不能用 overflow-x: auto。
+   * 按 CSS 规范，一个轴设为 auto 时另一个轴会自动变成 auto（而非 visible），
+   * 于是倍速/选集面板被这条滚动容器裁掉 —— 面板向上弹出、
+   * 超出 row 的上边界就看不见了（实测面板顶部超出 23px）。
+   *
+   * 代价：极窄容器下控件不会横向滚动，但会换行（见下面 flex-wrap）。
+   * 播放器本来就不该窄到这个程度，换个策略更合理。
+   */
+  flex-wrap: wrap;
+  /*
+   * 明确声明两个轴都是 visible。
+   * ⚠️ 这里曾经残留一条 `overflow-y: hidden`，它会把上面刚写的
+   * `overflow: visible` 覆盖掉（同为声明属性，后出现的胜出），
+   * 面板照样被裁 —— 排查时非常容易漏看。
+   */
+  overflow: visible;
+  overflow-x: visible;
+  overflow-y: visible;
   /* 关键：禁止 flex 子项被压缩 —— 每个按钮都是固定尺寸的点击目标，
      被压窄会变成"看得见但点不准"，比溢出更糟 */
-}
-
-.wd-vplayer__row::-webkit-scrollbar {
-  display: none;
 }
 
 .wd-vplayer__row > * {
@@ -10493,11 +10638,29 @@ img.wd-theme-invert {
 }
 
 /* 选集面板 */
+/*
+ * 选集面板：宽度**跟随播放器**，而不是用固定的 400px。
+ *
+ * ⚠️ 固定宽度在窄播放器里会溢出到容器外
+ *   （实测播放器 453px、面板 400px + 按钮定位偏移 → 左侧超出 27px）。
+ * 用容器查询单位 cqw 让它恒为播放器宽度的 92%，最宽 420px。
+ * 不支持 cqw 的环境回落到 vw。
+ */
 .wd-vplayer__panel--eps {
-  width: min(400px, 84vw);
-  max-height: 300px;
+  width: min(400px, 88cqw, 88vw);
+  max-height: min(280px, 50cqh);
   display: flex;
   flex-direction: column;
+  /*
+   * ⚠️ 面板挂在「选集」按钮的 wrap 上，而该按钮靠近右端 ——
+   * 直接 `right: 0` 只是相对按钮，面板比按钮宽就会向左溢出
+   * （实测左侧超出播放器 48px）。
+   *
+   * 正解：用固定偏移把面板右边缘**对到播放器右边缘**。
+   * 播放器右侧内距是 12px（控制条 padding），按钮宽 32px，
+   * 所以从按钮右缘再往右 12px 即可。
+   */
+  right: -12px;
 }
 
 .wd-vplayer__eps-head {
@@ -10626,6 +10789,113 @@ img.wd-theme-invert {
   background: rgba(0, 0, 0, 0.72);
   color: var(--wd-on-dark-text);
   font-size: 13px;
+}
+
+/* 弹幕开关的关闭态：文字变灰，与"已开启"区分 */
+.wd-vplayer__btn--text.is-muted {
+  color: var(--wd-on-dark-3);
+}
+
+.wd-danmaku {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /*
+   * 关键：完全不拦截交互。
+   * 用户点画面要能暂停/播放，弹幕层绝不能挡在上面吃掉点击。
+   */
+  pointer-events: none;
+  z-index: 2;
+  /* 顶部留出标题条的空间，底部留出控制条的空间 */
+  padding: 48px 0 80px;
+  font-size: var(--dm-font, 15px);
+  line-height: 1.3;
+}
+
+.wd-danmaku__item {
+  position: absolute;
+  left: 0;
+  white-space: nowrap;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  opacity: var(--dm-opacity, 1);
+  /* 从容器右外侧进来，到左外侧离开 */
+  animation: wd-danmaku-scroll linear both;
+  /*
+   * 时长由速度决定。这里用容器宽度 + 文本长度的近似，
+   * 通过 CSS 变量从组件传入会更好，但文本长度无法在 CSS 里获得，
+   * 所以统一用固定时长 —— 长弹幕会显得更快，视觉上仍可接受。
+   */
+  animation-duration: 8s;
+  will-change: transform;
+}
+
+/*
+ * 轨道高度：用 --dm-rows 均分可用高度，
+ * 但每行至少 26px（字号 15px + 行距），否则会挤在一起。
+ */
+.wd-danmaku {
+  --dm-row-h: max(26px, calc((100% - 0px) / var(--dm-rows, 6)));
+}
+
+@keyframes wd-danmaku-scroll {
+  from {
+    transform: translateX(100cqw);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+/* 不支持容器查询单位时回落到视口单位 */
+@supports not (width: 1cqw) {
+  @keyframes wd-danmaku-scroll {
+    from {
+      transform: translateX(100vw);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}
+/* 固定弹幕（顶部 / 底部）：不滚动，做一次淡入 */
+.wd-danmaku__item--fixed {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: wd-danmaku-fade 3s ease both;
+}
+
+@keyframes wd-danmaku-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  12% {
+    opacity: var(--dm-opacity, 1);
+    transform: translate(-50%, 0);
+  }
+  85% {
+    opacity: var(--dm-opacity, 1);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* 减弱动效：不飞，只显示一小会儿 */
+  .wd-danmaku__item {
+    animation: wd-danmaku-fade 3s ease both;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+/* 暂停时定格：由组件写入 --dm-play-state */
+.wd-danmaku {
+  --dm-play-state: running;
+}
+
+.wd-danmaku__item {
+  animation-play-state: var(--dm-play-state, running);
 }
 
 .wd-group {
@@ -11250,43 +11520,6 @@ html.dark-theme {
   --wd-link-underline: rgba(214, 40, 57, .5);
   background: var(--wd-bg);
   color: var(--wd-ink);
-  /* ---------------- Rainbow · 深色覆盖 ---------------- */
-  /*
-   * 深色下三档都要变：
-   *   base  提亮（深底上原色过暗，失去色彩感）
-   *   soft  改成半透明深色底（直译浅色会白得刺眼）
-   *   ink   改成浅色（深底上要浅字才可读）
-   */
-  --wd-rainbow-red: #F07A86;
-  --wd-rainbow-orange: #F0A06A;
-  --wd-rainbow-amber: #E8BE6E;
-  --wd-rainbow-lime: #B0CC74;
-  --wd-rainbow-green: #6BC194;
-  --wd-rainbow-teal: #5FC0BC;
-  --wd-rainbow-blue: #6FA8DC;
-  --wd-rainbow-indigo: #8494DC;
-  --wd-rainbow-violet: #B08FD4;
-  --wd-rainbow-pink: #DC8FBE;
-  --wd-rainbow-red-soft: color-mix(in srgb, #F07A86 14%, transparent);
-  --wd-rainbow-orange-soft: color-mix(in srgb, #F0A06A 14%, transparent);
-  --wd-rainbow-amber-soft: color-mix(in srgb, #E8BE6E 14%, transparent);
-  --wd-rainbow-lime-soft: color-mix(in srgb, #B0CC74 14%, transparent);
-  --wd-rainbow-green-soft: color-mix(in srgb, #6BC194 14%, transparent);
-  --wd-rainbow-teal-soft: color-mix(in srgb, #5FC0BC 14%, transparent);
-  --wd-rainbow-blue-soft: color-mix(in srgb, #6FA8DC 14%, transparent);
-  --wd-rainbow-indigo-soft: color-mix(in srgb, #8494DC 14%, transparent);
-  --wd-rainbow-violet-soft: color-mix(in srgb, #B08FD4 14%, transparent);
-  --wd-rainbow-pink-soft: color-mix(in srgb, #DC8FBE 14%, transparent);
-  --wd-rainbow-red-ink: #F07A86;
-  --wd-rainbow-orange-ink: #F0A06A;
-  --wd-rainbow-amber-ink: #E8BE6E;
-  --wd-rainbow-lime-ink: #B0CC74;
-  --wd-rainbow-green-ink: #6BC194;
-  --wd-rainbow-teal-ink: #5FC0BC;
-  --wd-rainbow-blue-ink: #6FA8DC;
-  --wd-rainbow-indigo-ink: #8494DC;
-  --wd-rainbow-violet-ink: #B08FD4;
-  --wd-rainbow-pink-ink: #DC8FBE;
 }
 
 /* 深色下滚动条 */
