@@ -29,8 +29,13 @@ ICON_DIRS = [
 
 # Demo 里用于说明"这是图标名"的字段
 ICON_FIELD = re.compile(r"\bicon:\s*'([a-z0-9][a-z0-9-]*)'")
-# 只匹配 name="字面量"。name="n" 这类来自 v-for 变量、或含 {{ }} 插值的跳过
-STATIC_NAME = re.compile(r'<wd-icon[^>]*?\bname="([a-z0-9][a-z0-9-]{2,})"')
+# 只匹配**静态** name="字面量"。
+#
+# ⚠️ 必须排除动态绑定 `:name="icon"` ——
+#    正则里的 `\bname=` 会把 `:name=` 也匹配上（冒号不是 word boundary），
+#    于是 `:name="icon"` 被当成字面量 "icon"，报"图标名不存在"。
+#    用负向后顾 `(?<!:)` 排除掉带冒号的绑定。
+STATIC_NAME = re.compile(r'<wd-icon[^>]*?(?<!:)\bname="([a-z0-9][a-z0-9-]{2,})"')
 # 明显是模板变量的单字母/双字母名
 VAR_LIKE = re.compile(r'^[a-z]$')
 
