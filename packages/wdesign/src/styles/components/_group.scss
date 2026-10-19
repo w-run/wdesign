@@ -213,11 +213,11 @@
 }
 .wd-group--col > .wd-group__item--first,
 .wd-group--col > .wd-group__item--first > * {
-  border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0 !important;
+  border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0 !important;
 }
 .wd-group--col > .wd-group__item--last,
 .wd-group--col > .wd-group__item--last > * {
-  border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md) !important;
+  border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill) !important;
 }
 /* 只有 capsule 才用 pill 端头 */
 .wd-group--capsule.wd-group--col > .wd-group__item--first,
@@ -293,19 +293,19 @@
 
 .wd-group--row.wd-group--joined > .wd-group__item--first,
 .wd-group--row.wd-group--joined > .wd-group__item--first > * {
-  border-radius: var(--wd-radius-md) 0 0 var(--wd-radius-md) !important;
+  border-radius: var(--wd-radius-pill) 0 0 var(--wd-radius-pill) !important;
 }
 .wd-group--row.wd-group--joined > .wd-group__item--last,
 .wd-group--row.wd-group--joined > .wd-group__item--last > * {
-  border-radius: 0 var(--wd-radius-md) var(--wd-radius-md) 0 !important;
+  border-radius: 0 var(--wd-radius-pill) var(--wd-radius-pill) 0 !important;
 }
 .wd-group--row.wd-group--joined > .wd-group__item--only,
 .wd-group--row.wd-group--joined > .wd-group__item--only > * {
-  border-radius: var(--wd-radius-md) !important;
+  border-radius: var(--wd-radius-pill) !important;
 }
 
-.wd-group--joined.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0; }
-.wd-group--joined.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md); }
+.wd-group--joined.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0; }
+.wd-group--joined.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill); }
 
 /*
  * 分段之间**不画任何分隔线**。

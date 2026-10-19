@@ -238,8 +238,9 @@
 
 .wd-nav--vertical .wd-nav__item {
   height: 38px;
-  padding: 0 10px;
-  border-radius: var(--wd-radius-sm);
+  padding: 0 14px;
+  /* 可点击项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   gap: 11px;
 }
 

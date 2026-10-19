@@ -219,12 +219,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   padding: 0;
   margin-right: 4px;
   border: 0;
-  border-radius: 4px;
+  /* 图标按钮 → 圆形 */
+  border-radius: 50%;
   background: transparent;
   color: var(--wd-ink-3);
   cursor: pointer;
@@ -256,11 +257,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   padding: 0;
   border: 0;
-  border-radius: 4px;
+  /* 图标按钮 → 圆形 */
+  border-radius: 50%;
   background: transparent;
   color: var(--wd-ink-3);
   cursor: pointer;

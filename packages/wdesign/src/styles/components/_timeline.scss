@@ -76,6 +76,14 @@
 }
 
 /* ---------------- 节点 ---------------- */
+/*
+ * 节点尺寸：默认 = --tl-dot（10px 小圆点）；
+ * 带图标时自动放大到能容下图标 —— 否则图标会溢出节点边框，
+ * 视觉上像是"图标浮在外面"（实测 10px 节点塞 13-15px 图标）。
+ *
+ * ⚠️ 用 min-width/min-height 而不是 width/height：
+ * 有图标时让它自然长大，无图标时保持小巧。
+ */
 .wd-timeline__node {
   position: relative;
   z-index: 1;
@@ -83,13 +91,27 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  width: var(--tl-dot);
-  height: var(--tl-dot);
+  /*
+   * ⚠️ 必须显式 align-self: flex-start。
+   * 父级 .wd-timeline__item 是 flex 容器且未设 align-items，
+   * 默认 stretch 会把节点在交叉轴拉满 —— 实测 22x65（应为 22x22）。
+   * 节点是"点"，不该被拉伸成"条"。
+   */
+  align-self: flex-start;
+  min-width: var(--tl-dot);
+  min-height: var(--tl-dot);
   border-radius: 50%;
   /* 默认节点：空心描边，比实心更轻，不会把时间线压成一条黑点链 */
   background: var(--wd-card);
   box-shadow: inset 0 0 0 2px var(--wd-ink-4);
   color: var(--wd-ink-2);
+}
+
+/* 带图标时：节点扩大为圆形徽章，图标完整居中 */
+.wd-timeline__node:has(> .wd-icon) {
+  min-width: calc(var(--tl-dot) + 12px);
+  min-height: calc(var(--tl-dot) + 12px);
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
 }
 
 .wd-timeline__dot {

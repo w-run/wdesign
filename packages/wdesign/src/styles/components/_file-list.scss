@@ -31,9 +31,10 @@
   width: 26px;
   height: 26px;
   flex: none;
-  border-radius: 8px;
-  background: var(--wd-tint-1);
-  color: var(--wd-red-text);
+  /* 图标容器用圆形，与全站「圆形/胶囊优先」一致 */
+  border-radius: 50%;
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
   display: inline-flex;
   align-items: center;
   justify-content: center;

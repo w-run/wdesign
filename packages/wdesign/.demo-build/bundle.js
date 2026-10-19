@@ -12238,7 +12238,7 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-transfer__empty"
   };
-  var _hoisted_814 = ["checked", "disabled", "onChange"];
+  var _hoisted_814 = ["aria-checked", "aria-disabled"];
   var _hoisted_911 = { class: "wd-transfer__label" };
   var _hoisted_109 = {
     key: 0,
@@ -12260,7 +12260,7 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-transfer__empty"
   };
-  var _hoisted_2111 = ["checked", "disabled", "onChange"];
+  var _hoisted_2111 = ["aria-disabled"];
   var _hoisted_2210 = { class: "wd-transfer__label" };
   var _hoisted_2310 = {
     key: 0,
@@ -12424,12 +12424,19 @@ var WD_REAL_MODULE = (() => {
                           class: normalizeClass(["wd-transfer__item", { "is-checked": leftChecked.value.has(d.key), "is-disabled": d.disabled }])
                         },
                         [
-                          createElementVNode("input", {
-                            type: "checkbox",
-                            checked: leftChecked.value.has(d.key),
-                            disabled: d.disabled || __props.disabled,
-                            onChange: ($event) => toggleCheck("left", d.key)
-                          }, null, 40, _hoisted_814),
+                          createCommentVNode("\n            \u81EA\u5B9A\u4E49\u5706\u5F62\u52FE\u9009\u6307\u793A\u5668\uFF0C\u4E0D\u7528\u539F\u751F checkbox\u3002\n            \u539F\u751F\u6846\u5728\u5404\u5E73\u53F0\u5B57\u5F62/\u5C3A\u5BF8\u4E0D\u4E00\uFF0C\u4E14\u65B9\u5F62\u4E0E\u5168\u7AD9\u300C\u5706\u5F62\u4F18\u5148\u300D\u51B2\u7A81\u3002\n            role=checkbox + aria-checked \u4FDD\u8BC1\u65E0\u969C\u788D\u8BED\u4E49\u4E0D\u4E22\u3002\n          "),
+                          createElementVNode("span", {
+                            class: normalizeClass(["wd-transfer__tick", { "is-on": leftChecked.value.has(d.key) }]),
+                            role: "checkbox",
+                            "aria-checked": leftChecked.value.has(d.key),
+                            "aria-disabled": d.disabled || __props.disabled
+                          }, [
+                            leftChecked.value.has(d.key) ? (openBlock(), createBlock(_component_wd_icon, {
+                              key: 0,
+                              name: "check",
+                              size: 10
+                            })) : createCommentVNode("v-if", true)
+                          ], 10, _hoisted_814),
                           createElementVNode("span", _hoisted_911, [
                             createTextVNode(
                               toDisplayString(d.label) + " ",
@@ -12549,15 +12556,20 @@ var WD_REAL_MODULE = (() => {
                         "label",
                         {
                           key: d.key,
-                          class: normalizeClass(["wd-transfer__item", { "is-checked": rightChecked.value.has(d.key), "is-disabled": d.disabled }])
+                          class: normalizeClass(["wd-transfer__item", { "is-checked": true, "is-disabled": d.disabled }])
                         },
                         [
-                          createElementVNode("input", {
-                            type: "checkbox",
-                            checked: rightChecked.value.has(d.key),
-                            disabled: d.disabled || __props.disabled,
-                            onChange: ($event) => toggleCheck("right", d.key)
-                          }, null, 40, _hoisted_2111),
+                          createElementVNode("span", {
+                            class: normalizeClass(["wd-transfer__tick", { "is-on": true }]),
+                            role: "checkbox",
+                            "aria-checked": true,
+                            "aria-disabled": d.disabled || __props.disabled
+                          }, [
+                            createVNode(_component_wd_icon, {
+                              name: "check",
+                              size: 10
+                            })
+                          ], 8, _hoisted_2111),
                           createElementVNode("span", _hoisted_2210, [
                             createTextVNode(
                               toDisplayString(d.label) + " ",

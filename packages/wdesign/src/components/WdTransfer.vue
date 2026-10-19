@@ -164,12 +164,20 @@ const canMoveLeft = computed(() => rightChecked.value.size > 0 && !props.disable
           class="wd-transfer__item"
           :class="{ 'is-checked': leftChecked.has(d.key), 'is-disabled': d.disabled }"
         >
-          <input
-            type="checkbox"
-            :checked="leftChecked.has(d.key)"
-            :disabled="d.disabled || disabled"
-            @change="toggleCheck('left', d.key)"
-          />
+          <!--
+            自定义圆形勾选指示器，不用原生 checkbox。
+            原生框在各平台字形/尺寸不一，且方形与全站「圆形优先」冲突。
+            role=checkbox + aria-checked 保证无障碍语义不丢。
+          -->
+          <span
+            class="wd-transfer__tick"
+            :class="{ 'is-on': leftChecked.has(d.key) }"
+            role="checkbox"
+            :aria-checked="leftChecked.has(d.key)"
+            :aria-disabled="d.disabled || disabled"
+          >
+            <wd-icon v-if="leftChecked.has(d.key)" name="check" :size="10" />
+          </span>
           <span class="wd-transfer__label">
             {{ d.label }}
             <span v-if="d.desc" class="wd-transfer__desc">{{ d.desc }}</span>
@@ -228,14 +236,17 @@ const canMoveLeft = computed(() => rightChecked.value.size > 0 && !props.disable
           v-for="d in rightList"
           :key="d.key"
           class="wd-transfer__item"
-          :class="{ 'is-checked': rightChecked.has(d.key), 'is-disabled': d.disabled }"
+          :class="{ 'is-checked': true, 'is-disabled': d.disabled }"
         >
-          <input
-            type="checkbox"
-            :checked="rightChecked.has(d.key)"
-            :disabled="d.disabled || disabled"
-            @change="toggleCheck('right', d.key)"
-          />
+          <span
+            class="wd-transfer__tick"
+            :class="{ 'is-on': true }"
+            role="checkbox"
+            :aria-checked="true"
+            :aria-disabled="d.disabled || disabled"
+          >
+            <wd-icon name="check" :size="10" />
+          </span>
           <span class="wd-transfer__label">
             {{ d.label }}
             <span v-if="d.desc" class="wd-transfer__desc">{{ d.desc }}</span>

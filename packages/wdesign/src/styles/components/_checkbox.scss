@@ -19,7 +19,8 @@
   width: 24px;
   height: 24px;
   flex: none;
-  border-radius: 8px;
+  /* 复选框也走圆形，与全站一致（圆形表达"可勾选"） */
+  border-radius: 50%;
   background: var(--wd-field);
   color: transparent;
   display: inline-flex;

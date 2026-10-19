@@ -45,15 +45,48 @@
   cursor: pointer;
 }
 
-.wd-transfer__check-all input,
-.wd-transfer__item input {
-  /* 统一用系统 checkbox：无障碍最好，且与 WdCheckbox 视觉刻意区分 */
+/*
+ * 全选框：用 appearance: none 自绘，与项内的圆形指示器完全一致。
+ * ⚠️ 不能直接用原生框 + accent-color —— 各平台原生框是方形，
+ * 和下面的圆形指示器并排会显得割裂。
+ */
+.wd-transfer__check-all input {
   flex: none;
-  width: 15px;
-  height: 15px;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 17px;
+  height: 17px;
   margin: 0;
-  accent-color: var(--wd-red);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+  background: transparent;
   cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-transfer__check-all input:hover {
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+}
+
+.wd-transfer__check-all input:checked {
+  background: var(--wd-ink);
+  box-shadow: none;
+  /* 勾：用两条斜线画，避免依赖字体图标 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6.2 5.1 8.3 9 4'/%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 半选态：一条横杠 */
+.wd-transfer__check-all input:indeterminate {
+  background: var(--wd-ink);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3.5 6h5'/%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .wd-transfer__count {
@@ -76,8 +109,13 @@
 
 .wd-transfer__item {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  /*
+   * 垂直居中而非顶部对齐。
+   * 项内是「圆点 + 两行文字」，顶部对齐会让圆点浮在第一行文字上方，
+   * 看起来像没对齐；居中后圆点落在整块的视觉中线上。
+   */
+  align-items: center;
+  gap: 10px;
   padding: 7px 8px;
   border-radius: var(--wd-radius-pill);
   font-size: 13px;
@@ -102,9 +140,45 @@
   background: transparent;
 }
 
-.wd-transfer__item input {
-  /* 与首行文字基线对齐：15px 的框放在 13px/1.5 的行里需要微调 */
-  margin-top: 2px;
+/* ---------------- 圆形勾选指示器 ---------------- */
+/*
+ * 不用原生 checkbox：
+ *   原生框是方形、尺寸随平台变，与全站「圆形优先」冲突；
+ *   而且 15px 的小方框在 13px 行高里很难对齐。
+ *
+ * 圆形指示器：未选 = 空心描边，已选 = 实心深色 + 白色勾。
+ * 深色而非主题红 —— 勾选是高频操作，红色会读成"危险/错误"。
+ */
+.wd-transfer__tick {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  /* 父级 align-items: center 已保证垂直居中，无需 margin 微调 */
+  border-radius: 50%;
+  /* 未选：空心描边用 inset shadow 而非 border，避免参与盒模型 */
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+  background: transparent;
+  color: var(--wd-card);
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-transfer__item:hover .wd-transfer__tick {
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+}
+
+.wd-transfer__tick.is-on {
+  background: var(--wd-ink);
+  box-shadow: none;
+}
+
+.wd-transfer__item.is-disabled .wd-transfer__tick {
+  box-shadow: inset 0 0 0 1.5px var(--wd-tint-3);
+}
+.wd-transfer__item.is-disabled .wd-transfer__tick.is-on {
+  background: var(--wd-ink-4);
 }
 
 .wd-transfer__label {

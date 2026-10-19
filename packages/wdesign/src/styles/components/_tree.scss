@@ -16,8 +16,9 @@
   gap: 6px;
   position: relative;
   min-height: 32px;
-  padding-right: 10px;
-  border-radius: var(--wd-radius-xs);
+  padding-right: 14px;
+  /* 可点击项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   color: var(--wd-ink);
   cursor: pointer;
   outline: none;
