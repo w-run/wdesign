@@ -1,74 +1,66 @@
 // =============================================================
-//  WDesign UI — Mixins
-//  供业务样式复用的风格化 mixin（编译期）
+//  WDesign — 样式 mixin
+//
+//  ===== 什么该进这里 =====
+//  同时满足两条：
+//    1. 重复 ≥ 5 次
+//    2. 参数化后语义仍清晰（1~2 个参数）
+//
+//  ===== 什么不该进 =====
+//  · 只重复 2~3 次的 —— mixin 的间接层成本比省下的行数高
+//  · 参数超过 3 个的 —— 那已经是"缩写"，不是"复用"
+//  · 长得像但语义不同的 —— 例如 33 处 `background: --wd-card`
+//    分别用于内容卡 / 浮层面板 / 选中态白块，硬抽会变成
+//    @mixin surface($bg, $radius, $shadow, $padding) 这种五参怪物
+//
+//  ===== 为什么用 mixin 而不是 %placeholder + @extend =====
+//  @extend 是**选择器合并**：`%truncate` 被三处 @extend 后，
+//  编译产物会变成 `.a, .b, .c { ... }` —— 三个类被绑定在一起，
+//  用户单独覆盖其中一个时权重难以预测。
+//  mixin 是编译期复制，各写各的，覆盖行为可预测。
+//
+//  ===== 用法 =====
+//  @use '../mixins' as m;
+//  .wd-input:focus-within { @include m.focus-ring(4px, ring-faint); }
 // =============================================================
-@import 'tokens';
 
-// 便当盒卡片：白底 + 大圆角 + 单层浅阴影（无边框）
-@mixin wd-card($radius: $wd-radius-lg) {
-  background: $wd-card;
-  border-radius: $radius;
-  box-shadow: $wd-shadow;
-}
-
-// 胶囊
-@mixin wd-pill {
-  border-radius: $wd-radius-pill;
-}
-
-// 键盘焦点环（红色柔光）
-@mixin wd-focus-ring {
+/// 焦点环：清掉 outline，用 box-shadow 画环。
+///
+/// 为什么统一走 mixin：
+///   焦点环是**一致性隐患** —— 曾出现「input 自己画一圈 + group 再画一圈
+///   + 子项 outline」三层叠加，排查了很久。统一入口能防止各写各的。
+///
+/// @param {Length} $width  环宽。常规 4px，紧贴的小控件用 3px
+/// @param {String} $level  令牌档位：ring-faint（大面积控件最轻）/
+///                         ring（标准）/ ring-soft（组容器）
+@mixin focus-ring($width: 4px, $level: ring-soft) {
   outline: none;
-  box-shadow: 0 0 0 4px $wd-focus-ring;
+  box-shadow: 0 0 0 $width var(--wd-focus-#{$level});
 }
 
-// 单行截断
-@mixin wd-truncate {
+/// 单行截断：超长文本以省略号结尾。
+///
+/// 三件套缺一不可：
+///   overflow: hidden       裁掉超出部分
+///   text-overflow: ellipsis 末尾显示 …
+///   white-space: nowrap     禁止换行（否则会先换行再裁）
+///
+/// @param {Boolean} $block  是否同时设为块级（默认 false，仅处理文本裁切）
+@mixin truncate($block: false) {
+  @if $block {
+    display: block;
+  }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-// 次级文字
-@mixin wd-ink-2 {
-  color: $wd-ink-2;
-}
-
-// 主题切换过渡（浅/深之间颜色平滑过渡）
-// 用法：body { @include wd-theme-transition; }
-@mixin wd-theme-transition {
-  transition:
-    background-color $wd-dur-theme ease,
-    color $wd-dur-theme ease,
-    border-color $wd-dur-theme ease,
-    box-shadow $wd-dur-theme ease,
-    filter $wd-dur-theme ease;
-}
-
-// 强调文本：红色虚线下划线（反向迭代 · 源：w-run/blog 的 u 元素）
-@mixin wd-em {
-  text-decoration: none;
-  border-bottom: 2px dashed $wd-red;
-  padding-bottom: 1px;
-  color: inherit;
-}
-
-// 标题装饰线：标题下方红色小胶囊，hover 渐显（反向迭代 · 源：w-run/blog title-line）
-// 用法：h2 { @include wd-title-line(2em, 5px); }
-@mixin wd-title-line($w: 2em, $h: 5px) {
-  position: relative;
-  &::after {
-    content: '';
-    display: block;
-    width: $w;
-    height: $h;
-    border-radius: $wd-radius-pill;
-    background: $wd-red;
-    opacity: .3;
-    margin-top: .5em;
-    transition: opacity $wd-dur-slow ease;
-  }
-@media (hover: hover) {
-  &:hover::after { opacity: 1; }
-}
+/// flex 居中（主轴 + 交叉轴）。
+///
+/// 仅用于**图标按钮 / 骨架块**这类纯居中的容器；
+/// 带内容的布局不要用 —— 那会掩盖真实的布局意图。
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

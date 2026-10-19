@@ -5,6 +5,8 @@
 //  候选列表用头像色块而非图片，避免每条都发一次网络请求。
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-mentions {
   position: relative;
   display: block;
@@ -120,9 +122,7 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-mentions__desc {

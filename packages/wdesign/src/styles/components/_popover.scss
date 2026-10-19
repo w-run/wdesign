@@ -10,6 +10,8 @@
 //     若写回 fixed，页面滚动后气泡会飞出视口（有过这个事故）。
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-popover {
   display: inline-flex;
   max-width: 100%;
@@ -80,9 +82,7 @@
   font-size: 13.5px;
   font-weight: 700;
   color: var(--wd-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-popover__close {

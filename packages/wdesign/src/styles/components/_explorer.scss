@@ -1,4 +1,6 @@
 // WDesign — Explorer（资源管理器 · 详情 / 图标 双视图）
+@use '../mixins' as m;
+
 .wd-explorer {
   display: grid;
   grid-template-columns: 196px 1fr;
@@ -223,7 +225,5 @@
 .wd-explorer__folder-name {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }

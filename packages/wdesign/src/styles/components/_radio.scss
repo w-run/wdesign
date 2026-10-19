@@ -1,4 +1,6 @@
 // WDesign — Radio
+@use '../mixins' as m;
+
 .wd-radio-group { display: flex; flex-wrap: wrap; gap: 22px; }
 
 .wd-radio {
@@ -81,7 +83,5 @@
 /* 单选项的文字标签（模板里一直在用，样式从未定义） */
 .wd-radio__label {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }

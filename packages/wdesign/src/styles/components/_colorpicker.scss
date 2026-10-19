@@ -8,6 +8,8 @@
 //     写 fixed 会导致页面滚动后飞出视口。
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-colorpicker {
   display: inline-flex;
   align-items: center;
@@ -30,8 +32,7 @@
 }
 
 .wd-colorpicker:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  @include m.focus-ring(4px, ring-soft);
 }
 
 .wd-colorpicker.is-disabled {
@@ -242,8 +243,7 @@
 }
 
 .wd-colorpicker__preset:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

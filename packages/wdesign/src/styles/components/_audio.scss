@@ -30,6 +30,8 @@
 //     其它控件（倍速、上下集、音量）统一弱化为次级色。
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-audio {
   /*
    * accent 是"强调色"，浅色卡片上应该是**深色**（ink），不是白色。
@@ -192,17 +194,13 @@
   font-weight: 800;
   letter-spacing: -.01em;
   line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-audio--card .wd-audio__subtitle {
   font-size: 13px;
   color: var(--wd-ink-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-audio__top-extra {
@@ -691,9 +689,7 @@
 }
 .wd-audio--bar .wd-audio__title {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
   font-weight: 700;
   font-size: 13px;
 }
@@ -701,9 +697,7 @@
   flex: none;
   font-size: 11.5px;
   color: var(--wd-ink-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 /*
@@ -949,9 +943,7 @@
 }
 .wd-audio--mini .wd-audio__title {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
   font-weight: 700;
   font-size: 12.5px;
 }
@@ -959,9 +951,7 @@
   flex: none;
   font-size: 11px;
   color: var(--wd-ink-3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-audio__mini-progress { cursor: pointer; outline: none; padding: 2px 0 0; }

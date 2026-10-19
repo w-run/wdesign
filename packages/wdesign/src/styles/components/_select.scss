@@ -1,4 +1,6 @@
 // WDesign — Select
+@use '../mixins' as m;
+
 .wd-select { position: relative; display: inline-block; min-width: 200px; }
 
 .wd-select__trigger {
@@ -213,8 +215,6 @@
 .wd-select__value {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
   color: var(--wd-ink);
 }

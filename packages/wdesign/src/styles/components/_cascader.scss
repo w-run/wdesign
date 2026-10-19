@@ -8,6 +8,8 @@
 // =============================================================
 
 /* ---------------- 触发器 ---------------- */
+@use '../mixins' as m;
+
 .wd-cascader {
   display: inline-flex;
   align-items: center;
@@ -48,8 +50,7 @@
 }
 
 .wd-cascader:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  @include m.focus-ring(4px, ring-soft);
 }
 
 .wd-cascader.is-disabled {
@@ -63,9 +64,7 @@
 .wd-cascader__value {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-cascader__value.is-placeholder { color: var(--wd-ink-3); }
@@ -191,9 +190,7 @@
 .wd-cascader__label {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-cascader__arrow,

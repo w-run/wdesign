@@ -1,4 +1,6 @@
 // WDesign — FileList（文件列表 · 下拉展开）
+@use '../mixins' as m;
+
 .wd-file-list { display: flex; flex-direction: column; gap: 2px; }
 
 .wd-file-list__row {
@@ -45,9 +47,7 @@
   flex: 1;
   min-width: 0;
   font-size: 13.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 .wd-file-list__size {
   flex: none;

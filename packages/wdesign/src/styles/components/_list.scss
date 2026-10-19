@@ -1,4 +1,6 @@
 // WDesign UI — List
+@use '../mixins' as m;
+
 .wd-list {
   display: flex;
   flex-direction: column;
@@ -41,9 +43,7 @@
   min-width: 0;
   font-size: 14.5px;
   font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 .wd-list-item__meta { font-size: 13px; color: var(--wd-ink-2); }
 /* ---- 微交互（精致版）---- */

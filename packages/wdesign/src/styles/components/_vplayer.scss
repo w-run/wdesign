@@ -11,6 +11,8 @@
 //   4. 顶部/底部用渐变遮罩而不是实色块，压住亮画面但不割裂。
 //   5. 所有颜色走 --wd-on-dark*（固定深色面令牌），深浅主题下一致。
 // =============================================================
+@use '../mixins' as m;
+
 .wd-vplayer {
   position: relative;
   /* 面板用 cqw/cqh 相对播放器定宽 —— 需要这个容器类型 */
@@ -150,9 +152,7 @@
   /* 标题可收缩：窄屏时让位给 LIVE 标识与右侧按钮，而不是把它们挤出画面 */
   flex: 1 1 auto;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
   font-weight: 600;
   font-size: 13.5px;
   color: var(--wd-on-dark-text);
@@ -534,9 +534,7 @@
   font: inherit;
   font-size: 12px;
   cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 @media (hover: hover) {
   .wd-vplayer__ep:hover { background: rgba(255, 255, 255, .18); }

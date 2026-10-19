@@ -9,6 +9,8 @@
 //  在翻月时跳动 —— 固定行数是日历类组件的通用做法。
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-calendar {
   display: inline-flex;
   flex-direction: column;
@@ -72,8 +74,7 @@
 }
 
 .wd-calendar__nav:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 /* ---------------- 星期表头 ---------------- */
@@ -169,8 +170,7 @@
 }
 
 .wd-calendar__cell:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 .wd-calendar__day {
@@ -204,8 +204,7 @@
 }
 
 .wd-calendar__action:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

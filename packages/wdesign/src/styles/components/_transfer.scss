@@ -5,6 +5,8 @@
 //  无边框原则：面板之间靠底色差 + 圆角区分，不加 border。
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-transfer {
   display: flex;
   align-items: stretch;
@@ -194,9 +196,7 @@
 .wd-transfer__desc {
   font-size: 11.5px;
   color: var(--wd-ink-3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-transfer__empty {
@@ -243,8 +243,7 @@
 }
 
 .wd-transfer__op:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 /* 窄屏：上下堆叠，操作列横过来 */

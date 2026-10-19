@@ -1,4 +1,6 @@
 // WDesign — Table（无边框表格：斑马纹 + 色块表头）
+@use '../mixins' as m;
+
 .wd-table-wrap {
   background: var(--wd-card);
   border-radius: var(--wd-radius-md);
@@ -219,9 +221,7 @@
 /* ---------------- 省略号 ---------------- */
 .wd-table__th--ellipsis,
 .wd-table__td--ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
   max-width: 0; /* 配合 table-layout:fixed 才能生效 */
 }
 

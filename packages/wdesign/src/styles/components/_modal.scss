@@ -8,6 +8,8 @@
 //  这里把「可见性」和「动画」彻底解耦：
 //    display  → 保证一定能开能关（不依赖任何时序）
 //    opacity/transform → 只负责好不好看
+@use '../mixins' as m;
+
 .wd-modal {
   position: fixed;
   inset: 0;
@@ -149,8 +151,7 @@
 }
 
 .wd-modal__close:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 .wd-modal__body {

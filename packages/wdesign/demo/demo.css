@@ -13061,12 +13061,6 @@ body {
  *     相对路径相对产物目录解析，部署后容易 404
  * 构建期拼接是最可靠的方式，也保证与图标包用**同一个**文件。
  */
-.wd-icon svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
 .demo-iconwall {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));

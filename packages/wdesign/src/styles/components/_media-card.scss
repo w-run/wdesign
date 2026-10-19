@@ -23,6 +23,8 @@
 //  · 折叠只用 v-show，不做高度动画 —— 见 CONVENTIONS 第 13 条
 // =============================================================
 
+@use '../mixins' as m;
+
 .wd-media-card {
   position: relative;
   display: flex;
@@ -285,8 +287,7 @@
 .wd-media-card__cta:active { transform: scale(.99); }
 
 .wd-media-card__cta:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  @include m.focus-ring(4px, ring-soft);
 }
 
 /* 折叠箭头：圆形、无底色，与 CTA 并排时靠右 */
@@ -313,8 +314,7 @@
 }
 
 .wd-media-card__toggle:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 /* ---------------- 无媒体时的降级 ---------------- */

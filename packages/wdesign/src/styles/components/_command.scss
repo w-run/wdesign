@@ -2,6 +2,8 @@
 //  WDesign — Command（⌘K 命令面板）
 //  居中浮层 + 搜索 + 分组结果 + 键盘导航。
 // =============================================================
+@use '../mixins' as m;
+
 .wd-command {
   position: fixed;
   inset: 0;
@@ -135,17 +137,13 @@
 }
 
 .wd-command__item-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-command__item-hint {
   font-size: 11.5px;
   color: var(--wd-ink-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-command__item-shortcut,

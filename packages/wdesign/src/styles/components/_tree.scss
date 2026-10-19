@@ -3,6 +3,8 @@
 //  用扁平渲染（flat computed）而非递归组件：节点多时不必为每层
 //  创建组件实例，键盘导航也能直接按下标移动。
 // =============================================================
+@use '../mixins' as m;
+
 .wd-tree {
   display: flex;
   flex-direction: column;
@@ -122,8 +124,7 @@
 }
 
 .wd-tree__check input:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  @include m.focus-ring(3px, ring-soft);
 }
 
 .wd-tree__icon {
@@ -137,9 +138,7 @@
 .wd-tree__label {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 
 .wd-tree__extra {

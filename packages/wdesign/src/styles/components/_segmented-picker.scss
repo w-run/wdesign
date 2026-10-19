@@ -8,6 +8,8 @@
 //  是早期写的。新增样式请直接用令牌，不要再加 fallback ——
 //  fallback 会掩盖「令牌名写错」的问题（静默失效的常见来源）。
 // =============================================================
+@use '../mixins' as m;
+
 .wd-segmented-picker {
   position: relative;
   display: inline-block;
@@ -43,9 +45,7 @@
 }
 
 .wd-segmented-picker__label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
 }
 .wd-segmented-picker__meta {
   font-size: 11px;

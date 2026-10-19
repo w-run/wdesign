@@ -1,4 +1,6 @@
 // WDesign — DatePicker
+@use '../mixins' as m;
+
 .wd-datepicker { position: relative; display: inline-block; min-width: 220px; }
 
 /*
@@ -124,8 +126,6 @@
 .wd-datepicker__value {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include m.truncate;
   color: var(--wd-ink);
 }
