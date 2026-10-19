@@ -4846,6 +4846,18 @@ body {
   text-overflow: ellipsis;
 }
 
+/* ---------------- 可展开区 ---------------- */
+/*
+ * 正文与自定义插槽的容器。
+ * 本身不设 padding —— 间距已由 __body 的 gap 提供，
+ * 这里再加一层会让收起/展开时高度跳变。
+ */
+.wd-media-card__expand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 /* ---------------- 正文 ---------------- */
 .wd-media-card__text {
   margin: 0;
