@@ -11674,10 +11674,14 @@ img.wd-theme-invert {
   }
   to {
     /*
-     * 收缩到 2px 且完全透明。
-     * 用 transparent 而非写死 rgba(...,0)：换主题色时不用改这里。
+     * 极点**不是完全消失**，保留 1/3：
+     *   环宽  4px      → 1.33px（≈ 原来的 1/3）
+     *   透明度 0.14    → 0.047（color-mix 取 33%）
+     *
+     * 到 0 的话，每一轮的谷底都像"焦点丢了"，
+     * 闪烁感太强；保留 1/3 才有"帧还在、只是暗下去"的连续感。
      */
-    box-shadow: 0 0 0 2px transparent;
+    box-shadow: 0 0 0 1.3333333333px color-mix(in srgb, var(--wd-focus-ring-soft) 33%, transparent);
   }
 }
 /* 组内子控件统统缴械：不管它是 input、select、button 还是自定义控件 */
