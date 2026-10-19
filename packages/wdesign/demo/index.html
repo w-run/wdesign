@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.6fac6d39.css">
+<link rel="stylesheet" href="demo.b8957384.css">
 </head>
 <body>
 <div id="app" class="demo-wrap">
@@ -1808,6 +1808,115 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     </div>
 
     <div class="demo-panel demo-panel--wide">
+      <h3>MEDIACARD 媒体卡片</h3>
+      <span class="demo-cap">
+        从三张旅行 / 自然主题卡片提炼的通用骨架：媒体层 + 数据条 + 可折叠正文 + 全宽 CTA。
+        两种布局：overlay（内容压图上）/ stacked（图在上、内容在下）。
+      </span>
+
+      <div class="demo-row" style="gap:24px; margin-top:20px; align-items:flex-start; flex-wrap:wrap">
+        <!-- overlay：内容压在图上 -->
+        <div class="demo-col" style="flex:1 1 340px; max-width:400px; gap:8px">
+          <div class="demo-cap">overlay · 内容压在图上（可折叠）</div>
+          <wd-media-card
+            src="media/poster.jpg"
+            title="White-Tailed Deer"
+            subtitle="Mammal · Herbivore"
+            badge="Last seen: 1 hour ago"
+            layout="overlay"
+            ratio="4 / 3"
+            action="Learn More"
+            collapsible
+            :default-open="false"
+            :stats="[
+              { value: '5 yrs', label: 'Lifespan' },
+              { value: '1.2 m', label: 'Height' },
+              { value: '130 kg', label: 'Weight' },
+              { value: '48 km/h', label: 'Top Speed' },
+            ]"
+            @action="ucLog = 'Learn More 被点击'"
+          >
+            <template #tools>
+              <button type="button" aria-label="收藏">
+                <wd-icon name="star" :size="16" />
+              </button>
+            </template>
+          </wd-media-card>
+        </div>
+
+        <!-- stacked：图在上、内容在下（可展开正文） -->
+        <div class="demo-col" style="flex:1 1 340px; max-width:400px; gap:8px">
+          <div class="demo-cap">stacked · 图在上、内容在下（可展开）</div>
+          <wd-media-card
+            src="media/poster.jpg"
+            title="Embercrest Summit Trail"
+            subtitle="1886 by Helen Rowe & Elas Mendez"
+            layout="stacked"
+            ratio="16 / 9"
+            action="Start Route"
+            collapsible
+            :default-open="false"
+            :stats="[
+              { value: '12.4km', label: 'Distance' },
+              { value: '870m', label: 'Elevation' },
+              { value: '4h 45m', label: 'Duration' },
+            ]"
+            body="Embercrest Ridge rises boldly from the heart of the Silverpine Mountains, its sun-warmed cliffs glowing with rich crimson and amber tones during golden hour. Towering at 3,274 meters, the ridge is framed by winding alpine trails and rugged rock formations."
+          ></wd-media-card>
+        </div>
+
+        <!-- 完整展开态 -->
+        <div class="demo-col" style="flex:1 1 300px; max-width:380px; gap:8px">
+          <div class="demo-cap">overlay · 默认全展开</div>
+          <wd-media-card
+            src="media/poster.jpg"
+            title="Santorini Sunset Loft"
+            subtitle="Romantic Stay · 2 Night Trip"
+            layout="overlay"
+            ratio="3 / 4"
+            action="Book now"
+            :stats="[
+              { value: '4.8', label: 'Rating' },
+              { value: '2', label: 'Nights' },
+            ]"
+            body="Experience a cliffside loft with iconic white walls, blue domes, and magical sunset views."
+          >
+            <template #tools>
+              <button type="button" aria-label="收藏">
+                <wd-icon name="bookmark" :size="16" />
+              </button>
+            </template>
+          </wd-media-card>
+        </div>
+      </div>
+
+      <span class="demo-cap" style="margin-top:14px; display:block" v-if="ucLog">{{ ucLog }}</span>
+
+      <!-- 最小化验证：所有可选内容都留空，确认不会留下空壳 -->
+      <div class="demo-cap" style="margin-top:22px; margin-bottom:10px">
+        可选性验证 · 只给图片和标题，其余全部留空
+      </div>
+      <div class="demo-row" style="gap:20px; align-items:flex-start; flex-wrap:wrap">
+        <div class="demo-col" style="flex:0 0 240px; gap:6px">
+          <div class="demo-cap">只有图</div>
+          <wd-media-card src="media/poster.jpg" ratio="16 / 9" layout="overlay"></wd-media-card>
+        </div>
+        <div class="demo-col" style="flex:0 0 240px; gap:6px">
+          <div class="demo-cap">图 + 标题</div>
+          <wd-media-card src="media/poster.jpg" ratio="16 / 9" layout="overlay" title="只有标题"></wd-media-card>
+        </div>
+        <div class="demo-col" style="flex:0 0 240px; gap:6px">
+          <div class="demo-cap">图 + 标题 + CTA</div>
+          <wd-media-card src="media/poster.jpg" ratio="16 / 9" layout="overlay" title="带按钮" action="Go"></wd-media-card>
+        </div>
+        <div class="demo-col" style="flex:0 0 240px; gap:6px">
+          <div class="demo-cap">纯内容（无媒体）</div>
+          <wd-media-card layout="stacked" title="无图卡片" subtitle="只靠文字" body="没有媒体层时，组件降级为普通内容卡。"></wd-media-card>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
       <h3>MARKDOWN 渲染</h3>
       <span class="demo-cap">零依赖内置解析器（标题/列表/表格/代码/引用/链接），所有文本经 escapeHtml，可直接渲染 AI 输出。</span>
       <div class="demo-col" style="margin-top:18px; align-items:stretch; gap:10px">
@@ -1897,7 +2006,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.ab4f2d9e.js"></script>
+<script src="components.acf2618c.js"></script>
 <script src="demo.8d4b3a06.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

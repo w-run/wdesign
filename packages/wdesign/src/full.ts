@@ -44,6 +44,7 @@ import WdImagePreview from './components/WdImagePreview.vue'
 import WdInput from './components/WdInput.vue'
 import WdListItem from './components/WdListItem.vue'
 import WdMarkdown from './components/WdMarkdown.vue'
+import WdMediaCard from './components/WdMediaCard.vue'
 import WdMentions from './components/WdMentions.vue'
 import WdModal from './components/WdModal.vue'
 import WdNav from './components/WdNav.vue'
@@ -119,6 +120,7 @@ const components = [
   WdInput,
   WdListItem,
   WdMarkdown,
+  WdMediaCard,
   WdMentions,
   WdModal,
   WdNav,

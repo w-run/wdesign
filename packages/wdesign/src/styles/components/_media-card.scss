@@ -1,0 +1,316 @@
+// =============================================================
+//  WDesign UI — MediaCard（媒体卡片）
+//
+//  ===== 设计来源 =====
+//  参考三张旅行 / 自然主题卡片，提炼出的**通用骨架**（不照搬任何一张）：
+//
+//    媒体层（图片铺满）
+//      ├ 顶部：角标（时间 / 状态）+ 圆形工具按钮
+//      └ 标题区：主标题 + 副标题（压在图上，底部渐变压暗）
+//    内容层
+//      ├ 数据条：2~4 组「数值 + 说明」，顶部一条细线分隔
+//      ├ 正文：长段落（可折叠）
+//      └ 底部：全宽胶囊 CTA + 折叠箭头
+//
+//  ===== 两种布局 =====
+//    overlay  内容压在图上 —— 视觉冲击强，适合「一张图讲一件事」
+//    stacked  图在上、内容在下 —— 信息密度高，适合列表 / 详情
+//
+//  ===== 关键决策 =====
+//  · 媒体层用 aspect-ratio 而非固定高度：图片比例随容器自适应，
+//    不会在窄容器里变成扁条
+//  · 压在图上的文字必须配渐变压暗（scrim），否则浅色图上白字读不出
+//  · 折叠只用 v-show，不做高度动画 —— 见 CONVENTIONS 第 13 条
+// =============================================================
+
+.wd-media-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--wd-card);
+  border-radius: var(--wd-radius-xl);
+  box-shadow: var(--wd-shadow);
+  transition: box-shadow var(--wd-dur) var(--wd-ease-out);
+}
+
+.wd-media-card--r-md { border-radius: var(--wd-radius-md); }
+.wd-media-card--r-lg { border-radius: var(--wd-radius-lg); }
+
+/* ---------------- 媒体层 ---------------- */
+.wd-media-card__media {
+  position: relative;
+  flex: none;
+  width: 100%;
+  overflow: hidden;
+  background: var(--wd-ink-5);
+}
+
+.wd-media-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /*
+   * 大图缩放用 transform 会带来定位偏移（CONVENTIONS 12），
+   * 但这里是静态图片、有固定 aspect-ratio 容器，
+   * object-fit 已足够 —— 不需要任何 scale。
+   */
+}
+
+/*
+ * 渐变压暗。
+ *
+ * 只在下半部：上半部留出原图（角标文字靠近顶部，但那是小字 + 背景虚化区），
+ * 下半部承载标题，必须有足够对比度。
+ *
+ * ⚠️ 用纯黑渐变而非主题色 —— 压暗是为了可读性，不是装饰。
+ */
+.wd-media-card__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, .18) 0%,
+    rgba(0, 0, 0, 0) 32%,
+    rgba(0, 0, 0, .38) 68%,
+    rgba(0, 0, 0, .72) 100%
+  );
+}
+
+/* ---------------- 顶部：角标与工具 ---------------- */
+.wd-media-card__top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 16px 0;
+  pointer-events: none;
+}
+
+.wd-media-card__badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
+  /* 角标本身不加底色 —— 压暗层已经保证了可读性 */
+}
+
+.wd-media-card__tools {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+  pointer-events: auto;
+}
+
+/* 圆形工具按钮（收藏 / 定位 / 更多） */
+.wd-media-card__tools :deep(button),
+.wd-media-card__tools > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-media-card__tools :deep(button:hover),
+  .wd-media-card__tools > *:hover {
+    background: rgba(255, 255, 255, .34);
+  }
+}
+
+/* ---------------- 标题区 ---------------- */
+.wd-media-card__headline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 20px 18px;
+  pointer-events: none;
+}
+
+/* stacked 形态：标题移到内容层，这里是正常文档流 */
+.wd-media-card__headline--static {
+  position: static;
+  padding: 18px 20px 0;
+}
+
+.wd-media-card__title {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+  color: #fff;
+}
+
+.wd-media-card__headline--static .wd-media-card__title {
+  color: var(--wd-ink);
+}
+
+.wd-media-card__subtitle {
+  margin: 3px 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, .78);
+}
+
+.wd-media-card__headline--static .wd-media-card__subtitle {
+  color: var(--wd-ink-2);
+}
+
+/* ---------------- 内容层 ---------------- */
+.wd-media-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px 20px;
+}
+
+/* overlay 形态下媒体与内容之间不需要间距（标题已在图上） */
+.wd-media-card--overlay .wd-media-card__body {
+  padding-top: 16px;
+}
+
+/* ---------------- 数据条 ---------------- */
+/*
+ * 顶部一条细分隔线 + 等分排列。
+ * ⚠️ 分隔线用 border-top 而非伪元素：它只需要一条，
+ *    伪元素要额外处理定位和层级，没有收益。
+ */
+.wd-media-card__stats {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--wd-ink-5);
+}
+
+.wd-media-card--overlay .wd-media-card__stats {
+  /* overlay 形态若把 stats 放在图上，需要浅色线 —— 但默认放在内容区，这里保留深色线 */
+  border-top-color: var(--wd-ink-5);
+}
+
+.wd-media-card__stat {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wd-media-card__stat-value {
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -.01em;
+  color: var(--wd-ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wd-media-card__stat-label {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--wd-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------------- 正文 ---------------- */
+.wd-media-card__text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--wd-ink-2);
+}
+
+/* ---------------- 底部 ---------------- */
+.wd-media-card__foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/*
+ * 主按钮：全宽胶囊，深色反白。
+ * overlay 形态里按钮压在深色内容上，用白底黑字最醒目；
+ * stacked 形态里内容区是白底，用深色底白字。
+ */
+.wd-media-card__cta {
+  flex: 1;
+  height: 46px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-media-card__cta:hover { background: var(--wd-dark-2); }
+}
+.wd-media-card__cta:active { transform: scale(.99); }
+
+.wd-media-card__cta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+/* 折叠箭头：圆形、无底色，与 CTA 并排时靠右 */
+.wd-media-card__toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-media-card__toggle:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
+}
+
+.wd-media-card__toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* ---------------- 无媒体时的降级 ---------------- */
+.wd-media-card:not(.has-media) .wd-media-card__body {
+  padding-top: 20px;
+}
+
+/* ---------------- 可点击整卡 ---------------- */
+.wd-media-card.is-collapsible {
+  /* 只是标记，不改变布局 */
+}
