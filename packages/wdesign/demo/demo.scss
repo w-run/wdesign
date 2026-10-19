@@ -118,32 +118,248 @@ body {
 }
 
 // ── 壳 ──────────────────────────────────────────────────────────
-.demo-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 24px 120px;
+/* =============================================================
+ *  demo 布局：左侧栏 + 右内容
+ *
+ *  ===== 为什么改 =====
+ *  原来是「顶部 sticky 导航 + 居中单列」，页面高达 38,000px。
+ *  分页后每页仍有 3,000~10,000px，顶部导航在长页面里
+ *  滚动后就看不见了，切分区的成本很高。
+ *
+ *  侧栏方案：导航始终可见、分区一键切换，且不占内容区的垂直空间。
+ * ============================================================= */
+/* =============================================================
+ *  整屏固定布局
+ *
+ *  body 固定 100dvh，左右两栏各自内部滚动，**页面整体不滚动**。
+ *
+ *  ===== 为什么用 100dvh 而不是 100vh =====
+ *  移动端浏览器地址栏收起/展开会改变可视高度：
+ *    · 100vh 是"地址栏收起时"的高度 → 展开时底部被裁掉
+ *    · 100dvh（dynamic viewport height）跟随实际可视高度变化
+ *  桌面端两者等价，所以统一用 dvh。
+ * ============================================================= */
+html,
+body {
+  height: 100%;
+  /* 页面整体不滚动 —— 滚动交给两栏内部 */
+  overflow: hidden;
 }
 
-// ── 顶部导航（sticky，scroll 后加阴影） ────────────────────────
-.demo-nav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
+body {
+  /* 用 flex 让两栏并排且各占满高 */
+  display: flex;
+  height: 100dvh;
+}
+
+.demo-side {
+  /* 不再 fixed：参与 body 的 flex 布局，高度由 body 决定 */
+  position: relative;
+  flex: 0 0 232px;
+  width: 232px;
+  height: 100%;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 14px 16px;
+  background: var(--wd-card);
+  /* 只用一条极细的右分隔线 —— 不用阴影，避免和内容区抢层次 */
+  box-shadow: inset -1px 0 0 var(--wd-ink-5);
+  /* 侧栏自己滚动（分区多时） */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+/*
+ * 内容区：占满侧栏之外的宽度。
+ *
+ * ⚠️ 不要用 max-width 居中 —— 侧栏已经把视口切成两半，
+ *    内容再限宽 + 居中会在右侧留下大片空白（实测卡片只占一半宽）。
+ *    改为 padding 控制左右留白，内容自然铺满可用区域。
+ */
+/*
+ * 内容区：占满剩余宽度，**自己滚动**。
+ * 不再有 margin-left（flex 已负责分栏），也不限宽。
+ */
+.demo-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 0 48px 120px;
+}
+
+/*
+ * 超宽屏：内容本身限宽居中，但**滚动容器仍是整栏** ——
+ * 否则滚动条会出现在内容块边缘，而不是屏幕右侧。
+ */
+@media (min-width: 1440px) {
+  .demo-main > * {
+    max-width: 1180px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ---------------- 侧栏品牌 ---------------- */
+.side-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px 20px;
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--wd-ink);
+  text-decoration: none;
+}
+
+.side-brand-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--wd-red);
+}
+
+/* ---------------- 侧栏导航 ---------------- */
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.side-nav a {
   display: flex;
   align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--wd-radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  text-decoration: none;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .side-nav a:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
+}
+
+/*
+ * 当前分区：深色实心胶囊 + 前方圆点。
+ * 与 WdNav 竖栏的选中语言一致。
+ */
+.side-nav a.is-active {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font-weight: 700;
+  /* 给圆点留位，避免文字左右横跳 */
+  padding-left: 26px;
+  position: relative;
+}
+
+.side-nav a.is-active::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  transform: translateY(-50%);
+}
+
+/* ---------------- 侧栏底部：版本 + 主题 ---------------- */
+.side-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  padding: 14px 0 12px;
-  margin: 0 -24px;
-  padding-left: 24px;
-  padding-right: 24px;
-  background: rgba(247, 248, 250, .82);
-  backdrop-filter: blur(12px);
-  transition: background var(--wd-dur) ease, box-shadow var(--wd-dur) ease;
-  [data-theme="dark"] & { background: rgba(18, 18, 20, .86); }
+  padding: 12px 8px 0;
+  margin-top: 12px;
+  box-shadow: inset 0 1px 0 var(--wd-ink-5);
 }
-.demo-nav.is-scrolled {
-  box-shadow: 0 1px 0 var(--wd-tint-2);
+
+.side-version {
+  font-family: var(--wd-font-mono);
+  font-size: 11px;
+  color: var(--wd-ink-3);
 }
+
+.side-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .side-theme:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
+}
+
+/* ---------------- 窄屏：侧栏收成顶部横条 ---------------- */
+@media (max-width: 860px) {
+  /* 窄屏：body 改成纵向，侧栏变顶部横条并固定高度 */
+  body {
+    flex-direction: column;
+  }
+
+  .demo-side {
+    position: relative;
+    flex: 0 0 auto;
+    width: auto;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: inset 0 -1px 0 var(--wd-ink-5);
+  }
+
+  .side-brand { padding: 0 8px 0 0; }
+  .side-nav {
+    flex-direction: row;
+    gap: 4px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .side-nav::-webkit-scrollbar { display: none; }
+  .side-nav a { height: 32px; padding: 0 12px; white-space: nowrap; }
+  .side-nav a.is-active { padding-left: 12px; }
+  .side-nav a.is-active::before { display: none; }
+  .side-foot { padding: 0; margin: 0; box-shadow: none; }
+  .side-version { display: none; }
+
+  .demo-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0 20px 80px;
+  }
+}
+
 .nav-brand {
   font-size: 16px;
   font-weight: 800;
@@ -699,4 +915,59 @@ html { scroll-behavior: smooth; }
   display: flex;
   align-items: stretch;
   gap: 20px;
+}
+
+/* =============================================================
+ *  总览页：分区入口网格
+ *
+ *  默认入口不再是全量页（74 个组件 / 38,000px），而是一张入口卡网格。
+ *  这样首屏加载的是 10 个 <a>，而不是 74 个真实组件。
+ * ============================================================= */
+.demo-index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  /* 侧栏模式下内容区从顶部开始，给一点上边距即可 */
+  margin-top: 56px;
+  padding-bottom: 40px;
+}
+
+.demo-index-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 20px;
+  border-radius: var(--wd-radius-lg);
+  background: var(--wd-card);
+  text-decoration: none;
+  box-shadow: var(--wd-shadow-sm);
+  transition: box-shadow var(--wd-dur) var(--wd-ease-out),
+              transform var(--wd-dur) var(--wd-ease-out);
+}
+
+@media (hover: hover) {
+  .demo-index-card:hover {
+    box-shadow: var(--wd-shadow-hover);
+    transform: translateY(-2px);
+  }
+}
+
+.demo-index-num {
+  font-family: var(--wd-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--wd-ink-3);
+}
+
+.demo-index-label {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.015em;
+  color: var(--wd-ink);
+}
+
+.demo-index-title {
+  font-size: 12.5px;
+  color: var(--wd-ink-2);
 }

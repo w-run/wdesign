@@ -5,39 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.212d634b.css">
+<link rel="stylesheet" href="demo.ec15ff3e.css">
 </head>
 <body>
-<div id="app" class="demo-wrap">
+  <!--
+    左右结构：左侧固定侧栏（品牌 + 分区导航 + 主题切换），右侧内容区。
+    ⚠️ 侧栏和内容区是 #app 的**兄弟**，而不是都塞在 #app 里 ——
+       这样侧栏不参与 Vue 的挂载范围，切换分区时不会被重渲染。
+  -->
+  <aside class="demo-side" id="demoSide">
+    <a class="side-brand" href="./">
+      WDesign<span class="side-brand-dot"></span>
+    </a>
 
-  <!-- ===== 顶部导航 ===== -->
-  <nav class="demo-nav" id="demoNav">
-    <a class="nav-brand" href="#top">WDesign<span class="nav-brand-dot"></span></a>
-    <div class="nav-links" id="navLinks">
-      <a href="#sec-01" data-sec="sec-01">基础</a>
-      <a href="#sec-02" data-sec="sec-02">表单</a>
-      <a href="#sec-03" data-sec="sec-03">反馈</a>
-      <a href="#sec-04" data-sec="sec-04">数据</a>
-      <a href="#sec-05" data-sec="sec-05">扩展</a>
-      <a href="#sec-06" data-sec="sec-06">交互</a>
-      <a href="#sec-07" data-sec="sec-07">布局</a>
-      <a href="#sec-08" data-sec="sec-08">文档</a>
-      <a href="#sec-09" data-sec="sec-09">图标</a>
-      <a href="#sec-10" data-sec="sec-10">组合</a>
+    <nav class="side-nav" id="navLinks" aria-label="组件分区"></nav>
+
+    <div class="side-foot">
+      <span class="side-version">v1.0</span>
+      <!--
+        侧栏在 #app 之外，不能用 Vue 的 @click / 响应式状态。
+        改用原生 button + 内联 SVG（主题图标只有两个，不值得为此引入依赖）。
+      -->
+      <button class="side-theme" type="button" id="sideThemeBtn" title="切换深浅主题" aria-label="切换深浅主题">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
     </div>
-    <wd-button
-      class="nav-toggle"
-      size="sm"
-      variant="ghost"
-      :aria-label="dark ? '切换到浅色主题' : '切换到深色主题'"
-      :title="dark ? '切换到浅色主题' : '切换到深色主题'"
-      @click="toggleDark"
-    >
-      <!-- 用 WdIcon 而非 emoji：emoji 是字体字符，各平台字形/粗细/基线不一，
-           也无法跟随 currentColor 变色（深色主题下会发亮）。 -->
-      <wd-icon class="nav-toggle__icon" :name="dark ? 'sun' : 'moon'" :size="16" />
-    </wd-button>
-  </nav>
+  </aside>
+
+<div id="app" class="demo-main">
+
 
   <!-- ===== Hero ===== -->
   <header class="demo-hero" id="top">
@@ -2007,7 +2005,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
 <script src="components.acf2618c.js"></script>
-<script src="demo.8d4b3a06.js"></script>
+<script src="demo.89486619.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>
@@ -2018,15 +2016,31 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
   var secs = document.querySelectorAll('section[id^="sec-"]')
   var sections = []
   secs.forEach(function (sec) { sections.push(sec) })
+  /*
+   * ⚠️ 滚动发生在 .demo-main 内部，不是 window ——
+   *    整屏固定布局下 body 是 overflow: hidden，
+   *    window 永远不会滚动，监听它等于什么都没发生。
+   */
+  var scroller = document.querySelector('.demo-main') || window
+
   function onScroll() {
-    var pos = (window.scrollY || document.documentElement.scrollTop) + 120
-    var cur = null
-    sections.forEach(function (sec) { if (sec.offsetTop <= pos) cur = sec.id })
-    links.forEach(function (a) { a.classList.toggle('is-active', a.dataset.sec === cur) })
-    var nav = document.getElementById('demoNav')
-    if (nav) nav.classList.toggle('is-scrolled', pos > 40)
+    var pos = (scroller === window
+      ? (window.scrollY || document.documentElement.scrollTop)
+      : scroller.scrollTop) + 120
+
+    /*
+     * 分页模式下导航链接是 `?sec=NN` 形式，没有 data-sec，
+     * 高亮由 paginateDemo 在构建导航时一次决定（is-active），
+     * 这里只负责"全部"模式下的滚动高亮。
+     */
+    var hasDataSec = links.some(function (a) { return a.dataset.sec })
+    if (hasDataSec) {
+      var cur = null
+      sections.forEach(function (sec) { if (sec.offsetTop <= pos) cur = sec.id })
+      links.forEach(function (a) { a.classList.toggle('is-active', a.dataset.sec === cur) })
+    }
   }
-  window.addEventListener('scroll', onScroll, { passive: true })
+  scroller.addEventListener('scroll', onScroll, { passive: true })
   onScroll()
 })()
 </script>

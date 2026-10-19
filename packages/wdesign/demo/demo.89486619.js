@@ -835,6 +835,141 @@ if (REAL.ALL.length) {
 }
 
 window.__WD_APP__ = app
+/* =============================================================
+ *  demo 分页：按 URL 参数只渲染当前分区
+ *
+ *  ===== 为什么需要 =====
+ *  单页 74 个组件、38,000px 高 —— 浏览器渲染/滚动/截图全部吃力，
+ *  实测多次把标签页卡死。
+ *
+ *  ===== 为什么"挂载前移除 DOM"而不是"挂载后隐藏" =====
+ *  `display: none` 只是不绘制，**Vue 仍然会实例化并渲染全部组件**
+ *  （每个组件都要跑 setup、建响应式、生成 VNode）。
+ *  内存和初始化耗时不会降。
+ *
+ *  在 mount 之前把不相关的 <section> 从 DOM 里删掉，
+ *  Vue 编译模板时就完全看不到它们 —— 真正的零成本。
+ *
+ *  ===== 用法 =====
+ *    index.html            → 总览（只渲染第一屏，给入口）
+ *    index.html?sec=01     → 只渲染「01 · 基础组件」
+ *    index.html?sec=all    → 全量（保留，用于整体检索）
+ * ============================================================= */
+/* 用分区元信息重建顶部导航（每个分区一个独立页面） */
+function buildNav(meta, activeSec) {
+  const nav = document.querySelector('#navLinks')
+  if (!nav) return
+  nav.innerHTML = meta
+    .map((m) => {
+      const num = m.id.replace('sec-', '')
+      const active = activeSec === num
+      return `<a href="?sec=${num}"${active ? ' class="is-active"' : ''}>${m.label}</a>`
+    })
+    .join('')
+  // 「全部」入口放最后
+  nav.insertAdjacentHTML('beforeend', '<a href="?sec=all">全部</a>')
+}
+
+;(function paginateDemo() {
+  const params = new URLSearchParams(location.search)
+  const sec = params.get('sec')
+
+  const sections = [...document.querySelectorAll('section.demo-sec')]
+  if (!sections.length) return
+
+  // 收集分区元信息（id + 标题），供后续构建导航
+  const meta = sections.map((el) => {
+    const eyebrow = el.querySelector('.sec-eyebrow')
+    const h2 = el.querySelector('h2')
+    return {
+      id: el.id,
+      num: (eyebrow?.textContent || '').split('·')[0].trim(),
+      label: (eyebrow?.textContent || '').split('·')[1]?.trim() || h2?.textContent || el.id,
+      title: h2?.textContent || '',
+    }
+  })
+  window.__DEMO_SECTIONS__ = meta
+  buildNav(meta, sec)
+
+  if (sec === 'all') {
+    // 全量模式：保留所有分区（用于整体检索 / 打印）
+    return
+  }
+
+  if (!sec) {
+    /*
+     * 默认入口 = **总览页**，不是全量页。
+     *
+     * ⚠️ 之前默认加载全部 74 个组件（38,000px 高），
+     *    浏览器渲染吃力，实测多次把标签页卡死。
+     *
+     * 现在：移除所有 section，换成一张「分区入口」网格。
+     * 占位极小，同时给用户明确的去处。
+     */
+    for (const el of sections) el.remove()
+    const wrap = document.querySelector('.demo-main')
+    if (wrap) {
+      const grid = document.createElement('div')
+      grid.className = 'demo-index-grid'
+      grid.innerHTML = meta
+        .map(
+          (m) => `
+        <a class="demo-index-card" href="?sec=${m.id.replace('sec-', '')}">
+          <span class="demo-index-num">${m.num || m.id.replace('sec-', '')}</span>
+          <span class="demo-index-label">${m.label}</span>
+          <span class="demo-index-title">${m.title}</span>
+        </a>`,
+        )
+        .join('')
+      // 插到内容区最前面（侧栏在外层，这里只处理内容区）
+      wrap.prepend(grid)
+    }
+    document.querySelector('.demo-hero')?.remove()
+    return
+  }
+
+  // 单分区模式：移除其它所有 section
+  for (const el of sections) {
+    if (el.id !== `sec-${sec}` && el.id !== sec) el.remove()
+  }
+
+  // 移除 hero（分页视图里它没有意义，占一整屏）
+  document.querySelector('.demo-hero')?.remove()
+
+  // 移除 footer（每页都重复，噪音）
+  document.querySelector('.demo-foot')?.remove()
+})();
+
+/* =============================================================
+ *  侧栏主题切换（原生，不走 Vue）
+ *
+ *  侧栏在 #app 之外 —— 它不参与 Vue 挂载，好处是切分区时不会重渲染，
+ *  代价是不能用 @click / 响应式。这里用最朴素的 DOM 操作。
+ *
+ *  与 Vue 内的 toggleDark 读写同一个 localStorage key，两边状态一致。
+ * ============================================================= */
+;(function sideTheme() {
+  const btn = document.getElementById('sideThemeBtn')
+  if (!btn) return
+
+  const KEY = 'wdesign-demo-dark'
+
+  function apply(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    document.documentElement.classList.toggle('dark-theme', dark)
+    try { localStorage.setItem(KEY, dark ? '1' : '0') } catch { /* 隐私模式忽略 */ }
+  }
+
+  let dark = false
+  try { dark = localStorage.getItem(KEY) === '1' } catch { /* 忽略 */ }
+  apply(dark)
+
+  btn.addEventListener('click', () => {
+    dark = !dark
+    apply(dark)
+  })
+})()
+
 app.mount('#app')
 
 // ---- 悬停状态增强（与库内 src/hover.ts 同源逻辑，此处内联以便离线演示）----
