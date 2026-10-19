@@ -51,6 +51,20 @@
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
+/*
+ * 已选时间文本。
+ * 空值时显示占位（--:--），用浅色区分"还没选"。
+ */
+.wd-time-picker__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .wd-time-picker__icon {
   color: var(--wd-ink-3);
   flex: none;
