@@ -67,9 +67,9 @@
   --wd-mark-bg: rgba(214, 40, 57, 0.14);
   --wd-link-underline: rgba(214, 40, 57, 0.35);
   --wd-danger: #D62839;
-  --wd-focus-ring-faint: rgba(214, 40, 57, 0.08);
-  --wd-focus-ring: rgba(214, 40, 57, 0.22);
-  --wd-focus-ring-soft: rgba(214, 40, 57, 0.14);
+  --wd-focus-ring-faint: rgba(214, 40, 57, 0.05);
+  --wd-focus-ring: rgba(214, 40, 57, 0.12);
+  --wd-focus-ring-soft: rgba(214, 40, 57, 0.08);
   --wd-radius-xs: 8px;
   --wd-radius-sm: 12px;
   --wd-radius-md: 16px;

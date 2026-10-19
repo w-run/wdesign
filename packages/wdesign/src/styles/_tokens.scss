@@ -125,9 +125,11 @@ $wd-link-underline: rgba(214, 40, 57, .35) !default; // 链接下划线
 $wd-danger:     $wd-red !default;
 
 // --- Focus Ring --------------------------------------------
-$wd-focus-ring-faint: rgba(214, 40, 57, .08) !default; // 轻淡（输入框等大面积控件）
-$wd-focus-ring:      rgba(214, 40, 57, .22) !default;
-$wd-focus-ring-soft: rgba(214, 40, 57, .14) !default;
+// 整体压淡约一半 —— 原先 .22/.14/.08 在白底上都偏"红得扎眼"，
+// 焦点环只该是"看得见位置"，不该抢视线。
+$wd-focus-ring-faint: rgba(214, 40, 57, .05) !default; // 轻淡（输入框等大面积控件）
+$wd-focus-ring:       rgba(214, 40, 57, .12) !default;
+$wd-focus-ring-soft:  rgba(214, 40, 57, .08) !default;
 
 // --- Radius · 圆润是风格核心 --------------------------------
 $wd-radius-xs:   8px  !default; // 小控件内元素（chip / 角标 / 小图标块）
