@@ -581,9 +581,19 @@ body {
 // （早先试过三列网格，但组件宽度差异大、内容高度不齐，反而更难扫读）
 // 布局：一个组件一行，但卡片**宽度随内容**，不再一律拉满 1152px
 // （全宽卡片 + 左侧小内容 = 右边一大片空白，视觉上非常松垮）
+/*
+ * 面板容器。
+ *
+ * ⚠️ 用 grid 而不是 flex column。
+ *    之前为了侧栏布局改成了 flex column，结果面板间距消失 ——
+ *    原因是 `.demo-main > * { margin-left/right: auto }` 这条居中规则
+ *    也命中了 .demo-grid 的**子项**，在 flex 下 auto margin 会参与
+ *    主轴/交叉轴分配，把 gap 吃掉。
+ *    grid 的 gap 是纯轨道间距，不受子项 margin 影响。
+ */
 .demo-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   margin-top: 24px;
 }

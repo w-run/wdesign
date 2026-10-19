@@ -8526,11 +8526,47 @@ body {
   background: var(--wd-ink-4);
 }
 
-/* 有图标时高度增加，但仍占满列宽 → 圆心不变 */
+/*
+ * 有图标时：节点放大为圆形徽章。
+ *
+ * ⚠️ 关键：图标本身必须是**正方形**且不参与收缩。
+ *    之前只给了容器尺寸，内部的 .wd-icon 是 flex 子项，
+ *    在列宽约束下会被横向压缩 —— 表现为"图标都扁了"。
+ *    这里显式锁死图标的宽高比，并禁止 shrink。
+ */
 .wd-timeline--vertical .wd-timeline__node:has(> .wd-icon) {
   min-width: var(--tl-node-col);
   min-height: var(--tl-node-col);
   height: var(--tl-node-col);
+}
+
+.wd-timeline--vertical .wd-timeline__node > .wd-icon {
+  flex: none;
+  /* 锁死正方形：不给它被父级 flex 压扁的机会 */
+  width: auto;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/*
+ * 竖线：从**节点底边**延伸到下一条。
+ *
+ * ⚠️ 关键：起点不能写死 `--tl-dot + 12px`。
+ *    那个表达式假设节点恒为 22px（带图标的尺寸），
+ *    但无图标时节点只有 10px 高 / 有图标时 22px ——
+ *    于是无图标那条线会在节点下方留 12px 空隙，
+ *    带图标那条则刚好贴边，两行看起来对不齐。
+ *
+ *    正确做法：让 item 用一个 CSS 变量记录"节点占位高度"，
+ *    线从该高度开始。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  /* 节点占位高度：默认圆点高，带图标时由 :has 覆盖 */
+  --tl-node-h: var(--tl-dot);
+}
+
+.wd-timeline--vertical .wd-timeline__item:has(.wd-timeline__node > .wd-icon) {
+  --tl-node-h: calc(var(--tl-dot) + 12px);
 }
 
 .wd-timeline--vertical .wd-timeline__item::before {
@@ -8538,7 +8574,8 @@ body {
   position: absolute;
   /* 与节点圆心同一个表达式 —— 两者都基于 --tl-node-col */
   left: calc(var(--tl-node-col) / 2 - 0.5px);
-  top: calc(var(--tl-dot) + 12px);
+  /* 从节点底边稍下一点开始，避免线和圆点描边粘连 */
+  top: calc(var(--tl-node-h) + 3px + 4px);
   bottom: 0;
   width: 1px;
   background: var(--wd-ink-5);
@@ -13298,9 +13335,19 @@ body {
   max-width: 560px;
 }
 
+/*
+ * 面板容器。
+ *
+ * ⚠️ 用 grid 而不是 flex column。
+ *    之前为了侧栏布局改成了 flex column，结果面板间距消失 ——
+ *    原因是 `.demo-main > * { margin-left/right: auto }` 这条居中规则
+ *    也命中了 .demo-grid 的**子项**，在 flex 下 auto margin 会参与
+ *    主轴/交叉轴分配，把 gap 吃掉。
+ *    grid 的 gap 是纯轨道间距，不受子项 margin 影响。
+ */
 .demo-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   margin-top: 24px;
 }

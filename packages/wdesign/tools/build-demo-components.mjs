@@ -35,6 +35,16 @@ const helpers = readdirSync(COMP).filter(f => f.endsWith('.ts'))
 const ICON_SRC = join(ROOT, '../wdesign-icons/src/WdIcon.vue')
 const ICON_STYLE = join(ROOT, '../wdesign-icons/src/style.css')
 const ICON_OPT = join(ROOT, '../wdesign-icons/src/optical.ts')
+
+/*
+ * 读图标清单（供 demo 的"图标墙"使用）。
+ * icons.json 是图标包自己维护的元数据，这里只取名字。
+ */
+const iconWallData = (() => {
+  const raw = JSON.parse(readFileSync(join(ROOT, '../wdesign-icons/icons.json'), 'utf8'))
+  const icons = raw.icons || []
+  return { names: icons.map((i) => i.name) }
+})()
 const names = []
 const entry = []
 
@@ -133,6 +143,12 @@ execFileSync(ESBUILD, [
 
 // 包一层：暴露 ALL 与各组件名
 const bundle = readFileSync(join(TMP, 'bundle.js'), 'utf8')
+/*
+ * 图标清单以占位符注入，不用模板字符串插值 ——
+ * 这段代码本身就在一个模板字面量里，直接写插值会被外层先求值，
+ * 导致生成的 JS 语法错误（missing ) after argument list）。
+ */
+const ICON_WALL_JSON = JSON.stringify(iconWallData.names)
 writeFileSync(OUT,
 `/* 由 tools/build-demo-components.mjs 生成，请勿手工编辑。
  * 源：src/components/*.vue（${files.length} 个）· 依赖全局 Vue
@@ -146,6 +162,11 @@ ${bundle}
   });
   // 命令式 toast
   window.WDtoast = M.toast;
+
+  // 图标墙数据：从 icons.json 注入（此前这个全局变量从未被设置，图标墙一直是空的）
+  var iconMeta = __ICON_WALL_JSON__;
+  window.WD_ICON_WALL = iconMeta.slice(0, 120);
+  window.WD_ICON_COUNT = iconMeta.length;
   // 暴露图标注册表 API（预加载 / 缓存），供页面在 mount 前预热
   window.WdIcons = {
     preloadIcons: M.preloadIcons,
@@ -157,5 +178,5 @@ ${bundle}
     clearIconCache: M.clearIconCache,
   };
 })();
-`)
+`.replace('__ICON_WALL_JSON__', ICON_WALL_JSON))
 console.log(`✅ 生成 demo/components.js —— ${files.length} 个真实组件`)
