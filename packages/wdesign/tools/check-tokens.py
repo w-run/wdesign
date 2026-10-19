@@ -69,6 +69,12 @@ def scan():
     for path in sorted(glob.glob(os.path.join(ROOT, 'src/styles/**/*.scss'), recursive=True)):
         text = open(path, encoding='utf-8').read()
         rel = os.path.relpath(path, ROOT)
+
+        # 去掉注释再扫描 —— 注释里举例的 `var(--wd-xxx)` 不是真实引用，
+        # 否则每次在文档里写示例都会误报。
+        text = re.sub(r'/\*[\s\S]*?\*/', lambda m: '\n' * m.group(0).count('\n'), text)
+        text = re.sub(r'//[^\n]*', '', text)
+
         for lineno, line in enumerate(text.splitlines(), 1):
             for m in re.finditer(r'var\((--wd-[\w-]+)', line):
                 v = m.group(1)

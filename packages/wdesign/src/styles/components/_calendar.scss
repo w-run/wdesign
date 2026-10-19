@@ -74,7 +74,7 @@
 }
 
 .wd-calendar__nav:focus-visible {
-  @include m.focus-ring(3px, ring-soft);
+  @include m.focus-ring(3px, --wd-focus-ring-soft);
 }
 
 /* ---------------- 星期表头 ---------------- */
@@ -170,7 +170,7 @@
 }
 
 .wd-calendar__cell:focus-visible {
-  @include m.focus-ring(3px, ring-soft);
+  @include m.focus-ring(3px, --wd-focus-ring-soft);
 }
 
 .wd-calendar__day {
@@ -204,7 +204,7 @@
 }
 
 .wd-calendar__action:focus-visible {
-  @include m.focus-ring(3px, ring-soft);
+  @include m.focus-ring(3px, --wd-focus-ring-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

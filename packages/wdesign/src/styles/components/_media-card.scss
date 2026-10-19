@@ -287,7 +287,7 @@
 .wd-media-card__cta:active { transform: scale(.99); }
 
 .wd-media-card__cta:focus-visible {
-  @include m.focus-ring(4px, ring-soft);
+  @include m.focus-ring(4px, --wd-focus-ring-soft);
 }
 
 /* 折叠箭头：圆形、无底色，与 CTA 并排时靠右 */
@@ -314,7 +314,7 @@
 }
 
 .wd-media-card__toggle:focus-visible {
-  @include m.focus-ring(3px, ring-soft);
+  @include m.focus-ring(3px, --wd-focus-ring-soft);
 }
 
 /* ---------------- 无媒体时的降级 ---------------- */

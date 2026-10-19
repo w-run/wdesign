@@ -32,7 +32,7 @@
 }
 
 .wd-colorpicker:focus-visible {
-  @include m.focus-ring(4px, ring-soft);
+  @include m.focus-ring(4px, --wd-focus-ring-soft);
 }
 
 .wd-colorpicker.is-disabled {
@@ -243,7 +243,7 @@
 }
 
 .wd-colorpicker__preset:focus-visible {
-  @include m.focus-ring(3px, ring-soft);
+  @include m.focus-ring(3px, --wd-focus-ring-soft);
 }
 
 @media (prefers-reduced-motion: reduce) {

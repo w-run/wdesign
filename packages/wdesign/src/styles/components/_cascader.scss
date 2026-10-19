@@ -50,7 +50,7 @@
 }
 
 .wd-cascader:focus-visible {
-  @include m.focus-ring(4px, ring-soft);
+  @include m.focus-ring(4px, --wd-focus-ring-soft);
 }
 
 .wd-cascader.is-disabled {

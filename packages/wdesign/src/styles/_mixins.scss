@@ -31,11 +31,15 @@
 ///   + 子项 outline」三层叠加，排查了很久。统一入口能防止各写各的。
 ///
 /// @param {Length} $width  环宽。常规 4px，紧贴的小控件用 3px
-/// @param {String} $level  令牌档位：ring-faint（大面积控件最轻）/
-///                         ring（标准）/ ring-soft（组容器）
-@mixin focus-ring($width: 4px, $level: ring-soft) {
+/// @param {String} $token  完整的令牌名，如 --wd-focus-ring-soft
+///
+/// ⚠️ 不要用「变量名拼接」的写法（在 var() 里插值传半截名字）：
+///    那样产出的字面量在静态检查器里无法解析，
+///    且部分工具链不识别运行时拼接的变量名。
+///    直接传完整令牌名，最安全。
+@mixin focus-ring($width: 4px, $token: --wd-focus-ring-soft) {
   outline: none;
-  box-shadow: 0 0 0 $width var(--wd-focus-#{$level});
+  box-shadow: 0 0 0 $width var(#{$token});
 }
 
 /// 单行截断：超长文本以省略号结尾。
