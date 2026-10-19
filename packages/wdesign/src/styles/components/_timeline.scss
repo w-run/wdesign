@@ -43,6 +43,8 @@
 /* 节点固定在左上角，与标题首行对齐 */
 .wd-timeline--vertical .wd-timeline__node {
   flex: none;
+  /* 在 --tl-node-col 这一列里水平居中，竖线才能穿过圆心 */
+  margin-left: calc((var(--tl-node-col) - var(--tl-dot)) / 2);
   margin-top: 3px;
 }
 
@@ -51,11 +53,27 @@
  * `top: calc(var(--tl-dot) + 4px)` 让线从圆点下缘开始；
  * `bottom: 0` 到本条 item 的底边（即下一个节点的位置）。
  */
+/*
+ * 贯穿竖线。
+ *
+ * ⚠️ 位置不能写死 `--tl-dot / 2`：
+ *   节点在「有图标」时自动放大到 --tl-dot + 12px，
+ *   而竖线仍按小圆点的一半算 → 线偏到节点左边缘之外（实测偏移 6px）。
+ *
+ * 做法：竖线挂在 item 上，用 item 的 padding-left 定义"节点列宽"，
+ * 再让竖线定位到该列的中心。这样无论节点多大，线始终穿过圆心。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  /* 节点列宽 = 节点最大可能宽度（含图标时） */
+  --tl-node-col: calc(var(--tl-dot) + 12px);
+}
+
 .wd-timeline--vertical .wd-timeline__item::before {
   content: '';
   position: absolute;
-  left: calc(var(--tl-dot) / 2 - 0.5px);
-  top: calc(var(--tl-dot) + 5px);
+  /* 竖直方向：从节点底部延伸到本条结束（下一个节点） */
+  left: calc(var(--tl-node-col) / 2 - 0.5px);
+  top: calc(var(--tl-dot) + 12px);
   bottom: 0;
   width: 1px;
   background: var(--wd-tint-3);

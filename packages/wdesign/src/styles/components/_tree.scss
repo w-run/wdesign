@@ -62,17 +62,62 @@
 .wd-tree__arrow:hover { color: var(--wd-ink); }
 
 /* ---- 复选框 ---- */
+/*
+ * 与 WdCheckbox / WdTransfer 统一为**圆形自绘**。
+ * ⚠️ 不用原生 input + accent-color：
+ *   各平台原生框是方形、尺寸不一，且 accent-color 只改填充色不改形状，
+ *   与全站的「圆形优先」冲突。
+ * 保留原生 input 的语义（可聚焦/可键盘操作），只是外观自绘。
+ */
 .wd-tree__check {
   flex: none;
   display: inline-flex;
   align-items: center;
-  margin-right: 2px;
+  justify-content: center;
+  margin-right: 6px;
 }
+
 .wd-tree__check input {
-  width: 14px;
-  height: 14px;
-  accent-color: var(--wd-red);
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+  background: transparent;
   cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-tree__check input:hover {
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+}
+
+/* 选中：深色实心 + 白勾（与 Transfer 一致，不用主题红） */
+.wd-tree__check input:checked {
+  background: var(--wd-ink);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6.2 5.1 8.3 9 4'/%3E%3C/svg%3E");
+  background-size: 11px 11px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 半选（部分子节点选中）：一条横杠 */
+.wd-tree__check input:indeterminate {
+  background: var(--wd-ink);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3.5 6h5'/%3E%3C/svg%3E");
+  background-size: 11px 11px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.wd-tree__check input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
 }
 
 .wd-tree__icon {

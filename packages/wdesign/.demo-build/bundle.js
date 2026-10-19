@@ -10698,6 +10698,7 @@ var WD_REAL_MODULE = (() => {
           const el = itemEls()[fromIndex.value];
           if (el) {
             const r = el.getBoundingClientRect();
+            grabOffsetY = e.clientY - r.top;
             ghost.value = {
               top: r.top,
               left: r.left,
@@ -10707,7 +10708,7 @@ var WD_REAL_MODULE = (() => {
           }
         }
         if (e.cancelable) e.preventDefault();
-        if (ghost.value) ghost.value.top = e.clientY - 20;
+        if (ghost.value) ghost.value.top = e.clientY - grabOffsetY;
         overIndex.value = computeOver(e.clientY);
       }
       function onPointerUp() {
@@ -11909,11 +11910,45 @@ var WD_REAL_MODULE = (() => {
         e.preventDefault();
         select(list[next].value);
       }
+      const root = ref(null);
+      const slider = ref(null);
+      const sliderReady = ref(false);
+      function updateSlider() {
+        const r = root.value;
+        const s = slider.value;
+        if (!r || !s) return;
+        const active = r.querySelector(".wd-tabs__item--active");
+        if (!active) {
+          s.style.opacity = "0";
+          return;
+        }
+        s.style.opacity = "1";
+        s.style.width = active.offsetWidth + "px";
+        s.style.height = active.offsetHeight + "px";
+        s.style.transform = `translate(${active.offsetLeft - s.offsetLeft}px, ${active.offsetTop - s.offsetTop}px)`;
+      }
+      function settleSlider() {
+        if (sliderReady.value) return;
+        slider.value?.classList.remove("is-initial");
+        sliderReady.value = true;
+      }
+      onMounted(async () => {
+        slider.value?.classList.add("is-initial");
+        await nextTick();
+        updateSlider();
+        requestAnimationFrame(settleSlider);
+        window.setTimeout(settleSlider, 60);
+        window.addEventListener("resize", updateSlider);
+      });
+      watch(() => props.modelValue, () => nextTick(updateSlider));
+      watch(() => props.tabs, () => nextTick(updateSlider), { deep: true });
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
         return openBlock(), createElementBlock(
           "div",
           {
+            ref_key: "root",
+            ref: root,
             class: normalizeClass(["wd-tabs", {
               "wd-tabs--block": __props.block,
               "wd-tabs--anim-ready": animReady.value,
@@ -11924,6 +11959,17 @@ var WD_REAL_MODULE = (() => {
             onKeydown
           },
           [
+            createElementVNode(
+              "span",
+              {
+                ref_key: "slider",
+                ref: slider,
+                class: "wd-tabs__slider"
+              },
+              null,
+              512
+              /* NEED_PATCH */
+            ),
             (openBlock(true), createElementBlock(
               Fragment,
               null,
@@ -12238,31 +12284,33 @@ var WD_REAL_MODULE = (() => {
     key: 0,
     class: "wd-transfer__empty"
   };
-  var _hoisted_814 = ["aria-checked", "aria-disabled"];
-  var _hoisted_911 = { class: "wd-transfer__label" };
-  var _hoisted_109 = {
+  var _hoisted_814 = ["onClick"];
+  var _hoisted_911 = ["aria-checked", "aria-disabled"];
+  var _hoisted_109 = { class: "wd-transfer__label" };
+  var _hoisted_1116 = {
     key: 0,
     class: "wd-transfer__desc"
   };
-  var _hoisted_1116 = { class: "wd-transfer__ops" };
-  var _hoisted_1212 = ["disabled"];
+  var _hoisted_1212 = { class: "wd-transfer__ops" };
   var _hoisted_1311 = ["disabled"];
-  var _hoisted_1410 = { class: "wd-transfer__panel" };
-  var _hoisted_1510 = { class: "wd-transfer__head" };
-  var _hoisted_1610 = { class: "wd-transfer__check-all" };
-  var _hoisted_173 = ["checked", ".indeterminate"];
-  var _hoisted_183 = { class: "wd-transfer__count" };
-  var _hoisted_193 = {
+  var _hoisted_1410 = ["disabled"];
+  var _hoisted_1510 = { class: "wd-transfer__panel" };
+  var _hoisted_1610 = { class: "wd-transfer__head" };
+  var _hoisted_173 = { class: "wd-transfer__check-all" };
+  var _hoisted_183 = ["checked", ".indeterminate"];
+  var _hoisted_193 = { class: "wd-transfer__count" };
+  var _hoisted_203 = {
     key: 0,
     class: "wd-transfer__search"
   };
-  var _hoisted_203 = {
+  var _hoisted_2111 = {
     key: 0,
     class: "wd-transfer__empty"
   };
-  var _hoisted_2111 = ["aria-disabled"];
-  var _hoisted_2210 = { class: "wd-transfer__label" };
-  var _hoisted_2310 = {
+  var _hoisted_2210 = ["onClick"];
+  var _hoisted_2310 = ["aria-disabled"];
+  var _hoisted_2410 = { class: "wd-transfer__label" };
+  var _hoisted_257 = {
     key: 0,
     class: "wd-transfer__desc"
   };
@@ -12413,48 +12461,44 @@ var WD_REAL_MODULE = (() => {
                     1
                     /* TEXT */
                   )) : createCommentVNode("v-if", true),
+                  createCommentVNode('\n          \u26A0\uFE0F \u5FC5\u987B\u663E\u5F0F\u7ED1 @click\u3002\n          \u628A\u539F\u751F <input> \u6362\u6210 <span> \u540E\uFF0C<label> \u5931\u53BB\u4E86\u9ED8\u8BA4\u7684"\u70B9\u51FB\u8F6C\u53D1"\u884C\u4E3A\n          \uFF08label \u53EA\u5BF9\u8868\u5355\u63A7\u4EF6\u751F\u6548\uFF09\uFF0C\u6240\u4EE5\u70B9\u51FB\u6574\u884C\u4E0D\u518D\u89E6\u53D1\u4EFB\u4F55\u903B\u8F91\u3002\n        '),
                   (openBlock(true), createElementBlock(
                     Fragment,
                     null,
                     renderList(leftList.value, (d) => {
-                      return openBlock(), createElementBlock(
-                        "label",
-                        {
-                          key: d.key,
-                          class: normalizeClass(["wd-transfer__item", { "is-checked": leftChecked.value.has(d.key), "is-disabled": d.disabled }])
-                        },
-                        [
-                          createCommentVNode("\n            \u81EA\u5B9A\u4E49\u5706\u5F62\u52FE\u9009\u6307\u793A\u5668\uFF0C\u4E0D\u7528\u539F\u751F checkbox\u3002\n            \u539F\u751F\u6846\u5728\u5404\u5E73\u53F0\u5B57\u5F62/\u5C3A\u5BF8\u4E0D\u4E00\uFF0C\u4E14\u65B9\u5F62\u4E0E\u5168\u7AD9\u300C\u5706\u5F62\u4F18\u5148\u300D\u51B2\u7A81\u3002\n            role=checkbox + aria-checked \u4FDD\u8BC1\u65E0\u969C\u788D\u8BED\u4E49\u4E0D\u4E22\u3002\n          "),
-                          createElementVNode("span", {
-                            class: normalizeClass(["wd-transfer__tick", { "is-on": leftChecked.value.has(d.key) }]),
-                            role: "checkbox",
-                            "aria-checked": leftChecked.value.has(d.key),
-                            "aria-disabled": d.disabled || __props.disabled
-                          }, [
-                            leftChecked.value.has(d.key) ? (openBlock(), createBlock(_component_wd_icon, {
-                              key: 0,
-                              name: "check",
-                              size: 10
-                            })) : createCommentVNode("v-if", true)
-                          ], 10, _hoisted_814),
-                          createElementVNode("span", _hoisted_911, [
-                            createTextVNode(
-                              toDisplayString(d.label) + " ",
-                              1
-                              /* TEXT */
-                            ),
-                            d.desc ? (openBlock(), createElementBlock(
-                              "span",
-                              _hoisted_109,
-                              toDisplayString(d.desc),
-                              1
-                              /* TEXT */
-                            )) : createCommentVNode("v-if", true)
-                          ])
-                        ],
-                        2
-                        /* CLASS */
-                      );
+                      return openBlock(), createElementBlock("label", {
+                        key: d.key,
+                        class: normalizeClass(["wd-transfer__item", { "is-checked": leftChecked.value.has(d.key), "is-disabled": d.disabled }]),
+                        onClick: ($event) => !d.disabled && !__props.disabled && toggleCheck("left", d.key)
+                      }, [
+                        createCommentVNode("\n            \u81EA\u5B9A\u4E49\u5706\u5F62\u52FE\u9009\u6307\u793A\u5668\uFF0C\u4E0D\u7528\u539F\u751F checkbox\u3002\n            \u539F\u751F\u6846\u5728\u5404\u5E73\u53F0\u5B57\u5F62/\u5C3A\u5BF8\u4E0D\u4E00\uFF0C\u4E14\u65B9\u5F62\u4E0E\u5168\u7AD9\u300C\u5706\u5F62\u4F18\u5148\u300D\u51B2\u7A81\u3002\n            role=checkbox + aria-checked \u4FDD\u8BC1\u65E0\u969C\u788D\u8BED\u4E49\u4E0D\u4E22\u3002\n          "),
+                        createElementVNode("span", {
+                          class: normalizeClass(["wd-transfer__tick", { "is-on": leftChecked.value.has(d.key) }]),
+                          role: "checkbox",
+                          "aria-checked": leftChecked.value.has(d.key),
+                          "aria-disabled": d.disabled || __props.disabled
+                        }, [
+                          leftChecked.value.has(d.key) ? (openBlock(), createBlock(_component_wd_icon, {
+                            key: 0,
+                            name: "check",
+                            size: 10
+                          })) : createCommentVNode("v-if", true)
+                        ], 10, _hoisted_911),
+                        createElementVNode("span", _hoisted_109, [
+                          createTextVNode(
+                            toDisplayString(d.label) + " ",
+                            1
+                            /* TEXT */
+                          ),
+                          d.desc ? (openBlock(), createElementBlock(
+                            "span",
+                            _hoisted_1116,
+                            toDisplayString(d.desc),
+                            1
+                            /* TEXT */
+                          )) : createCommentVNode("v-if", true)
+                        ])
+                      ], 10, _hoisted_814);
                     }),
                     128
                     /* KEYED_FRAGMENT */
@@ -12465,7 +12509,7 @@ var WD_REAL_MODULE = (() => {
               )
             ]),
             createCommentVNode(" ---------------- \u4E2D\u95F4\u6309\u94AE ---------------- "),
-            createElementVNode("div", _hoisted_1116, [
+            createElementVNode("div", _hoisted_1212, [
               createElementVNode("button", {
                 type: "button",
                 class: "wd-transfer__op",
@@ -12477,7 +12521,7 @@ var WD_REAL_MODULE = (() => {
                   name: "arrow-right",
                   size: 16
                 })
-              ], 8, _hoisted_1212),
+              ], 8, _hoisted_1311),
               createElementVNode("button", {
                 type: "button",
                 class: "wd-transfer__op",
@@ -12489,18 +12533,18 @@ var WD_REAL_MODULE = (() => {
                   name: "arrow-left",
                   size: 16
                 })
-              ], 8, _hoisted_1311)
+              ], 8, _hoisted_1410)
             ]),
             createCommentVNode(" ---------------- \u53F3\u4FA7\uFF1A\u5DF2\u9009 ---------------- "),
-            createElementVNode("div", _hoisted_1410, [
-              createElementVNode("div", _hoisted_1510, [
-                createElementVNode("label", _hoisted_1610, [
+            createElementVNode("div", _hoisted_1510, [
+              createElementVNode("div", _hoisted_1610, [
+                createElementVNode("label", _hoisted_173, [
                   createElementVNode("input", {
                     type: "checkbox",
                     checked: isAllChecked(rightList.value, rightChecked.value),
                     ".indeterminate": rightChecked.value.size > 0 && !isAllChecked(rightList.value, rightChecked.value),
                     onChange: _cache[4] || (_cache[4] = ($event) => checkAll("right", rightList.value))
-                  }, null, 40, _hoisted_173),
+                  }, null, 40, _hoisted_183),
                   createElementVNode(
                     "span",
                     null,
@@ -12510,7 +12554,7 @@ var WD_REAL_MODULE = (() => {
                   )
                 ]),
                 createCommentVNode(' \u53F3\u4FA7\uFF1A\u5217\u8868\u957F\u5EA6\u672C\u8EAB\u5C31\u662F"\u5DF2\u9009\u603B\u6570"\uFF0C\u4E0D\u518D\u91CD\u590D\u8868\u8FBE '),
-                createElementVNode("span", _hoisted_183, [
+                createElementVNode("span", _hoisted_193, [
                   rightChecked.value.size ? (openBlock(), createElementBlock(
                     Fragment,
                     { key: 0 },
@@ -12531,7 +12575,7 @@ var WD_REAL_MODULE = (() => {
                   )
                 ])
               ]),
-              __props.filterable ? (openBlock(), createElementBlock("div", _hoisted_193, [
+              __props.filterable ? (openBlock(), createElementBlock("div", _hoisted_203, [
                 createVNode(_component_wd_input, {
                   modelValue: rightQuery.value,
                   "onUpdate:modelValue": _cache[5] || (_cache[5] = ($event) => rightQuery.value = $event),
@@ -12547,47 +12591,42 @@ var WD_REAL_MODULE = (() => {
                   style: normalizeStyle({ height: __props.height + "px" })
                 },
                 [
-                  rightList.value.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_203, "\u8FD8\u6CA1\u6709\u9009\u4E2D\u9879")) : createCommentVNode("v-if", true),
+                  rightList.value.length === 0 ? (openBlock(), createElementBlock("p", _hoisted_2111, "\u8FD8\u6CA1\u6709\u9009\u4E2D\u9879")) : createCommentVNode("v-if", true),
                   (openBlock(true), createElementBlock(
                     Fragment,
                     null,
                     renderList(rightList.value, (d) => {
-                      return openBlock(), createElementBlock(
-                        "label",
-                        {
-                          key: d.key,
-                          class: normalizeClass(["wd-transfer__item", { "is-checked": true, "is-disabled": d.disabled }])
-                        },
-                        [
-                          createElementVNode("span", {
-                            class: normalizeClass(["wd-transfer__tick", { "is-on": true }]),
-                            role: "checkbox",
-                            "aria-checked": true,
-                            "aria-disabled": d.disabled || __props.disabled
-                          }, [
-                            createVNode(_component_wd_icon, {
-                              name: "check",
-                              size: 10
-                            })
-                          ], 8, _hoisted_2111),
-                          createElementVNode("span", _hoisted_2210, [
-                            createTextVNode(
-                              toDisplayString(d.label) + " ",
-                              1
-                              /* TEXT */
-                            ),
-                            d.desc ? (openBlock(), createElementBlock(
-                              "span",
-                              _hoisted_2310,
-                              toDisplayString(d.desc),
-                              1
-                              /* TEXT */
-                            )) : createCommentVNode("v-if", true)
-                          ])
-                        ],
-                        2
-                        /* CLASS */
-                      );
+                      return openBlock(), createElementBlock("label", {
+                        key: d.key,
+                        class: normalizeClass(["wd-transfer__item", { "is-checked": true, "is-disabled": d.disabled }]),
+                        onClick: ($event) => !d.disabled && !__props.disabled && toggleCheck("right", d.key)
+                      }, [
+                        createElementVNode("span", {
+                          class: normalizeClass(["wd-transfer__tick", { "is-on": true }]),
+                          role: "checkbox",
+                          "aria-checked": true,
+                          "aria-disabled": d.disabled || __props.disabled
+                        }, [
+                          createVNode(_component_wd_icon, {
+                            name: "check",
+                            size: 10
+                          })
+                        ], 8, _hoisted_2310),
+                        createElementVNode("span", _hoisted_2410, [
+                          createTextVNode(
+                            toDisplayString(d.label) + " ",
+                            1
+                            /* TEXT */
+                          ),
+                          d.desc ? (openBlock(), createElementBlock(
+                            "span",
+                            _hoisted_257,
+                            toDisplayString(d.desc),
+                            1
+                            /* TEXT */
+                          )) : createCommentVNode("v-if", true)
+                        ])
+                      ], 10, _hoisted_2210);
                     }),
                     128
                     /* KEYED_FRAGMENT */
@@ -12607,7 +12646,7 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdTree.ts
   var _hoisted_171 = ["data-k", "tabindex", "aria-expanded", "aria-selected", "aria-disabled", "onClick", "onKeydown"];
-  var _hoisted_257 = ["onClick"];
+  var _hoisted_258 = ["onClick"];
   var _hoisted_351 = ["checked", ".indeterminate", "disabled", "onChange"];
   var _hoisted_442 = {
     key: 1,
@@ -12821,7 +12860,7 @@ var WD_REAL_MODULE = (() => {
                       name: "chevron-right",
                       size: 10
                     })) : createCommentVNode("v-if", true)
-                  ], 10, _hoisted_257),
+                  ], 10, _hoisted_258),
                   __props.checkable ? (openBlock(), createElementBlock("label", {
                     key: 0,
                     class: "wd-tree__check",
@@ -12890,7 +12929,7 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdUpload.ts
   var _hoisted_174 = { class: "wd-upload" };
-  var _hoisted_258 = { class: "wd-upload__icon" };
+  var _hoisted_259 = { class: "wd-upload__icon" };
   var _hoisted_352 = {
     key: 0,
     class: "wd-upload__hint"
@@ -12990,7 +13029,7 @@ var WD_REAL_MODULE = (() => {
               onDrop
             },
             [
-              createElementVNode("span", _hoisted_258, [
+              createElementVNode("span", _hoisted_259, [
                 createVNode(_component_wd_icon, {
                   name: "upload",
                   size: 30
@@ -13107,7 +13146,7 @@ var WD_REAL_MODULE = (() => {
 
   // .demo-build/WdVideoPlayer.ts
   var _hoisted_175 = ["poster", "loop", "muted", "autoplay"];
-  var _hoisted_259 = {
+  var _hoisted_260 = {
     key: 0,
     class: "wd-vplayer__title"
   };
@@ -13151,7 +13190,7 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_2112 = { class: "wd-vplayer__eps-head" };
   var _hoisted_2211 = { class: "wd-vplayer__eps-grid" };
   var _hoisted_2311 = ["disabled", "onClick"];
-  var _hoisted_2410 = {
+  var _hoisted_2411 = {
     key: 0,
     class: "wd-vplayer__ep-tag"
   };
@@ -13547,7 +13586,7 @@ var WD_REAL_MODULE = (() => {
               [
                 __props.title ? (openBlock(), createElementBlock(
                   "span",
-                  _hoisted_259,
+                  _hoisted_260,
                   toDisplayString(__props.title),
                   1
                   /* TEXT */
@@ -13893,7 +13932,7 @@ var WD_REAL_MODULE = (() => {
                               ),
                               ep.tag ? (openBlock(), createElementBlock(
                                 "i",
-                                _hoisted_2410,
+                                _hoisted_2411,
                                 toDisplayString(ep.tag),
                                 1
                                 /* TEXT */

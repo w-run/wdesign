@@ -82,6 +82,17 @@ function onPointerMove(e: PointerEvent) {
     const el = itemEls()[fromIndex.value]
     if (el) {
       const r = el.getBoundingClientRect()
+      /*
+       * 记录「抓取点在元素内的相对位置」。
+       *
+       * ⚠️ 不能像之前那样在 move 里写死 `e.clientY - 20`：
+       *   rect.top 是元素顶部，clientY 是指针位置，
+       *   两者相差一个"手指按在元素哪个高度"的量。
+       *   写死 20px 会让克隆块在拖动开始的瞬间**向上跳**，
+       *   而且行高变化时跳得更厉害（实测偏移接近 30px）。
+       * 记住 grabOffsetY，move 时保持同样的相对位置即可。
+       */
+      grabOffsetY = e.clientY - r.top
       ghost.value = {
         top: r.top,
         left: r.left,
@@ -91,7 +102,7 @@ function onPointerMove(e: PointerEvent) {
     }
   }
   if (e.cancelable) e.preventDefault()
-  if (ghost.value) ghost.value.top = e.clientY - 20
+  if (ghost.value) ghost.value.top = e.clientY - grabOffsetY
   overIndex.value = computeOver(e.clientY)
 }
 

@@ -211,13 +211,20 @@
 .wd-group--col > .wd-group__item > * {
   border-radius: 0 !important;
 }
+/*
+ * 纵向的端头圆角用 --wd-radius-md，**不用 pill**。
+ *
+ * 原因：pill（999px）在纵向时会把首项顶边做成半圆拱、末项底边做成半圆拱 ——
+ * 视觉上像两个胶囊叠在一起，非常怪。胶囊的语义是"横向的胶囊形"，
+ * 只在横向（row）成立；纵向应该退回常规圆角。
+ */
 .wd-group--col > .wd-group__item--first,
 .wd-group--col > .wd-group__item--first > * {
-  border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0 !important;
+  border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0 !important;
 }
 .wd-group--col > .wd-group__item--last,
 .wd-group--col > .wd-group__item--last > * {
-  border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill) !important;
+  border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md) !important;
 }
 /* 只有 capsule 才用 pill 端头 */
 .wd-group--capsule.wd-group--col > .wd-group__item--first,
@@ -283,12 +290,17 @@
 /* ---------------- 变体：拼合 ---------------- */
 /*
  * joined：外缘圆角、内部直角拼接。
- * 与本库整体语言一致 —— **不用边框**，靠底色与阴影区分。
+ *
+ * ⚠️ 容器**不设背景**。
+ * 之前给 joined 容器铺 --wd-card 白底 + 阴影，结果：
+ *   · 子项本身也是白底（按钮/输入框），两层白叠着看不出区分
+ *   · 圆角处容器白底从子项缝隙里透出来 → 出现"白边"
+ * 无边框语言里，拼合的分段靠**子项自身的底色**区分即可，
+ * 容器只是几何容器，不该有可见的填充。
  */
 .wd-group--joined {
-  background: var(--wd-card);
+  background: transparent;
   border-radius: var(--wd-radius-md);
-  box-shadow: var(--wd-shadow-sm);
 }
 
 .wd-group--row.wd-group--joined > .wd-group__item--first,
@@ -304,8 +316,9 @@
   border-radius: var(--wd-radius-pill) !important;
 }
 
-.wd-group--joined.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0; }
-.wd-group--joined.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill); }
+/* 纵向退回常规圆角（pill 在纵向会变成半圆拱） */
+.wd-group--joined.wd-group--col > .wd-group__item--first { border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0; }
+.wd-group--joined.wd-group--col > .wd-group__item--last  { border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md); }
 
 /*
  * 分段之间**不画任何分隔线**。

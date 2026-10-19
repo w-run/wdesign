@@ -34,7 +34,13 @@
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-checkbox.is-hover .wd-checkbox__box { background: var(--wd-tint-1); }
 
-.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-red); color: #fff; }
+/*
+ * 选中态用**深色**而非主题红。
+ * 勾选是高频操作（表单、列表、树），红色会读成"危险/错误"，
+ * 与 danger 语义混淆。深色块在黑白灰体系里已经足够明确。
+ * 与 WdTree / WdTransfer 的自绘勾选保持一致。
+ */
+.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-ink); color: #fff; }
 @media (hover: hover) {
   .wd-checkbox--checked:hover .wd-checkbox__box { background: var(--wd-red-hover); }
 }

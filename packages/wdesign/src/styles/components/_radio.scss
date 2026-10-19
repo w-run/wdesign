@@ -42,7 +42,8 @@
   transform: scale(0);
   transition: transform var(--wd-dur-fast) ease;
 }
-.wd-radio--checked .wd-radio__dot { background: var(--wd-red); }
+/* 单选同样用深色：见 checkbox 的说明 */
+.wd-radio--checked .wd-radio__dot { background: var(--wd-ink); }
 @media (hover: hover) {
   .wd-radio--checked:hover .wd-radio__dot { background: var(--wd-red-hover); }
 }

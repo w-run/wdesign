@@ -1360,8 +1360,14 @@ body {
   background: var(--wd-tint-1);
 }
 
+/*
+ * 选中态用**深色**而非主题红。
+ * 勾选是高频操作（表单、列表、树），红色会读成"危险/错误"，
+ * 与 danger 语义混淆。深色块在黑白灰体系里已经足够明确。
+ * 与 WdTree / WdTransfer 的自绘勾选保持一致。
+ */
 .wd-checkbox--checked .wd-checkbox__box {
-  background: var(--wd-red);
+  background: var(--wd-ink);
   color: #fff;
 }
 
@@ -1477,8 +1483,9 @@ body {
   transition: transform var(--wd-dur-fast) ease;
 }
 
+/* 单选同样用深色：见 checkbox 的说明 */
 .wd-radio--checked .wd-radio__dot {
-  background: var(--wd-red);
+  background: var(--wd-ink);
 }
 
 @media (hover: hover) {
@@ -2840,11 +2847,36 @@ body {
   }
 }
 .wd-tabs {
+  position: relative;
   display: inline-flex;
   gap: 4px;
   padding: 5px;
   background: var(--wd-field);
   border-radius: var(--wd-radius-pill);
+}
+
+/*
+ * 选中滑块：与 WdSegmented 同一套实现与观感。
+ *
+ * Tabs 之前只有"选中项换底色"，切换是硬切；
+ * 而 Segmented（视觉几乎相同）有平滑滑动 —— 两者行为不一致。
+ * 这里补上滑动块，让同属"分段切换"的两个组件体验统一。
+ */
+.wd-tabs__slider {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
+  pointer-events: none;
+  transition: transform var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), width var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), height var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1);
+}
+
+/* 首帧落位：禁用过渡，避免页面加载时滑块"滑进来" */
+.wd-tabs__slider.is-initial {
+  transition: none;
 }
 
 .wd-tabs--block {
@@ -2888,10 +2920,20 @@ body {
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
+/*
+ * 选中项：**底色交给滑块**，项本身透明。
+ * 若项自己再画一层白底，会与滑块叠成两层，
+ * 在圆角处出现一圈阴影加深的白边。
+ */
+.wd-tabs__item {
+  position: relative;
+  z-index: 1;
+}
+
 .wd-tabs__item--active {
-  background: var(--wd-card);
+  background: transparent;
   color: var(--wd-ink);
-  box-shadow: var(--wd-shadow-sm);
+  box-shadow: none;
 }
 
 /* ---- 微交互（精致版）---- */
@@ -5055,31 +5097,44 @@ body {
 }
 
 /*
- * 竖栏选中态：中性色浮起 + 深色文字 + 左侧短竖线。
+ * 竖栏选中态：中性底浮起 + 深色文字。
  *
- * 左侧短竖线是导航的经典语汇（表示"你在这里"），
- * 用深灰而非主题红 —— 它已经足够显眼，不需要色彩加码。
+ * ⚠️ 不在前面加竖线。
+ * 竖线在列表式导航里是"当前项标记"，但本库的项已经是**胶囊**，
+ * 胶囊左缘加一条 2px 竖线会切断胶囊的圆角弧线，显得脏。
+ * 选中已经由「底色 + 加粗」表达清楚，不需要第三个信号。
+ *
+ * 改用**前方的圆点**：它落在胶囊内部、与图标/文字基线垂直居中，
+ * 是"当前位置"的轻量标记，不破坏胶囊形状。
  */
 .wd-nav--vertical .wd-nav__item.is-active {
   background: var(--wd-field);
   color: var(--wd-ink);
   font-weight: 700;
+  /* 给圆点留出位置，避免文字左移 */
+  padding-left: 26px;
+}
+
+.wd-nav--vertical.is-collapsed .wd-nav__item.is-active {
+  padding-left: 0;
 }
 
 .wd-nav--vertical .wd-nav__item.is-active::before {
   content: "";
   position: absolute;
-  left: 0;
+  /* 胶囊内左侧，与内容垂直居中 */
+  left: 11px;
   top: 50%;
   transform: translateY(-50%);
-  width: 2px;
-  height: 16px;
-  border-radius: 999px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   background: var(--wd-ink);
 }
 
+/* 折叠态：圆点不显示（空间不足） */
 .wd-nav--vertical.is-collapsed .wd-nav__item.is-active::before {
-  left: -4px;
+  display: none;
 }
 
 .wd-nav--vertical .wd-nav__label {
@@ -7342,6 +7397,8 @@ body {
 /* 节点固定在左上角，与标题首行对齐 */
 .wd-timeline--vertical .wd-timeline__node {
   flex: none;
+  /* 在 --tl-node-col 这一列里水平居中，竖线才能穿过圆心 */
+  margin-left: calc((var(--tl-node-col) - var(--tl-dot)) / 2);
   margin-top: 3px;
 }
 
@@ -7350,11 +7407,27 @@ body {
  * `top: calc(var(--tl-dot) + 4px)` 让线从圆点下缘开始；
  * `bottom: 0` 到本条 item 的底边（即下一个节点的位置）。
  */
+/*
+ * 贯穿竖线。
+ *
+ * ⚠️ 位置不能写死 `--tl-dot / 2`：
+ *   节点在「有图标」时自动放大到 --tl-dot + 12px，
+ *   而竖线仍按小圆点的一半算 → 线偏到节点左边缘之外（实测偏移 6px）。
+ *
+ * 做法：竖线挂在 item 上，用 item 的 padding-left 定义"节点列宽"，
+ * 再让竖线定位到该列的中心。这样无论节点多大，线始终穿过圆心。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  /* 节点列宽 = 节点最大可能宽度（含图标时） */
+  --tl-node-col: calc(var(--tl-dot) + 12px);
+}
+
 .wd-timeline--vertical .wd-timeline__item::before {
   content: "";
   position: absolute;
-  left: calc(var(--tl-dot) / 2 - 0.5px);
-  top: calc(var(--tl-dot) + 5px);
+  /* 竖直方向：从节点底部延伸到本条结束（下一个节点） */
+  left: calc(var(--tl-node-col) / 2 - 0.5px);
+  top: calc(var(--tl-dot) + 12px);
   bottom: 0;
   width: 1px;
   background: var(--wd-tint-3);
@@ -8454,18 +8527,62 @@ img.wd-theme-invert {
 }
 
 /* ---- 复选框 ---- */
+/*
+ * 与 WdCheckbox / WdTransfer 统一为**圆形自绘**。
+ * ⚠️ 不用原生 input + accent-color：
+ *   各平台原生框是方形、尺寸不一，且 accent-color 只改填充色不改形状，
+ *   与全站的「圆形优先」冲突。
+ * 保留原生 input 的语义（可聚焦/可键盘操作），只是外观自绘。
+ */
 .wd-tree__check {
   flex: none;
   display: inline-flex;
   align-items: center;
-  margin-right: 2px;
+  justify-content: center;
+  margin-right: 6px;
 }
 
 .wd-tree__check input {
-  width: 14px;
-  height: 14px;
-  accent-color: var(--wd-red);
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+  background: transparent;
   cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-tree__check input:hover {
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+}
+
+/* 选中：深色实心 + 白勾（与 Transfer 一致，不用主题红） */
+.wd-tree__check input:checked {
+  background: var(--wd-ink);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6.2 5.1 8.3 9 4'/%3E%3C/svg%3E");
+  background-size: 11px 11px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 半选（部分子节点选中）：一条横杠 */
+.wd-tree__check input:indeterminate {
+  background: var(--wd-ink);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='white' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M3.5 6h5'/%3E%3C/svg%3E");
+  background-size: 11px 11px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.wd-tree__check input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
 }
 
 .wd-tree__icon {
@@ -10458,14 +10575,21 @@ img.wd-theme-invert {
   border-radius: 0 !important;
 }
 
+/*
+ * 纵向的端头圆角用 --wd-radius-md，**不用 pill**。
+ *
+ * 原因：pill（999px）在纵向时会把首项顶边做成半圆拱、末项底边做成半圆拱 ——
+ * 视觉上像两个胶囊叠在一起，非常怪。胶囊的语义是"横向的胶囊形"，
+ * 只在横向（row）成立；纵向应该退回常规圆角。
+ */
 .wd-group--col > .wd-group__item--first,
 .wd-group--col > .wd-group__item--first > * {
-  border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0 !important;
+  border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0 !important;
 }
 
 .wd-group--col > .wd-group__item--last,
 .wd-group--col > .wd-group__item--last > * {
-  border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill) !important;
+  border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md) !important;
 }
 
 /* 只有 capsule 才用 pill 端头 */
@@ -10532,12 +10656,17 @@ img.wd-theme-invert {
 /* ---------------- 变体：拼合 ---------------- */
 /*
  * joined：外缘圆角、内部直角拼接。
- * 与本库整体语言一致 —— **不用边框**，靠底色与阴影区分。
+ *
+ * ⚠️ 容器**不设背景**。
+ * 之前给 joined 容器铺 --wd-card 白底 + 阴影，结果：
+ *   · 子项本身也是白底（按钮/输入框），两层白叠着看不出区分
+ *   · 圆角处容器白底从子项缝隙里透出来 → 出现"白边"
+ * 无边框语言里，拼合的分段靠**子项自身的底色**区分即可，
+ * 容器只是几何容器，不该有可见的填充。
  */
 .wd-group--joined {
-  background: var(--wd-card);
+  background: transparent;
   border-radius: var(--wd-radius-md);
-  box-shadow: var(--wd-shadow-sm);
 }
 
 .wd-group--row.wd-group--joined > .wd-group__item--first,
@@ -10555,12 +10684,13 @@ img.wd-theme-invert {
   border-radius: var(--wd-radius-pill) !important;
 }
 
+/* 纵向退回常规圆角（pill 在纵向会变成半圆拱） */
 .wd-group--joined.wd-group--col > .wd-group__item--first {
-  border-radius: var(--wd-radius-pill) var(--wd-radius-pill) 0 0;
+  border-radius: var(--wd-radius-md) var(--wd-radius-md) 0 0;
 }
 
 .wd-group--joined.wd-group--col > .wd-group__item--last {
-  border-radius: 0 0 var(--wd-radius-pill) var(--wd-radius-pill);
+  border-radius: 0 0 var(--wd-radius-md) var(--wd-radius-md);
 }
 
 /*

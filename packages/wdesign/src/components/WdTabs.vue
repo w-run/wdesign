@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 defineOptions({ name: 'WdTabs' })
 
@@ -62,10 +62,59 @@ function onKeydown(e: KeyboardEvent) {
   e.preventDefault()
   select(list[next].value)
 }
+
+/* ---------------- 选中滑块（与 WdSegmented 同一套做法） ---------------- */
+/**
+ * Tabs 与 Segmented 视觉几乎一致，但之前 Tabs 只有"选中项换底色"，
+ * 切换时是硬切。这里补一个平滑滑动的指示块，让两者行为对齐。
+ *
+ * 用 offsetLeft/offsetWidth 而非 getBoundingClientRect：
+ *   offset* 是相对 offsetParent 的布局值，不受 transform 影响，
+ *   而滑块本身就是被 transform 移动的 —— 用 rect 会读到上一帧的位置。
+ */
+const root = ref<HTMLElement | null>(null)
+const slider = ref<HTMLElement | null>(null)
+const sliderReady = ref(false)
+
+function updateSlider() {
+  const r = root.value
+  const s = slider.value
+  if (!r || !s) return
+  const active = r.querySelector<HTMLElement>('.wd-tabs__item--active')
+  if (!active) { s.style.opacity = '0'; return }
+  s.style.opacity = '1'
+  s.style.width = active.offsetWidth + 'px'
+  s.style.height = active.offsetHeight + 'px'
+  s.style.transform = `translate(${active.offsetLeft - s.offsetLeft}px, ${active.offsetTop - s.offsetTop}px)`
+}
+
+/**
+ * 首帧禁过渡：页面加载时滑块应从 0 直接落位，而不是"滑进来"。
+ * 与 Segmented 踩过的坑一致 —— 用类名控制而非内联 transition，
+ * 且 rAF 在后台/无头环境不回调，必须用 setTimeout 兜底。
+ */
+function settleSlider() {
+  if (sliderReady.value) return
+  slider.value?.classList.remove('is-initial')
+  sliderReady.value = true
+}
+
+onMounted(async () => {
+  slider.value?.classList.add('is-initial')
+  await nextTick()
+  updateSlider()
+  requestAnimationFrame(settleSlider)
+  window.setTimeout(settleSlider, 60)
+  window.addEventListener('resize', updateSlider)
+})
+
+watch(() => props.modelValue, () => nextTick(updateSlider))
+watch(() => props.tabs, () => nextTick(updateSlider), { deep: true })
 </script>
 
 <template>
   <div
+    ref="root"
     class="wd-tabs"
     :class="{
       'wd-tabs--block': block,
@@ -76,6 +125,8 @@ function onKeydown(e: KeyboardEvent) {
     role="tablist"
     @keydown="onKeydown"
   >
+    <span ref="slider" class="wd-tabs__slider"></span>
+
     <button
       v-for="t in items"
       :key="t.value"

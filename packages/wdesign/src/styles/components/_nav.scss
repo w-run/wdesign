@@ -255,31 +255,44 @@
 }
 
 /*
- * 竖栏选中态：中性色浮起 + 深色文字 + 左侧短竖线。
+ * 竖栏选中态：中性底浮起 + 深色文字。
  *
- * 左侧短竖线是导航的经典语汇（表示"你在这里"），
- * 用深灰而非主题红 —— 它已经足够显眼，不需要色彩加码。
+ * ⚠️ 不在前面加竖线。
+ * 竖线在列表式导航里是"当前项标记"，但本库的项已经是**胶囊**，
+ * 胶囊左缘加一条 2px 竖线会切断胶囊的圆角弧线，显得脏。
+ * 选中已经由「底色 + 加粗」表达清楚，不需要第三个信号。
+ *
+ * 改用**前方的圆点**：它落在胶囊内部、与图标/文字基线垂直居中，
+ * 是"当前位置"的轻量标记，不破坏胶囊形状。
  */
 .wd-nav--vertical .wd-nav__item.is-active {
   background: var(--wd-field);
   color: var(--wd-ink);
   font-weight: 700;
+  /* 给圆点留出位置，避免文字左移 */
+  padding-left: 26px;
+}
+
+.wd-nav--vertical.is-collapsed .wd-nav__item.is-active {
+  padding-left: 0;
 }
 
 .wd-nav--vertical .wd-nav__item.is-active::before {
   content: '';
   position: absolute;
-  left: 0;
+  /* 胶囊内左侧，与内容垂直居中 */
+  left: 11px;
   top: 50%;
   transform: translateY(-50%);
-  width: 2px;
-  height: 16px;
-  border-radius: 999px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
   background: var(--wd-ink);
 }
 
+/* 折叠态：圆点不显示（空间不足） */
 .wd-nav--vertical.is-collapsed .wd-nav__item.is-active::before {
-  left: -4px;
+  display: none;
 }
 
 .wd-nav--vertical .wd-nav__label {

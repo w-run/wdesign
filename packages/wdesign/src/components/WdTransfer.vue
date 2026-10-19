@@ -158,11 +158,17 @@ const canMoveLeft = computed(() => rightChecked.value.size > 0 && !props.disable
         <p v-if="leftList.length === 0" class="wd-transfer__empty">
           {{ data.length === 0 ? '暂无数据' : '没有可移动项' }}
         </p>
+        <!--
+          ⚠️ 必须显式绑 @click。
+          把原生 <input> 换成 <span> 后，<label> 失去了默认的"点击转发"行为
+          （label 只对表单控件生效），所以点击整行不再触发任何逻辑。
+        -->
         <label
           v-for="d in leftList"
           :key="d.key"
           class="wd-transfer__item"
           :class="{ 'is-checked': leftChecked.has(d.key), 'is-disabled': d.disabled }"
+          @click="!d.disabled && !disabled && toggleCheck('left', d.key)"
         >
           <!--
             自定义圆形勾选指示器，不用原生 checkbox。
@@ -237,6 +243,7 @@ const canMoveLeft = computed(() => rightChecked.value.size > 0 && !props.disable
           :key="d.key"
           class="wd-transfer__item"
           :class="{ 'is-checked': true, 'is-disabled': d.disabled }"
+          @click="!d.disabled && !disabled && toggleCheck('right', d.key)"
         >
           <span
             class="wd-transfer__tick"
