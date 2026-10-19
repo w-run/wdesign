@@ -36,6 +36,14 @@ INTERNAL = {
     '--wd-group-fs',
     # 音频卡片主色：由组件的 accent prop 通过 inline style 注入
     '--wd-audio-accent',
+    # 勾选色：由 WdCheckbox / WdRadio 的 color prop 注入，
+    # 派生色（hover / disabled）在样式里用 color-mix 从它算出
+    '--wd-check-color',
+    '--wd-check-hover',
+    '--wd-check-disabled',
+    # Timeline 节点列宽（在 _timeline.scss 的 item 上定义）
+    '--tl-node-col',
+    '--tl-color',
 }
 
 

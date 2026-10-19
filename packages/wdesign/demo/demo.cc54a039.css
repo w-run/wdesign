@@ -1051,6 +1051,21 @@ body {
   padding-right: 14px;
 }
 
+/*
+ * Switch：开启态用**深色**，不用主题红。
+ *
+ * 三条理由：
+ *   1. 语义：开关表达"这个设置被打开了"，不含任何警告意味。
+ *      红色的另一半语义是 danger，用它会让"开启通知"看起来像危险操作。
+ *   2. 面积：54×33 是组件库里少见的**大面积填充**。
+ *      主色应当"少而精"，铺满一块控件就不叫点睛了。
+ *   3. 一致性：Checkbox / Radio / Tabs / Segmented / Nav 的选中态
+ *      都已经是深色（或中性浮起），只有 Switch 还是红的，显得割裂。
+ *
+ * 主题红仍保留给"你在这里"的位置标记：当前步骤、当前页码、
+ * Carousel 当前点、DatePicker 选中日 —— 那些是低频、小面积、
+ * 且确实需要引导视线的场合。
+ */
 .wd-switch {
   position: relative;
   width: 54px;
@@ -1059,7 +1074,7 @@ body {
   padding: 0;
   border: 0;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-red);
+  background: var(--wd-ink);
   cursor: pointer;
   transition: background var(--wd-dur) ease;
 }
@@ -1336,6 +1351,21 @@ body {
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
+/*
+ * 选中色可配置。
+ *
+ * `--wd-check-color` 由组件通过 `color` prop 注入；
+ * 未指定时回落到 --wd-ink（深色）—— 见下方选中态说明。
+ * 派生色（hover / disabled）全部用 color-mix 从它算出来，
+ * 这样自定义任意颜色时，hover 与禁用态都能自动跟随，
+ * 不会像之前那样"选中是深色、hover 却变红"。
+ */
+.wd-checkbox {
+  --wd-check-color: var(--wd-ink);
+  --wd-check-hover: color-mix(in srgb, var(--wd-check-color) 82%, #000);
+  --wd-check-disabled: color-mix(in srgb, var(--wd-check-color) 22%, transparent);
+}
+
 .wd-checkbox__box {
   width: 24px;
   height: 24px;
@@ -1367,17 +1397,17 @@ body {
  * 与 WdTree / WdTransfer 的自绘勾选保持一致。
  */
 .wd-checkbox--checked .wd-checkbox__box {
-  background: var(--wd-ink);
+  background: var(--wd-check-color);
   color: #fff;
 }
 
 @media (hover: hover) {
   .wd-checkbox--checked:hover .wd-checkbox__box {
-    background: var(--wd-red-hover);
+    background: var(--wd-check-hover);
   }
 }
 .wd-checkbox--checked.is-hover .wd-checkbox__box {
-  background: var(--wd-red-hover);
+  background: var(--wd-check-hover);
 }
 
 .wd-checkbox__label {
@@ -1398,8 +1428,12 @@ body {
   background: var(--wd-field);
 }
 
+/*
+ * 禁用态：用主色的低透明度版本，而不是固定的 tint-3。
+ * 换色时禁用态自动跟随，不会出现"自定义成蓝色、禁用却是粉色"。
+ */
 .wd-checkbox--checked.wd-checkbox--disabled .wd-checkbox__box {
-  background: var(--wd-tint-3);
+  background: var(--wd-check-disabled);
   color: #fff;
 }
 
@@ -1484,17 +1518,22 @@ body {
 }
 
 /* 单选同样用深色：见 checkbox 的说明 */
+/* 与 checkbox 共用同一套可配色变量约定 */
+.wd-radio {
+  --wd-check-color: var(--wd-ink);
+}
+
 .wd-radio--checked .wd-radio__dot {
-  background: var(--wd-ink);
+  background: var(--wd-check-color);
 }
 
 @media (hover: hover) {
   .wd-radio--checked:hover .wd-radio__dot {
-    background: var(--wd-red-hover);
+    background: color-mix(in srgb, var(--wd-check-color) 82%, #000);
   }
 }
 .wd-radio--checked.is-hover .wd-radio__dot {
-  background: var(--wd-red-hover);
+  background: color-mix(in srgb, var(--wd-check-color) 82%, #000);
 }
 
 .wd-radio--checked .wd-radio__inner {
@@ -1535,6 +1574,14 @@ body {
 
 .wd-radio:active .wd-radio__dot {
   transform: scale(0.94);
+}
+
+/* 单选项的文字标签（模板里一直在用，样式从未定义） */
+.wd-radio__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wd-select {
@@ -1804,6 +1851,16 @@ body {
 
 .wd-select__option {
   width: 100%;
+}
+
+/* 单选时的已选值文本 */
+.wd-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--wd-ink);
 }
 
 .wd-splitter {
@@ -3549,6 +3606,16 @@ body {
 }
 .wd-datepicker__todaybtn.is-hover {
   background: var(--wd-field-hover);
+}
+
+/* 已选日期文本 */
+.wd-datepicker__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--wd-ink);
 }
 
 .wd-toasts {
@@ -5499,6 +5566,11 @@ body {
     transform: rotate(90deg);
   }
 }
+/* 搜索框容器（左右两栏各一个） */
+.wd-transfer__search {
+  padding: 2px 0 6px;
+}
+
 .wd-watermark {
   position: relative;
   /* 水印层绝对定位需要它是包含块 */
@@ -7041,6 +7113,15 @@ body {
 .wd-fade-leave-to {
   opacity: 0;
   transform: translateY(6px);
+}
+
+/* 文件夹名（含省略号截断） */
+.wd-explorer__folder-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wd-ai-msg {
@@ -9830,12 +9911,43 @@ img.wd-theme-invert {
   cursor: none;
 }
 
+/*
+ * 视频元素 + 隐藏原生控件。
+ *
+ * ⚠️ 只在标签上不写 `controls` 是**不够的**：
+ *   · iOS Safari 在播放中触摸视频仍会浮出原生控件条
+ *   · Android Chrome 双击/长按也会唤出
+ * 必须用 -webkit-media-controls-* 伪元素逐个关掉。
+ *
+ * ⚠️ 这些伪元素**不能写在嵌套里** ——
+ *   SCSS 不会把 `&::-webkit-media-controls-panel` 展开成有效选择器
+ *   （实测编译后只剩 3 条），必须写成完整选择器。
+ */
 .wd-vplayer__el {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
   background: #000;
+}
+
+.wd-vplayer__el::-webkit-media-controls,
+.wd-vplayer__el::-webkit-media-controls-panel,
+.wd-vplayer__el::-webkit-media-controls-play-button,
+.wd-vplayer__el::-webkit-media-controls-start-playback-button,
+.wd-vplayer__el::-webkit-media-controls-overlay-play-button,
+.wd-vplayer__el::-webkit-media-controls-current-time-display,
+.wd-vplayer__el::-webkit-media-controls-time-remaining-display,
+.wd-vplayer__el::-webkit-media-controls-timeline,
+.wd-vplayer__el::-webkit-media-controls-volume-slider,
+.wd-vplayer__el::-webkit-media-controls-mute-button,
+.wd-vplayer__el::-webkit-media-controls-toggle-closed-captions-button,
+.wd-vplayer__el::-webkit-media-controls-fullscreen-button,
+.wd-vplayer__el::-webkit-media-controls-enclosure {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* 点击层：铺满画面用于暂停/播放。
@@ -10109,7 +10221,12 @@ img.wd-theme-invert {
   height: 32px;
   padding: 0 6px;
   border: 0;
-  border-radius: var(--wd-radius-xs);
+  /*
+   * 图标按钮 → 圆形。
+   * 但控制条里也有带文字的按钮（如「字幕」），min-width 会把它撑成椭圆，
+   * 所以只在图标型（无文字）时才强制圆形，见下方 :has 规则。
+   */
+  border-radius: 50%;
   background: transparent;
   color: var(--wd-on-dark-2);
   font: inherit;
@@ -10204,9 +10321,10 @@ img.wd-theme-invert {
 }
 
 .wd-vplayer__panel--rates button {
-  padding: 7px 10px;
+  padding: 7px 12px;
   border: 0;
-  border-radius: 5px;
+  /* 文字按钮 → 胶囊 */
+  border-radius: var(--wd-radius-pill);
   background: transparent;
   color: var(--wd-on-dark-2);
   font: inherit;
@@ -10253,9 +10371,10 @@ img.wd-theme-invert {
 
 .wd-vplayer__ep {
   position: relative;
-  padding: 7px 4px;
+  padding: 7px 10px;
   border: 0;
-  border-radius: 5px;
+  /* 剧集文字按钮 → 胶囊 */
+  border-radius: var(--wd-radius-pill);
   background: rgba(255, 255, 255, 0.08);
   color: var(--wd-on-dark-2);
   font: inherit;

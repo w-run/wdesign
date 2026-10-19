@@ -1,4 +1,19 @@
 // WDesign UI — Switch
+/*
+ * Switch：开启态用**深色**，不用主题红。
+ *
+ * 三条理由：
+ *   1. 语义：开关表达"这个设置被打开了"，不含任何警告意味。
+ *      红色的另一半语义是 danger，用它会让"开启通知"看起来像危险操作。
+ *   2. 面积：54×33 是组件库里少见的**大面积填充**。
+ *      主色应当"少而精"，铺满一块控件就不叫点睛了。
+ *   3. 一致性：Checkbox / Radio / Tabs / Segmented / Nav 的选中态
+ *      都已经是深色（或中性浮起），只有 Switch 还是红的，显得割裂。
+ *
+ * 主题红仍保留给"你在这里"的位置标记：当前步骤、当前页码、
+ * Carousel 当前点、DatePicker 选中日 —— 那些是低频、小面积、
+ * 且确实需要引导视线的场合。
+ */
 .wd-switch {
   position: relative;
   width: 54px;
@@ -7,7 +22,7 @@
   padding: 0;
   border: 0;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-red);
+  background: var(--wd-ink);
   cursor: pointer;
   transition: background var(--wd-dur) ease;
 }

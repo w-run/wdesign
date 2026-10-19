@@ -43,11 +43,17 @@
   transition: transform var(--wd-dur-fast) ease;
 }
 /* 单选同样用深色：见 checkbox 的说明 */
-.wd-radio--checked .wd-radio__dot { background: var(--wd-ink); }
+/* 与 checkbox 共用同一套可配色变量约定 */
+.wd-radio { --wd-check-color: var(--wd-ink); }
+.wd-radio--checked .wd-radio__dot { background: var(--wd-check-color); }
 @media (hover: hover) {
-  .wd-radio--checked:hover .wd-radio__dot { background: var(--wd-red-hover); }
+  .wd-radio--checked:hover .wd-radio__dot {
+    background: color-mix(in srgb, var(--wd-check-color) 82%, #000);
+  }
 }
-.wd-radio--checked.is-hover .wd-radio__dot { background: var(--wd-red-hover); }
+.wd-radio--checked.is-hover .wd-radio__dot {
+  background: color-mix(in srgb, var(--wd-check-color) 82%, #000);
+}
 
 .wd-radio--checked .wd-radio__inner { transform: scale(1); }
 

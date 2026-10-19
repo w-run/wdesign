@@ -34,12 +34,43 @@
 
 .wd-vplayer.no-cursor { cursor: none; }
 
+/*
+ * 视频元素 + 隐藏原生控件。
+ *
+ * ⚠️ 只在标签上不写 `controls` 是**不够的**：
+ *   · iOS Safari 在播放中触摸视频仍会浮出原生控件条
+ *   · Android Chrome 双击/长按也会唤出
+ * 必须用 -webkit-media-controls-* 伪元素逐个关掉。
+ *
+ * ⚠️ 这些伪元素**不能写在嵌套里** ——
+ *   SCSS 不会把 `&::-webkit-media-controls-panel` 展开成有效选择器
+ *   （实测编译后只剩 3 条），必须写成完整选择器。
+ */
 .wd-vplayer__el {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
   background: #000;
+}
+
+.wd-vplayer__el::-webkit-media-controls,
+.wd-vplayer__el::-webkit-media-controls-panel,
+.wd-vplayer__el::-webkit-media-controls-play-button,
+.wd-vplayer__el::-webkit-media-controls-start-playback-button,
+.wd-vplayer__el::-webkit-media-controls-overlay-play-button,
+.wd-vplayer__el::-webkit-media-controls-current-time-display,
+.wd-vplayer__el::-webkit-media-controls-time-remaining-display,
+.wd-vplayer__el::-webkit-media-controls-timeline,
+.wd-vplayer__el::-webkit-media-controls-volume-slider,
+.wd-vplayer__el::-webkit-media-controls-mute-button,
+.wd-vplayer__el::-webkit-media-controls-toggle-closed-captions-button,
+.wd-vplayer__el::-webkit-media-controls-fullscreen-button,
+.wd-vplayer__el::-webkit-media-controls-enclosure {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 /* 点击层：铺满画面用于暂停/播放。
@@ -268,7 +299,12 @@
   height: 32px;
   padding: 0 6px;
   border: 0;
-  border-radius: var(--wd-radius-xs);
+  /*
+   * 图标按钮 → 圆形。
+   * 但控制条里也有带文字的按钮（如「字幕」），min-width 会把它撑成椭圆，
+   * 所以只在图标型（无文字）时才强制圆形，见下方 :has 规则。
+   */
+  border-radius: 50%;
   background: transparent;
   color: var(--wd-on-dark-2);
   font: inherit;
@@ -353,9 +389,10 @@
   padding: 4px;
 }
 .wd-vplayer__panel--rates button {
-  padding: 7px 10px;
+  padding: 7px 12px;
   border: 0;
-  border-radius: 5px;
+  /* 文字按钮 → 胶囊 */
+  border-radius: var(--wd-radius-pill);
   background: transparent;
   color: var(--wd-on-dark-2);
   font: inherit;
@@ -395,9 +432,10 @@
 }
 .wd-vplayer__ep {
   position: relative;
-  padding: 7px 4px;
+  padding: 7px 10px;
   border: 0;
-  border-radius: 5px;
+  /* 剧集文字按钮 → 胶囊 */
+  border-radius: var(--wd-radius-pill);
   background: rgba(255, 255, 255, .08);
   color: var(--wd-on-dark-2);
   font: inherit;

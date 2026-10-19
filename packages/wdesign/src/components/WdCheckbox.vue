@@ -11,10 +11,16 @@ const props = withDefaults(
     defaultValue?: boolean
     label?: string
     disabled?: boolean
+    /**
+     * 选中色。任意 CSS 颜色值。
+     * 不传时用 --wd-ink（深色）—— 见样式里关于「为什么不用主题红」的说明。
+     * hover / 禁用态由 color-mix 从它派生，会自动跟随。
+     */
+    color?: string
   }>(),
   /* ⚠️ 不给 modelValue 默认值：否则 `'modelValue' in props` 恒为 true，
      非受控模式失效。兜底值见 useControllable 的 fallback。 */
-  { label: '', disabled: false },
+  { label: '', disabled: false, color: '' },
 )
 
 const emit = defineEmits<{
@@ -45,6 +51,7 @@ function toggle() {
     :class="{ 'wd-checkbox--checked': value, 'wd-checkbox--disabled': disabled }"
     :aria-checked="value"
     :disabled="disabled"
+    :style="color ? { '--wd-check-color': color } : undefined"
     @click="toggle"
   >
     <span class="wd-checkbox__box">

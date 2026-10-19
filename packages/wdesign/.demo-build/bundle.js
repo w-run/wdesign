@@ -3002,7 +3002,8 @@ var WD_REAL_MODULE = (() => {
       modelValue: { type: Boolean, required: false },
       defaultValue: { type: Boolean, required: false },
       label: { type: String, required: false, default: "" },
-      disabled: { type: Boolean, required: false, default: false }
+      disabled: { type: Boolean, required: false, default: false },
+      color: { type: String, required: false, default: "" }
     },
     emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
@@ -3028,6 +3029,7 @@ var WD_REAL_MODULE = (() => {
           class: normalizeClass(["wd-checkbox", { "wd-checkbox--checked": unref(value), "wd-checkbox--disabled": __props.disabled }]),
           "aria-checked": unref(value),
           disabled: __props.disabled,
+          style: normalizeStyle(__props.color ? { "--wd-check-color": __props.color } : void 0),
           onClick: toggle
         }, [
           createElementVNode("span", _hoisted_216, [
@@ -3045,7 +3047,7 @@ var WD_REAL_MODULE = (() => {
               )
             ])
           ])) : createCommentVNode("v-if", true)
-        ], 10, _hoisted_119);
+        ], 14, _hoisted_119);
       };
     }
   });
@@ -13504,6 +13506,15 @@ var WD_REAL_MODULE = (() => {
         mountSource();
       });
       onMounted(() => {
+        const v = video.value;
+        if (v) {
+          v.setAttribute("playsinline", "");
+          v.setAttribute("webkit-playsinline", "");
+          v.setAttribute("x5-playsinline", "");
+          v.setAttribute("x5-video-player-type", "h5");
+          v.setAttribute("disablepictureinpicture", "");
+          v.playsInline = true;
+        }
         mountSource();
         if (props.autoplay) armLoadTimeout();
         document.addEventListener("fullscreenchange", onFsChange);
@@ -13540,6 +13551,10 @@ var WD_REAL_MODULE = (() => {
               muted: muted.value,
               autoplay: __props.autoplay,
               playsinline: "",
+              "webkit-playsinline": "",
+              "x5-playsinline": "",
+              disablepictureinpicture: "",
+              disableremoteplayback: "",
               preload: "metadata",
               onClick: togglePlay,
               onDblclick: toggleFullscreen,

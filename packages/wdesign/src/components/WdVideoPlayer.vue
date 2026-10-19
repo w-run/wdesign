@@ -466,6 +466,32 @@ watch(() => props.src, async () => {
 
 // 首次挂载：等 video 元素就绪后再决定用哪种方式加载
 onMounted(() => {
+  /*
+   * iOS 内联播放的三重保险。
+   *
+   * ⚠️ 为什么模板上写了 playsinline 还不够：
+   *   1. Vue 对 `webkit-playsinline` 这类带连字符的小写属性，
+   *      在某些编译路径下会被当成普通 attribute 丢掉（不会报错）。
+   *   2. iOS 的判定发生在**元素创建时**，若属性在挂载后才补上就无效 ——
+   *      所以必须趁刚 mounted、尚未 load 的时机用 setAttribute 强写。
+   *   3. iOS 10+ 需要 `playsinline`，iOS 9 需要 `webkit-playsinline`，
+   *      微信/QQ 内置浏览器（X5）需要 `x5-playsinline`。
+   *      三个都设才能覆盖主流容器。
+   *
+   * 另外：任一属性缺失时，iOS 会在**点击播放时**进入系统全屏播放器，
+   * 表现就是"视频弹出去、我们的控件消失"。
+   */
+  const v = video.value
+  if (v) {
+    v.setAttribute('playsinline', '')
+    v.setAttribute('webkit-playsinline', '')
+    v.setAttribute('x5-playsinline', '')
+    v.setAttribute('x5-video-player-type', 'h5')
+    v.setAttribute('disablepictureinpicture', '')
+    // 部分老 WebView 需要这个非标准属性才认内联
+    ;(v as unknown as Record<string, unknown>).playsInline = true
+  }
+
   mountSource()
   if (props.autoplay) armLoadTimeout()
   document.addEventListener('fullscreenchange', onFsChange)
@@ -499,6 +525,10 @@ onBeforeUnmount(() => {
       :muted="muted"
       :autoplay="autoplay"
       playsinline
+      webkit-playsinline
+      x5-playsinline
+      disablepictureinpicture
+      disableremoteplayback
       preload="metadata"
       @click="togglePlay"
       @dblclick="toggleFullscreen"

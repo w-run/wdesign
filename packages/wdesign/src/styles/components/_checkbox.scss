@@ -15,6 +15,21 @@
 .wd-checkbox:focus-visible { outline: none; }
 .wd-checkbox:focus-visible .wd-checkbox__box { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
 
+/*
+ * 选中色可配置。
+ *
+ * `--wd-check-color` 由组件通过 `color` prop 注入；
+ * 未指定时回落到 --wd-ink（深色）—— 见下方选中态说明。
+ * 派生色（hover / disabled）全部用 color-mix 从它算出来，
+ * 这样自定义任意颜色时，hover 与禁用态都能自动跟随，
+ * 不会像之前那样"选中是深色、hover 却变红"。
+ */
+.wd-checkbox {
+  --wd-check-color: var(--wd-ink);
+  --wd-check-hover: color-mix(in srgb, var(--wd-check-color) 82%, #000);
+  --wd-check-disabled: color-mix(in srgb, var(--wd-check-color) 22%, transparent);
+}
+
 .wd-checkbox__box {
   width: 24px;
   height: 24px;
@@ -40,11 +55,11 @@
  * 与 danger 语义混淆。深色块在黑白灰体系里已经足够明确。
  * 与 WdTree / WdTransfer 的自绘勾选保持一致。
  */
-.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-ink); color: #fff; }
+.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-check-color); color: #fff; }
 @media (hover: hover) {
-  .wd-checkbox--checked:hover .wd-checkbox__box { background: var(--wd-red-hover); }
+  .wd-checkbox--checked:hover .wd-checkbox__box { background: var(--wd-check-hover); }
 }
-.wd-checkbox--checked.is-hover .wd-checkbox__box { background: var(--wd-red-hover); }
+.wd-checkbox--checked.is-hover .wd-checkbox__box { background: var(--wd-check-hover); }
 
 .wd-checkbox__label { line-height: 1.4; }
 .wd-checkbox--disabled { cursor: default; color: var(--wd-ink-3); }
@@ -53,7 +68,14 @@
 }
 .wd-checkbox--disabled.is-hover .wd-checkbox__box { background: var(--wd-field); }
 
-.wd-checkbox--checked.wd-checkbox--disabled .wd-checkbox__box { background: var(--wd-tint-3); color: #fff; }
+/*
+ * 禁用态：用主色的低透明度版本，而不是固定的 tint-3。
+ * 换色时禁用态自动跟随，不会出现"自定义成蓝色、禁用却是粉色"。
+ */
+.wd-checkbox--checked.wd-checkbox--disabled .wd-checkbox__box {
+  background: var(--wd-check-disabled);
+  color: #fff;
+}
 /* ---- 微交互（精致版）---- */
 .wd-checkbox__box svg path {
   stroke-dasharray: 26;

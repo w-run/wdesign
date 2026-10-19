@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { unref as _unref, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, renderSlot as _renderSlot, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass } from "vue"
+import { unref as _unref, resolveComponent as _resolveComponent, createVNode as _createVNode, createElementVNode as _createElementVNode, renderSlot as _renderSlot, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle } from "vue"
 
 const _hoisted_1 = ["aria-checked", "disabled"]
 const _hoisted_2 = { class: "wd-checkbox__box" }
@@ -19,7 +19,8 @@ export default /*@__PURE__*/_defineComponent({
     modelValue: { type: Boolean, required: false },
     defaultValue: { type: Boolean, required: false },
     label: { type: String, required: false, default: '' },
-    disabled: { type: Boolean, required: false, default: false }
+    disabled: { type: Boolean, required: false, default: false },
+    color: { type: String, required: false, default: '' }
   },
   emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
@@ -53,6 +54,7 @@ return (_ctx: any,_cache: any) => {
     class: _normalizeClass(["wd-checkbox", { 'wd-checkbox--checked': _unref(value), 'wd-checkbox--disabled': __props.disabled }]),
     "aria-checked": _unref(value),
     disabled: __props.disabled,
+    style: _normalizeStyle(__props.color ? { '--wd-check-color': __props.color } : undefined),
     onClick: toggle
   }, [
     _createElementVNode("span", _hoisted_2, [
@@ -68,7 +70,7 @@ return (_ctx: any,_cache: any) => {
           ])
         ]))
       : _createCommentVNode("v-if", true)
-  ], 10 /* CLASS, PROPS */, _hoisted_1))
+  ], 14 /* CLASS, STYLE, PROPS */, _hoisted_1))
 }
 }
 
