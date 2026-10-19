@@ -644,6 +644,45 @@ onBeforeUnmount(() => {
       <span>{{ errMsg }}</span>
     </div>
 
+    <!--
+      选集抽屉：从播放器**右侧内部**滑出，不超出播放器边界。
+      ⚠️ 不用浮层弹出（那会溢出容器、被 overflow 裁切），
+      改成贴边侧栏 —— 集数多时内部竖向滚动，关闭按钮位置固定。
+      这是主流视频站（B 站 / YouTube / Netflix）的通行做法。
+    -->
+    <div
+      v-if="playlist && episodes.length"
+      class="wd-vplayer__drawer"
+      :class="{ 'is-open': panelOpen === 'playlist' }"
+      @click.stop
+    >
+      <div class="wd-vplayer__drawer-head">
+        <span>选集 · 共 {{ episodes.length }} 集</span>
+        <button
+          type="button"
+          class="wd-vplayer__drawer-close"
+          aria-label="收起选集"
+          @click.stop="togglePanel('playlist')"
+        >
+          <wd-icon name="close" :variant="iconStyle" :size="14" />
+        </button>
+      </div>
+      <div class="wd-vplayer__drawer-body">
+        <button
+          v-for="(ep, i) in episodes"
+          :key="ep.key"
+          type="button"
+          class="wd-vplayer__ep"
+          :class="{ 'is-on': ep.key === currentEpisode, 'is-off': ep.disabled }"
+          :disabled="ep.disabled"
+          @click="goEpisode(ep, i)"
+        >
+          <span>{{ ep.label }}</span>
+          <i v-if="ep.tag" class="wd-vplayer__ep-tag">{{ ep.tag }}</i>
+        </button>
+      </div>
+    </div>
+
     <!-- ===== 底部长条（全部控件） ===== -->
     <div class="wd-vplayer__bottom" :class="{ 'is-visible': barVisible }">
       <slot name="above-controls" />
@@ -754,35 +793,17 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <!-- 选集 -->
-        <div v-if="playlist && episodes.length" class="wd-vplayer__panel-wrap">
-          <button
-            type="button"
-            class="wd-vplayer__btn"
-            :aria-expanded="panelOpen === 'playlist'"
-            aria-label="选集"
-            @click.stop="togglePanel('playlist')"
-          >
-            <wd-icon name="playlist" :variant="iconStyle" :size="17" />
-          </button>
-          <div v-if="panelOpen === 'playlist'" class="wd-vplayer__panel wd-vplayer__panel--eps" @click.stop>
-            <div class="wd-vplayer__eps-head">选集 · 共 {{ episodes.length }} 集</div>
-            <div class="wd-vplayer__eps-grid">
-              <button
-                v-for="(ep, i) in episodes"
-                :key="ep.key"
-                type="button"
-                class="wd-vplayer__ep"
-                :class="{ 'is-on': ep.key === currentEpisode, 'is-off': ep.disabled }"
-                :disabled="ep.disabled"
-                @click="goEpisode(ep, i)"
-              >
-                <span>{{ ep.label }}</span>
-                <i v-if="ep.tag" class="wd-vplayer__ep-tag">{{ ep.tag }}</i>
-              </button>
-            </div>
-          </div>
-        </div>
+        <!-- 选集：只放按钮，抽屉在播放器层（见下方） -->
+        <button
+          v-if="playlist && episodes.length"
+          type="button"
+          class="wd-vplayer__btn"
+          :aria-expanded="panelOpen === 'playlist'"
+          aria-label="选集"
+          @click.stop="togglePanel('playlist')"
+        >
+          <wd-icon name="playlist" :variant="iconStyle" :size="17" />
+        </button>
 
         <button v-if="pip" type="button" class="wd-vplayer__btn" aria-label="画中画" @click.stop="togglePip">
           <wd-icon name="pip" :variant="iconStyle" :size="17" />

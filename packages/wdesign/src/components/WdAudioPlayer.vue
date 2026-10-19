@@ -39,6 +39,26 @@ const props = withDefaults(
     /** 波形（0-1 数组）；不给则用细进度线 */
     waveform?: number[]
     /**
+     * 进度在 card 形态下的呈现方式。
+     *
+     *  waveform — 波形条（默认，视觉重心强，适合"音乐卡片"）
+     *  bar      — 细进度条（更克制，适合"列表/信息卡"）
+     *  none     — 不显示（自己用 slot 接管）
+     *
+     * ⚠️ 只在 card 形态生效；bar / mini 形态空间小，固定用细线。
+     */
+    progressStyle?: 'waveform' | 'bar' | 'none'
+    /**
+     * 是否从音频文件**自动提取真实波形**（而不是用内置的示意波）。
+     *
+     * ⚠️ 需要解码音频，代价不小：
+     *    一首 4 分钟的歌解码后约 84MB PCM。
+     *    实现里只解码前 90 秒、只取左声道，但仍建议
+     *    **仅在 card 形态、且音频不大时开启**。
+     *    生产环境更推荐预先算好峰值数组，用 `waveform` 传进来。
+     */
+    autoWaveform?: boolean
+    /**
      * 反色卡片（深色底、文字反白）。
      * 用于需要强调的单曲展示，视觉上从页面中"跳出来"。
      */
@@ -61,6 +81,8 @@ const props = withDefaults(
     navigable: true,
     initialVolume: 1,
     waveform: () => [],
+    progressStyle: 'waveform',
+    autoWaveform: false,
     inverse: false,
     showTime: true,
     iconStyle: 'filled',
@@ -132,13 +154,33 @@ const hasCover = computed(() => !!props.cover)
 const WAVE_BARS_THICK = 30
 const WAVE_BARS_FINE = 60
 
+/** 没有真实波形数据时，生成一条稳定可复现的示意波（不用随机，避免每次重渲染跳动） */
+const waveCount = computed(() => (hasCover.value ? WAVE_BARS_FINE : WAVE_BARS_THICK))
+
+/** 自动提取的真实波形（autoWaveform 开启时填充） */
+const autoWave = ref<number[]>([])
+const waveLoading = ref(false)
+
+/*
+ * ⚠️ 这段 watch 必须在 waveCount 定义**之后**。
+ * `watch` 的回调是延迟执行的，但 `immediate: true` 会立刻跑一次，
+ * 若那时 waveCount 还在 TDZ 里就会抛 ReferenceError。
+ */
+watch(
+  () => [props.autoWaveform, props.src] as const,
+  async ([auto, src]) => {
+    if (!auto || !src) { autoWave.value = []; return }
+    waveLoading.value = true
+    autoWave.value = await extractWaveform(src, waveCount.value)
+    waveLoading.value = false
+  },
+  { immediate: true },
+)
+
 const bars = computed(() => {
   if (props.waveform.length) return props.waveform
   return null
 })
-
-/** 没有真实波形数据时，生成一条稳定可复现的示意波（不用随机，避免每次重渲染跳动） */
-const waveCount = computed(() => (hasCover.value ? WAVE_BARS_FINE : WAVE_BARS_THICK))
 
 const demoWave = computed(() =>
   Array.from({ length: waveCount.value }, (_, i) => {
@@ -154,7 +196,9 @@ const demoWave = computed(() =>
 )
 
 const waveBars = computed(() => {
+  // 优先级：外部传入 > 自动提取 > 内置示意波
   if (props.waveform.length) return props.waveform
+  if (autoWave.value.length) return autoWave.value
   return demoWave.value
 })
 
@@ -326,7 +370,9 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           无封面 → 波形升格为主体，高度显著加大，取代封面的位置
         这是两种参考设计的核心差异，由一个 hasCover 分支切换。
       -->
+      <!-- 波形风格（默认） -->
       <div
+        v-if="progressStyle === 'waveform'"
         class="wd-audio__wave"
         :class="hasCover ? 'wd-audio__wave--fine' : 'wd-audio__wave--hero'"
         role="slider"
@@ -345,6 +391,27 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
           :class="{ 'is-on': (i / waveBars.length) * 100 <= shownPct }"
           :style="{ height: '100%', transform: `scaleY(${h})` }"
         ></span>
+      </div>
+
+      <!--
+        细进度条风格。
+        比波形克制得多：波形是"可视化"，进度条只是"读取位置"。
+        信息密度高的卡片（列表内的音频、播客条目）用这个更合适。
+      -->
+      <div
+        v-else-if="progressStyle === 'bar'"
+        class="wd-audio__pbar"
+        role="slider"
+        tabindex="0"
+        aria-label="播放进度"
+        :aria-valuenow="Math.round(shownPct)"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        @click="seekTo"
+        @keydown="onScrubKey"
+      >
+        <span class="wd-audio__pbar-fill" :style="{ width: shownPct + '%' }"></span>
+        <span class="wd-audio__pbar-thumb" :style="{ left: shownPct + '%' }"></span>
       </div>
 
       <!--

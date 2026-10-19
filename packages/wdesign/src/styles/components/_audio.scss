@@ -1093,3 +1093,73 @@
 }
 
 .wd-audio--inverse .wd-audio__vol-num { color: var(--wd-on-dark-3); }
+
+/* =============================================================
+ *  细进度条风格（progressStyle="bar"）
+ *
+ *  与波形是两种视觉语言：
+ *    波形 = 内容可视化（让人"看见"音频的起伏）
+ *    进度条 = 纯粹的位置读取（信息密度高的场景更合适）
+ *  两条在同一个卡片里不并存，由 progressStyle 二选一。
+ * ============================================================= */
+.wd-audio__pbar {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  cursor: pointer;
+  overflow: visible;
+  outline: none;
+}
+
+.wd-audio__pbar:focus-visible {
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-audio__pbar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-audio-accent, var(--wd-ink));
+  transition: width .12s linear;
+}
+
+/*
+ * 拖拽把手：hover 时才出现。
+ * 常驻会让 6px 的细条看起来很脏（一个圆点挂在线上）。
+ */
+.wd-audio__pbar-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--wd-audio-accent, var(--wd-ink));
+  box-shadow: 0 0 0 3px var(--wd-card);
+  transform: translateY(-50%) scale(0);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+  pointer-events: none;
+}
+
+.wd-audio__pbar:hover .wd-audio__pbar-thumb,
+.wd-audio__pbar:focus-visible .wd-audio__pbar-thumb {
+  transform: translateY(-50%) scale(1);
+}
+
+/* 反色卡片：轨道和填充换成深底配色 */
+.wd-audio--inverse .wd-audio__pbar {
+  background: rgba(255, 255, 255, .18);
+}
+
+.wd-audio--inverse .wd-audio__pbar-fill,
+.wd-audio--inverse .wd-audio__pbar-thumb {
+  background: #fff;
+}
+
+.wd-audio--inverse .wd-audio__pbar-thumb {
+  box-shadow: 0 0 0 3px rgba(28, 28, 30, .9);
+}
