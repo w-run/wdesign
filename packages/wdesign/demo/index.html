@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.e98ad83b.css">
+<link rel="stylesheet" href="demo.eac10c4e.css">
 </head>
 <body>
   <!--
@@ -778,6 +778,69 @@
         <span class="demo-cap">点击后需确认才执行 · Esc 或点空白取消</span>
       </div>
       <span class="demo-cap" style="margin-top:10px" v-if="lastAction">最近操作：{{ lastAction }}</span>
+    </div>
+
+    <div class="demo-panel demo-panel--wide">
+      <h3>DATEPICKER 增强 · 区间 / 标记 / 时间</h3>
+      <span class="demo-cap">
+        日历支持「日期区间」与「同日多标记」；新增 TimePicker 与 DateTimePicker。
+      </span>
+
+      <div class="demo-row" style="gap:32px; margin-top:20px; align-items:flex-start; flex-wrap:wrap">
+        <!-- 区间选择 -->
+        <div class="demo-col" style="flex:0 0 auto; gap:8px">
+          <div class="demo-cap">区间模式 · 点两下选起止</div>
+          <div class="demo-stage demo-stage--tight">
+            <wd-calendar v-model="dateRange" mode="range" :clearable="false"></wd-calendar>
+          </div>
+          <span class="demo-cap">已选：{{ dateRange || '（未选）' }}</span>
+        </div>
+
+        <!-- 标记 -->
+        <div class="demo-col" style="flex:0 0 auto; gap:8px">
+          <div class="demo-cap">日期标记 · 同日多标记（生理期场景）</div>
+          <div class="demo-stage demo-stage--tight">
+            <wd-calendar v-model="markedDate" :marks="periodMarks" :clearable="false"></wd-calendar>
+          </div>
+          <div class="demo-row" style="gap:14px; margin-top:2px">
+            <span class="demo-cap" style="display:inline-flex; align-items:center; gap:5px">
+              <i style="width:6px;height:6px;border-radius:50%;background:#E05361;display:inline-block"></i>经期
+            </span>
+            <span class="demo-cap" style="display:inline-flex; align-items:center; gap:5px">
+              <i style="width:6px;height:6px;border-radius:50%;background:#0DBC79;display:inline-block"></i>服药
+            </span>
+            <span class="demo-cap" style="display:inline-flex; align-items:center; gap:5px">
+              <i style="width:6px;height:6px;border-radius:50%;background:#3B7FD4;display:inline-block"></i>体检
+            </span>
+          </div>
+        </div>
+
+        <!-- 时间 -->
+        <div class="demo-col" style="flex:0 0 auto; gap:8px">
+          <div class="demo-cap">TimePicker 时间选择</div>
+          <div class="demo-stage demo-stage--tight" style="display:flex; flex-direction:column; gap:14px">
+            <div class="demo-col" style="gap:4px">
+              <wd-time-picker v-model="time1" :minute-step="5"></wd-time-picker>
+              <span class="demo-cap">step 5 · {{ time1 || '（空）' }}</span>
+            </div>
+            <div class="demo-col" style="gap:4px">
+              <wd-time-picker v-model="time2" second></wd-time-picker>
+              <span class="demo-cap">含秒 · {{ time2 || '（空）' }}</span>
+            </div>
+            <div class="demo-col" style="gap:4px">
+              <wd-time-picker v-model="time3" min="09:00" max="18:00" :minute-step="15"></wd-time-picker>
+              <span class="demo-cap">09:00–18:00 · {{ time3 || '（空）' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DateTimePicker -->
+      <div class="demo-cap" style="margin-top:26px; margin-bottom:10px">DateTimePicker · 日历常驻 + 时间在侧</div>
+      <div class="demo-stage demo-stage--tight" style="display:inline-block">
+        <wd-date-time-picker v-model="dateTime1" :minute-step="15"></wd-date-time-picker>
+      </div>
+      <div class="demo-cap" style="margin-top:8px">已选：{{ dateTime1 || '（未选）' }}</div>
     </div>
 
     <div class="demo-panel demo-panel--wide">
@@ -2012,8 +2075,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.66c82982.js"></script>
-<script src="demo.89486619.js"></script>
+<script src="components.01dec4b2.js"></script>
+<script src="demo.0a95e6a7.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

@@ -23,6 +23,32 @@ const props = withDefaults(
     showToday?: boolean
     /** 尺寸 */
     size?: 'sm' | 'md'
+
+    /* ---------- 区间选择 ---------- */
+    /**
+     * 区间模式：'range' 时 modelValue 是 `start~end` 格式的字符串，
+     * 或者用 v-model:range 绑定 [start, end] 数组。
+     *
+     * 交互：第一次点击设起点，第二次点击设终点（若早于起点则自动交换）。
+     * 第三次点击重新开始。
+     */
+    mode?: 'single' | 'range'
+
+    /* ---------- 标记 ---------- */
+    /**
+     * 日期标记：同一天可挂多个标记（如生理期 + 服药提醒 + 体检）。
+     *
+     * 数据结构：
+     *   { '2026-10-12': [{ color: '#E05361', label: '经期' }] }
+     *
+     * 或者用简写 `marks: { '2026-10-12': '#E05361' }`（单色点）。
+     *
+     * 渲染：单元格底部最多显示 3 个点，超出显示 `+N`。
+     */
+    marks?: Record<string, MarkInput[] | string>
+
+    /** 标记点的直径（px） */
+    markSize?: number
   }>(),
   {
     modelValue: undefined,
@@ -34,6 +60,9 @@ const props = withDefaults(
     clearable: true,
     showToday: true,
     size: 'md',
+    mode: 'single',
+    marks: () => ({}),
+    markSize: 5,
   },
 )
 
@@ -42,6 +71,16 @@ const emit = defineEmits<{
   change: [value: string]
   'update:month': [value: string]
 }>()
+
+/** 单个标记 */
+export interface DateMark {
+  /** 圆点颜色 */
+  color?: string
+  /** 无障碍标签（视觉上不显示，只给读屏） */
+  label?: string
+}
+/** marks 允许简写：直接给颜色字符串 */
+export type MarkInput = DateMark | string
 
 /* ---------------- 日期工具 ---------------- */
 
@@ -117,6 +156,12 @@ interface Cell {
   isToday: boolean
   isSelected: boolean
   disabled: boolean
+  /** 区间模式：是否为起点 / 终点 / 区间内 */
+  isRangeStart: boolean
+  isRangeEnd: boolean
+  inRange: boolean
+  /** 该日的标记列表 */
+  marks: DateMark[]
 }
 
 const cells = computed(() => {
@@ -151,12 +196,20 @@ const cells = computed(() => {
 
   const makeCell = (d: Date, inMonth: boolean): Cell => {
     const key = toKey(d)
+    const isRange = props.mode === 'range'
+    const { start, end } = isRange ? rangeSelected.value : { start: '', end: '' }
+
     return {
       key,
       day: d.getDate(),
       inMonth,
       isToday: key === tk,
-      isSelected: key === sel,
+      // 区间模式下"选中"由起终点单独表达，避免整块高亮混淆
+      isSelected: isRange ? false : key === sel,
+      isRangeStart: isRange && key === start,
+      isRangeEnd: isRange && key === end,
+      inRange: isRange && !!start && !!end && key >= start && key <= end,
+      marks: marksOf(key),
       disabled:
         (!!minD && d < startOfDay(minD)) ||
         (!!maxD && d > startOfDay(maxD)),
@@ -184,6 +237,79 @@ const cells = computed(() => {
 
 const monthLabel = computed(() => `${view.value.y} 年 ${view.value.m + 1} 月`)
 
+/* ---------------- 区间选择 ---------------- */
+/**
+ * 区间选择的状态机。
+ *
+ * 只存"起点"，终点由 pending 表示：
+ *   空 → 点第一下 → 只有 start
+ *       → 点第二下 → 有 start + end，完成
+ *       → 点第三下 → 重置为新的 start
+ *
+ * ⚠️ 不把半选状态放进 modelValue：
+ *    那样每次点击都会 emit 一个残缺的区间，
+ *    父组件拿到的值会在"有起点没终点"和"完整区间"之间跳变。
+ */
+const rangeStart = ref('')
+const rangeEnd = ref('')
+
+const rangeSelected = computed(() => {
+  if (props.mode !== 'range') return { start: '', end: '' }
+  // 受控：从 modelValue 解析 `start~end`
+  const mv = props.modelValue || ''
+  if (mv.includes('~')) {
+    const [a, b] = mv.split('~')
+    return { start: a || '', end: b || '' }
+  }
+  // 非受控：用本地状态
+  return { start: rangeStart.value, end: rangeEnd.value }
+})
+
+/** 单元格是否处于区间内（含端点） */
+function inRange(key: string): boolean {
+  const { start, end } = rangeSelected.value
+  if (!start || !end) return false
+  return key >= start && key <= end
+}
+
+function pickRange(cell: Cell) {
+  const { start, end } = rangeSelected.value
+
+  // 已有完整区间 → 重新开始
+  if (start && end) {
+    rangeStart.value = cell.key
+    rangeEnd.value = ''
+    if (!isControlled.value) inner.value = cell.key
+    emit('update:modelValue', cell.key)
+    emit('change', cell.key)
+    return
+  }
+
+  // 只有起点（或没有）→ 设终点
+  const a = start || cell.key
+  const b = cell.key
+  // 自动交换：先点晚的再点早的，区间应该仍然正确
+  const [s1, s2] = a <= b ? [a, b] : [b, a]
+
+  rangeStart.value = s1
+  rangeEnd.value = s2
+  if (!isControlled.value) inner.value = `${s1}~${s2}`
+  emit('update:modelValue', `${s1}~${s2}`)
+  emit('change', `${s1}~${s2}`)
+}
+
+/* ---------------- 标记 ---------------- */
+/**
+ * 取某天的标记列表。
+ * 兼容两种输入：`{ color: '#f00' }[]` 或直接 `'#f00'`。
+ */
+function marksOf(key: string): DateMark[] {
+  const raw = props.marks[key]
+  if (!raw) return []
+  const arr = Array.isArray(raw) ? raw : [raw]
+  return arr.map((m) => (typeof m === 'string' ? { color: m } : m))
+}
+
 /* ---------------- 交互 ---------------- */
 function shiftMonth(delta: number) {
   let m = view.value.m + delta
@@ -196,6 +322,17 @@ function shiftMonth(delta: number) {
 
 function pick(cell: Cell) {
   if (cell.disabled) return
+
+  // 区间模式走单独的状态机
+  if (props.mode === 'range') {
+    pickRange(cell)
+    if (!cell.inMonth) {
+      const d = parseKey(cell.key)
+      if (d) view.value = { y: d.getFullYear(), m: d.getMonth() }
+    }
+    return
+  }
+
   if (!isControlled.value) inner.value = cell.key
   emit('update:modelValue', cell.key)
   emit('change', cell.key)
@@ -272,13 +409,37 @@ function onKeydown(e: KeyboardEvent) {
           'is-today': c.isToday,
           'is-selected': c.isSelected,
           'is-disabled': c.disabled,
+          'is-range-start': c.isRangeStart,
+          'is-range-end': c.isRangeEnd,
+          'in-range': c.inRange && !c.isRangeStart && !c.isRangeEnd,
+          'has-marks': c.marks.length > 0,
         }"
         role="gridcell"
-        :aria-selected="c.isSelected"
+        :aria-selected="c.isSelected || c.isRangeStart || c.isRangeEnd"
         :disabled="c.disabled"
         @click="pick(c)"
       >
         <span class="wd-calendar__day">{{ c.day }}</span>
+
+        <!--
+          标记点：同一天可挂多个（如生理期 + 服药提醒）。
+          最多显示 3 个，超出显示 +N —— 再多就失去辨识意义了。
+        -->
+        <span v-if="c.marks.length" class="wd-calendar__marks" aria-hidden="true">
+          <i
+            v-for="(m, i) in c.marks.slice(0, 3)"
+            :key="i"
+            class="wd-calendar__mark"
+            :style="{
+              background: m.color || 'var(--wd-red)',
+              width: markSize + 'px',
+              height: markSize + 'px',
+            }"
+          ></i>
+          <span v-if="c.marks.length > 3" class="wd-calendar__mark-more">
+            +{{ c.marks.length - 3 }}
+          </span>
+        </span>
       </button>
     </div>
 

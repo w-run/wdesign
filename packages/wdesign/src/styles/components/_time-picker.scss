@@ -1,0 +1,156 @@
+// =============================================================
+//  WDesign UI — TimePicker（时间选择器）
+//
+//  结构：触发器 + 三列滚动面板（时 / 分 / 秒）。
+//  每一列是独立滚动容器，选中项自动滚入视野。
+//
+//  ⚠️ 三列拆开而不是一个下拉列表：
+//     时间有"时-分-秒"的固有层级，三列并排能一眼看全，
+//     选中任意一列都不影响其他列的位置。
+// =============================================================
+
+.wd-time-picker {
+  position: relative;
+  display: inline-block;
+}
+
+/* ---------------- 触发器 ---------------- */
+.wd-time-picker__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 128px;
+  height: var(--wd-size-md);
+  padding: 0 14px 0 16px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: var(--wd-font-size-md);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+}
+
+.wd-time-picker--sm .wd-time-picker__trigger {
+  height: var(--wd-size-sm);
+  min-width: 112px;
+  font-size: 13px;
+}
+
+@media (hover: hover) {
+  .wd-time-picker__trigger:hover:not(:disabled) {
+    background: var(--wd-field-hover);
+  }
+}
+
+.wd-time-picker__trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+.wd-time-picker__icon {
+  color: var(--wd-ink-3);
+  flex: none;
+}
+
+.wd-time-picker.is-open .wd-time-picker__trigger {
+  background: var(--wd-card);
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+}
+
+.wd-time-picker.is-disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+/* ---------------- 面板 ---------------- */
+.wd-time-picker__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 8px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+.wd-time-picker__sep {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--wd-ink-3);
+  padding-bottom: 2px;
+}
+
+/* ---------------- 列 ---------------- */
+/*
+ * 每列固定高度 + 独立滚动。
+ * 高度取 7 项左右（32px × 7 ≈ 224px），
+ * 太少要频繁滚，太多面板会撑满屏幕。
+ */
+.wd-time-picker__col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 52px;
+  max-height: 224px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 2px;
+}
+
+.wd-time-picker__col::-webkit-scrollbar {
+  width: 4px;
+}
+
+.wd-time-picker__col::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-4);
+  border-radius: 999px;
+}
+
+.wd-time-picker__opt {
+  flex: none;
+  height: 30px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-time-picker__opt:hover:not(:disabled) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
+}
+
+/* 选中项：深色实心胶囊，与全站选中语言一致 */
+.wd-time-picker__opt.is-on {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font-weight: 800;
+}
+
+.wd-time-picker__opt.is-off {
+  color: var(--wd-ink-4);
+  cursor: not-allowed;
+}
+
+.wd-time-picker__opt:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}

@@ -237,6 +237,33 @@ const app = createApp({
     return {
       popSeg: '全部',
       danmakuOn: true,
+      dateRange: '',
+      markedDate: '',
+      time1: '09:30',
+      time2: '14:05:30',
+      time3: '',
+      dateTime1: '',
+      /* 生理期场景：一段连续日期 + 同日的其他标记 */
+      periodMarks: (function () {
+        var m = {}
+        var pad = function (n) { return n < 10 ? '0' + n : '' + n }
+        var base = new Date()
+        // 经期：本月 8~12 号（每格一个红点）
+        for (var d = 8; d <= 12; d++) {
+          var k = base.getFullYear() + '-' + pad(base.getMonth() + 1) + '-' + pad(d)
+          m[k] = [{ color: '#E05361', label: '经期' }]
+        }
+        // 服药：8~9 号额外加绿点（同日多标记）
+        for (var d2 = 8; d2 <= 9; d2++) {
+          var k2 = base.getFullYear() + '-' + pad(base.getMonth() + 1) + '-' + pad(d2)
+          m[k2] = m[k2].concat([{ color: '#0DBC79', label: '服药' }])
+        }
+        // 体检：15 号单独一个蓝点
+        var k3 = base.getFullYear() + '-' + pad(base.getMonth() + 1) + '-15'
+        m[k3] = [{ color: '#3B7FD4', label: '体检' }]
+        return m
+      })(),
+
       otp2: '',
       otp3: '',
       /*

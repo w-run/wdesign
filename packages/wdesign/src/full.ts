@@ -29,6 +29,7 @@ import WdCommand from './components/WdCommand.vue'
 import WdContainer from './components/WdContainer.vue'
 import WdDanmaku from './components/WdDanmaku.vue'
 import WdDatePicker from './components/WdDatePicker.vue'
+import WdDateTimePicker from './components/WdDateTimePicker.vue'
 import WdDescriptions from './components/WdDescriptions.vue'
 import WdDivider from './components/WdDivider.vue'
 import WdDrawer from './components/WdDrawer.vue'
@@ -74,6 +75,7 @@ import WdSwitch from './components/WdSwitch.vue'
 import WdTable from './components/WdTable.vue'
 import WdTabs from './components/WdTabs.vue'
 import WdTag from './components/WdTag.vue'
+import WdTimePicker from './components/WdTimePicker.vue'
 import WdTimeline from './components/WdTimeline.vue'
 import WdTooltip from './components/WdTooltip.vue'
 import WdTransfer from './components/WdTransfer.vue'
@@ -105,6 +107,7 @@ const components = [
   WdContainer,
   WdDanmaku,
   WdDatePicker,
+  WdDateTimePicker,
   WdDescriptions,
   WdDivider,
   WdDrawer,
@@ -150,6 +153,7 @@ const components = [
   WdTable,
   WdTabs,
   WdTag,
+  WdTimePicker,
   WdTimeline,
   WdTooltip,
   WdTransfer,
