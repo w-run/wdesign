@@ -130,8 +130,12 @@
 }
 .wd-btn--tint:not(:disabled).is-hover { background: var(--wd-field-hover); }
 
-/* active 比 hover 再深一档，仍在中性灰范围内 */
-.wd-btn--tint:not(:disabled):active { background: var(--wd-tint-3); }
+/*
+ * active 比 hover 再深一档，**仍在中性灰范围内**。
+ * ⚠️ 之前写的是 --wd-tint-3（淡红）—— 按下时整块变粉，
+ * 配合 danger 语义会让人误以为操作出错。次级按钮全程不该出现红色。
+ */
+.wd-btn--tint:not(:disabled):active { background: var(--wd-ink-5); }
 
 
 /* ---- 加载态 ---- */

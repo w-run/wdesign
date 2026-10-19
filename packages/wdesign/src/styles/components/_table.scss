@@ -63,25 +63,38 @@
 }
 
 /* ---- 勾选列 ---- */
+/*
+ * 表格勾选框 → 圆形 + 与 WdCheckbox 同一套视觉。
+ *
+ * ⚠️ 之前是 6px 圆角方块 + 选中时 --wd-red：
+ *   · 方形与全站「圆形优先」冲突
+ *   · 红色让"选中一行"读起来像危险操作
+ * 现在与 tree / transfer / checkbox 保持一致：
+ *   未选 = 空心描边，已选 = 深色实心 + 白勾。
+ */
 .wd-table__check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 50%;
   cursor: pointer;
-  background: var(--wd-field);
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
   color: #fff;
-  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+  transition: background var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-out);
 }
 @media (hover: hover) {
-  .wd-table__check:hover { background: var(--wd-field-hover); }
+  .wd-table__check:hover { box-shadow: inset 0 0 0 1.5px var(--wd-ink-3); }
 }
 .wd-table__check--on,
-.wd-table__check--part { background: var(--wd-red); }
+.wd-table__check--part {
+  background: var(--wd-ink);
+  box-shadow: none;
+}
 .wd-table__row--checked { background: var(--wd-tint-1); }
 @media (hover: hover) {
   .wd-table__row--checked:hover { background: var(--wd-field-hover); }

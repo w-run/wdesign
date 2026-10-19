@@ -1,5 +1,5 @@
 import { defineComponent as _defineComponent } from 'vue'
-import { unref as _unref, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, resolveComponent as _resolveComponent, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue"
+import { unref as _unref, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode, resolveComponent as _resolveComponent, createVNode as _createVNode, normalizeClass as _normalizeClass, normalizeStyle as _normalizeStyle } from "vue"
 
 const _hoisted_1 = ["aria-label", "aria-disabled"]
 const _hoisted_2 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"]
@@ -16,7 +16,11 @@ export default /*@__PURE__*/_defineComponent({
     defaultValue: { type: Number, required: false },
     count: { type: Number, required: false, default: 5 },
     disabled: { type: Boolean, required: false, default: false },
-    clearable: { type: Boolean, required: false, default: true }
+    clearable: { type: Boolean, required: false, default: true },
+    color: { type: String, required: false, default: 'var(--wd-red)' },
+    colorOff: { type: String, required: false, default: 'var(--wd-field-hover)' },
+    icon: { type: String, required: false, default: 'star' },
+    size: { type: Number, required: false, default: 22 }
   },
   emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
@@ -94,6 +98,10 @@ return (_ctx: any,_cache: any) => {
     ref_key: "root",
     ref: root,
     class: _normalizeClass(["wd-rate", { 'wd-rate--disabled': __props.disabled }]),
+    style: _normalizeStyle({
+      '--rate-color': __props.color,
+      '--rate-color-off': __props.colorOff,
+    }),
     role: "radiogroup",
     "aria-label": `评分，共 ${__props.count} 星，当前 ${_unref(value)} 星`,
     "aria-disabled": __props.disabled || undefined,
@@ -114,13 +122,15 @@ return (_ctx: any,_cache: any) => {
         onPointerleave: _cache[0] || (_cache[0] = ($event: any) => (onLeave($event))),
         onClick: ($event: any) => (pick(i - 1))
       }, [
+        _createCommentVNode("\n        用 filled 变体：实心星比描边星更有\"评分\"的分量感。\n        variant=\"filled\" 让 WdIcon 去找 filled 目录下的同名图标。\n      "),
         _createVNode(_component_wd_icon, {
-          name: "star",
-          size: 22
-        })
+          name: __props.icon,
+          variant: "filled",
+          size: __props.size
+        }, null, 8 /* PROPS */, ["name", "size"])
       ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_2))
     }), 128 /* KEYED_FRAGMENT */))
-  ], 42 /* CLASS, PROPS, NEED_HYDRATION */, _hoisted_1))
+  ], 46 /* CLASS, STYLE, PROPS, NEED_HYDRATION */, _hoisted_1))
 }
 }
 

@@ -175,7 +175,8 @@
   gap: 14px;
   padding: 9px 14px;
   border-top: 1px solid var(--wd-ink-5);
-  background: var(--wd-tint-1);
+  /* 提示条用中性浅灰，与面板主体区分即可 —— 不需要淡红 */
+  background: var(--wd-bg);
   font-size: 11.5px;
   color: var(--wd-ink-2);
 }

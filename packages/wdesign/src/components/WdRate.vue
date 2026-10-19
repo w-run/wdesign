@@ -13,9 +13,21 @@ const props = withDefaults(
     disabled?: boolean
     /** 允许再次点击同一颗星清空（默认开启） */
     clearable?: boolean
+    /** 选中颜色，任意 CSS 颜色值 */
+    color?: string
+    /** 未选中颜色 */
+    colorOff?: string
+    /** 图标名（需有 filled 变体），默认 star */
+    icon?: string
+    /** 图标尺寸 */
+    size?: number
   }>(),
   /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
-  { count: 5, disabled: false, clearable: true },
+  {
+    count: 5, disabled: false, clearable: true,
+    color: 'var(--wd-red)', colorOff: 'var(--wd-field-hover)',
+    icon: 'star', size: 22,
+  },
 )
 
 const emit = defineEmits<{
@@ -89,6 +101,10 @@ function onKeydown(e: KeyboardEvent) {
     ref="root"
     class="wd-rate"
     :class="{ 'wd-rate--disabled': disabled }"
+    :style="{
+      '--rate-color': color,
+      '--rate-color-off': colorOff,
+    }"
     role="radiogroup"
     :aria-label="`评分，共 ${count} 星，当前 ${value} 星`"
     :aria-disabled="disabled || undefined"
@@ -110,7 +126,11 @@ function onKeydown(e: KeyboardEvent) {
       @pointerleave="onLeave($event)"
       @click="pick(i - 1)"
     >
-      <wd-icon name="star" :size="22" />
+      <!--
+        用 filled 变体：实心星比描边星更有"评分"的分量感。
+        variant="filled" 让 WdIcon 去找 filled 目录下的同名图标。
+      -->
+      <wd-icon :name="icon" variant="filled" :size="size" />
     </button>
   </div>
 </template>

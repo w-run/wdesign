@@ -737,9 +737,13 @@ body {
   background: var(--wd-field-hover);
 }
 
-/* active 比 hover 再深一档，仍在中性灰范围内 */
+/*
+ * active 比 hover 再深一档，**仍在中性灰范围内**。
+ * ⚠️ 之前写的是 --wd-tint-3（淡红）—— 按下时整块变粉，
+ * 配合 danger 语义会让人误以为操作出错。次级按钮全程不该出现红色。
+ */
 .wd-btn--tint:not(:disabled):active {
-  background: var(--wd-tint-3);
+  background: var(--wd-ink-5);
 }
 
 /* ---- 加载态 ---- */
@@ -4662,29 +4666,40 @@ body {
 }
 
 /* ---- 勾选列 ---- */
+/*
+ * 表格勾选框 → 圆形 + 与 WdCheckbox 同一套视觉。
+ *
+ * ⚠️ 之前是 6px 圆角方块 + 选中时 --wd-red：
+ *   · 方形与全站「圆形优先」冲突
+ *   · 红色让"选中一行"读起来像危险操作
+ * 现在与 tree / transfer / checkbox 保持一致：
+ *   未选 = 空心描边，已选 = 深色实心 + 白勾。
+ */
 .wd-table__check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 50%;
   cursor: pointer;
-  background: var(--wd-field);
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
   color: #fff;
-  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+  transition: background var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-out);
 }
 
 @media (hover: hover) {
   .wd-table__check:hover {
-    background: var(--wd-field-hover);
+    box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
   }
 }
 .wd-table__check--on,
 .wd-table__check--part {
-  background: var(--wd-red);
+  background: var(--wd-ink);
+  box-shadow: none;
 }
 
 .wd-table__row--checked {
@@ -6001,7 +6016,8 @@ body {
   padding: 2px;
   cursor: pointer;
   display: inline-flex;
-  color: var(--wd-field-hover);
+  /* 未选中色可配，默认中性灰 */
+  color: var(--rate-color-off, var(--wd-field-hover));
   transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
 
@@ -6024,7 +6040,7 @@ body {
 }
 
 .wd-rate__item--on {
-  color: var(--wd-red-text);
+  color: var(--rate-color, var(--wd-red));
 }
 
 .wd-rate--disabled {
@@ -8540,7 +8556,8 @@ img.wd-theme-invert {
   gap: 14px;
   padding: 9px 14px;
   border-top: 1px solid var(--wd-ink-5);
-  background: var(--wd-tint-1);
+  /* 提示条用中性浅灰，与面板主体区分即可 —— 不需要淡红 */
+  background: var(--wd-bg);
   font-size: 11.5px;
   color: var(--wd-ink-2);
 }
@@ -11571,22 +11588,76 @@ img.wd-theme-invert {
 }
 
 /* ---------------- 焦点与禁用 ---------------- */
+/*
+ * 焦点环**只在 group 容器上画一次**。
+ *
+ * ⚠️ 曾经的重叠问题：
+ *   1. `.wd-input:focus-within` 给自己加了 4px 环
+ *   2. `.wd-group:focus-within` 又给容器加了一圈
+ *   3. 上面那条 `.wd-group__item:focus-within` 再叠一层 outline
+ *   三层环同色但半径不同，叠起来就是截图里那种"粗重、边缘不齐"的框。
+ *
+ * 规则：**组内所有子控件一律放弃自己的焦点环**，
+ * 由 group 统一表达"这里有焦点"。这也符合"一个整体只有一个边界"的语义。
+ */
+/**
+ * 焦点环 = 4px 外扩环 + **曲线呼吸**。
+ *
+ * 呼吸的目的：静态的环容易被忽略（尤其在密集表单里），
+ * 极缓慢的明暗往返能让人无意识感知"光标在这里"，
+ * 又不像闪烁那样干扰阅读。
+ *
+ * ===== 为什么用自定义贝塞尔而不是 ease-in-out =====
+ * ease-in-out 是「加速-减速」的对称曲线，观感上像**机械地淡入淡出**。
+ * 真实的呼吸是「吸气快、屏息、呼气慢」的非对称节奏，
+ * 所以用 cubic-bezier 拉出这种不对称：
+ *
+ *   cubic-bezier(.45, 0, .25, 1)
+ *     前段 .45,0    → 起步稳健、不突兀
+ *     后段 .25,1    → 收尾极缓，像"慢慢松开"
+ *
+ * 另外用 `alternate` 让动画往返播放（而不是在关键帧里写 0%/50%/100%），
+ * 这样一次吸气 / 一次呼气是两个独立周期，
+ * 比单个 0%→50%→100% 循环更接近真实呼吸的节奏感。
+ */
 .wd-group:focus-within {
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
+/* 环的宽窄也不变，只调制不透明度 —— 改尺寸会引起重排 */
+@media (prefers-reduced-motion: no-preference) {
+  .wd-group:focus-within {
+    animation: wd-group-focus-breathe 2.6s cubic-bezier(0.45, 0, 0.25, 1) infinite alternate;
+  }
+}
+@keyframes wd-group-focus-breathe {
+  from {
+    box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  }
+  to {
+    box-shadow: 0 0 0 4px var(--wd-focus-ring-faint);
+  }
+}
+/* 组内子控件统统缴械：不管它是 input、select、button 还是自定义控件 */
+.wd-group .wd-input:focus-within,
+.wd-group .wd-select:focus-within,
+.wd-group .wd-btn:focus-visible,
+.wd-group .wd-cascader:focus-within,
+.wd-group .wd-datepicker:focus-within,
+.wd-group .wd-colorpicker:focus-visible,
+.wd-group [class*=__item]:focus-within,
+.wd-group [class*=__item]:focus-visible {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
 /*
- * 焦点项提升层级：否则后一项的背景会盖住前一项的焦点环 ——
- * 这在「拼接」布局里是必然发生的。
+ * 焦点项提升层级：否则后一项的背景会盖住前一项的边。
+ * 注意这里**不画任何环**，只提层级 —— 环由 group 负责。
  */
 .wd-group__item:focus-within {
   position: relative;
   z-index: 2;
-}
-
-/* 子项内部的焦点样式压掉，避免双重焦点环 */
-.wd-group--seamless > .wd-group__item > .wd-input:focus-within {
-  box-shadow: none;
 }
 
 .wd-group--disabled {
@@ -11605,6 +11676,31 @@ img.wd-theme-invert {
   padding: 0 calc(var(--wd-group-pad) * 0.7);
   font-weight: 600;
   user-select: none;
+}
+
+/* =============================================================
+ *  选中态高亮：呼吸光环
+ *
+ *  ===== 为什么需要改 =====
+ *  拼接（joined）布局里相邻项的边缘是完全贴合的：
+ *  选中项如果画**外**描边或阴影，就会被后一项的背景盖掉一半，
+ *  看起来像"边框重叠"或"只画了三条边"。
+ *
+ *  ===== 做法 =====
+ *  1. 用 `inset` 内阴影而不是外描边 —— 内阴影永远在元素内部，
+ *     不会被相邻项遮挡
+ *  2. 叠在 :focus-within / .is-active 上，用极缓慢的透明度呼吸
+ *     （2.6s，往返），提示"这里是当前项"但不刺眼
+ *  3. 拼接布局加 2px 间隙：视觉上仍是连续的，但边缘不再互相压
+ * ============================================================= */
+/*
+ * 选中态（.is-active）：只在项**内部**画一层内阴影。
+ * 内阴影不会被相邻项遮挡，也不会和 group 的焦点环冲突 ——
+ * 它是"这一项被选中"，而 group 环是"焦点在这个组合里"，语义不同。
+ */
+.wd-group__item.is-active {
+  position: relative;
+  z-index: 1;
 }
 
 .wd-segmented-picker {

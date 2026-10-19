@@ -9904,7 +9904,11 @@ var WD_REAL_MODULE = (() => {
       defaultValue: { type: Number, required: false },
       count: { type: Number, required: false, default: 5 },
       disabled: { type: Boolean, required: false, default: false },
-      clearable: { type: Boolean, required: false, default: true }
+      clearable: { type: Boolean, required: false, default: true },
+      color: { type: String, required: false, default: "var(--wd-red)" },
+      colorOff: { type: String, required: false, default: "var(--wd-field-hover)" },
+      icon: { type: String, required: false, default: "star" },
+      size: { type: Number, required: false, default: 22 }
     },
     emits: ["update:modelValue", "change"],
     setup(__props, { emit: __emit }) {
@@ -9958,6 +9962,10 @@ var WD_REAL_MODULE = (() => {
           ref_key: "root",
           ref: root,
           class: normalizeClass(["wd-rate", { "wd-rate--disabled": __props.disabled }]),
+          style: normalizeStyle({
+            "--rate-color": __props.color,
+            "--rate-color-off": __props.colorOff
+          }),
           role: "radiogroup",
           "aria-label": `\u8BC4\u5206\uFF0C\u5171 ${__props.count} \u661F\uFF0C\u5F53\u524D ${unref(value)} \u661F`,
           "aria-disabled": __props.disabled || void 0,
@@ -9981,16 +9989,18 @@ var WD_REAL_MODULE = (() => {
                 onPointerleave: _cache[0] || (_cache[0] = ($event) => onLeave($event)),
                 onClick: ($event) => pick(i - 1)
               }, [
+                createCommentVNode('\n        \u7528 filled \u53D8\u4F53\uFF1A\u5B9E\u5FC3\u661F\u6BD4\u63CF\u8FB9\u661F\u66F4\u6709"\u8BC4\u5206"\u7684\u5206\u91CF\u611F\u3002\n        variant="filled" \u8BA9 WdIcon \u53BB\u627E filled \u76EE\u5F55\u4E0B\u7684\u540C\u540D\u56FE\u6807\u3002\n      '),
                 createVNode(_component_wd_icon, {
-                  name: "star",
-                  size: 22
-                })
+                  name: __props.icon,
+                  variant: "filled",
+                  size: __props.size
+                }, null, 8, ["name", "size"])
               ], 42, _hoisted_245);
             }),
             128
             /* KEYED_FRAGMENT */
           ))
-        ], 42, _hoisted_155);
+        ], 46, _hoisted_155);
       };
     }
   });
