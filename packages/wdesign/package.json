@@ -35,8 +35,9 @@
     "dev": "node tools/wd-dev.mjs",
     "check:fingerprint": "node tools/fingerprint.mjs check",
     "test": "node tools/smoke-test.mjs",
-    "test:all": "npm run check:tokens && npm run check:icons && npm run check:fingerprint && npm run test",
-    "append:icon-style": "node tools/append-icon-style.mjs"
+    "test:all": "npm run check:tokens && npm run check:icons && npm run check:fingerprint && npm run typecheck && npm run test",
+    "append:icon-style": "node tools/append-icon-style.mjs",
+    "typecheck": "node tools/typecheck.mjs"
   },
   "sideEffects": [
     "*.css",

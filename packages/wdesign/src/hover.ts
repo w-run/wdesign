@@ -127,8 +127,17 @@ export function addHover(root?: HTMLElement | Document, options: AddHoverOptions
 
   function onVisibility() { if (document.hidden) clearAll() }
 
-  const el = target as HTMLElement
-  const add = (el.addEventListener ? el : document)
+  /*
+   * target 可能是元素，也可能是 document（组件挂在 body 外的场景）。
+   * 两者都有 addEventListener，但类型不同 ——
+   * 用 `'addEventListener' in target` 这类判断毫无意义（永远为真）。
+   *
+   * ⚠️ 原代码写的是 `el.addEventListener ? el : document`：
+   *    el 已被断言为 HTMLElement，这个条件恒为 true，
+   *    那个三元表达式的 else 分支**永远不会走到**。
+   *    类型检查器直接指出来了（TS2774）。
+   */
+  const add: EventTarget = target
   add.addEventListener('pointerover', onPointerOver as EventListener, { passive: true })
   add.addEventListener('pointerout', onPointerOut as EventListener, { passive: true })
   add.addEventListener('pointerdown', onPointerDown as EventListener, { passive: true })

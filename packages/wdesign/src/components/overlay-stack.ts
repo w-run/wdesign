@@ -22,7 +22,19 @@ export interface OverlayEntry {
   /** 面板根节点（用于判断焦点归属） */
   panel: Ref<HTMLElement | null>
   /** 关闭回调（Esc 时调用） */
-  onEscape?: () => void
+  /**
+   * Esc 处理回调。
+   *
+   * 返回值语义：
+   *   void / undefined / true  → 已处理，阻止外层继续响应
+   *   false                    → 未处理，让外层接手
+   *
+   * ⚠️ 类型必须声明为 `void | boolean`，不能只写 `void`：
+   *    调用处有 `return false` 的分支（如"抽屉里的下拉先关自己"），
+   *    只声明 void 会让类型与实现矛盾 —— 而且 `void !== false` 恒为 true，
+   *    "未处理"的分支实际永远不会走到。
+   */
+  onEscape?: () => void | boolean
   /** 打开前焦点所在的元素，作为归还目标 */
   restoreTo: HTMLElement | null
 }
@@ -143,6 +155,7 @@ export function installOverlayKeyboard() {
       if (e.key === 'Escape') {
         // 只关最顶层，且阻止其它监听器重复处理
         const handled = top.onEscape?.()
+        // 只有**显式**返回 false 才算"未处理"，其余（含 void）都视为已处理
         if (handled !== false) {
           // 不给 stopPropagation：让外层知道有人处理了 Esc（例如关闭抽屉里的下拉）
           e.stopPropagation()
