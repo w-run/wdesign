@@ -142,7 +142,9 @@
   opacity: .6;
   transition: opacity var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
 }
-.wd-select__tag-x:hover { opacity: 1; background: var(--wd-tint-3); }
+@media (hover: hover) {
+  .wd-select__tag-x:hover { opacity: 1; background: var(--wd-tint-3); }
+}
 
 /* ---- 右侧动作区（清除 + 箭头） ---- */
 .wd-select__actions {
@@ -166,7 +168,9 @@
   color: var(--wd-card);
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-select__clear:hover { background: var(--wd-ink-2); }
+@media (hover: hover) {
+  .wd-select__clear:hover { background: var(--wd-ink-2); }
+}
 
 /* ---- 搜索框 ---- */
 .wd-select__search {

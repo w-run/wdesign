@@ -136,9 +136,16 @@
   border-radius: var(--wd-radius-pill);
 }
 
-.wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled) {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+/*
+ * ⚠️ hover 必须包在 @media (hover: hover) 里。
+ * 触屏设备没有真正的 hover：点完一项后 :hover 会一直"粘"在它上面，
+ * 看起来像选中态没消失。桌面端才启用悬停反馈。
+ */
+@media (hover: hover) {
+  .wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
 
 /*
@@ -220,9 +227,11 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-nav__collapse:hover {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-nav__collapse:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
 
 .wd-nav--vertical .wd-nav__list {
@@ -249,9 +258,11 @@
   padding: 0;
 }
 
-.wd-nav--vertical .wd-nav__item:hover:not(.is-disabled) {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-nav--vertical .wd-nav__item:hover:not(.is-disabled) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
 
 /*

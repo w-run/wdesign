@@ -44,6 +44,10 @@ INTERNAL = {
     # Timeline 节点列宽（在 _timeline.scss 的 item 上定义）
     '--tl-node-col',
     '--tl-color',
+    # 进度 / 滑轨主色：由 WdProgress / WdSlider 的 color prop 注入
+    '--wd-progress-color',
+    '--wd-slider-color',
+    '--wd-slider-track',
 }
 
 

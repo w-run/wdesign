@@ -401,7 +401,9 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.wd-vplayer__panel--rates button:hover { background: rgba(255, 255, 255, .12); }
+@media (hover: hover) {
+  .wd-vplayer__panel--rates button:hover { background: rgba(255, 255, 255, .12); }
+}
 .wd-vplayer__panel--rates button.is-on {
   color: var(--wd-red-on-dark);
   font-weight: 700;
@@ -445,7 +447,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.wd-vplayer__ep:hover { background: rgba(255, 255, 255, .18); }
+@media (hover: hover) {
+  .wd-vplayer__ep:hover { background: rgba(255, 255, 255, .18); }
+}
 .wd-vplayer__ep.is-on {
   background: var(--wd-red);
   color: #fff;

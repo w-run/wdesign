@@ -1034,10 +1034,11 @@ body {
   transition: background var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-input__clear:hover {
-  background: var(--wd-ink-2);
+@media (hover: hover) {
+  .wd-input__clear:hover {
+    background: var(--wd-ink-2);
+  }
 }
-
 /* ---- 字数统计 ---- */
 .wd-input__count {
   flex: none;
@@ -1146,7 +1147,12 @@ body {
   animation: wd-switch-ring-off var(--wd-dur-slow) var(--wd-ease-out);
 }
 
+/*
+ * 进度色可配置：`--wd-progress-color`，默认主题红。
+ * 派生色（深色卡内）也用 color-mix 从它算，换色时自动跟随。
+ */
 .wd-progress {
+  --wd-progress-color: var(--wd-red);
   height: 10px;
   width: 100%;
   border-radius: var(--wd-radius-pill);
@@ -1162,7 +1168,7 @@ body {
   display: block;
   height: 100%;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-red);
+  background: var(--wd-progress-color);
   transition: width 0.3s ease;
 }
 
@@ -1171,7 +1177,8 @@ body {
 }
 
 .wd-progress--on-dark .wd-progress__bar {
-  background: var(--wd-red-on-dark);
+  /* 深底上提亮，而不是换成固定的 --wd-red-on-dark —— 自定义色也要跟随 */
+  background: color-mix(in srgb, var(--wd-progress-color) 78%, #fff);
 }
 
 .wd-avatar {
@@ -1185,17 +1192,30 @@ body {
   font-size: 14px;
   font-weight: 700;
   user-select: none;
-  background: var(--wd-tint-3);
+  /*
+   * 默认底色用中性灰，不用淡红。
+   * 头像是最常见的占位元素，一屏可能十几个 ——
+   * 每个都带淡红底会让整页泛粉，与"主色只做点睛"冲突。
+   */
+  background: var(--wd-field);
   color: var(--wd-ink-2);
 }
 
+/*
+ * tone 变体：全部落在中性灰族里做明度区分。
+ *
+ * 不用彩虹色 —— 头像是最常见的元素，一屏十几个，
+ * 每个都带彩色底会让页面变成色板。
+ * 不用红色系 —— 红是主色，不该拿来做装饰分类。
+ * 用灰度层次区分即可，识别主要靠首字母/图片本身。
+ */
 .wd-avatar--tone-1 {
-  background: var(--wd-tint-4);
+  background: var(--wd-ink-5);
   color: var(--wd-ink-2);
 }
 
 .wd-avatar--tone-2 {
-  background: var(--wd-tint-3);
+  background: var(--wd-bg);
   color: var(--wd-ink-2);
 }
 
@@ -1287,8 +1307,9 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-1);
+  border-radius: 50%;
+  /* 图标容器用中性灰，不用淡红（列表里每个条目都有一枚） */
+  background: var(--wd-field);
   color: var(--wd-ink-2);
 }
 
@@ -1772,11 +1793,12 @@ body {
   transition: opacity var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
 }
 
-.wd-select__tag-x:hover {
-  opacity: 1;
-  background: var(--wd-tint-3);
+@media (hover: hover) {
+  .wd-select__tag-x:hover {
+    opacity: 1;
+    background: var(--wd-tint-3);
+  }
 }
-
 /* ---- 右侧动作区（清除 + 箭头） ---- */
 .wd-select__actions {
   flex: none;
@@ -1801,10 +1823,11 @@ body {
   transition: background var(--wd-dur-fast) ease;
 }
 
-.wd-select__clear:hover {
-  background: var(--wd-ink-2);
+@media (hover: hover) {
+  .wd-select__clear:hover {
+    background: var(--wd-ink-2);
+  }
 }
-
 /* ---- 搜索框 ---- */
 .wd-select__search {
   padding: 8px 10px 6px;
@@ -2372,10 +2395,11 @@ body {
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 
-.wd-colorpicker:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-colorpicker:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-colorpicker.is-open {
   background: var(--wd-card);
   box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
@@ -2391,10 +2415,11 @@ body {
   cursor: not-allowed;
 }
 
-.wd-colorpicker.is-disabled:hover {
-  background: var(--wd-field);
+@media (hover: hover) {
+  .wd-colorpicker.is-disabled:hover {
+    background: var(--wd-field);
+  }
 }
-
 /* ---------------- 色块 ---------------- */
 /*
  * 当前颜色用**圆形**指示器。
@@ -2709,10 +2734,11 @@ body {
   font-size: var(--wd-font-size-lg);
 }
 
-.wd-cascader:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-cascader:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-cascader.is-open {
   background: var(--wd-card);
   box-shadow: 0 0 0 2px var(--wd-focus-ring-soft);
@@ -2728,10 +2754,11 @@ body {
   cursor: not-allowed;
 }
 
-.wd-cascader.is-disabled:hover {
-  background: var(--wd-field);
+@media (hover: hover) {
+  .wd-cascader.is-disabled:hover {
+    background: var(--wd-field);
+  }
 }
-
 .wd-cascader__value {
   flex: 1;
   min-width: 0;
@@ -2845,10 +2872,11 @@ body {
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-cascader__option:hover {
-  background: var(--wd-tint-1);
+@media (hover: hover) {
+  .wd-cascader__option:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 /* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
 .wd-cascader__option.is-active {
   background: var(--wd-field-hover);
@@ -2866,10 +2894,11 @@ body {
   cursor: not-allowed;
 }
 
-.wd-cascader__option.is-disabled:hover {
-  background: transparent;
+@media (hover: hover) {
+  .wd-cascader__option.is-disabled:hover {
+    background: transparent;
+  }
 }
-
 .wd-cascader__label {
   flex: 1;
   min-width: 0;
@@ -3058,11 +3087,12 @@ body {
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-tabs__add:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-red-text);
+@media (hover: hover) {
+  .wd-tabs__add:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-red-text);
+  }
 }
-
 .wd-tabs__item--disabled {
   opacity: 0.45;
   cursor: default;
@@ -3678,10 +3708,11 @@ body {
   transition: background var(--wd-dur-fast) ease;
 }
 
-.wd-popover__default-trigger:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-popover__default-trigger:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-popover__panel {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
   z-index: 1200;
@@ -4005,11 +4036,17 @@ body {
   outline: none;
 }
 
-.wd-pagination__size select:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-pagination__size select:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-slider {
+  /*
+   * 滑块的可配色变量，默认主题红。
+   * 由 `color` prop 通过 inline style 覆盖。
+   */
+  --wd-slider-color: var(--wd-red);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -4024,7 +4061,16 @@ body {
   height: 8px;
   margin: 0;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-3);
+  /*
+   * 轨道保持中性灰，**主色只用在滑块上**。
+   *
+   * 试过用主色的低透明度做轨道，但自定义属性里的 color-mix 不会被求值
+   * （--x: color-mix(...) 里的 var() 不参与计算，拿到的是字面量），
+   * 浏览器会把整条 background 丢弃。
+   * 与其绕一大圈做"浓度可调"的轨道，不如简单点：
+   * 轨道是结构（灰），滑块是状态（主色）。
+   */
+  background: var(--wd-field);
   outline: none;
 }
 
@@ -4034,8 +4080,12 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: var(--wd-shadow-knob);
+  /*
+   * 滑块用主色：它是"当前值"的指示器，属于需要引导视线的位置标记。
+   * 边界用一圈白描边保证在白卡/灰底上都清晰。
+   */
+  background: var(--wd-slider-color);
+  box-shadow: 0 0 0 3px var(--wd-card), var(--wd-shadow-knob);
   cursor: grab;
   transition: transform var(--wd-dur-fast) ease;
 }
@@ -4100,19 +4150,31 @@ body {
   color: var(--wd-ink-2);
 }
 
+/*
+ * ===== 步骤条的三种状态 =====
+ *
+ *   wait    （未开始）  中性灰底 + 灰字
+ *   finish  （已完成）  **深色**实心 + 白勾
+ *   process （进行中）  **主题红** + 呼吸动画
+ *
+ * ⚠️ 之前的问题是：已完成节点是浅灰底，但连接线却是红色 ——
+ *    节点和线对不上，读起来像"线走完了、点还没走"，语义混乱。
+ *
+ * 现在统一为：
+ *   · 已走过的（finish + 它的连接线）→ 深色，表达"这段路已经走过"
+ *   · 正在走的（process）→ 主题红，唯一需要引导视线的位置
+ *   · 没走的（wait）→ 灰
+ *
+ * 红色只出现一次（当前步骤），符合"主色少而精"。
+ */
 .wd-steps__item--process .wd-steps__dot {
   background: var(--wd-red);
   color: #fff;
 }
 
-/*
- * 已完成步骤：中性灰底 + 勾选。
- * 红色只留给 --process（当前进行中）——那是唯一需要"看这里"的状态。
- * 全部步骤都染红时，"当前在哪一步"反而失去了视觉焦点。
- */
 .wd-steps__item--finish .wd-steps__dot {
-  background: var(--wd-field);
-  color: var(--wd-ink-2);
+  background: var(--wd-ink);
+  color: #fff;
 }
 
 .wd-steps__label {
@@ -4143,8 +4205,12 @@ body {
   margin: 13px 10px 0;
 }
 
+/*
+ * 已完成的连接线用**深色**，与 finish 节点同色。
+ * 之前是红色，导致"已完成步骤是灰点、连线却是红线"的割裂。
+ */
 .wd-steps__bar--done {
-  background: var(--wd-red);
+  background: var(--wd-ink);
 }
 
 /* ---- 微交互（精致版）---- */
@@ -4611,10 +4677,11 @@ body {
   transition: background var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-table__check:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-table__check:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-table__check--on,
 .wd-table__check--part {
   background: var(--wd-red);
@@ -4624,10 +4691,11 @@ body {
   background: var(--wd-tint-1);
 }
 
-.wd-table__row--checked:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-table__row--checked:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 /* ---- 加载遮罩 ---- */
 .wd-table-wrap {
   position: relative;
@@ -5042,11 +5110,17 @@ body {
   border-radius: var(--wd-radius-pill);
 }
 
-.wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled) {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+/*
+ * ⚠️ hover 必须包在 @media (hover: hover) 里。
+ * 触屏设备没有真正的 hover：点完一项后 :hover 会一直"粘"在它上面，
+ * 看起来像选中态没消失。桌面端才启用悬停反馈。
+ */
+@media (hover: hover) {
+  .wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
-
 /*
  * 横栏选中态：深色实心胶囊。
  *
@@ -5126,11 +5200,12 @@ body {
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-nav__collapse:hover {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-nav__collapse:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-nav--vertical .wd-nav__list {
   flex-direction: column;
   align-items: stretch;
@@ -5158,11 +5233,12 @@ body {
   padding: 0;
 }
 
-.wd-nav--vertical .wd-nav__item:hover:not(.is-disabled) {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-nav--vertical .wd-nav__item:hover:not(.is-disabled) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
-
 /*
  * 竖栏选中态：中性底浮起 + 深色文字。
  *
@@ -5428,7 +5504,7 @@ body {
 }
 
 .wd-transfer__item:hover {
-  background: var(--wd-tint-1);
+  background: var(--wd-field-hover);
 }
 
 .wd-transfer__item.is-checked {
@@ -7475,43 +7551,104 @@ body {
   padding-bottom: 0;
 }
 
-/* 节点固定在左上角，与标题首行对齐 */
+/*
+ * ===== 节点与竖线的对齐 =====
+ *
+ * 核心问题：节点宽度会变（无图标 10px / 有图标 22px），
+ * 竖线必须**永远穿过节点圆心**。
+ *
+ * 前两次的做法都失败：
+ *   a) 写死 `left: --tl-dot / 2`（5px）→ 有图标时节点 22px，线偏出 6px
+ *   b) 给节点加 margin 居中 + 线按列宽算 → 有图标的对了，
+ *      无图标的节点只有 10px，圆心仍在列宽的一半之前 → 又偏 6px
+ *
+ * 根因：竖线挂在 item 上，而 item 不知道节点实际多宽。
+ *
+ * 最终方案：**竖线挂在节点自己身上**。
+ *   节点是 --tl-node-col 宽的列里的内容，但线用 `left: 50%` 相对节点自身定位，
+ *   于是无论节点 10px 还是 22px，线永远在它的水平正中。
+ *
+ * 用 ::after 而不是 ::before：::before 已被"节点底色/描边"占用。
+ * 线从上往下延伸到 item 底部 —— 节点自身高度不含整条 item，
+ * 所以仍然需要 item 提供高度参照：用 `bottom: calc(-100% - ...)` 不行，
+ * 改成给 item 加一个从节点垂直位置到 item 底部的伪元素段。
+ *
+ * 实际实现：节点画"线下段"（从自身底部到 item 底），
+ * item 不再画线。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  --tl-node-col: calc(var(--tl-dot) + 12px);
+  position: relative;
+}
+
+/* 节点：列内左对齐，圆心 = 自身宽度的一半 */
 .wd-timeline--vertical .wd-timeline__node {
   flex: none;
-  /* 在 --tl-node-col 这一列里水平居中，竖线才能穿过圆心 */
-  margin-left: calc((var(--tl-node-col) - var(--tl-dot)) / 2);
+  /* 在 --tl-node-col 宽的列里水平居中：
+     左右各留 (列宽 - 节点宽) / 2 的空白。
+     节点的宽度是 min-width 撑出来的，这里用 auto margin 更稳。 */
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 3px;
 }
 
 /*
- * 连接线：从节点底部延伸到下一个节点顶部。
- * `top: calc(var(--tl-dot) + 4px)` 让线从圆点下缘开始；
- * `bottom: 0` 到本条 item 的底边（即下一个节点的位置）。
- */
-/*
- * 贯穿竖线。
+ * 竖线：挂在节点上，`left: 50%` 保证永远穿过圆心。
+ * 用 `top: 100%`（节点底边）到"item 底边"——
+ * 但节点不知道 item 有多高，所以改用固定高度 + item 的 padding-bottom 配合。
  *
- * ⚠️ 位置不能写死 `--tl-dot / 2`：
- *   节点在「有图标」时自动放大到 --tl-dot + 12px，
- *   而竖线仍按小圆点的一半算 → 线偏到节点左边缘之外（实测偏移 6px）。
- *
- * 做法：竖线挂在 item 上，用 item 的 padding-left 定义"节点列宽"，
- * 再让竖线定位到该列的中心。这样无论节点多大，线始终穿过圆心。
+ * ⚠️ 更稳的做法是让 item 画线并用 CSS 变量接收节点的实际圆心位置，
+ * 但那需要 JS 测量。这里退一步：**统一让节点占据整列宽度**，
+ * 这样圆心恒为 --tl-node-col / 2，item 画线就能对齐。
  */
-.wd-timeline--vertical .wd-timeline__item {
-  /* 节点列宽 = 节点最大可能宽度（含图标时） */
-  --tl-node-col: calc(var(--tl-dot) + 12px);
+.wd-timeline--vertical .wd-timeline__node {
+  /*
+   * 关键：用 flex-basis 固定列宽，而不是 width。
+   * 父级是 flex 容器，`flex: none` 的项按内容宽度收缩 ——
+   * 写 width 会被 content 覆盖（实测无图标时仍是 10px）。
+   * `flex: 0 0 var(--tl-node-col)` 才是硬约束。
+   *
+   * 节点因此恒占 22px 宽的列，圆心恒为 11px，
+   * 无论里面是小圆点还是图标徽章。
+   */
+  flex: 0 0 var(--tl-node-col);
+  width: var(--tl-node-col);
+  height: var(--tl-dot);
+  margin-left: 0;
+  /* 内圈内容在列内居中 */
+  justify-content: center;
+}
+
+/* 无图标时：小圆点本身仍只有 --tl-dot 大，视觉上不被拉宽 */
+.wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) {
+  background: transparent;
+  box-shadow: none;
+  height: var(--tl-dot);
+}
+
+.wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) .wd-timeline__dot {
+  width: var(--tl-dot);
+  height: var(--tl-dot);
+  border-radius: 50%;
+  background: var(--wd-ink-4);
+}
+
+/* 有图标时高度增加，但仍占满列宽 → 圆心不变 */
+.wd-timeline--vertical .wd-timeline__node:has(> .wd-icon) {
+  min-width: var(--tl-node-col);
+  min-height: var(--tl-node-col);
+  height: var(--tl-node-col);
 }
 
 .wd-timeline--vertical .wd-timeline__item::before {
   content: "";
   position: absolute;
-  /* 竖直方向：从节点底部延伸到本条结束（下一个节点） */
+  /* 与节点圆心同一个表达式 —— 两者都基于 --tl-node-col */
   left: calc(var(--tl-node-col) / 2 - 0.5px);
   top: calc(var(--tl-dot) + 12px);
   bottom: 0;
   width: 1px;
-  background: var(--wd-tint-3);
+  background: var(--wd-ink-5);
 }
 
 .wd-timeline--vertical.wd-timeline--line-none .wd-timeline__item::before {
@@ -8555,10 +8692,11 @@ img.wd-theme-invert {
   transition: background var(--wd-dur-fast) ease;
 }
 
-.wd-tree__node:hover {
-  background: var(--wd-tint-1);
+@media (hover: hover) {
+  .wd-tree__node:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-tree__node:focus-visible {
   box-shadow: inset 0 0 0 2px var(--wd-focus-ring);
 }
@@ -8569,10 +8707,11 @@ img.wd-theme-invert {
   font-weight: 600;
 }
 
-.wd-tree__node--selected:hover {
-  background: var(--wd-tint-3);
+@media (hover: hover) {
+  .wd-tree__node--selected:hover {
+    background: var(--wd-field);
+  }
 }
-
 /*
   禁用态用 .6 而非 .45：.45 在浅色底上对比度约 3:1，标签几乎读不出来。
   禁用需要「看起来不可用」，但不能牺牲可读性。
@@ -8603,10 +8742,11 @@ img.wd-theme-invert {
   visibility: hidden;
 }
 
-.wd-tree__arrow:hover {
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-tree__arrow:hover {
+    color: var(--wd-ink);
+  }
 }
-
 /* ---- 复选框 ---- */
 /*
  * 与 WdCheckbox / WdTransfer 统一为**圆形自绘**。
@@ -8885,10 +9025,11 @@ img.wd-theme-invert {
   color: var(--wd-on-dark-2);
 }
 
-.wd-audio--inverse .wd-audio__rate-menu--card button:hover {
-  background: rgba(255, 255, 255, 0.1);
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__rate-menu--card button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
 }
-
 .wd-audio--inverse .wd-audio__rate-menu--card button.is-on {
   background: var(--wd-dark-text);
   color: var(--wd-dark);
@@ -9250,11 +9391,12 @@ img.wd-theme-invert {
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-audio__ctl:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-audio__ctl:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-audio__ctl--text {
   font-variant-numeric: tabular-nums;
 }
@@ -9364,10 +9506,11 @@ img.wd-theme-invert {
   cursor: pointer;
 }
 
-.wd-audio__rate-menu--card button:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-audio__rate-menu--card button:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-audio__rate-menu--card button.is-on {
   background: var(--wd-ink);
   color: var(--wd-card);
@@ -9433,14 +9576,16 @@ img.wd-theme-invert {
   transition: background var(--wd-dur-fast) ease;
 }
 
-.wd-audio__cover:hover .wd-audio__cover-play {
-  background: rgba(0, 0, 0, 0.46);
+@media (hover: hover) {
+  .wd-audio__cover:hover .wd-audio__cover-play {
+    background: rgba(0, 0, 0, 0.46);
+  }
 }
-
-.wd-audio__cover:hover {
-  transform: scale(1.03);
+@media (hover: hover) {
+  .wd-audio__cover:hover {
+    transform: scale(1.03);
+  }
 }
-
 /* 无封面时占位图标（降低存在感，不要和播放键打架） */
 .wd-audio__cover-placeholder {
   /* 无封面时占位图标：作为背景纹理存在，但要比 .35 更可辨 */
@@ -9671,11 +9816,12 @@ img.wd-theme-invert {
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-audio__ibtn:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-audio__ibtn:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-audio__ibtn--text {
   font-variant-numeric: tabular-nums;
 }
@@ -9737,10 +9883,11 @@ img.wd-theme-invert {
   white-space: nowrap;
 }
 
-.wd-audio__rate-menu button:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-audio__rate-menu button:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-audio__rate-menu button.is-on {
   color: var(--wd-red-text);
   font-weight: 700;
@@ -9785,10 +9932,11 @@ img.wd-theme-invert {
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-audio__mini-play:hover {
-  transform: scale(1.06);
+@media (hover: hover) {
+  .wd-audio__mini-play:hover {
+    transform: scale(1.06);
+  }
 }
-
 .wd-audio__mini-main {
   flex: 1;
   min-width: 0;
@@ -10334,10 +10482,11 @@ img.wd-theme-invert {
   white-space: nowrap;
 }
 
-.wd-vplayer__panel--rates button:hover {
-  background: rgba(255, 255, 255, 0.12);
+@media (hover: hover) {
+  .wd-vplayer__panel--rates button:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
 }
-
 .wd-vplayer__panel--rates button.is-on {
   color: var(--wd-red-on-dark);
   font-weight: 700;
@@ -10385,10 +10534,11 @@ img.wd-theme-invert {
   white-space: nowrap;
 }
 
-.wd-vplayer__ep:hover {
-  background: rgba(255, 255, 255, 0.18);
+@media (hover: hover) {
+  .wd-vplayer__ep:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
 }
-
 .wd-vplayer__ep.is-on {
   background: var(--wd-red);
   color: #fff;

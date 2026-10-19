@@ -13,9 +13,11 @@ const props = withDefaults(
     max?: number
     step?: number
     showValue?: boolean
+    /** 滑轨与滑块颜色，默认主题红。任意 CSS 颜色值。 */
+    color?: string
   }>(),
   /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
-  { min: 0, max: 100, step: 1, showValue: true },
+  { min: 0, max: 100, step: 1, showValue: true, color: '' },
 )
 
 const emit = defineEmits<{
@@ -57,8 +59,19 @@ const percent = computed(() => {
   return Math.max(0, Math.min(100, ((current.value - props.min) / span) * 100))
 })
 
+/*
+ * 轨道用内联渐变画「已填充 / 未填充」两段。
+ *
+ * ⚠️ 这里不能写死 --wd-red：
+ *   组件支持 `color` prop 自定义主色，渐变必须跟着变。
+ *   用 var(--wd-slider-color) 即可（它由 color prop 注入，
+ *   未传时回落到 --wd-red）。
+ *
+ * ⚠️ 未填充段也不要再用 --wd-tint-2（淡红）——
+ *   那是红色族，换色后会和已填充段冲突。改用中性 --wd-field。
+ */
 const trackStyle = computed(() => ({
-  background: `linear-gradient(to right, var(--wd-red) 0%, var(--wd-red) ${percent.value}%, var(--wd-tint-2) ${percent.value}%, var(--wd-tint-2) 100%)`,
+  background: `linear-gradient(to right, var(--wd-slider-color) 0%, var(--wd-slider-color) ${percent.value}%, var(--wd-field) ${percent.value}%, var(--wd-field) 100%)`,
 }))
 
 function onInput(e: Event) {
@@ -77,7 +90,10 @@ watch(
 </script>
 
 <template>
-  <div class="wd-slider">
+  <div
+    class="wd-slider"
+    :style="color ? { '--wd-slider-color': color } : undefined"
+  >
     <input
       ref="el"
       type="range"

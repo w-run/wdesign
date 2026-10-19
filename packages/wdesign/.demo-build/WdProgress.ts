@@ -12,7 +12,8 @@ export default /*@__PURE__*/_defineComponent({
   props: {
     value: { type: Number, required: false, default: 0 },
     thin: { type: Boolean, required: false, default: false },
-    onDark: { type: Boolean, required: false, default: false }
+    onDark: { type: Boolean, required: false, default: false },
+    color: { type: String, required: false, default: '' }
   },
   setup(__props: any) {
 
@@ -33,13 +34,14 @@ return (_ctx: any,_cache: any) => {
     role: "progressbar",
     "aria-valuenow": percent.value,
     "aria-valuemin": "0",
-    "aria-valuemax": "100"
+    "aria-valuemax": "100",
+    style: _normalizeStyle(__props.color ? { '--wd-progress-color': __props.color } : undefined)
   }, [
     _createElementVNode("span", {
       class: "wd-progress__bar",
       style: _normalizeStyle({ width: percent.value + '%' })
     }, null, 4 /* STYLE */)
-  ], 10 /* CLASS, PROPS */, _hoisted_1))
+  ], 14 /* CLASS, STYLE, PROPS */, _hoisted_1))
 }
 }
 

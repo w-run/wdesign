@@ -28,8 +28,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-1);
+  border-radius: 50%;
+  /* 图标容器用中性灰，不用淡红（列表里每个条目都有一枚） */
+  background: var(--wd-field);
   color: var(--wd-ink-2);
 }
 .wd-list-item__icon svg {

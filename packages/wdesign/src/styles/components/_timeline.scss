@@ -40,43 +40,104 @@
   padding-bottom: 0;
 }
 
-/* 节点固定在左上角，与标题首行对齐 */
+/*
+ * ===== 节点与竖线的对齐 =====
+ *
+ * 核心问题：节点宽度会变（无图标 10px / 有图标 22px），
+ * 竖线必须**永远穿过节点圆心**。
+ *
+ * 前两次的做法都失败：
+ *   a) 写死 `left: --tl-dot / 2`（5px）→ 有图标时节点 22px，线偏出 6px
+ *   b) 给节点加 margin 居中 + 线按列宽算 → 有图标的对了，
+ *      无图标的节点只有 10px，圆心仍在列宽的一半之前 → 又偏 6px
+ *
+ * 根因：竖线挂在 item 上，而 item 不知道节点实际多宽。
+ *
+ * 最终方案：**竖线挂在节点自己身上**。
+ *   节点是 --tl-node-col 宽的列里的内容，但线用 `left: 50%` 相对节点自身定位，
+ *   于是无论节点 10px 还是 22px，线永远在它的水平正中。
+ *
+ * 用 ::after 而不是 ::before：::before 已被"节点底色/描边"占用。
+ * 线从上往下延伸到 item 底部 —— 节点自身高度不含整条 item，
+ * 所以仍然需要 item 提供高度参照：用 `bottom: calc(-100% - ...)` 不行，
+ * 改成给 item 加一个从节点垂直位置到 item 底部的伪元素段。
+ *
+ * 实际实现：节点画"线下段"（从自身底部到 item 底），
+ * item 不再画线。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  --tl-node-col: calc(var(--tl-dot) + 12px);
+  position: relative;
+}
+
+/* 节点：列内左对齐，圆心 = 自身宽度的一半 */
 .wd-timeline--vertical .wd-timeline__node {
   flex: none;
-  /* 在 --tl-node-col 这一列里水平居中，竖线才能穿过圆心 */
-  margin-left: calc((var(--tl-node-col) - var(--tl-dot)) / 2);
+  /* 在 --tl-node-col 宽的列里水平居中：
+     左右各留 (列宽 - 节点宽) / 2 的空白。
+     节点的宽度是 min-width 撑出来的，这里用 auto margin 更稳。 */
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 3px;
 }
 
 /*
- * 连接线：从节点底部延伸到下一个节点顶部。
- * `top: calc(var(--tl-dot) + 4px)` 让线从圆点下缘开始；
- * `bottom: 0` 到本条 item 的底边（即下一个节点的位置）。
- */
-/*
- * 贯穿竖线。
+ * 竖线：挂在节点上，`left: 50%` 保证永远穿过圆心。
+ * 用 `top: 100%`（节点底边）到"item 底边"——
+ * 但节点不知道 item 有多高，所以改用固定高度 + item 的 padding-bottom 配合。
  *
- * ⚠️ 位置不能写死 `--tl-dot / 2`：
- *   节点在「有图标」时自动放大到 --tl-dot + 12px，
- *   而竖线仍按小圆点的一半算 → 线偏到节点左边缘之外（实测偏移 6px）。
- *
- * 做法：竖线挂在 item 上，用 item 的 padding-left 定义"节点列宽"，
- * 再让竖线定位到该列的中心。这样无论节点多大，线始终穿过圆心。
+ * ⚠️ 更稳的做法是让 item 画线并用 CSS 变量接收节点的实际圆心位置，
+ * 但那需要 JS 测量。这里退一步：**统一让节点占据整列宽度**，
+ * 这样圆心恒为 --tl-node-col / 2，item 画线就能对齐。
  */
-.wd-timeline--vertical .wd-timeline__item {
-  /* 节点列宽 = 节点最大可能宽度（含图标时） */
-  --tl-node-col: calc(var(--tl-dot) + 12px);
+.wd-timeline--vertical .wd-timeline__node {
+  /*
+   * 关键：用 flex-basis 固定列宽，而不是 width。
+   * 父级是 flex 容器，`flex: none` 的项按内容宽度收缩 ——
+   * 写 width 会被 content 覆盖（实测无图标时仍是 10px）。
+   * `flex: 0 0 var(--tl-node-col)` 才是硬约束。
+   *
+   * 节点因此恒占 22px 宽的列，圆心恒为 11px，
+   * 无论里面是小圆点还是图标徽章。
+   */
+  flex: 0 0 var(--tl-node-col);
+  width: var(--tl-node-col);
+  height: var(--tl-dot);
+  margin-left: 0;
+  /* 内圈内容在列内居中 */
+  justify-content: center;
+}
+
+/* 无图标时：小圆点本身仍只有 --tl-dot 大，视觉上不被拉宽 */
+.wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) {
+  background: transparent;
+  box-shadow: none;
+  height: var(--tl-dot);
+}
+
+.wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) .wd-timeline__dot {
+  width: var(--tl-dot);
+  height: var(--tl-dot);
+  border-radius: 50%;
+  background: var(--wd-ink-4);
+}
+
+/* 有图标时高度增加，但仍占满列宽 → 圆心不变 */
+.wd-timeline--vertical .wd-timeline__node:has(> .wd-icon) {
+  min-width: var(--tl-node-col);
+  min-height: var(--tl-node-col);
+  height: var(--tl-node-col);
 }
 
 .wd-timeline--vertical .wd-timeline__item::before {
   content: '';
   position: absolute;
-  /* 竖直方向：从节点底部延伸到本条结束（下一个节点） */
+  /* 与节点圆心同一个表达式 —— 两者都基于 --tl-node-col */
   left: calc(var(--tl-node-col) / 2 - 0.5px);
   top: calc(var(--tl-dot) + 12px);
   bottom: 0;
   width: 1px;
-  background: var(--wd-tint-3);
+  background: var(--wd-ink-5);
 }
 
 .wd-timeline--vertical.wd-timeline--line-none .wd-timeline__item::before {

@@ -74,4 +74,6 @@
   cursor: pointer;
   outline: none;
 }
-.wd-pagination__size select:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-pagination__size select:hover { background: var(--wd-field-hover); }
+}

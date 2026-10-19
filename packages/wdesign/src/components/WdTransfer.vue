@@ -242,17 +242,17 @@ const canMoveLeft = computed(() => rightChecked.value.size > 0 && !props.disable
           v-for="d in rightList"
           :key="d.key"
           class="wd-transfer__item"
-          :class="{ 'is-checked': true, 'is-disabled': d.disabled }"
+          :class="{ 'is-checked': rightChecked.has(d.key), 'is-disabled': d.disabled }"
           @click="!d.disabled && !disabled && toggleCheck('right', d.key)"
         >
           <span
             class="wd-transfer__tick"
-            :class="{ 'is-on': true }"
+            :class="{ 'is-on': rightChecked.has(d.key) }"
             role="checkbox"
-            :aria-checked="true"
+            :aria-checked="rightChecked.has(d.key)"
             :aria-disabled="d.disabled || disabled"
           >
-            <wd-icon name="check" :size="10" />
+            <wd-icon v-if="rightChecked.has(d.key)" name="check" :size="10" />
           </span>
           <span class="wd-transfer__label">
             {{ d.label }}

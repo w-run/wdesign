@@ -20,7 +20,9 @@
   transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
 }
 
-.wd-colorpicker:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-colorpicker:hover { background: var(--wd-field-hover); }
+}
 
 .wd-colorpicker.is-open {
   background: var(--wd-card);
@@ -36,7 +38,9 @@
   opacity: .5;
   cursor: not-allowed;
 }
-.wd-colorpicker.is-disabled:hover { background: var(--wd-field); }
+@media (hover: hover) {
+  .wd-colorpicker.is-disabled:hover { background: var(--wd-field); }
+}
 
 /* ---------------- 色块 ---------------- */
 /*

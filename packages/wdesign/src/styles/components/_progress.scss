@@ -1,5 +1,10 @@
 // WDesign UI — Progress
+/*
+ * 进度色可配置：`--wd-progress-color`，默认主题红。
+ * 派生色（深色卡内）也用 color-mix 从它算，换色时自动跟随。
+ */
 .wd-progress {
+  --wd-progress-color: var(--wd-red);
   height: 10px;
   width: 100%;
   border-radius: var(--wd-radius-pill);
@@ -12,10 +17,13 @@
   display: block;
   height: 100%;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-red);
+  background: var(--wd-progress-color);
   transition: width .3s ease;
 }
 
 // 深色卡内使用
 .wd-progress--on-dark { background: var(--wd-dark-track); }
-.wd-progress--on-dark .wd-progress__bar { background: var(--wd-red-on-dark); }
+.wd-progress--on-dark .wd-progress__bar {
+  /* 深底上提亮，而不是换成固定的 --wd-red-on-dark —— 自定义色也要跟随 */
+  background: color-mix(in srgb, var(--wd-progress-color) 78%, #fff);
+}

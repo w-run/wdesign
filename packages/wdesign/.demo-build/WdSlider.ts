@@ -1,9 +1,8 @@
 import { defineComponent as _defineComponent } from 'vue'
 import { normalizeStyle as _normalizeStyle, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode } from "vue"
 
-const _hoisted_1 = { class: "wd-slider" }
-const _hoisted_2 = ["min", "max", "step", "value"]
-const _hoisted_3 = {
+const _hoisted_1 = ["min", "max", "step", "value"]
+const _hoisted_2 = {
   key: 0,
   class: "wd-slider__value"
 }
@@ -21,7 +20,8 @@ export default /*@__PURE__*/_defineComponent({
     min: { type: Number, required: false, default: 0 },
     max: { type: Number, required: false, default: 100 },
     step: { type: Number, required: false, default: 1 },
-    showValue: { type: Boolean, required: false, default: true }
+    showValue: { type: Boolean, required: false, default: true },
+    color: { type: String, required: false, default: '' }
   },
   emits: ["update:modelValue", "change"],
   setup(__props: any, { emit: __emit }) {
@@ -66,8 +66,19 @@ const percent = computed(() => {
   return Math.max(0, Math.min(100, ((current.value - props.min) / span) * 100))
 })
 
+/*
+ * 轨道用内联渐变画「已填充 / 未填充」两段。
+ *
+ * ⚠️ 这里不能写死 --wd-red：
+ *   组件支持 `color` prop 自定义主色，渐变必须跟着变。
+ *   用 var(--wd-slider-color) 即可（它由 color prop 注入，
+ *   未传时回落到 --wd-red）。
+ *
+ * ⚠️ 未填充段也不要再用 --wd-tint-2（淡红）——
+ *   那是红色族，换色后会和已填充段冲突。改用中性 --wd-field。
+ */
 const trackStyle = computed(() => ({
-  background: `linear-gradient(to right, var(--wd-red) 0%, var(--wd-red) ${percent.value}%, var(--wd-tint-2) ${percent.value}%, var(--wd-tint-2) 100%)`,
+  background: `linear-gradient(to right, var(--wd-slider-color) 0%, var(--wd-slider-color) ${percent.value}%, var(--wd-field) ${percent.value}%, var(--wd-field) 100%)`,
 }))
 
 function onInput(e: Event) {
@@ -85,7 +96,10 @@ watch(
 )
 
 return (_ctx: any,_cache: any) => {
-  return (_openBlock(), _createElementBlock("div", _hoisted_1, [
+  return (_openBlock(), _createElementBlock("div", {
+    class: "wd-slider",
+    style: _normalizeStyle(__props.color ? { '--wd-slider-color': __props.color } : undefined)
+  }, [
     _createElementVNode("input", {
       ref_key: "el",
       ref: el,
@@ -96,11 +110,11 @@ return (_ctx: any,_cache: any) => {
       value: current.value,
       style: _normalizeStyle(trackStyle.value),
       onInput: onInput
-    }, null, 44 /* STYLE, PROPS, NEED_HYDRATION */, _hoisted_2),
+    }, null, 44 /* STYLE, PROPS, NEED_HYDRATION */, _hoisted_1),
     (__props.showValue)
-      ? (_openBlock(), _createElementBlock("span", _hoisted_3, _toDisplayString(current.value), 1 /* TEXT */))
+      ? (_openBlock(), _createElementBlock("span", _hoisted_2, _toDisplayString(current.value), 1 /* TEXT */))
       : _createCommentVNode("v-if", true)
-  ]))
+  ], 4 /* STYLE */))
 }
 }
 

@@ -38,7 +38,9 @@
 .wd-cascader--md { height: var(--wd-size-md); }
 .wd-cascader--lg { height: var(--wd-size-lg); font-size: var(--wd-font-size-lg); }
 
-.wd-cascader:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-cascader:hover { background: var(--wd-field-hover); }
+}
 
 .wd-cascader.is-open {
   background: var(--wd-card);
@@ -54,7 +56,9 @@
   opacity: .55;
   cursor: not-allowed;
 }
-.wd-cascader.is-disabled:hover { background: var(--wd-field); }
+@media (hover: hover) {
+  .wd-cascader.is-disabled:hover { background: var(--wd-field); }
+}
 
 .wd-cascader__value {
   flex: 1;
@@ -160,7 +164,9 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-cascader__option:hover { background: var(--wd-tint-1); }
+@media (hover: hover) {
+  .wd-cascader__option:hover { background: var(--wd-field-hover); }
+}
 
 /* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
 .wd-cascader__option.is-active {
@@ -178,7 +184,9 @@
   color: var(--wd-ink-3);
   cursor: not-allowed;
 }
-.wd-cascader__option.is-disabled:hover { background: transparent; }
+@media (hover: hover) {
+  .wd-cascader__option.is-disabled:hover { background: transparent; }
+}
 
 .wd-cascader__label {
   flex: 1;

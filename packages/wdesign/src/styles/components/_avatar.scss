@@ -10,11 +10,24 @@
   font-size: 14px;
   font-weight: 700;
   user-select: none;
-  background: var(--wd-tint-3);
+  /*
+   * 默认底色用中性灰，不用淡红。
+   * 头像是最常见的占位元素，一屏可能十几个 ——
+   * 每个都带淡红底会让整页泛粉，与"主色只做点睛"冲突。
+   */
+  background: var(--wd-field);
   color: var(--wd-ink-2);
 }
-.wd-avatar--tone-1 { background: var(--wd-tint-4); color: var(--wd-ink-2); }
-.wd-avatar--tone-2 { background: var(--wd-tint-3); color: var(--wd-ink-2); }
+/*
+ * tone 变体：全部落在中性灰族里做明度区分。
+ *
+ * 不用彩虹色 —— 头像是最常见的元素，一屏十几个，
+ * 每个都带彩色底会让页面变成色板。
+ * 不用红色系 —— 红是主色，不该拿来做装饰分类。
+ * 用灰度层次区分即可，识别主要靠首字母/图片本身。
+ */
+.wd-avatar--tone-1 { background: var(--wd-ink-5); color: var(--wd-ink-2); }
+.wd-avatar--tone-2 { background: var(--wd-bg); color: var(--wd-ink-2); }
 .wd-avatar--tone-3 { background: var(--wd-field); color: var(--wd-ink-2); }
 .wd-avatar--dark { background: var(--wd-dark); color: var(--wd-dark-text); }
 .wd-avatar--sm { width: 34px; height: 34px; font-size: 12.5px; }

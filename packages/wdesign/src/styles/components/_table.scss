@@ -77,11 +77,15 @@
   color: #fff;
   transition: background var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-table__check:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-table__check:hover { background: var(--wd-field-hover); }
+}
 .wd-table__check--on,
 .wd-table__check--part { background: var(--wd-red); }
 .wd-table__row--checked { background: var(--wd-tint-1); }
-.wd-table__row--checked:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-table__row--checked:hover { background: var(--wd-field-hover); }
+}
 
 /* ---- 加载遮罩 ---- */
 .wd-table-wrap { position: relative; }

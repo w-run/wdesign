@@ -120,7 +120,9 @@
   color: var(--wd-dark-text);
 }
 .wd-audio--inverse .wd-audio__rate-menu--card button { color: var(--wd-on-dark-2); }
-.wd-audio--inverse .wd-audio__rate-menu--card button:hover { background: rgba(255, 255, 255, .1); }
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__rate-menu--card button:hover { background: rgba(255, 255, 255, .1); }
+}
 .wd-audio--inverse .wd-audio__rate-menu--card button.is-on {
   background: var(--wd-dark-text);
   color: var(--wd-dark);
@@ -440,7 +442,9 @@
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-audio__ctl:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-audio__ctl:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
+}
 .wd-audio__ctl--text { font-variant-numeric: tabular-nums; }
 /*
  * 占位符必须和 .wd-audio__ctl 同宽，否则缺失控件的行会重新错位。
@@ -540,7 +544,9 @@
   font-weight: 700;
   cursor: pointer;
 }
-.wd-audio__rate-menu--card button:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-audio__rate-menu--card button:hover { background: var(--wd-field-hover); }
+}
 .wd-audio__rate-menu--card button.is-on { background: var(--wd-ink); color: var(--wd-card); }
 
 /* =============================================================
@@ -602,8 +608,12 @@
   color: #fff;
   transition: background var(--wd-dur-fast) ease;
 }
-.wd-audio__cover:hover .wd-audio__cover-play { background: rgba(0, 0, 0, .46); }
-.wd-audio__cover:hover { transform: scale(1.03); }
+@media (hover: hover) {
+  .wd-audio__cover:hover .wd-audio__cover-play { background: rgba(0, 0, 0, .46); }
+}
+@media (hover: hover) {
+  .wd-audio__cover:hover { transform: scale(1.03); }
+}
 
 /* 无封面时占位图标（降低存在感，不要和播放键打架） */
 .wd-audio__cover-placeholder {
@@ -801,7 +811,9 @@
   text-decoration: none;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
-.wd-audio__ibtn:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
+@media (hover: hover) {
+  .wd-audio__ibtn:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
+}
 .wd-audio__ibtn--text { font-variant-numeric: tabular-nums; }
 
 .wd-audio__vol { display: flex; align-items: center; }
@@ -846,7 +858,9 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.wd-audio__rate-menu button:hover { background: var(--wd-field-hover); }
+@media (hover: hover) {
+  .wd-audio__rate-menu button:hover { background: var(--wd-field-hover); }
+}
 .wd-audio__rate-menu button.is-on { color: var(--wd-red-text); font-weight: 700; }
 
 /* =============================================================
@@ -887,7 +901,9 @@
   cursor: pointer;
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-audio__mini-play:hover { transform: scale(1.06); }
+@media (hover: hover) {
+  .wd-audio__mini-play:hover { transform: scale(1.06); }
+}
 
 .wd-audio__mini-main {
   flex: 1;
