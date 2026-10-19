@@ -71,3 +71,11 @@
 }
 .wd-radio:active .wd-radio__dot { transform: scale(.94); }
 
+
+/* 单选项的文字标签（模板里一直在用，样式从未定义） */
+.wd-radio__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

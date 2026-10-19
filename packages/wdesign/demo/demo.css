@@ -1537,6 +1537,14 @@ body {
   transform: scale(0.94);
 }
 
+/* 单选项的文字标签（模板里一直在用，样式从未定义） */
+.wd-radio__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .wd-select {
   position: relative;
   display: inline-block;
@@ -1804,6 +1812,16 @@ body {
 
 .wd-select__option {
   width: 100%;
+}
+
+/* 单选时的已选值文本 */
+.wd-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--wd-ink);
 }
 
 .wd-splitter {
@@ -3549,6 +3567,16 @@ body {
 }
 .wd-datepicker__todaybtn.is-hover {
   background: var(--wd-field-hover);
+}
+
+/* 已选日期文本 */
+.wd-datepicker__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--wd-ink);
 }
 
 .wd-toasts {
@@ -5499,6 +5527,11 @@ body {
     transform: rotate(90deg);
   }
 }
+/* 搜索框容器（左右两栏各一个） */
+.wd-transfer__search {
+  padding: 2px 0 6px;
+}
+
 .wd-watermark {
   position: relative;
   /* 水印层绝对定位需要它是包含块 */
@@ -7041,6 +7074,15 @@ body {
 .wd-fade-leave-to {
   opacity: 0;
   transform: translateY(6px);
+}
+
+/* 文件夹名（含省略号截断） */
+.wd-explorer__folder-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wd-ai-msg {

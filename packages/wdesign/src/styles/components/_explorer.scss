@@ -218,3 +218,12 @@
 .wd-fade-leave-active { transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease; }
 .wd-fade-enter-from,
 .wd-fade-leave-to { opacity: 0; transform: translateY(6px); }
+
+/* 文件夹名（含省略号截断） */
+.wd-explorer__folder-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

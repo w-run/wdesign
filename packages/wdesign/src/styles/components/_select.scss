@@ -204,3 +204,13 @@
   pointer-events: none;
 }
 .wd-select__option { width: 100%; }
+
+/* 单选时的已选值文本 */
+.wd-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--wd-ink);
+}

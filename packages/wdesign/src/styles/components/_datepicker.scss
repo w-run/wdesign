@@ -119,3 +119,13 @@
 }
 .wd-datepicker__todaybtn.is-hover { background: var(--wd-field-hover); }
 
+
+/* 已选日期文本 */
+.wd-datepicker__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--wd-ink);
+}

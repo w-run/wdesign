@@ -188,7 +188,164 @@ if (!existsSync(DIST)) {
 }
 
 /* ============================================================
- * 9. demo 资源引用必须带指纹
+ * 10. 模板用到的 BEM 类名，样式表里必须有定义
+ *
+ * ===== 为什么需要 =====
+ * Modal 曾经出过这个事故：模板里写了
+ *   .wd-modal__head / __title / __close / __body / __foot
+ * 但 `_modal.scss` 只定义了 `.wd-modal` / `__mask` / `__panel` ——
+ * 其余五个类**一个都没写**。
+ * 结果关闭按钮掉到标题下面、正文挤在一起，
+ * 看起来就像"样式完全没加载"，排查半天才发现是类名从未定义。
+ *
+ * 这类缺陷在浏览器里**不报错、不警告**，只是"长得不对"，
+ * 只能靠肉眼或工具发现。所以放进冒烟测试。
+ * ========================================================== */
+
+/**
+ * 把所有样式源码拼成一个字符串。
+ *
+ * ⚠️ 为什么用"整体字符串包含"而不是解析 SCSS 嵌套：
+ *   前一版试图按 `{}` 逐行维护嵌套栈来展开 `&__el`，
+ *   但 SCSS 里有 @media / @include / 逗号多选择器 / 单行写法，
+ *   逐行判断层级非常脆弱，误报了几十个"未定义"。
+ *
+ *   改成最朴素的方式：只要类名或它的基名在样式源码里出现过就算定义。
+ *   这能可靠抓住"整组类名从未写过"（Modal 事故），
+ *   又不会被嵌套语法误伤。
+ */
+function loadStyleSource() {
+  const dirs = [join(ROOT, 'src/styles'), join(ROOT, 'demo')]
+  const chunks = []
+  const walk = (dir) => {
+    if (!existsSync(dir)) return
+    for (const f of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, f.name)
+      if (f.isDirectory()) walk(full)
+      else if (f.name.endsWith('.scss') || f.name.endsWith('.css')) chunks.push(readFileSync(full, 'utf8'))
+    }
+  }
+  dirs.forEach(walk)
+  return chunks.join('\n')
+}
+
+{
+  const styleSrc = loadStyleSource()
+  const missing = []
+
+  for (const f of readdirSync(COMP).filter((x) => x.endsWith('.vue')).sort()) {
+    const name = basename(f, '.vue')
+    const src = readFileSync(join(COMP, f), 'utf8')
+    const tplMatch = /<template>([\s\S]*)<\/template>/.exec(src)
+    if (!tplMatch) continue
+    // 去 HTML 注释：注释里出现的类名不算使用
+    const clean = tplMatch[1].replace(/<!--[\s\S]*?-->/g, '')
+
+    // 提取 wd-xxx__yyy / wd-xxx--zzz 形态的类名
+    const used = new Set()
+    for (const m of clean.matchAll(/['"\s](wd-[a-z0-9-]+(?:__[a-z0-9-]+)?(?:--[a-z0-9-]+)?)/g)) {
+      const cls = m[1]
+      if (cls.includes('__') || cls.includes('--')) used.add(cls)
+    }
+
+    const miss = []
+    for (const cls of used) {
+      /**
+       * 命中条件（任一即可）：
+       *   1. 完整类名出现过
+       *   2. 去掉 `--mod` 的基名出现过（应对 &--mod 嵌套）
+       *   3. 块名出现过且该文件里有 & 嵌套写法（应对 &__el 嵌套）
+       */
+      const base = cls.replace(/--[a-z0-9-]+$/, '')
+      const block = cls.split('__')[0].split('--')[0]
+      const hit =
+        styleSrc.includes(cls) ||
+        styleSrc.includes(base) ||
+        (styleSrc.includes(block) && (styleSrc.includes('&__') || styleSrc.includes('&--')))
+      if (!hit) miss.push(cls)
+    }
+    if (miss.length) missing.push({ name, classes: miss })
+  }
+
+  if (missing.length) {
+    for (const { name, classes } of missing) {
+      fail(
+        `${name} 用到的样式类未定义`,
+        classes.slice(0, 6).join(', ') + (classes.length > 6 ? ` …共 ${classes.length} 个` : ''),
+      )
+    }
+  } else {
+    ok('组件的 BEM 类名均有样式定义')
+  }
+}
+
+/* ============================================================
+ * 11. 组件模板不该串用其它组件的 BEM 块
+ *
+ * 抓「复制粘贴别的组件模板，忘了改类名」。
+ * 只查带 __ / -- 的修饰形态，块名本身在白名单里放行。
+ * ========================================================== */
+{
+  const styleSrc = loadStyleSource()
+  const problems = []
+
+  /** 公共原子块：被多个组件复用意属正常 */
+  const SHARED = new Set([
+    'wd-icon', 'wd-btn', 'wd-input', 'wd-tag', 'wd-checkbox', 'wd-spinner',
+    'wd-chevron', 'wd-segmented', 'wd-segmented-picker', 'wd-dot', 'wd-preview',
+    'wd-list-item', 'wd-form-item', 'wd-icon-btn',
+    // wd-radio 是 WdRadioGroup 的子项块（radio-group 的成员）
+    'wd-radio', 'wd-radio-group',
+  ])
+
+  for (const f of readdirSync(COMP).filter((x) => x.endsWith('.vue')).sort()) {
+    const name = basename(f, '.vue')
+    const src = readFileSync(join(COMP, f), 'utf8')
+    const tplMatch = /<template>([\s\S]*)<\/template>/.exec(src)
+    if (!tplMatch) continue
+    const clean = tplMatch[1].replace(/<!--[\s\S]*?-->/g, '')
+
+    /*
+     * 「自己的块名」不能只靠组件名推导：
+     * WdAiMessage 的实际块是 wd-ai-msg、WdVideoPlayer 是 wd-vplayer。
+     * 做法：从样式源码里找以该组件名变体开头的块，找不到就跳过本组件
+     * （说明它没有独立样式，复用别的块）。
+     */
+    const kebab = name.replace(/^Wd/, '').replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
+    const variants = [
+      `wd-${kebab}`,
+      `wd-${kebab.replace(/-message$/, '-msg')}`,
+      `wd-${kebab.replace(/-player$/, 'player')}`,
+      `wd-${kebab.replace(/-list$/, 'list')}`,
+      `wd-${kebab.replace(/-group$/, 'group')}`,
+    ]
+    const ownList = variants.filter((c) => styleSrc.includes(`.${c}`))
+    if (!ownList.length) continue
+
+    for (const m of clean.matchAll(/(wd-[a-z0-9-]+)(?:__|--)/g)) {
+      const blk = m[1]
+      /*
+       * 同组件的"衍生块"也算自己：
+       *   WdRadioGroup 用 wd-radio（radio 是它的子项）
+       *   WdSegmented 用 wd-segmented-wrap（wrap 是它的外层）
+       *   WdTable 用 wd-table-wrap
+       * 判据：块名以自己某个块名为前缀。
+       */
+      const isOwnDerived = ownList.some((own) => blk.startsWith(own))
+      if (ownList.includes(blk) || isOwnDerived || SHARED.has(blk)) continue
+      problems.push(`${name} → ${blk}`)
+    }
+  }
+
+  const uniq = [...new Set(problems)]
+  if (uniq.length) {
+    fail('跨组件类名串用', uniq.slice(0, 5).join(' | ') + (uniq.length > 5 ? ` …共 ${uniq.length}` : ''))
+  } else {
+    ok('组件模板未串用其它组件的 BEM 块')
+  }
+}
+/* ============================================================
+ * 12. demo 资源引用必须带指纹
  * ========================================================== */
 const html = readFileSync(join(ROOT, 'demo/index.html'), 'utf8')
 const plainRefs = ['components.js', 'demo.js', 'demo.css'].filter((n) =>
