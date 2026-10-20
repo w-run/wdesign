@@ -5561,13 +5561,58 @@ button.wd-calendar__month:focus-visible {
 .wd-media-card__media {
   position: relative;
   flex: none;
-  margin: 10px 10px 0;
-  width: auto;
   overflow: hidden;
-  border-radius: var(--wd-radius-lg);
   background: var(--wd-ink-5);
-  /* 投影往下压：让图片"浮"在卡片上，而不是"贴"在上面 */
+}
+
+/*
+ * ===== 媒体呈现：cover / inset（与 layout 正交）=====
+ *
+ * cover（参考图三）：图片铺满整卡，圆角由卡片 overflow 裁切。
+ *   视觉重量最大，适合"一张图讲一件事"。
+ *
+ * inset（参考图一）：图片内嵌，四周留白 + 独立圆角 + 投影。
+ *   图片是"卡片里的一张图"，适合"图 + 说明"。
+ *
+ * ⚠️ 之前把两者和 layout 绑死了（overlay→铺满、stacked→内嵌）。
+ *    实际它们是**独立维度**：任何 layout 都可配任一 mediaMode。
+ */
+.wd-media-card--media-inset .wd-media-card__media {
+  margin: 10px 10px 0;
+  border-radius: var(--wd-radius-lg);
   box-shadow: 0 6px 20px rgba(25, 27, 31, 0.14);
+}
+
+/*
+ * cover：显式清零内嵌样式。
+ * ⚠️ `margin: 10px` 和 `border-radius` 来自上面的 inset 规则时，
+ *    如果只在 cover 里"不写"，会继承到默认值 —— 但默认值里
+ *    margin 是 0、radius 是 0，理论上没问题。
+ *    真正的问题是 overlay+cover 时 headline 的 padding 会撑出白边，
+ *    这里显式声明避免歧义。
+ */
+.wd-media-card--media-cover .wd-media-card__media {
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/*
+ * stacked + cover：图片在卡片顶部，上边缘必须跟随卡片圆角，
+ * 否则会出现"图片顶部是直角、卡片是圆角"的错位。
+ * 下边缘不需要圆角 —— 它直接接内容区。
+ */
+.wd-media-card--stacked.wd-media-card--media-cover .wd-media-card__media {
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+}
+
+/*
+ * inset + overlay：内容仍压在图上，但图是内嵌的。
+ * 此时压暗层要跟着图片的圆角走，不能铺到卡片边缘。
+ */
+.wd-media-card--media-inset.wd-media-card--overlay .wd-media-card__headline {
+  padding-bottom: 16px;
 }
 
 .wd-media-card__img {
@@ -5590,11 +5635,25 @@ button.wd-calendar__month:focus-visible {
  *
  * ⚠️ 用纯黑渐变而非主题色 —— 压暗是为了可读性，不是装饰。
  */
+/*
+ * 压暗层：**必须被媒体层的圆角裁切**。
+ *
+ * ⚠️ inset 模式下媒体层有 24px 圆角，如果 scrim 用 inset: 0 铺满，
+ *    它的直角会从圆角处"漏"出来，形成图下缘的一条灰带（实测）。
+ *    加 border-radius: inherit 让它跟随父级圆角。
+ */
 .wd-media-card__scrim {
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0) 32%, rgba(0, 0, 0, 0.38) 68%, rgba(0, 0, 0, 0.72) 100%);
+  /*
+   * 参考图的渐变：上半部几乎透明，从 45% 起快速压暗，
+   * 底部接近纯黑（.88）—— 这样白字、白线、白按钮都能"浮"起来。
+   *
+   * ⚠️ 之前底部只到 .72，暗度不够，白字在浅色图上仍然发灰。
+   */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0) 26%, rgba(0, 0, 0, 0.42) 56%, rgba(0, 0, 0, 0.78) 82%, rgba(0, 0, 0, 0.9) 100%);
 }
 
 /* ---------------- 顶部：角标与工具 ---------------- */
@@ -5716,13 +5775,44 @@ button.wd-calendar__month:focus-visible {
 .wd-media-card__body {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 20px 20px 20px;
+  gap: 14px;
+  padding: 18px 20px 16px;
 }
 
-/* overlay 形态下媒体与内容之间不需要间距（标题已在图上） */
+/*
+ * ===== overlay：内容整体压在图上 =====
+ *
+ * ⚠️ 之前 body 是普通 flex 子项，排在图片**下方** ——
+ *    于是"overlay"其实只是"图片上有个标题"，数据条和按钮都跑到了白底上，
+ *    白字在白色背景里完全看不见（实测数据条存在但不可见）。
+ *
+ * 真正的 overlay：body **绝对定位**覆盖在媒体层上，
+ * 从底部往上排（标题/数据条/按钮都在图上），
+ * 靠 scrim 渐变保证可读性。
+ */
 .wd-media-card--overlay .wd-media-card__body {
-  padding-top: 16px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 0 20px 20px;
+  /* 内容压图上时不需要额外的上内距 */
+  gap: 14px;
+}
+
+/*
+ * overlay 下标题由 body 统一负责，媒体层内的 headline 不再渲染
+ * （否则会出现两份标题）。
+ */
+/* 卡片本体需要定位上下文 */
+.wd-media-card--overlay {
+  position: relative;
+}
+
+/* overlay 时媒体层要撑满整卡高度 —— 内容绝对定位在它上面 */
+.wd-media-card--overlay .wd-media-card__media {
+  width: 100%;
 }
 
 /* ---------------- 数据条 ---------------- */
@@ -5735,9 +5825,44 @@ button.wd-calendar__month:focus-visible {
   display: flex;
   gap: 10px;
   margin: 0;
-  /* 与上方标题之间的分隔线 + 呼吸 */
   padding-top: 16px;
   border-top: 1px solid var(--wd-ink-5);
+}
+
+/*
+ * overlay 模式下，数据条压在暗色图上 ——
+ * 分隔线必须是**白色半透明**，深色线在暗底上等于没有。
+ */
+.wd-media-card--overlay .wd-media-card__stats {
+  border-top-color: rgba(255, 255, 255, 0.28);
+}
+
+.wd-media-card--overlay .wd-media-card__stat-value {
+  color: #fff;
+}
+
+.wd-media-card--overlay .wd-media-card__stat-label {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+/*
+ * ⚠️ overlay 的标题必须是**白色**。
+ *
+ * `.wd-media-card__headline--static` 的样式把标题设成 --wd-ink（深色）——
+ * 那是给 stacked 的（白底上黑字）。overlay 时标题压在深色渐变上，
+ * 用深色就完全看不清（实测标题几乎融进背景）。
+ */
+.wd-media-card--overlay .wd-media-card__title {
+  color: #fff;
+}
+
+.wd-media-card--overlay .wd-media-card__subtitle {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* overlay 下标题区不需要额外上边距 */
+.wd-media-card--overlay .wd-media-card__headline--static {
+  padding: 0;
 }
 
 .wd-media-card--overlay .wd-media-card__stats {
@@ -5780,10 +5905,33 @@ button.wd-calendar__month:focus-visible {
  * 本身不设 padding —— 间距已由 __body 的 gap 提供，
  * 这里再加一层会让收起/展开时高度跳变。
  */
+/*
+ * 可展开区：grid-template-rows 折叠动画（同 WdCollapse）。
+ *
+ * 0fr → 1fr 由内容自然撑开，不依赖固定高度：
+ *   · max-height 要猜一个够大的值，短内容会"跳一下"
+ *   · height 要 JS 测量
+ *
+ * ⚠️ 内层必须有 `overflow: hidden` 和 `min-height: 0`：
+ *    grid 子项默认 min-height: auto 会阻止收缩，动画就失效。
+ */
 .wd-media-card__expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--wd-dur-slow) var(--wd-ease-out);
+}
+
+.wd-media-card__expand.is-open {
+  grid-template-rows: 1fr;
+}
+
+.wd-media-card__expand-inner {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* 关键：没有这两条，0fr 收不拢 */
+  overflow: hidden;
+  min-height: 0;
 }
 
 /* ---------------- 正文 ---------------- */
@@ -5800,13 +5948,17 @@ button.wd-calendar__month:focus-visible {
  * 独立成行、水平居中 —— 展开/收起是卡片的全局动作，
  * 不该和 CTA 挤在同一行右侧。
  */
+/*
+ * 折叠箭头：紧贴上方内容，只留极小间距。
+ *
+ * ⚠️ 原来 margin-top 4 + padding-top 6 = 10px 的额外空白，
+ *    箭头像被"甩"在卡片最底部。参考图里箭头紧贴着正文/按钮，
+ *    是同一块内容的一部分。
+ */
 .wd-media-card__foot {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* 与上方 CTA 之间留出呼吸 */
-  margin-top: 4px;
-  padding-top: 6px;
 }
 
 /*
@@ -5828,9 +5980,24 @@ button.wd-calendar__month:focus-visible {
   transition: background var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
 }
 
+/*
+ * overlay 模式下 CTA 用**白底黑字**。
+ *
+ * ⚠️ 这是参考图里最能定调的一处：
+ *    深色按钮压在深色渐变上，两者几乎融成一块，按钮"消失"了；
+ *    白底按钮在暗背景上是最强的对比，一眼就能看到行动点。
+ */
+.wd-media-card--overlay .wd-media-card__cta {
+  background: #fff;
+  color: var(--wd-ink);
+}
+
 @media (hover: hover) {
   .wd-media-card__cta:hover {
     background: var(--wd-dark-2);
+  }
+  .wd-media-card--overlay .wd-media-card__cta:hover {
+    background: rgba(255, 255, 255, 0.88);
   }
 }
 .wd-media-card__cta:active {
@@ -5844,6 +6011,10 @@ button.wd-calendar__month:focus-visible {
 
 /* 折叠箭头：圆形、无底色，与 CTA 并排时靠右 */
 /* 折叠箭头：圆形、轻底色，比 CTA 弱一档 */
+.wd-media-card--overlay .wd-media-card__toggle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
 .wd-media-card__toggle {
   flex: none;
   display: inline-flex;

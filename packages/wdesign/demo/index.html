@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.d42895a3.css">
+<link rel="stylesheet" href="demo.63dda878.css">
 </head>
 <body>
   <!--
@@ -1884,83 +1884,103 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
     <div class="demo-panel demo-panel--wide">
       <h3>MEDIACARD 媒体卡片</h3>
       <span class="demo-cap">
-        从三张旅行 / 自然主题卡片提炼的通用骨架：媒体层 + 数据条 + 可折叠正文 + 全宽 CTA。
-        两种布局：overlay（内容压图上）/ stacked（图在上、内容在下）。
+        媒体呈现（cover 铺满 / inset 内嵌）与内容位置（overlay 压图上 / stacked 图在上）是两个独立维度，可自由组合。
       </span>
 
-      <div class="demo-row" style="gap:24px; margin-top:20px; align-items:flex-start; flex-wrap:wrap">
-        <!-- overlay：内容压在图上 -->
-        <div class="demo-col" style="flex:1 1 340px; max-width:400px; gap:8px">
-          <div class="demo-cap">overlay · 内容压在图上（可折叠）</div>
-          <wd-media-card
-            src="media/poster.jpg"
-            title="White-Tailed Deer"
-            subtitle="Mammal · Herbivore"
-            badge="Last seen: 1 hour ago"
-            layout="overlay"
-            ratio="4 / 3"
-            action="Learn More"
-            collapsible
-            :default-open="false"
-            :stats="[
-              { value: '5 yrs', label: 'Lifespan' },
-              { value: '1.2 m', label: 'Height' },
-              { value: '130 kg', label: 'Weight' },
-              { value: '48 km/h', label: 'Top Speed' },
-            ]"
-            @action="ucLog = 'Learn More 被点击'"
-          >
-            <template #tools>
-              <button type="button" aria-label="收藏">
-                <wd-icon name="star" :size="16" />
-              </button>
-            </template>
-          </wd-media-card>
-        </div>
+      <!-- 灰色背景容器：与其它卡片类组件的展示方式一致 -->
+      <div class="demo-stage" style="margin-top:20px">
+        <div class="demo-row" style="gap:28px; align-items:flex-start; flex-wrap:wrap">
+          <!-- ① cover + overlay：图片即卡片（参考图三） -->
+          <div class="demo-col" style="flex:1 1 300px; max-width:360px; gap:8px">
+            <div class="demo-cap">cover + overlay · 图片即卡片</div>
+            <wd-media-card
+              src="media/poster.jpg"
+              title="White-Tailed Deer"
+              subtitle="Mammal · Herbivore"
+              badge="Last Seen: 1 hour ago"
+              layout="overlay"
+              media-mode="cover"
+              ratio="4 / 5"
+              action="Learn More"
+              :stats="[
+                { value: '5 yrs', label: 'Lifespan' },
+                { value: '1.2 m', label: 'Height' },
+                { value: '130 kg', label: 'Weight' },
+                { value: '48 kmh', label: 'Top Speed' },
+              ]"
+              @action="ucLog = 'Learn More 被点击'"
+            >
+              <template #tools>
+                <button type="button" aria-label="收藏">
+                  <wd-icon name="star" :size="18" />
+                </button>
+              </template>
+            </wd-media-card>
+          </div>
 
-        <!-- stacked：图在上、内容在下（可展开正文） -->
-        <div class="demo-col" style="flex:1 1 340px; max-width:400px; gap:8px">
-          <div class="demo-cap">stacked · 图在上、内容在下（可展开）</div>
-          <wd-media-card
-            src="media/poster.jpg"
-            title="Embercrest Summit Trail"
-            subtitle="1886 by Helen Rowe & Elas Mendez"
-            layout="stacked"
-            ratio="16 / 9"
-            action="Start Route"
-            collapsible
-            :default-open="false"
-            :stats="[
-              { value: '12.4km', label: 'Distance' },
-              { value: '870m', label: 'Elevation' },
-              { value: '4h 45m', label: 'Duration' },
-            ]"
-            body="Embercrest Ridge rises boldly from the heart of the Silverpine Mountains, its sun-warmed cliffs glowing with rich crimson and amber tones during golden hour. Towering at 3,274 meters, the ridge is framed by winding alpine trails and rugged rock formations."
-          ></wd-media-card>
-        </div>
+          <!-- ② inset + stacked：图 + 说明（参考图一，可折叠） -->
+          <div class="demo-col" style="flex:1 1 300px; max-width:360px; gap:8px">
+            <div class="demo-cap">inset + stacked · 图内嵌 + 可折叠</div>
+            <wd-media-card
+              src="media/poster.jpg"
+              title="Embercrest Summit Trail"
+              subtitle="Silverpine Mountains"
+              layout="stacked"
+              media-mode="inset"
+              ratio="16 / 10"
+              action="Start Route"
+              collapsible
+              :default-open="false"
+              :stats="[
+                { value: '12.4km', label: 'Distance' },
+                { value: '870m', label: 'Elevation' },
+                { value: '4h 45m', label: 'Duration' },
+              ]"
+              body="Embercrest Ridge rises boldly from the heart of the Silverpine Mountains, its sun-warmed cliffs glowing with rich crimson and amber tones during golden hour. Towering at 3,274 meters, the ridge is framed by winding alpine trails and rugged rock formations, and sweeping meadows dotted with wildflowers."
+            ></wd-media-card>
+          </div>
 
-        <!-- 完整展开态 -->
-        <div class="demo-col" style="flex:1 1 300px; max-width:380px; gap:8px">
-          <div class="demo-cap">overlay · 默认全展开</div>
-          <wd-media-card
-            src="media/poster.jpg"
-            title="Santorini Sunset Loft"
-            subtitle="Romantic Stay · 2 Night Trip"
-            layout="overlay"
-            ratio="3 / 4"
-            action="Book now"
-            :stats="[
-              { value: '4.8', label: 'Rating' },
-              { value: '2', label: 'Nights' },
-            ]"
-            body="Experience a cliffside loft with iconic white walls, blue domes, and magical sunset views."
-          >
-            <template #tools>
-              <button type="button" aria-label="收藏">
-                <wd-icon name="bookmark" :size="16" />
-              </button>
-            </template>
-          </wd-media-card>
+          <!-- ③ cover + stacked：大图 + 内容在下 -->
+          <div class="demo-col" style="flex:1 1 300px; max-width:360px; gap:8px">
+            <div class="demo-cap">cover + stacked · 大图 + 内容在下</div>
+            <wd-media-card
+              src="media/poster.jpg"
+              title="Frostspire Range"
+              subtitle="Silverpine Mountains"
+              layout="stacked"
+              media-mode="cover"
+              ratio="16 / 9"
+              action="Start Route"
+              collapsible
+              :default-open="false"
+              body="A jagged skyline of snow-laced granite, Frostspire holds the coldest dawn in the range."
+            ></wd-media-card>
+          </div>
+
+          <!-- ④ inset + overlay：浮层卡片 -->
+          <div class="demo-col" style="flex:1 1 300px; max-width:360px; gap:8px">
+            <div class="demo-cap">inset + overlay · 浮层卡片</div>
+            <wd-media-card
+              src="media/poster.jpg"
+              title="Santorini Sunset Loft"
+              subtitle="Romantic Stay · 2 Night Trip"
+              layout="overlay"
+              media-mode="inset"
+              ratio="3 / 4"
+              action="Book now"
+              :stats="[
+                { value: '4.8', label: 'Rating' },
+                { value: '2', label: 'Nights' },
+              ]"
+              body="Experience a cliffside loft with iconic white walls, blue domes, and magical sunset views."
+            >
+              <template #tools>
+                <button type="button" aria-label="收藏">
+                  <wd-icon name="bookmark" :size="18" />
+                </button>
+              </template>
+            </wd-media-card>
+          </div>
         </div>
       </div>
 
@@ -2080,7 +2100,7 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.538c8740.js"></script>
+<script src="components.6a103089.js"></script>
 <script src="demo.3deb3858.js"></script>
 
 <!-- Scrollspy：导航高亮 -->

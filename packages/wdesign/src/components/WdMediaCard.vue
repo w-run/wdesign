@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, useSlots } from 'vue'
 
 defineOptions({ name: 'WdMediaCard' })
 
@@ -29,11 +29,23 @@ const props = withDefaults(
     /** 主按钮文字 */
     action?: string
     /**
-     * 媒体与内容的关系：
-     *   overlay — 内容压在图上（图片作背景，底部渐变压暗）
-     *   stacked — 图在上、内容在下（内容区为白底）
+     * 内容与媒体的关系：
+     *   overlay — 内容压在图上（底部渐变压暗）
+     *   stacked — 图在上、内容在下（内容区独立）
      */
     layout?: 'overlay' | 'stacked'
+    /**
+     * 媒体呈现方式（**与 layout 正交**，任意组合）：
+     *   cover — 图片铺满、圆角由卡片裁切（视觉冲击强）
+     *   inset — 图片内嵌、四周留白 + 独立圆角 + 投影（精致感）
+     *
+     * ⚠️ 之前我把它和 layout 绑死了（overlay→铺满、stacked→内嵌），
+     *    但两者其实是**独立的两个维度**：
+     *      "内容压图上 + 图片内嵌"  是完全合理的组合（浮层卡片）
+     *      "内容在图下 + 图片铺满"  也合理（大图卡片）
+     *    绑在一起会让人以为 layout 决定了图片样式。
+     */
+    mediaMode?: 'cover' | 'inset'
     /**
      * 可折叠：点击箭头收起/展开内容区。
      * overlay 形态下折叠后只剩媒体 + 标题。
@@ -56,12 +68,15 @@ const props = withDefaults(
     body: '',
     action: '',
     layout: 'overlay',
+    mediaMode: 'cover',
     collapsible: false,
     defaultOpen: true,
     ratio: '4 / 3',
     radius: 'xl',
   },
 )
+
+const slots = useSlots()
 
 const emit = defineEmits<{
   action: []
@@ -83,6 +98,15 @@ function toggle() {
 }
 
 const isOverlay = computed(() => props.layout === 'overlay')
+
+/**
+ * 是否有"可折叠的内容"。
+ *
+ * ⚠️ 只看 collapsible 不够：如果组件没有正文/插槽，
+ *    展开/收起是空操作 —— 箭头不仅无用，还会让用户点了没反应。
+ *    必须同时存在 collapsible 和实际内容才显示箭头。
+ */
+const canCollapse = computed(() => props.collapsible && (!!props.body || !!slots.default))
 </script>
 
 <template>
@@ -90,6 +114,7 @@ const isOverlay = computed(() => props.layout === 'overlay')
     class="wd-media-card"
     :class="[
       `wd-media-card--${layout}`,
+      `wd-media-card--media-${mediaMode}`,
       `wd-media-card--r-${radius}`,
       {
         'is-open': open,
@@ -116,11 +141,11 @@ const isOverlay = computed(() => props.layout === 'overlay')
         </div>
       </div>
 
-      <!-- overlay 形态：标题压在图上 -->
-      <div v-if="isOverlay && (title || subtitle)" class="wd-media-card__headline">
-        <h3 v-if="title" class="wd-media-card__title">{{ title }}</h3>
-        <p v-if="subtitle" class="wd-media-card__subtitle">{{ subtitle }}</p>
-      </div>
+      <!--
+        ⚠️ overlay 的标题**不在这里** —— 它由 body 统一渲染。
+        否则会出现两份标题（媒体层里的 + body 里的）。
+        媒体层只负责图片、scrim、角标和工具按钮。
+      -->
     </div>
 
     <!--
@@ -137,7 +162,7 @@ const isOverlay = computed(() => props.layout === 'overlay')
     -->
     <div
       v-if="
-        (!isOverlay && (title || subtitle || $slots['headline-extra'])) ||
+        (title || subtitle || $slots['headline-extra']) ||
         stats.length ||
         body ||
         $slots.default ||
@@ -146,10 +171,11 @@ const isOverlay = computed(() => props.layout === 'overlay')
       "
       class="wd-media-card__body"
     >
-      <!-- stacked 形态：标题在媒体下方 -->
+      <!-- 标题：overlay 和 stacked 都在这里渲染（位置由 CSS 决定） -->
       <div
-        v-if="!isOverlay && (title || subtitle || $slots['headline-extra'])"
+        v-if="title || subtitle || $slots['headline-extra']"
         class="wd-media-card__headline wd-media-card__headline--static"
+        :class="{ 'wd-media-card__headline--overlay': isOverlay }"
       >
         <h3 v-if="title" class="wd-media-card__title">{{ title }}</h3>
         <p v-if="subtitle" class="wd-media-card__subtitle">{{ subtitle }}</p>
@@ -164,14 +190,23 @@ const isOverlay = computed(() => props.layout === 'overlay')
         </div>
       </dl>
 
-      <!-- 可展开区域：正文 + 插槽 -->
+      <!--
+        可展开区域：正文 + 插槽。
+        折叠动画沿用 WdCollapse 的 `grid-template-rows: 0fr → 1fr` ——
+        这是目前唯一**不依赖固定高度**的纯 CSS 折叠方案：
+          · max-height 需要猜一个足够大的值，短内容会"跳"
+          · height 需要 JS 测量
+        0fr/1fr 由内容自然撑开，任意长度的正文都平滑。
+      -->
       <div
-        v-show="!collapsible || open"
         v-if="body || $slots.default"
         class="wd-media-card__expand"
+        :class="{ 'is-open': !collapsible || open }"
       >
-        <p v-if="body" class="wd-media-card__text">{{ body }}</p>
-        <slot />
+        <div class="wd-media-card__expand-inner">
+          <p v-if="body" class="wd-media-card__text">{{ body }}</p>
+          <slot />
+        </div>
       </div>
 
       <!-- 主按钮：占满整行 -->
@@ -189,7 +224,11 @@ const isOverlay = computed(() => props.layout === 'overlay')
         ⚠️ 之前和 CTA 并排挤在右侧 —— 那是"工具栏"的布局，
           而展开/收起是卡片的**全局动作**，应该独立、居中、易点。
       -->
-      <div v-if="collapsible" class="wd-media-card__foot">
+      <!--
+        折叠箭头：只在**真的有内容可展开**时显示。
+        只有标题/数据条、没有正文的卡片不该有箭头 —— 点了什么都不会发生。
+      -->
+      <div v-if="canCollapse" class="wd-media-card__foot">
         <button
           type="button"
           class="wd-media-card__toggle"
