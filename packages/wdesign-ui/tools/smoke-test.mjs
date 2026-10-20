@@ -592,6 +592,121 @@ const VUE_APIS = [
   }
 }
 
+/* ============================================================
+ * 18. 全量样式入口必须引入每一个组件原子件
+ *
+ * ===== 为什么需要 =====
+ * `styles/index.scss` 是「全量」入口，@import 列表是手工维护的。
+ * 迁移期间新写的 12 个组件原子件没被收进来 —— 组件照常渲染、
+ * 控制台一片安静，只是完全没有样式。这是最难查的一类静默失效。
+ *
+ * 规则：
+ *   · `styles/components/_x.scss` 必须出现在 `styles/index.scss` 里
+ *   · 入口里 import 的原子件也必须真实存在
+ *   · `@import 'dark'` 必须是最后一条（深色覆盖不能被后面的组件反超）
+ * ========================================================== */
+{
+  const styleDir = join(ROOT, 'src/styles')
+  const atomDir = join(styleDir, 'components')
+  const entryPath = join(styleDir, 'index.scss')
+  const raw = readFileSync(entryPath, 'utf8')
+  // 去注释：注释里举例写的 @import 不该算数
+  const src = raw
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[^:])\/\/[^\n]*/g, '$1')
+
+  // 取出全部 @import，组件原子件的写成不带前缀的名字，其余保持原样
+  const importList = [...src.matchAll(/@import\s+['"]([^'"]+)['"]/g)].map((m) =>
+    m[1].replace(/^components\//, ''),
+  )
+  const imported = importList.filter((i) => !i.startsWith('_'))
+  const atoms = readdirSync(atomDir)
+    .filter((f) => f.endsWith('.scss'))
+    .map((f) => basename(f, '.scss').replace(/^_/, ''))
+
+  const missing = atoms.filter((a) => !importList.includes(a))
+  // 顶层 partial 允许带下划线（_vars.scss → @import 'vars'）
+  const hasPartial = (name) =>
+    existsSync(join(styleDir, `${name}.scss`)) || existsSync(join(styleDir, `_${name}.scss`))
+  const ghosts = importList.filter((i) => !atoms.includes(i) && !hasPartial(i))
+
+  if (missing.length) {
+    fail(
+      '组件原子件没被 styles/index.scss 引入（该组件在演示站里完全没有样式）',
+      missing.map((m) => `components/_${m}.scss`).join('、'),
+    )
+  } else {
+    ok('全量样式入口收全了所有组件原子件')
+  }
+
+  if (ghosts.length) {
+    fail('styles/index.scss import 了不存在的原子件', ghosts.join('、'))
+  }
+
+  const lastImport = importList[importList.length - 1]
+  if (lastImport !== 'dark') {
+    fail(
+      "@import 'dark' 必须是 styles/index.scss 的最后一条",
+      `当前最后一条是 ${lastImport}`,
+    )
+  } else {
+    ok("深色覆盖 @import 'dark' 位于样式入口末尾")
+  }
+}
+
+/* ============================================================
+ * 19. 组件内部引用别的组件/图标，必须自己 import
+ *
+ * ===== 为什么需要 =====
+ * 40 个组件的模板里都写着 `<wd-icon>`、WdTransfer 里写着 `<wd-input>`，
+ * 但几乎没有一个 import 过 —— 它们依赖宿主全局注册才能解析。于是 README
+ * 推荐的「按需引入」（`import { WdButton } from '@w-run/wdesign'`）一旦生效，
+ * 组件内部的箭头、清除按钮、勾选图标全部渲染成空白，
+ * 只在控制台留一句 "Failed to resolve component: wd-icon"。
+ *
+ * 实测：修之前全站巡检 299 条 warn，修之后只剩 4 条且指向同一处。
+ *
+ * 规则：模板里出现 <wd-xxx>，就必须在 script 里 import 对应的 WdXxx。
+ * ========================================================== */
+{
+  const localNames = new Set(files.map((f) => f.replace(/\.vue$/, '')))
+  const toPascal = (tag) =>
+    tag
+      .split('-')
+      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+      .join('')
+
+  const offenders = []
+  for (const f of files) {
+    const src = readFileSync(join(COMP, f), 'utf8')
+    const tplStart = src.indexOf('<template>')
+    const tpl = tplStart >= 0 ? src.slice(tplStart) : ''
+    const script = src.slice(0, tplStart)
+
+    for (const tag of new Set([...tpl.matchAll(/<(wd-[a-z0-9-]+)/g)].map((m) => m[1]))) {
+      const name = toPascal(tag)
+      // WdIcon 来自 @w-run/wdesign-icons，其余必须是本仓库的组件
+      if (name !== 'WdIcon' && !localNames.has(name)) {
+        offenders.push(`${f}: <${tag}> 没有对应的组件`)
+        continue
+      }
+      const imported =
+        new RegExp(`import\\s*(?:type\\s*)?\\{[^}]*\\b${name}\\b[^}]*\\}\\s*from`).test(script) ||
+        new RegExp(`import\\s+${name}\\s+from`).test(script)
+      if (!imported) offenders.push(`${f}: <${tag}> 没 import ${name}`)
+    }
+  }
+
+  if (offenders.length) {
+    fail(
+      '组件模板引用了别的组件却没 import（按需引入时会静默渲染成空白）',
+      offenders.join('、'),
+    )
+  } else {
+    ok('组件内部引用的组件/图标都显式 import 了')
+  }
+}
+
 /* ============================================================ */
 console.log(`\n${'='.repeat(52)}`)
 console.log(`  冒烟测试：${pass} 通过 / ${fails.length} 失败`)
