@@ -6,8 +6,11 @@ defineOptions({ name: 'WdPagination' })
 
 const props = withDefaults(
   defineProps<{
+    /** 当前页码，从 1 开始，用于 v-model */
     modelValue?: number
+    /** 数据总条数，与 pageSize 一起算出总页数 */
     total?: number
+    /** 每页条数，切换前的初始值 */
     pageSize?: number
     /** 简洁模式：只显示上一页 / 页码 / 下一页 */
     simple?: boolean
@@ -33,8 +36,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 翻页时触发，参数为夹在有效范围内的新页码，用于 v-model */
   (e: 'update:modelValue', page: number): void
+  /** 切换每页条数时触发，参数为新的每页条数，用于 v-model:page-size */
   (e: 'update:pageSize', size: number): void
+  /** 页码或每页条数变化时触发，参数为当前页码与每页条数 */
   (e: 'change', page: number, size: number): void
 }>()
 

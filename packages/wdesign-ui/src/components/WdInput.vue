@@ -7,13 +7,19 @@ defineOptions({ name: 'WdInput' })
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑的值；不传则走非受控模式 */
     modelValue?: string
     /** 非受控模式的初始值（不传 modelValue 时生效） */
     defaultValue?: string
+    /** 占位提示文字，值非空时不显示 */
     placeholder?: string
+    /** 外观形状：pill 全圆角 / rounded 小圆角 */
     shape?: 'pill' | 'rounded'
+    /** 原生 input 的 type，如 text / password / number */
     type?: string
+    /** 禁用；不响应输入也不触发事件 */
     disabled?: boolean
+    /** 尺寸档 sm|md|lg，影响高度与内距 */
     size?: 'lg' | 'md' | 'sm'
     /** 有内容时显示清除按钮 */
     clearable?: boolean
@@ -38,9 +44,13 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 输入值变化时触发，参数为最新值，用于 v-model */
   (e: 'update:modelValue', value: string): void
+  /** 输入值变化时触发，非受控模式监听它拿最新值 */
   (e: 'change', value: string): void
+  /** 点击清除按钮后触发，此时值已置空 */
   (e: 'clear'): void
+  /** 输入框内按下回车时触发，参数为当前值 */
   (e: 'enter', value: string): void
 }>()
 

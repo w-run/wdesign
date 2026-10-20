@@ -12,8 +12,11 @@ export interface WdUploadFile {
 
 const props = withDefaults(
   defineProps<{
+    /** 可选文件类型，同原生 input 的 accept，默认 * 不限 */
     accept?: string
+    /** 允许一次选多个文件（仍受 maxCount 限制） */
     multiple?: boolean
+    /** 选择区里的补充说明文字 */
     hint?: string
     /** 最多几个文件（0 = 不限） */
     maxCount?: number
@@ -26,7 +29,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 文件列表变化时触发（新增或移除），files 为当前列表 */
   (e: 'change', files: WdUploadFile[]): void
+  /** 超出数量或体积上限时触发，reason 说明原因，file 为被拒收的文件 */
   (e: 'exceed', reason: 'count' | 'size', file: File): void
 }>()
 

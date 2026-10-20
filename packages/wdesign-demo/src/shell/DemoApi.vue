@@ -79,6 +79,7 @@ const comps = computed(() =>
               <code class="api__name">{{ e.name }}</code>
             </div>
             <code v-if="e.params" class="api__type">{{ e.params }}</code>
+            <p v-if="e.desc" class="api__desc">{{ e.desc }}</p>
           </article>
         </div>
       </div>

@@ -5,10 +5,13 @@ defineOptions({ name: 'WdAvatar' })
 
 const props = withDefaults(
   defineProps<{
+    /** 名称：取首字作头像文字，空则显示 ? */
     name?: string
     /** 0 = 根据名字自动分配 */
     tone?: 0 | 1 | 2 | 3
+    /** 深色底，用于 +N 这类辅助头像 */
     dark?: boolean
+    /** 尺寸档 sm|md|lg */
     size?: 'sm' | 'md' | 'lg'
   }>(),
   { name: '', tone: 0, dark: false, size: 'md' },

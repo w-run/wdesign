@@ -10,13 +10,21 @@ defineOptions({ name: 'WdPopconfirm' })
 
 const props = withDefaults(
   defineProps<{
+    /** 气泡标题，同时作为浮层的无障碍名称 */
     title?: string
+    /** 补充说明，显示在标题下方，留空则不占位 */
     description?: string
+    /** 确认按钮文案 */
     okText?: string
+    /** 取消按钮文案 */
     cancelText?: string
+    /** 语义类型，danger 时标题前带警告图标、确认按钮转为危险色 */
     variant?: 'default' | 'danger'
+    /** 浮层相对触发器的位置，空间不足时自动翻转 */
     placement?: 'top' | 'bottom'
+    /** 是否禁用，禁用后点击不弹出浮层 */
     disabled?: boolean
+    /** 浮层宽度（px），超出视口时会被夹进可见区 */
     width?: number
   }>(),
   {
@@ -31,7 +39,12 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
+const emit = defineEmits<{
+  /** 点击确认按钮后触发，此时浮层已关闭 */
+  (e: 'confirm'): void
+  /** 点击取消按钮后触发，此时浮层已关闭；点外部或按 Esc 关闭不触发 */
+  (e: 'cancel'): void
+}>()
 
 const open = ref(false)
 /** 只要打开过一次就保持节点存在，之后靠 .is-open 类做过渡 */

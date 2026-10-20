@@ -4,8 +4,11 @@ defineOptions({ name: 'WdResult' })
 
 withDefaults(
   defineProps<{
+    /** 结果状态，决定图标与主色 */
     status?: 'success' | 'warning' | 'error' | 'info'
+    /** 主标题，为空时不渲染 */
     title?: string
+    /** 补充说明，可用默认插槽覆盖 */
     description?: string
   }>(),
   { status: 'info', title: '', description: '' },

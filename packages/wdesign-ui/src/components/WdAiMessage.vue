@@ -15,6 +15,7 @@ const props = withDefaults(
     content?: string
     /** 深度思考内容（reasoning_content），独立于正文展示 */
     reasoning?: string
+    /** 本方发言：整条反向排列、头像显示「我」 */
     self?: boolean
     /** 尚未产出思考内容时显示三点脉动 */
     thinking?: boolean
@@ -24,6 +25,7 @@ const props = withDefaults(
     reasoningStreaming?: boolean
     /** 每字符间隔 ms */
     speed?: number
+    /** 气泡底部的快捷操作按钮；点击后触发 action */
     actions?: Action[]
     /** 思考面板初始是否展开 */
     defaultReasoningOpen?: boolean
@@ -42,8 +44,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 点击操作按钮时触发，label 为被点按钮的文字 */
   (e: 'action', label: string): void
+  /** 正文流式输出结束时触发（已播到 content 末尾） */
   (e: 'stream-end'): void
+  /** 思考内容流式输出结束时触发 */
   (e: 'reasoning-end'): void
 }>()
 

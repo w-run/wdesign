@@ -5,10 +5,15 @@ defineOptions({ name: 'WdButton' })
 
 const props = withDefaults(
   defineProps<{
+    /** 视觉变体：primary 实心主色 / tint 浅底 / dark 深底 / ghost 无底 */
     variant?: 'primary' | 'tint' | 'dark' | 'ghost'
+    /** 尺寸档 sm|md|lg */
     size?: 'lg' | 'md' | 'sm'
+    /** 禁用：不可点击，也不触发 click */
     disabled?: boolean
+    /** 图标按钮：正方形，只容一个图标 */
     iconOnly?: boolean
+    /** 撑满父级宽度 */
     block?: boolean
     /** 加载中：自动禁用点击并显示转圈 */
     loading?: boolean
@@ -29,7 +34,10 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ (e: 'click', event: MouseEvent): void }>()
+const emit = defineEmits<{
+  /** 点击时触发，参数为原始 MouseEvent；disabled 或 loading 时不触发 */
+  (e: 'click', event: MouseEvent): void
+}>()
 
 const classes = computed(() => [
   'wd-btn',

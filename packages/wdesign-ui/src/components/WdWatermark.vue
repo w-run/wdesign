@@ -19,6 +19,7 @@ const props = withDefaults(
     rotate?: number
     /** 距离容器边缘的偏移，避免水印被裁 */
     offset?: number
+    /** 水印层层级，低于弹窗等浮层才不会盖住内容 */
     zIndex?: number
   }>(),
   {

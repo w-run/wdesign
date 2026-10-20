@@ -11,9 +11,13 @@ type Mode = 'flat' | 'scroll' | 'dropdown'
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑的选中值 */
     modelValue?: string | number
+    /** 选项列表，字符串即 label 与 value 相同 */
     options?: Option[]
+    /** 占满父级宽度 */
     block?: boolean
+    /** 明暗外观，深色背景用 dark */
     tone?: 'light' | 'dark'
     /**
      * 溢出模式：选项过多、单行放不下时的表现
@@ -29,7 +33,10 @@ const props = withDefaults(
   { modelValue: '', options: () => [], block: false, tone: 'light', overflow: 'wrap', overflowMax: 15 },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: string | number): void }>()
+const emit = defineEmits<{
+  /** 点击选项时触发，参数为新选中值，用于 v-model */
+  (e: 'update:modelValue', value: string | number): void
+}>()
 
 const items = computed(() =>
   props.options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o)),

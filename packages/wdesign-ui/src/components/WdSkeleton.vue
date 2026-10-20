@@ -5,9 +5,13 @@ defineOptions({ name: 'WdSkeleton' })
 
 const props = withDefaults(
   defineProps<{
+    /** 骨架形态：text 文本行 / rect 矩形块 / circle 圆形 */
     variant?: 'text' | 'rect' | 'circle'
+    /** 单个占位块宽度，数字按 px 处理 */
     width?: number | string
+    /** 单个占位块高度，数字按 px 处理；rect 不传时默认 80px */
     height?: number | string
+    /** 占位块数量 */
     count?: number
   }>(),
   { variant: 'text', width: '', height: '', count: 3 },

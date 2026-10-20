@@ -24,6 +24,7 @@ const props = withDefaults(
   defineProps<{
     /** 未激活时的取向：横栏（顶部）/ 竖栏（侧边） */
     direction?: 'horizontal' | 'vertical'
+    /** 导航项列表，每一项的 key 必须唯一 */
     items?: WdNavItem[]
     /** 当前激活项 key */
     active?: string
@@ -75,8 +76,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 点击导航项时触发，参数为该项目的 key，用于 v-model:active */
   'update:active': [key: string]
+  /** 点击可用导航项时触发，参数为该项完整数据；禁用项不触发 */
   select: [item: WdNavItem]
+  /** 点击折叠按钮时触发，参数为期望的折叠状态，用于 v-model:collapsed */
   'update:collapsed': [value: boolean]
 }>()
 

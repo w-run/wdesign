@@ -32,6 +32,7 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新：拖拽结束或键盘调节结束时触发，参数为主栏百分比 */
   'update:modelValue': [value: number]
   /** 拖拽中持续触发（适合做实时预览） */
   resize: [value: number]

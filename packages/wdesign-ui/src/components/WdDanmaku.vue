@@ -73,7 +73,10 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ error: [msg: string] }>()
+const emit = defineEmits<{
+  /** src 加载或解析失败时触发，参数为错误信息；走 items / raw 本地数据不会触发 */
+  error: [msg: string]
+}>()
 
 /* ---------------- 数据加载 ---------------- */
 /**

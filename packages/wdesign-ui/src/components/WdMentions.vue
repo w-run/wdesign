@@ -27,8 +27,11 @@ const props = withDefaults(
     defaultValue?: string
     /** 候选人列表 */
     users?: WdMentionUser[]
+    /** 输入区占位文字 */
     placeholder?: string
+    /** 文本域行数 */
     rows?: number
+    /** 禁用；不能输入也不弹候选浮层 */
     disabled?: boolean
     /** 触发字符 */
     trigger?: string
@@ -48,8 +51,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 文本变化时触发，参数为最新文本，用于 v-model */
   'update:modelValue': [value: string]
+  /** 文本变化时触发，非受控模式监听它拿最新文本 */
   change: [value: string]
+  /** 选中候选项后触发，参数为被选中的用户 */
   select: [user: WdMentionUser]
 }>()
 

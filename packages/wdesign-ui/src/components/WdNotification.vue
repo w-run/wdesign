@@ -9,15 +9,22 @@ defineOptions({ name: 'WdNotification' })
 
 const props = withDefaults(
   defineProps<{
+    /** 是否显示通知，用于 v-model 控制显隐 */
     modelValue?: boolean
+    /** 标题文字，留空则只显示描述 */
     title?: string
+    /** 描述正文，也可用默认插槽传入富内容 */
     description?: string
+    /** 语义类型，决定左侧圆点配色：信息 / 成功 / 警告 / 危险 */
     variant?: 'info' | 'success' | 'warning' | 'danger'
   }>(),
   { modelValue: false, title: '', description: '', variant: 'info' },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
+const emit = defineEmits<{
+  /** 关闭时触发（关闭按钮或 Esc），参数恒为 false，用于 v-model */
+  (e: 'update:modelValue', value: boolean): void
+}>()
 
 function close() {
   emit('update:modelValue', false)

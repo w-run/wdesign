@@ -3,6 +3,7 @@ defineOptions({ name: 'WdContainer' })
 
 const props = withDefaults(
   defineProps<{
+    /** 内容最大宽度，带单位；容器本身仍撑满父级，靠居中留白 */
     maxWidth?: string
     /** 内间距档位：水平与垂直成对生效 */
     pad?: 'sm' | 'md' | 'lg'

@@ -17,6 +17,7 @@ const props = withDefaults(
     trigger?: 'click' | 'hover' | 'manual'
     /** 气泡标题（留空则不显示标题栏） */
     title?: string
+    /** 浮层相对触发器的对齐方位，空间不足时自动翻转 */
     placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'bottom-center'
     /** 与触发器的间距 */
     gap?: number
@@ -24,6 +25,7 @@ const props = withDefaults(
     width?: number
     /** 显示关闭按钮 */
     closable?: boolean
+    /** 是否禁用，禁用后点击与悬停都不弹出，且会关掉已打开的浮层 */
     disabled?: boolean
     /** 点击面板内部是否关闭 */
     closeOnContent?: boolean
@@ -42,8 +44,11 @@ const props = withDefaults(
 
 /** 受控/非受控：显式传 open 就走受控，否则组件自己管 */
 const emit = defineEmits<{
+  /** 显隐变化时触发，参数为是否打开；trigger 为 manual 时靠它做完全受控 */
   'update:open': [value: boolean]
+  /** 浮层打开后触发 */
   open: []
+  /** 浮层关闭后触发（点外部 / Esc / 关闭按钮 / closeOnContent 点内容） */
   close: []
 }>()
 

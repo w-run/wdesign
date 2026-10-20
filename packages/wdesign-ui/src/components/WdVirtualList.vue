@@ -32,7 +32,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 滚动时触发，offset 为当前 scrollTop（px） */
   (e: 'scroll', offset: number): void
+  /** 滚到底部时触发（留 2px 容差），用于分页加载更多 */
   (e: 'reach-end'): void
 }>()
 

@@ -32,7 +32,10 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ change: [affixed: boolean] }>()
+const emit = defineEmits<{
+  /** 吸附状态切换时触发；参数为切换后的状态，true = 已吸附 */
+  change: [affixed: boolean]
+}>()
 
 const root = ref<HTMLElement | null>(null)
 const affixed = ref(false)

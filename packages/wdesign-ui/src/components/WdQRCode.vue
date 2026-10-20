@@ -51,7 +51,10 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ error: [message: string] }>()
+const emit = defineEmits<{
+  /** 编码失败时触发，参数为错误说明（如内容过长），此时二维码不渲染 */
+  error: [message: string]
+}>()
 
 const result = computed(() => {
   if (!props.text) return null

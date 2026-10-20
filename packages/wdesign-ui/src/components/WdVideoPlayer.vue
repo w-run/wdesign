@@ -35,8 +35,11 @@ const props = withDefaults(
      *  always — 一直显示
      */
     controlsMode?: 'auto' | 'always'
+    /** 自动播放（多数浏览器要求同时 muted 才允许） */
     autoplay?: boolean
+    /** 播完从头循环 */
     loop?: boolean
+    /** 初始静音 */
     muted?: boolean
     /** 显示倍速（点播才有意义） */
     rates?: number[]
@@ -126,14 +129,21 @@ const hasDanmaku = computed(
 )
 
 const emit = defineEmits<{
+  /** 开始播放时触发 */
   (e: 'play'): void
+  /** 暂停时触发 */
   (e: 'pause'): void
+  /** 播放结束时触发，循环播放下不触发 */
   (e: 'ended'): void
+  /** 播放进度变化时触发，current 为当前秒数、duration 为总秒数 */
   (e: 'timeupdate', current: number, duration: number): void
+  /** 播放或加载失败（含 15s 加载超时）时触发，msg 为错误文案 */
   (e: 'error', msg: string): void
   /** 切集（组件只发事件，换源交给调用方；若 episode 带 src 则组件自行切换） */
   (e: 'change-episode', ep: WdEpisode, index: number): void
+  /** 用户切换倍速时触发，rate 为新的倍速 */
   (e: 'rate-change', rate: number): void
+  /** 弹幕开关变化时触发（配合 v-model:danmaku-on） */
   (e: 'update:danmakuOn', value: boolean): void
 }>()
 

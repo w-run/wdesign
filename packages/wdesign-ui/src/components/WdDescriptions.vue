@@ -16,6 +16,7 @@ export interface WdDescriptionItem {
 
 const props = withDefaults(
   defineProps<{
+    /** 描述项数组，label 必填，value / key / span / hint 可选 */
     items?: WdDescriptionItem[]
     /** 每行几列 */
     columns?: number

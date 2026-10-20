@@ -6,7 +6,9 @@ defineOptions({ name: 'WdTooltip' })
 
 const props = withDefaults(
   defineProps<{
+    /** 气泡文字（纯文本，不解析 HTML） */
     content?: string
+    /** 气泡出现方向：top 在触发器上方，bottom 在下方 */
     placement?: 'top' | 'bottom'
   }>(),
   { content: '', placement: 'top' },

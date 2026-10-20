@@ -8,7 +8,9 @@ type Step = string | { title: string; desc?: string }
 
 const props = withDefaults(
   defineProps<{
+    /** 步骤数据：纯文本，或 { title, desc } 对象 */
     steps?: Step[]
+    /** 当前步骤序号（从 0 开始）：之前为已完成、本身为进行中、之后为待进行 */
     current?: number
   }>(),
   { steps: () => [], current: 0 },

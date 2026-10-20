@@ -15,15 +15,23 @@ defineOptions({ name: 'WdDrawer' })
 
 const props = withDefaults(
   defineProps<{
+    /** 是否打开（v-model），打开时锁背景滚动并把焦点限制在抽屉内 */
     modelValue?: boolean
+    /** 抽屉头部标题，留空则只剩关闭按钮 */
     title?: string
+    /** 从哪一侧滑出 */
     side?: 'right' | 'left'
+    /** 点击遮罩是否关闭，设为 false 时只能靠关闭按钮收起 */
     closeOnMask?: boolean
   }>(),
   { modelValue: false, title: '', side: 'right', closeOnMask: true },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
+/** 请求关闭时触发（关闭按钮、点遮罩、Esc），需写回 false 才真正收起 */
+const emit = defineEmits<{
+  /** 显隐状态变化时触发（v-model），true 为打开 */
+  (e: 'update:modelValue', value: boolean): void
+}>()
 
 const classes = computed(() => ['wd-drawer', props.side === 'left' ? 'wd-drawer--left' : ''])
 

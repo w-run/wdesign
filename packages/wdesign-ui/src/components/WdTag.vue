@@ -3,8 +3,11 @@ defineOptions({ name: 'WdTag' })
 
 withDefaults(
   defineProps<{
+    /** 视觉风格：tint 淡色底 / gray 中性灰 / dark 深色实底 */
     variant?: 'tint' | 'gray' | 'dark'
+    /** 尺寸档：sm | md | lg，不传为默认 md */
     size?: 'lg' | 'md' | 'sm'
+    /** 前置状态圆点（固定主色红） */
     dot?: boolean
   }>(),
   { variant: 'tint', dot: false },

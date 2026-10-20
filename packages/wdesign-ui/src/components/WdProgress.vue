@@ -5,8 +5,11 @@ defineOptions({ name: 'WdProgress' })
 
 const props = withDefaults(
   defineProps<{
+    /** 进度百分比 0–100，越界会被夹回范围内 */
     value?: number
+    /** 细条模式，高度更矮，适合列表行内或表格内 */
     thin?: boolean
+    /** 深色背景上使用，轨道换用深色底专用色、进度条整体提亮 */
     onDark?: boolean
     /** 进度色，默认主题红。任意 CSS 颜色值。 */
     color?: string

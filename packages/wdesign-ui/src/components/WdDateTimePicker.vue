@@ -14,6 +14,7 @@ const props = withDefaults(
      * 日期部分为空时值为空字符串（不选日期就没有时间可谈）
      */
     modelValue?: string
+    /** 非受控时的初始值，格式同 modelValue */
     defaultValue?: string
     /** 是否含秒 */
     second?: boolean
@@ -43,7 +44,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 日期或时间变化时触发，用于 v-model */
   'update:modelValue': [value: string]
+  /** 值变化后触发，参数为完整字符串 'YYYY-MM-DD HH:mm[:ss]' */
   change: [value: string]
 }>()
 

@@ -7,10 +7,13 @@ defineOptions({ name: 'WdRate' })
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑的当前星数，受控时以父级为准 */
     modelValue?: number
     /** 非受控模式的初始值 */
     defaultValue?: number
+    /** 星星总数 */
     count?: number
+    /** 禁用后不可点击、不可键盘调整 */
     disabled?: boolean
     /** 允许再次点击同一颗星清空（默认开启） */
     clearable?: boolean
@@ -32,7 +35,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 点击或键盘调整后触发，参数为新星数（清空时为 0），用于 v-model */
   (e: 'update:modelValue', value: number): void
+  /** 星数变化时触发，参数同 update:modelValue，非受控模式监听它 */
   (e: 'change', value: number): void
 }>()
 

@@ -5,9 +5,13 @@ defineOptions({ name: 'WdBadge' })
 
 const props = withDefaults(
   defineProps<{
+    /** 数值；传字符串则原样显示 */
     value?: number | string
+    /** 只显示圆点，不显示数字 */
     dot?: boolean
+    /** 数值上限，超过显示为 max+ */
     max?: number
+    /** 配色：gray 用于弱提示 */
     tone?: 'red' | 'gray'
   }>(),
   { value: '', dot: false, max: 99, tone: 'red' },

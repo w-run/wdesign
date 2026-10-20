@@ -12,10 +12,15 @@ export interface WdCarouselItem {
 
 const props = withDefaults(
   defineProps<{
+    /** 幻灯片数据：给了 src 渲染图片（完整显示不裁切），否则整屏显示 label */
     items?: WdCarouselItem[]
+    /** 单屏高度（px），圆点与箭头按此高度定位 */
     height?: number
+    /** 自动切换间隔（ms），0 为关闭；指针移入与拖拽期间暂停，松手后重新计时 */
     autoplay?: number
+    /** 是否显示底部圆点，仅多于 1 张时出现，可点击跳转 */
     showDots?: boolean
+    /** 是否显示左右箭头，仅多于 1 张时出现 */
     showArrows?: boolean
     /** 首尾无缝循环（默认开启）：末张→首张不倒退整条轨道 */
     loop?: boolean

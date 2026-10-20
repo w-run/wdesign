@@ -13,6 +13,7 @@ const props = withDefaults(
   defineProps<{
     /** 展开项的索引数组 */
     modelValue?: number[]
+    /** 面板数据：title 为标题、content 为正文，正文也可用 item-0、item-1 这类插槽替换 */
     items?: WdCollapseItem[]
     /**
      * 手风琴模式：同时只能展开一项。
@@ -25,7 +26,10 @@ const props = withDefaults(
   { modelValue: () => [], items: () => [], accordion: false, collapsible: true },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: number[]): void }>()
+const emit = defineEmits<{
+  /** 展开项变化时触发：参数为仍展开的索引数组，升序排列；手风琴全收时为空数组 */
+  (e: 'update:modelValue', value: number[]): void
+}>()
 
 const openSet = computed(() => new Set(props.modelValue))
 

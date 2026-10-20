@@ -31,6 +31,7 @@ const props = withDefaults(
     height?: number
     /** 是否可搜索 */
     filterable?: boolean
+    /** 禁用：不可勾选、不可移动 */
     disabled?: boolean
   }>(),
   {
@@ -46,7 +47,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 移动后触发，value 为新的已选 key 数组（配合 v-model） */
   'update:modelValue': [value: (string | number)[]]
+  /** 移动完成时触发，direction 标记移到右侧还是回左侧 */
   change: [value: (string | number)[], direction: 'right' | 'left']
 }>()
 

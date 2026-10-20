@@ -7,10 +7,13 @@ defineOptions({ name: 'WdCheckbox' })
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑的选中状态；传了即为受控，点击后只发事件、不回写 */
     modelValue?: boolean
     /** 非受控模式的初始值（不传 modelValue 时生效） */
     defaultValue?: boolean
+    /** 文案，不传时用默认插槽 */
     label?: string
+    /** 禁用：不响应点击、不发事件，配色转灰 */
     disabled?: boolean
     /**
      * 选中色。任意 CSS 颜色值。
@@ -25,7 +28,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新；受控时父级须回写，否则勾选状态不动 */
   (e: 'update:modelValue', value: boolean): void
+  /** 用户点击造成的选中态变化，参数为新值；受控值被外部改动时不触发 */
   (e: 'change', value: boolean): void
 }>()
 

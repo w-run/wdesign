@@ -9,9 +9,13 @@ defineOptions({ name: 'WdImagePreview' })
 
 const props = withDefaults(
   defineProps<{
+    /** 单张图片地址；有多张时改用 list */
     src?: string
+    /** 图片列表，浮层内可翻页浏览 */
     list?: string[]
+    /** 图片替代文本 */
     alt?: string
+    /** 浮层打开时展示第几张，从 0 开始计数 */
     index?: number
   }>(),
   { src: '', list: () => [], alt: '', index: 0 },

@@ -36,8 +36,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 表单数据变化时触发（resetFields 亦会触发），用于 v-model */
   (e: 'update:modelValue', v: Record<string, unknown>): void
+  /** 提交且校验通过后触发，参数为当前表单数据 */
   (e: 'submit', v: Record<string, unknown>): void
+  /** 校验结束时触发，ok 为是否全部通过，errors 为 { 字段名: 提示 } */
   (e: 'validate', ok: boolean, errors: Record<string, string>): void
 }>()
 

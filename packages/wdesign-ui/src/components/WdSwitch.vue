@@ -6,9 +6,11 @@ defineOptions({ name: 'WdSwitch' })
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑定的开关值（受控） */
     modelValue?: boolean
     /** 非受控模式的初始值（不传 modelValue 时生效） */
     defaultValue?: boolean
+    /** 禁用：不响应点击与键盘，保持当前值 */
     disabled?: boolean
   }>(),
   /*
@@ -21,7 +23,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新：点击切换时触发，参数为新值 */
   (e: 'update:modelValue', value: boolean): void
+  /** 值变化：与 update:modelValue 同时触发，供业务处理 */
   (e: 'change', value: boolean): void
 }>()
 

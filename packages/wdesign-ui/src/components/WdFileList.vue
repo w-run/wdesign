@@ -13,11 +13,13 @@ export interface WdFileNode {
 
 const props = withDefaults(
   defineProps<{
+    /** 文件树节点，type 为 folder 且带 children 时可展开 */
     items?: WdFileNode[]
   }>(),
   { items: () => [] },
 )
 
+/** 点击文件行时触发，参数为该节点；点文件夹只切换展开收起，不触发 */
 const emit = defineEmits<{ (e: 'select', item: WdFileNode): void }>()
 
 const openPaths = ref<Set<string>>(new Set())

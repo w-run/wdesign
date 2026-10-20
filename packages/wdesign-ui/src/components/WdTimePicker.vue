@@ -42,7 +42,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 时间变化时触发，value 为 'HH:mm' 或 'HH:mm:ss'（配合 v-model） */
   'update:modelValue': [value: string]
+  /** 用户选定时间后触发，value 同 v-model */
   change: [value: string]
 }>()
 

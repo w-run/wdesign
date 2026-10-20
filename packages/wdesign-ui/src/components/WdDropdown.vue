@@ -22,11 +22,13 @@ export interface WdDropdownItem {
 
 const props = withDefaults(
   defineProps<{
+    /** 菜单项数组，每项含 label / value，可选 danger、disabled */
     items?: WdDropdownItem[]
   }>(),
   { items: () => [] },
 )
 
+/** 点击可用菜单项后触发，参数为该菜单项的 value，随后自动关闭浮层 */
 const emit = defineEmits<{ (e: 'select', value: string | number): void }>()
 
 const open = ref(false)

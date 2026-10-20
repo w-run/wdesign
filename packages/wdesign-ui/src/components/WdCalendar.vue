@@ -87,8 +87,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新：单日模式为 'YYYY-MM-DD'，区间模式为 `start~end`；清空时为空字符串 */
   'update:modelValue': [value: string]
+  /** 选中日期变化时触发，参数格式同 v-model；区间模式只点了一下起点也会触发 */
   change: [value: string]
+  /** 翻月时触发，参数为 'YYYY-MM'：点上一月 / 下一月、年月浮层跳转、PageUp / PageDown 都会发 */
   'update:month': [value: string]
 }>()
 

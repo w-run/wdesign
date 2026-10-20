@@ -6,6 +6,8 @@ import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdColorPicker' })
 
+/* 透明度（alpha 通道）暂未实现：面板只有 HEX / RGB 两个输入，
+   将来接 alpha 时再加 showAlpha prop，别在半成品状态暴露给文档 */
 const props = withDefaults(
   defineProps<{
     /** 受控色值，格式 #RRGGBB 或 #RGB */
@@ -16,8 +18,9 @@ const props = withDefaults(
     presets?: string[]
     /** 是否允许输入色值 */
     editable?: boolean
-    /** 是否显示透明度（暂未实现 alpha 通道，保留接口） */
+    /** 尺寸档 sm|md|lg，只改变色块直径（28/34/42px） */
     size?: 'sm' | 'md' | 'lg'
+    /** 禁用：不展开浮层，也不参与键盘聚焦 */
     disabled?: boolean
   }>(),
   {
@@ -35,7 +38,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新：参数为归一化后的 #RRGGBB，非法输入不发 */
   'update:modelValue': [value: string]
+  /** 取色结果变化时触发，拖动色板与色相条期间会连续触发，参数同 v-model */
   change: [value: string]
 }>()
 

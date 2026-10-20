@@ -25,6 +25,7 @@ export interface WdTimelineItem {
 
 const props = withDefaults(
   defineProps<{
+    /** 节点数据：按顺序渲染，颜色/图标/高亮等由单项字段控制 */
     items: WdTimelineItem[]
     /** 是否画贯穿竖线（老 API，等价于 line-style="solid"） */
     line?: boolean
@@ -51,7 +52,10 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ 'item-click': [item: WdTimelineItem, index: number] }>()
+const emit = defineEmits<{
+  /** 节点点击：collapsible 且该节点有 detail 时触发，参数为节点数据与序号 */
+  'item-click': [item: WdTimelineItem, index: number]
+}>()
 
 /** 展开的项（collapsible 模式） */
 const expanded = ref<Set<number>>(new Set())

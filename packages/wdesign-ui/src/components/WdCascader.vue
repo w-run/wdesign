@@ -22,11 +22,15 @@ const props = withDefaults(
     options?: WdCascaderOption[]
     /** 受控：选中的完整路径值数组，如 ['浙江','杭州','西湖'] */
     modelValue?: (string | number)[]
+    /** 未选中任何值时的占位文案 */
     placeholder?: string
     /** 允许选择任意层级（不传则只能选叶子） */
     changeOnSelect?: boolean
+    /** 禁用：不展开浮层、不显示清空按钮，也不参与键盘聚焦 */
     disabled?: boolean
+    /** 有选中值时显示清空按钮，清空后发空数组 */
     clearable?: boolean
+    /** 控件尺寸档 sm|md|lg，高度取 --wd-size-* 令牌，与 Input / Select 对齐 */
     size?: 'sm' | 'md' | 'lg'
     /** 展开时的面板最大高度 */
     maxHeight?: number
@@ -44,7 +48,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新：选中路径的值数组；清空时为空数组 */
   'update:modelValue': [value: (string | number)[]]
+  /** 选中项变化时触发，第二个参数是同步反查出的标签路径；清空也会触发 */
   change: [value: (string | number)[], labels: string[]]
 }>()
 

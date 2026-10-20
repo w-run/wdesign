@@ -11,6 +11,7 @@ const props = withDefaults(
     title?: string
     /** 前缀 / 后缀（货币符号、单位） */
     prefix?: string
+    /** 后缀（紧跟数字后的单位、百分号） */
     suffix?: string
     /** 小数位 */
     precision?: number

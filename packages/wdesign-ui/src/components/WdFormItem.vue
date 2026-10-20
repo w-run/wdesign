@@ -14,6 +14,7 @@ const props = withDefaults(
   defineProps<{
     /** 对应 model 里的字段名 */
     prop?: string
+    /** 标签文字，不传则不渲染标签行 */
     label?: string
     /** 覆盖表单的规则 */
     rules?: import('./form-context').FormRule[]

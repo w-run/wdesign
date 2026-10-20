@@ -21,6 +21,7 @@ declare module "virtual:component-api" {
   interface ApiEmit {
     name: string;
     params: string;
+    desc: string;
   }
   interface ApiSlot {
     name: string;

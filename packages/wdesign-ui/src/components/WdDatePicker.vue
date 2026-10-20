@@ -16,8 +16,11 @@ defineOptions({ name: 'WdDatePicker' })
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑定的日期字符串，格式 'YYYY-MM-DD'，空字符串表示未选 */
     modelValue?: string
+    /** 未选值时触发器里显示的占位文字 */
     placeholder?: string
+    /** 禁用：触发器不可点击，浮层无法打开 */
     disabled?: boolean
     /** 尺寸，与 Input / Select / Cascader 一致 */
     size?: 'sm' | 'md' | 'lg'
@@ -25,7 +28,11 @@ const props = withDefaults(
   { modelValue: '', placeholder: '选择日期', disabled: false, size: 'md' },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: string): void }>()
+/** 点选某天后触发，参数为 'YYYY-MM-DD' 字符串，同时用于 v-model 并关闭浮层 */
+const emit = defineEmits<{
+  /** 选中日期变化时触发，格式 'YYYY-MM-DD'；清空时为空字符串 */
+  (e: 'update:modelValue', value: string): void
+}>()
 
 const open = ref(false)
 

@@ -10,6 +10,7 @@ const props = withDefaults(
     visibilityHeight?: number
     /** 距离视口右边 / 底边的距离 */
     right?: number
+    /** 距视口底边的距离 */
     bottom?: number
     /** 滚回顶部的时长（ms） */
     duration?: number
@@ -28,7 +29,10 @@ const props = withDefaults(
   },
 )
 
-const emit = defineEmits<{ click: [event: MouseEvent] }>()
+const emit = defineEmits<{
+  /** 点击后触发，参数为原始 MouseEvent；回滚已在内部启动 */
+  click: [event: MouseEvent]
+}>()
 
 const visible = ref(false)
 

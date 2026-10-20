@@ -16,6 +16,7 @@ export interface WdExplorerFolder {
 
 const props = withDefaults(
   defineProps<{
+    /** 文件夹列表，每项含 name 与 files，第一项默认选中 */
     folders?: WdExplorerFolder[]
     /** 初始视图：details 详情列表 / icons 图标网格 */
     view?: 'details' | 'icons'
@@ -23,6 +24,7 @@ const props = withDefaults(
   { folders: () => [], view: 'details' },
 )
 
+/** 点击文件行或文件磁贴时触发，参数为该文件对象 */
 const emit = defineEmits<{ (e: 'select', file: WdExplorerFile): void }>()
 
 const active = ref(0)

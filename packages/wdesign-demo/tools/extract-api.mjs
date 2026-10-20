@@ -140,28 +140,72 @@ function parseDefaults(src) {
   return out;
 }
 
-/** 解析 defineEmits 的两个常见写法 */
+/**
+ * 解析 defineEmits 的两种写法，并带上它上方的 JSDoc：
+ *   1. (e: 'name', a: T): void
+ *   2. 'name': [a: T]      /      name: [a: T]   ← 不带引号也要认
+ *
+ * ⚠️ 只认带引号的键会让一批事件从右栏整表消失（Calendar / Cascader /
+ *    Nav / QRCode 都栽在这里），而且不会报错 —— 文档静默缺行。
+ */
 function parseEmits(body) {
+  const lines = body.split("\n");
   const out = [];
-  // (e: 'name', a: T, b: U): void
-  for (const m of body.matchAll(/\(\s*e\s*:\s*'([^']+)'\s*,?([^)]*)\)/g)) {
-    const params = m[2]
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .map((s) => s.replace(/:\s*/, ": "))
-      .join(", ");
-    out.push({ name: m[1], params });
-  }
-  // 'name': [a: T, b: U]
-  for (const m of body.matchAll(/'([^']+)'\s*:\s*\[([^\]]*)\]/g)) {
-    if (out.some((e) => e.name === m[1])) continue;
-    const params = m[2]
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .join(", ");
-    out.push({ name: m[1], params });
+  let comment = "";
+  let inComment = false;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (inComment) {
+      comment += "\n" + raw;
+      if (line.includes("*/")) inComment = false;
+      continue;
+    }
+    if (line.startsWith("/**")) {
+      comment = line;
+      if (!line.includes("*/")) inComment = true;
+      continue;
+    }
+
+    // 单行写法的 JSDoc：/** 说明 */ (e: 'x', ...)
+    let text = line;
+    let desc = cleanComment(comment);
+    const inline = text.match(/^\/\*\*(.*?)\*\/\s*(.*)$/);
+    if (inline) {
+      desc = cleanComment(`/**${inline[1]}*/`);
+      text = inline[2];
+    }
+
+    // 写法 1：(e: 'name', a: T, b: U): void
+    const call = text.match(/\(\s*e\s*:\s*'([^']+)'\s*,?([^)]*)\)/)
+    // 写法 2：'name': [a: T] 或 name: [a: T]
+    // 用贪婪匹配到行尾的最后一个 ] —— 参数里会有 Row[] 这种自带方括号的类型
+    const map = text.match(/^['"]?([A-Za-z_$][\w$:.-]*)['"]?\s*:\s*\[(.*)\]/)
+
+    if (call) {
+      out.push({
+        name: call[1],
+        params: call[2]
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean)
+          .map((x) => x.replace(/:\s*/, ": "))
+          .join(", "),
+        desc,
+      })
+      comment = "";
+    } else if (map) {
+      out.push({
+        name: map[1],
+        params: map[2]
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean)
+          .join(", "),
+        desc,
+      })
+      comment = "";
+    }
   }
   return out;
 }
@@ -182,12 +226,36 @@ function parseSlots(src) {
   return [...names].map((name) => ({ name }));
 }
 
+/**
+ * defineEmits 整行上方的 JSDoc。
+ * 单事件组件常写成：
+ *   /** 点击菜单项后触发 *\/
+ *   const emit = defineEmits<{ (e: 'select', value: string): void }>()
+ * 这种写法说明在泛型外面，得单独捞一次。
+ */
+function docAbove(src, keyword) {
+  const at = src.indexOf(keyword);
+  if (at === -1) return "";
+  const before = src.slice(0, at);
+  const end = before.lastIndexOf("*/");
+  if (end === -1) return "";
+  const start = before.lastIndexOf("/**", end);
+  if (start === -1) return "";
+  // 注释和 defineEmits 之间只允许空白或 `const emit =` 这类赋值前缀
+  const between = before.slice(end + 2).trim();
+  if (between && !/^(const|let)\s+\w+\s*=$/.test(between)) return "";
+  return cleanComment(before.slice(start, end + 2));
+}
+
 /** 一个 .vue 文件 → API 描述 */
 export function extractApi(file) {
   const src = readFileSync(file, "utf8");
   const props = parseProps(genericBody(src, "defineProps"));
   const defaults = parseDefaults(src);
   const emits = parseEmits(genericBody(src, "defineEmits"));
+  const emitDoc = docAbove(src, "defineEmits");
+  // 只有一个事件、且泛型里没写说明 → 用整行上方的注释兜底
+  if (emits.length === 1 && !emits[0].desc && emitDoc) emits[0].desc = emitDoc;
   const slots = parseSlots(src);
 
   return {

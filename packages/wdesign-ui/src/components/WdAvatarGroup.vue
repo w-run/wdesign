@@ -6,7 +6,9 @@ defineOptions({ name: 'WdAvatarGroup' })
 
 const props = withDefaults(
   defineProps<{
+    /** 名称列表；按顺序渲染 */
     names?: string[]
+    /** 最多显示几个头像，超出的折叠为 +N */
     max?: number
   }>(),
   { names: () => [], max: 3 },

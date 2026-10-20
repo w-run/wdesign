@@ -8,8 +8,11 @@ type Tab = string | { label: string; value: string | number; closable?: boolean;
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑定的当前页签 value（受控） */
     modelValue?: string | number
+    /** 页签数据：纯文本，或 { label, value, closable, disabled } 对象 */
     tabs?: Tab[]
+    /** 撑满父容器宽度，各页签均分 */
     block?: boolean
     /** 每个页签可关闭（右上角 ×） */
     closable?: boolean
@@ -22,8 +25,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model 更新：点击或键盘切换页签时触发，参数为页签 value */
   (e: 'update:modelValue', value: string | number): void
+  /** 关闭：点页签上的 × 时触发，参数为被关闭页签的 value（数据由业务侧删除） */
   (e: 'close', value: string | number): void
+  /** 新建：点末尾「+」按钮时触发，不带参数 */
   (e: 'add'): void
 }>()
 

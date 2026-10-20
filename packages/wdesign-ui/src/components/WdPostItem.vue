@@ -8,10 +8,15 @@ defineOptions({ name: 'WdPostItem' })
 
 withDefaults(
   defineProps<{
+    /** 标题文字，必填 */
     title: string
+    /** 摘要文字，留空则该行不渲染 */
     summary?: string
+    /** 标签列表，以灰色小标签排在摘要下方 */
     tags?: string[]
+    /** 标题前的小图标，传 emoji 字符，留空则不显示 */
     emoji?: string
+    /** 链接地址，传了整条渲染为 a 标签，否则为普通容器 */
     href?: string
   }>(),
   { tags: () => [] },

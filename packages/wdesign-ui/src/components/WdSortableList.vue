@@ -8,13 +8,16 @@ type Item = string | { label: string }
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑的列表数据，项为字符串或 { label } 对象 */
     modelValue?: Item[]
   }>(),
   { modelValue: () => [] },
 )
 
 const emit = defineEmits<{
+  /** 松手后顺序确实变化时触发，参数为重排后的新数组，用于 v-model */
   (e: 'update:modelValue', items: Item[]): void
+  /** 顺序变化时触发，参数同 update:modelValue，非受控模式监听它 */
   (e: 'change', items: Item[]): void
 }>()
 

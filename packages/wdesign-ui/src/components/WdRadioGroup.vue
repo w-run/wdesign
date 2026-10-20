@@ -8,10 +8,13 @@ type Option = string | { label: string; value: string | number }
 
 const props = withDefaults(
   defineProps<{
+    /** 当前选中值，用于 v-model；传了即受控，不传走非受控 */
     modelValue?: string | number
     /** 非受控模式的初始值 */
     defaultValue?: string | number
+    /** 选项列表，字符串会同时作为 label 与 value */
     options?: Option[]
+    /** 是否禁用，禁用后整组不可切换 */
     disabled?: boolean
   }>(),
   /* 不给 modelValue 默认值，否则无法区分受控/非受控 */
@@ -19,7 +22,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 选择选项时触发，参数为选中值，用于 v-model；重复点击已选项也会触发 */
   (e: 'update:modelValue', value: string | number): void
+  /** 与 update:modelValue 同时触发，参数相同，供非 v-model 场景监听 */
   (e: 'change', value: string | number): void
 }>()
 

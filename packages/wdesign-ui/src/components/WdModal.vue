@@ -15,15 +15,22 @@ defineOptions({ name: 'WdModal' })
 
 const props = withDefaults(
   defineProps<{
+    /** 是否显示浮层，用于 v-model */
     modelValue?: boolean
+    /** 标题文字，同时作为弹窗的无障碍名称 */
     title?: string
+    /** 面板宽度，数字按 px 处理，也可传 40vw；超出视口时受 max-width 约束 */
     width?: number | string
+    /** 点击遮罩是否关闭 */
     closeOnMask?: boolean
   }>(),
   { modelValue: false, title: '', width: 440, closeOnMask: true },
 )
 
-const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>()
+const emit = defineEmits<{
+  /** 请求关闭时触发（点遮罩 / 关闭按钮 / Esc），参数恒为 false，用于 v-model */
+  (e: 'update:modelValue', value: boolean): void
+}>()
 
 const panel = ref<HTMLElement | null>(null)
 

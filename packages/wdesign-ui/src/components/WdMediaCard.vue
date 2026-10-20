@@ -80,7 +80,9 @@ const props = withDefaults(
 const slots = useSlots()
 
 const emit = defineEmits<{
+  /** 点击主按钮时触发 */
   action: []
+  /** 展开状态变化时触发，参数为最新的展开态，用于 v-model:open */
   'update:open': [value: boolean]
 }>()
 

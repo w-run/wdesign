@@ -20,6 +20,7 @@ export interface WdTreeNode {
 
 const props = withDefaults(
   defineProps<{
+    /** 树数据源（children 嵌套，key 缺省用 label） */
     nodes?: WdTreeNode[]
     /** 已展开的 key */
     expandedKeys?: (string | number)[]
@@ -52,11 +53,17 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 展开/收起时触发，keys 为新的已展开 key 数组（配合 v-model:expanded-keys） */
   (e: 'update:expandedKeys', keys: (string | number)[]): void
+  /** 选中节点变化时触发，key 为该节点 key */
   (e: 'update:selectedKey', key: string | number): void
+  /** 勾选变化时触发，keys 为全部已勾选 key（级联时含父子） */
   (e: 'update:checkedKeys', keys: (string | number)[]): void
+  /** 点击或回车选中节点时触发，禁用的节点不触发 */
   (e: 'select', node: WdTreeNode): void
+  /** 勾选某个节点时触发，checked 为勾选后的状态 */
   (e: 'check', node: WdTreeNode, checked: boolean): void
+  /** 展开/收起某个节点时触发，expanded 为展开后的状态 */
   (e: 'expand', node: WdTreeNode, expanded: boolean): void
 }>()
 

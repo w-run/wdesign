@@ -20,12 +20,17 @@ type Row = Record<string, unknown>
 
 const props = withDefaults(
   defineProps<{
+    /** 列定义：key 对应行数据字段名 */
     columns?: WdTableColumn[]
+    /** 行数据数组 */
     rows?: Row[]
+    /** 斑马纹隔行底色 */
     striped?: boolean
+    /** 无数据时的占位文案 */
     emptyText?: string
     /** 加载中：显示骨架遮罩，避免"空白 = 没数据"的误判 */
     loading?: boolean
+    /** 加载遮罩上的提示文案 */
     loadingText?: string
     /** 开启勾选列 */
     selectable?: boolean
@@ -72,9 +77,13 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** v-model:selected 更新：勾选行或全选变化时触发，参数为新的已选行 */
   'update:selected': [rows: Row[]]
+  /** 勾选变化：与 update:selected 同时触发，供业务处理 */
   change: [rows: Row[]]
+  /** 行点击：点整行时触发，参数为行数据与渲染序位 */
   'row-click': [row: Row, index: number]
+  /** 树形节点展开/收起：参数为所在行数据与新的展开态 */
   'expand-change': [row: Row, expanded: boolean]
 }>()
 

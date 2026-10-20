@@ -4,7 +4,9 @@ defineOptions({ name: 'WdEmpty' })
 
 withDefaults(
   defineProps<{
+    /** 主标题，传空字符串则整行不渲染 */
     title?: string
+    /** 次要说明文字，需要富文本时改用 #description 插槽 */
     description?: string
   }>(),
   { title: '暂无数据', description: '' },

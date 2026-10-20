@@ -6,10 +6,13 @@ defineOptions({ name: 'WdOtp' })
 
 const props = withDefaults(
   defineProps<{
+    /** 当前值，用于 v-model；传了即受控，不传走非受控 */
     modelValue?: string
     /** 非受控模式的初始值 */
     defaultValue?: string
+    /** 验证码位数，即输入格数 */
     length?: number
+    /** 是否禁用，禁用后整组不可编辑且不响应粘贴 */
     disabled?: boolean
     /**
      * 视觉形态：
@@ -24,7 +27,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 输入 / 粘贴 / 退格后触发，参数为当前完整值，用于 v-model */
   (e: 'update:modelValue', value: string): void
+  /** 与 update:modelValue 同时触发，参数相同，供非 v-model 场景监听 */
   (e: 'change', value: string): void
 }>()
 

@@ -27,8 +27,11 @@ export interface WdCommandItem {
 
 const props = withDefaults(
   defineProps<{
+    /** 浮层显隐（v-model）：组件不自行改写，只在选中、ESC、点遮罩、⌘K 时发事件请求切换 */
     modelValue?: boolean
+    /** 命令项数据；key 需唯一，label / hint / keywords 参与搜索匹配 */
     items?: WdCommandItem[]
+    /** 搜索框占位文案 */
     placeholder?: string
     /** 无匹配时文案 */
     emptyText?: string
@@ -48,7 +51,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 请求切换浮层显隐，参数为目标状态；选中、按 ESC、点遮罩、⌘K / Ctrl+K 都会触发 */
   (e: 'update:modelValue', v: boolean): void
+  /** 选中某一项时触发，参数为该项；触发后浮层关闭并清空查询 */
   (e: 'select', item: WdCommandItem): void
   /** 输入变化（可用于远程搜索） */
   (e: 'search', q: string): void

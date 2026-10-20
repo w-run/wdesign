@@ -26,6 +26,7 @@ const props = withDefaults(
     subtitle?: string
     /** 封面；不给则显示占位图形 */
     cover?: string
+    /** 循环播放；透传给内部 audio */
     loop?: boolean
     /** 显示音量（mini 不显示） */
     volume?: boolean
@@ -91,12 +92,19 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 开始播放时触发 */
   (e: 'play'): void
+  /** 暂停时触发 */
   (e: 'pause'): void
+  /** 播放到结尾时触发；loop 为 true 时不触发 */
   (e: 'ended'): void
+  /** 进度变化时触发；参数为当前秒数与总时长（秒），时长未知时为 0 */
   (e: 'timeupdate', current: number, duration: number): void
+  /** 音频加载或解码失败时触发；msg 为可读的错误文案 */
   (e: 'error', msg: string): void
+  /** 点击上一首时触发；仅 navigable 为 true 时可能发出 */
   (e: 'prev'): void
+  /** 点击下一首时触发；仅 navigable 为 true 时可能发出 */
   (e: 'next'): void
 }>()
 

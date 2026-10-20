@@ -6,12 +6,17 @@ defineOptions({ name: 'WdSlider' })
 
 const props = withDefaults(
   defineProps<{
+    /** v-model 绑的当前值，受控时以父级为准 */
     modelValue?: number
     /** 非受控模式的初始值 */
     defaultValue?: number
+    /** 可选最小值 */
     min?: number
+    /** 可选最大值 */
     max?: number
+    /** 步长 */
     step?: number
+    /** 是否在右侧显示当前值 */
     showValue?: boolean
     /** 滑轨与滑块颜色，默认主题红。任意 CSS 颜色值。 */
     color?: string
@@ -21,7 +26,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 拖动过程中值变化时触发，参数为新值，用于 v-model */
   (e: 'update:modelValue', value: number): void
+  /** 值变化时触发，参数同 update:modelValue，非受控模式监听它 */
   (e: 'change', value: number): void
 }>()
 
