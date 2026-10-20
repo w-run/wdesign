@@ -2,6 +2,7 @@
 import { computed, inject, ref } from "vue";
 import { useRoute } from "vue-router";
 import demoCode from "virtual:demo-code";
+import { highlightTemplate } from "./highlight";
 
 /**
  * 文档卡片：预览 + 源码。
@@ -35,6 +36,8 @@ const index = registerIndex ? registerIndex() : -1;
 const route = useRoute();
 const code = computed(() => demoCode[route.path]?.[index] ?? "");
 
+
+const highlighted = computed(() => highlightTemplate(code.value));
 
 const open = ref(props.defaultOpen);
 const copied = ref<"" | "ok" | "fail">("");
@@ -74,7 +77,8 @@ async function copyCode() {
     </div>
 
     <div v-if="open && code" class="demo-block__code">
-      <pre class="demo-block__pre"><code>{{ code }}</code></pre>
+      <!-- v-html 的内容来自 highlightTemplate，所有文本都做过了转义 -->
+      <pre class="demo-block__pre"><code v-html="highlighted"></code></pre>
       <button type="button" class="demo-block__copy" @click="copyCode">
         {{ copied === "ok" ? "已复制" : copied === "fail" ? "复制失败" : "复制" }}
       </button>
@@ -233,6 +237,38 @@ async function copyCode() {
   line-height: 1.75;
   color: var(--wd-ink-2);
   tab-size: 2;
+}
+
+.demo-block__pre code {
+  font-family: inherit;
+}
+
+/* 语法着色：只区分「标签 / 属性 / 字符串 / 插值」四类，够读就行。
+   颜色取自装饰用的彩虹令牌（不承载语义），深色主题下同样成立。 */
+.demo-block__pre :deep(.tk-tag) {
+  color: var(--wd-ink);
+  font-weight: 600;
+}
+
+.demo-block__pre :deep(.tk-attr) {
+  color: var(--wd-rainbow-indigo);
+}
+
+.demo-block__pre :deep(.tk-str) {
+  color: var(--wd-rainbow-green);
+}
+
+.demo-block__pre :deep(.tk-interp) {
+  color: var(--wd-rainbow-amber);
+}
+
+.demo-block__pre :deep(.tk-punct) {
+  color: var(--wd-ink-4);
+}
+
+.demo-block__pre :deep(.tk-comment) {
+  color: var(--wd-ink-4);
+  font-style: italic;
 }
 
 .demo-block__copy {
