@@ -96,6 +96,10 @@ const comps = computed(() =>
           </article>
         </div>
       </div>
+
+      <p class="api__source">
+        源码 <code>packages/wdesign-ui/src/components/{{ c.name }}.vue</code>
+      </p>
     </section>
   </div>
 </template>
@@ -217,6 +221,23 @@ const comps = computed(() =>
   font-size: 13px;
   line-height: 1.7;
   color: var(--wd-ink-2);
+}
+
+/* 卡片底部标一行源码位置：既是"想深看"的出口，也让短 API 的卡片不至于空一截 */
+.api__source {
+  margin: 18px 0 0;
+  padding-top: 12px;
+  box-shadow: inset 0 1px 0 var(--wd-ink-5);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--wd-ink-3);
+}
+
+.api__source code {
+  font-family: var(--wd-font-mono);
+  font-size: 11px;
+  color: var(--wd-ink-2);
+  word-break: break-all;
 }
 
 .api__note {

@@ -87,7 +87,15 @@ async function copyCode() {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 100%;
+  /*
+   * 宽度跟着内容走：三两个按钮的示例不该撑成 780px 的白条。
+   * min-width 保证标题区不至于挤成一条；max-width 保证宽内容（表格/播放器）
+   * 仍然吃满整列。代码面板展开时卡片会变宽 —— 那是用户主动要看的，
+   * 而且源码本来就需要横向空间。
+   */
+  width: fit-content;
+  min-width: 300px;
+  max-width: 100%;
   background: var(--wd-card);
   border-radius: var(--wd-radius-lg);
   padding: 24px 28px 26px;
@@ -217,6 +225,8 @@ async function copyCode() {
   padding: 18px 20px;
   /* 长示例别把一张卡撑成两屏高，超出内部滚动 */
   max-height: 420px;
+  /* 源码横向限宽：否则一行长模板会把卡片顶到整列宽，白白撑开 */
+  max-width: 660px;
   overflow: auto;
   font-family: var(--wd-font-mono);
   font-size: 12.5px;
