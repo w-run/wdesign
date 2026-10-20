@@ -2,7 +2,7 @@
   "name": "wdesign-consumer-demo",
   "version": "0.1.0",
   "private": true,
-  "description": "WDesign 组件库消费端示例 —— 展示如何从私有 npm 源安装并使用 @w-run/wdesign",
+  "description": "WDesign 消费端示例 —— 从 npm 安装 @w-run/wdesign-ui 并按需引入组件",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,11 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@w-run/wdesign": "^1.0.0",
-    "vue": "^3.4.0"
+    "@w-run/wdesign-icons": "^1.0.0",
+    "@w-run/wdesign-ui": "^1.0.0",
+    "vue": "^3.5.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.0",
-    "vite": "^5.0.0"
+    "@vitejs/plugin-vue": "^5.1.0",
+    "vite": "^5.4.0"
   }
 }

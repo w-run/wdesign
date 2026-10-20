@@ -1,6 +1,17 @@
 <script setup>
 import { ref } from 'vue'
-import { toast } from '@w-run/wdesign'
+import {
+  WdAlert,
+  WdButton,
+  WdCheckbox,
+  WdIcon,
+  WdInput,
+  WdProgress,
+  WdSelect,
+  WdSpinner,
+  WdTag,
+  toast,
+} from '@w-run/wdesign-ui'
 
 const name = ref('')
 const agree = ref(false)
@@ -23,45 +34,52 @@ function submit() {
 <template>
   <div class="page">
     <header class="hero">
-      <span class="wd-tag wd-tag--tint">@w-run/wdesign</span>
+      <WdTag variant="tint">@w-run/wdesign-ui</WdTag>
       <h1>消费端示例</h1>
-      <p>从私有源 <code>box.w-run.net/npm</code> 安装的组件库，直接可用。</p>
+      <p>从 npm 安装组件库，具名引入 + 全量样式即可用。</p>
     </header>
 
     <section class="wd-card">
       <div class="wd-card__title">按钮 · Button</div>
       <div class="row">
-        <wd-button variant="primary" @click="greet">主按钮</wd-button>
-        <wd-button variant="tint">次级按钮</wd-button>
-        <wd-button variant="dark">深色按钮</wd-button>
-        <wd-button variant="ghost">幽灵按钮</wd-button>
-        <wd-button variant="primary" :disabled="loading" @click="submit">
+        <WdButton variant="primary" @click="greet">主按钮</WdButton>
+        <WdButton variant="tint">次级按钮</WdButton>
+        <WdButton variant="dark">深色按钮</WdButton>
+        <WdButton variant="ghost">幽灵按钮</WdButton>
+        <WdButton variant="primary" :loading="loading" @click="submit">
           {{ loading ? '提交中…' : '提交' }}
-        </wd-button>
+        </WdButton>
       </div>
     </section>
 
     <section class="wd-card">
       <div class="wd-card__title">表单 · Form</div>
-      <div class="row" style="flex-direction: column; align-items: stretch; gap: 14px; max-width: 420px;">
-        <wd-input v-model="name" placeholder="输入你的名字…" size="lg"></wd-input>
-        <wd-checkbox v-model="agree" label="我已阅读并同意条款"></wd-checkbox>
-        <wd-select v-model="plan" :options="['基础版', '专业版', '团队版']"></wd-select>
-        <wd-progress :value="66"></wd-progress>
+      <div class="col">
+        <WdInput v-model="name" placeholder="输入你的名字…" size="lg" clearable />
+        <WdCheckbox v-model="agree" label="我已阅读并同意条款" />
+        <WdSelect v-model="plan" :options="['基础版', '专业版', '团队版']" />
+        <WdProgress :value="66" />
       </div>
-      <p class="hint">输入：{{ name || '（空）' }} · 同意：{{ agree ? '是' : '否' }} · 套餐：{{ plan }}</p>
+      <p class="hint">
+        输入：{{ name || '（空）' }} · 同意：{{ agree ? '是' : '否' }} · 套餐：{{ plan }}
+      </p>
     </section>
 
     <section class="wd-card">
       <div class="wd-card__title">反馈 · Feedback</div>
       <div class="row">
-        <wd-tag variant="tint">运行中</wd-tag>
-        <wd-tag variant="gray">已完成</wd-tag>
-        <wd-tag variant="dark">归档</wd-tag>
-        <wd-spinner size="sm"></wd-spinner>
+        <WdTag variant="tint" dot>运行中</WdTag>
+        <WdTag variant="gray">已完成</WdTag>
+        <WdTag variant="dark">归档</WdTag>
+        <WdSpinner size="sm" />
+        <WdIcon name="heart" :size="20" />
       </div>
-      <div class="row" style="margin-top: 18px;">
-        <wd-alert variant="success" title="部署成功" description="从私有源安装的组件运行正常。"></wd-alert>
+      <div class="row" style="margin-top: 18px">
+        <WdAlert
+          variant="success"
+          title="部署成功"
+          description="从 npm 安装的组件运行正常。"
+        />
       </div>
     </section>
   </div>
@@ -76,10 +94,38 @@ function submit() {
   flex-direction: column;
   gap: 24px;
 }
-.hero { display: flex; flex-direction: column; gap: 10px; }
-.hero h1 { font-size: 38px; font-weight: 900; letter-spacing: -.03em; margin: 0; }
-.hero p { color: var(--wd-ink-2); margin: 0; }
-.hero code { background: var(--wd-field); padding: 2px 8px; border-radius: 8px; font-size: 13px; }
-.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.hint { font-size: 12.5px; color: var(--wd-ink-3); margin: 14px 0 0; font-family: var(--wd-font-mono); }
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+.hero h1 {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+.hero p {
+  color: var(--wd-ink-2);
+  margin: 0;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 420px;
+}
+.hint {
+  font-size: 12.5px;
+  color: var(--wd-ink-3);
+  margin: 14px 0 0;
+  font-family: var(--wd-font-mono);
+}
 </style>

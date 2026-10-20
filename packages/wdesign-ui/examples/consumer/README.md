@@ -1,65 +1,48 @@
 # WDesign 消费端示例
 
-演示如何从**私有 npm 源**安装并使用 `@w-run/wdesign`。
+演示怎么**从 npm 装包**用组件库 —— 和 `packages/wdesign-demo`（直连源码）不同，
+这里走的是发布后的真实产物：`dist/` 的 ESM + `style/*.css`。
+
+它的作用是当「包装错了」的报警器：样式入口改名、导出丢了、按钮里的图标不显示，
+在这里一跑就能看出来。
 
 ## 快速开始
 
 ```sh
-cd examples/consumer
 npm install
 npm run dev        # → http://localhost:5180
 ```
 
-## 关键点
+依赖的是已发布的 `@w-run/wdesign-ui` / `@w-run/wdesign-icons`，
+所以要验证**未发布**的改动，先在仓库根跑 `pnpm build:ui` 再 `npm link`。
 
-### 1. `.npmrc` 路由（必须）
+## 用法要点
 
-```ini
-registry=https://registry.npmmirror.com/
-@w-run:registry=https://box.w-run.net/npm/
-```
-
-`@w-run:` 前缀让**只有自己的包**走私有源，`vue` 等依赖仍走公共源。
-（这也是包名必须带 scope 的原因——私有源没有公共包，不加 scope 会导致 vue 解析失败。）
-
-### 2. 引入方式
+### 1. 具名引入组件（可 tree-shake）
 
 ```js
-import { createApp } from 'vue'
-import WDesign from '@w-run/wdesign'       // 默认导出 = 全量注册插件
-import '@w-run/wdesign/styles'              // 组件样式
-import { toast } from '@w-run/wdesign'      // 具名导出：命令式服务
-
-createApp(App).use(WDesign).mount('#app')
+import { WdButton, WdInput, toast } from '@w-run/wdesign-ui'
 ```
 
-也可以按需引入单个组件：
+### 2. 样式分成两个入口
 
 ```js
-import { WdButton, WdInput } from '@w-run/wdesign'
+import '@w-run/wdesign-ui/style'          // 全量：令牌 + 字体 + base + 全部组件 + 深色
+import '@w-run/wdesign-icons/style.css'   // 图标所需的基础样式
 ```
 
-### 3. 字体走 CDN（独立于包）
+只想引单个组件的样式时（记得先引令牌，否则颜色全丢）：
 
-```html
-<link rel="stylesheet" href="https://box.w-run.net/npm/fonts/wdesign-fonts.css">
+```js
+import '@w-run/wdesign-ui/style/tokens'
+import '@w-run/wdesign-ui/style/button'
 ```
 
-中文思源黑体已转 WOFF2（16.9MB → 7.4MB），现代浏览器优先加载 woff2，自动回退 ttf。
+### 3. 字体不用自己配
 
-## 可用组件
+`style` 里已经带 `@font-face`（Mona Sans + 思源黑体，VF 可变字体）。
+要换成自托管，在引样式前把 `$wd-vf-fonts-enabled` 置 `false` 再自己写 `@font-face`。
 
-全量 41 个组件，注册后直接用 `wd-*` 标签，例如：
+### 4. 组件内部的图标
 
-| 标签 | 组件 |
-|---|---|
-| `<wd-button>` | 按钮（primary / tint / dark / ghost） |
-| `<wd-input>` | 输入框（size: lg/md/sm） |
-| `<wd-select>` | 选择器 |
-| `<wd-checkbox>` / `<wd-radio-group>` | 勾选 / 单选 |
-| `<wd-alert>` / `<wd-tag>` / `<wd-badge>` | 反馈类 |
-| `<wd-modal>` / `<wd-drawer>` / `<wd-toast>` | 浮层类 |
-| `<wd-table>` / `<wd-pagination>` / `<wd-card>` | 数据类 |
-| `<wd-carousel>` / `<wd-sortable-list>` / `<wd-explorer>` | 交互类 |
-
-完整清单见仓库根 `README.md`。
+组件自己会 import `WdIcon`，**不需要**全局注册 —— 按需引入也能正常显示图标。

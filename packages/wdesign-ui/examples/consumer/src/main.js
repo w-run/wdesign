@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
-import WDesign from '@w-run/wdesign'
 import App from './App.vue'
 
-// 全量引入 WDesign（含全部组件 + 样式）
-import '@w-run/wdesign/styles'
+// 全量样式（令牌 + 字体 + base + 全部组件 + 深色）
+import '@w-run/wdesign-ui/style'
+import '@w-run/wdesign-icons/style.css'
 
-createApp(App).use(WDesign).mount('#app')
+createApp(App).mount('#app')
