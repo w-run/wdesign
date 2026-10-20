@@ -3,14 +3,12 @@
   "version": "1.0.0",
   "description": "WDesign UI — 组件库（76 个组件 · 令牌驱动 · 全量 SCSS）",
   "type": "module",
-  "main": "./dist/wdesign-ui.cjs",
-  "module": "./dist/wdesign-ui.esm.js",
+  "main": "./dist/wdesign-ui.esm.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/wdesign-ui.esm.js",
-      "require": "./dist/wdesign-ui.cjs"
+      "import": "./dist/wdesign-ui.esm.js"
     },
     "./style": "./dist/wdesign-ui.css",
     "./style/*": "./dist/style/*.css",
@@ -42,6 +40,11 @@
     "vue": "^3.3.0"
   },
   "devDependencies": {
-    "vue": "^3.5.0"
+    "@vue/compiler-sfc": "^3.5.44",
+    "esbuild": "^0.28.2",
+    "sass": "^1.77.0",
+    "typescript": "^7.0.2",
+    "vue": "^3.5.44",
+    "vue-tsc": "^3.3.13"
   }
 }

@@ -14,8 +14,8 @@
   height: 34px;
   flex: none;
   border-radius: 50%;
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
   font-size: 12px;
   font-weight: 800;
   display: flex;
@@ -38,7 +38,7 @@
 }
 
 .wd-ai-msg--self .wd-ai-msg__bubble {
-  background: var(--wd-tint-2);
+  background: var(--wd-field);
   border-top-left-radius: 18px;
   border-top-right-radius: 6px;
   color: var(--wd-red-text);
@@ -89,7 +89,7 @@
 
 .wd-ai-msg__cursor {
   display: inline-block;
-  color: var(--wd-red-text);
+  color: var(--wd-ink-3);
   animation: wd-ai-blink 1s step-end infinite;
 }
 
@@ -147,7 +147,7 @@
 }
 
 .wd-ai-msg__reasoning-spark {
-  color: var(--wd-red-text);
+  color: var(--wd-ink-3);
   flex: none;
 }
 

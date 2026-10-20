@@ -1,80 +1,521 @@
 @charset "UTF-8";
 .wd-timeline {
   display: flex;
-  flex-direction: column;
-  gap: var(--wd-space-6, 24px);
   margin: 0;
   padding: 0;
   list-style: none;
+  --tl-dot: 10px;
+  --tl-gap: 18px;
 }
 
-.wd-timeline__item {
+.wd-timeline--sm {
+  --tl-dot: 8px;
+  --tl-gap: 13px;
+}
+
+/* ---------------- 纵向（默认） ---------------- */
+.wd-timeline--vertical {
+  flex-direction: column;
+}
+
+.wd-timeline--vertical .wd-timeline__item {
+  position: relative;
   display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: var(--tl-gap);
 }
 
-.wd-timeline__period {
-  flex: 0 0 4.5em;
-  padding-top: 0.15rem;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--wd-red-text);
+.wd-timeline--vertical .wd-timeline__item.is-last {
+  padding-bottom: 0;
 }
 
+/*
+ * ===== 节点与竖线的对齐 =====
+ *
+ * 核心问题：节点宽度会变（无图标 10px / 有图标 22px），
+ * 竖线必须**永远穿过节点圆心**。
+ *
+ * 前两次的做法都失败：
+ *   a) 写死 `left: --tl-dot / 2`（5px）→ 有图标时节点 22px，线偏出 6px
+ *   b) 给节点加 margin 居中 + 线按列宽算 → 有图标的对了，
+ *      无图标的节点只有 10px，圆心仍在列宽的一半之前 → 又偏 6px
+ *
+ * 根因：竖线挂在 item 上，而 item 不知道节点实际多宽。
+ *
+ * 最终方案：**竖线挂在节点自己身上**。
+ *   节点是 --tl-node-col 宽的列里的内容，但线用 `left: 50%` 相对节点自身定位，
+ *   于是无论节点 10px 还是 22px，线永远在它的水平正中。
+ *
+ * 用 ::after 而不是 ::before：::before 已被"节点底色/描边"占用。
+ * 线从上往下延伸到 item 底部 —— 节点自身高度不含整条 item，
+ * 所以仍然需要 item 提供高度参照：用 `bottom: calc(-100% - ...)` 不行，
+ * 改成给 item 加一个从节点垂直位置到 item 底部的伪元素段。
+ *
+ * 实际实现：节点画"线下段"（从自身底部到 item 底），
+ * item 不再画线。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  --tl-node-col: calc(var(--tl-dot) + 12px);
+  position: relative;
+}
+
+/*
+ * ===== 节点：必须是正方形 =====
+ *
+ * ⚠️ 这轮踩的坑：为了让竖线穿过圆心，我把节点宽度强行设成了
+ *    `width: var(--tl-node-col)`（22px），但高度仍是 `--tl-dot`（10px）——
+ *    结果节点变成 **22×10 的扁椭圆**。
+ *
+ *    列宽 ≠ 节点宽。列宽是布局占位，节点是视觉图形，
+ *    两者绑在一起必然出问题（节点被拉成椭圆）。
+ *
+ * 正解：节点保持自身尺寸（正方形），用 **margin 在列内居中**，
+ *      圆心 = 列宽/2，线也按列宽/2 定位，两者自然对齐。
+ */
+.wd-timeline--vertical .wd-timeline__node {
+  /* 不参与 flex 拉伸/收缩 */
+  flex: none;
+  /* 正方形：宽高都跟 --tl-dot */
+  width: var(--tl-dot);
+  height: var(--tl-dot);
+  /* 在 --tl-node-col 宽的列里水平居中 */
+  margin-left: calc((var(--tl-node-col) - var(--tl-dot)) / 2);
+  margin-right: 0;
+  margin-top: 3px;
+  /* 内圈内容居中 */
+  justify-content: center;
+}
+
+.wd-timeline--vertical .wd-timeline__node:not(:has(> .wd-icon)) .wd-timeline__dot {
+  width: var(--tl-dot);
+  height: var(--tl-dot);
+  border-radius: 50%;
+  background: var(--wd-ink-4);
+}
+
+/*
+ * 有图标时：节点放大为圆形徽章。
+ *
+ * ⚠️ 关键：图标本身必须是**正方形**且不参与收缩。
+ *    之前只给了容器尺寸，内部的 .wd-icon 是 flex 子项，
+ *    在列宽约束下会被横向压缩 —— 表现为"图标都扁了"。
+ *    这里显式锁死图标的宽高比，并禁止 shrink。
+ */
+/*
+ * 有图标时：徽章放大到 26px（比 --tl-node-col 的 22px 更宽松）。
+ * 22px 里塞 15px 图标只剩 3.5px 边距，看起来发挤。
+ */
+/* 有图标：正方形 26px，margin 跟着重算（列宽也是 26，所以居中 = 0） */
+.wd-timeline--vertical .wd-timeline__node:has(> .wd-icon) {
+  width: 26px;
+  height: 26px;
+  margin-left: 0;
+}
+
+/* 列宽同步放大，保证圆心不变 */
+.wd-timeline--vertical .wd-timeline__item:has(.wd-timeline__node > .wd-icon) {
+  --tl-node-col: 26px;
+  --tl-node-h: 26px;
+}
+
+/*
+ * 节点内的图标。
+ *
+ * ⚠️ 两个都要管：
+ *   1. **不能被压扁** —— 之前只给了容器尺寸，图标作为 flex 子项
+ *      在固定列宽下被横向压缩（表现为"图标都扁了"）。
+ *      用 aspect-ratio + flex: none 锁死比例。
+ *   2. **不能太小** —— 原来按 :size 传入 13~15px，
+ *      在 22px 的圆形徽章里只占 60%，看起来空。
+ *      放大到约 68%（15px），视觉重量才和徽章匹配。
+ *
+ * 尺寸用 em 相对节点，这样改 --tl-dot 时图标自动跟随。
+ */
+.wd-timeline--vertical .wd-timeline__node > .wd-icon {
+  flex: none;
+  width: auto;
+  height: auto;
+  aspect-ratio: 1;
+  /* 撑到徽章内径的 ~68%：再大就贴边，再小显得空 */
+  min-width: 15px;
+  min-height: 15px;
+}
+
+/*
+ * 竖线：从**节点底边**延伸到下一条。
+ *
+ * ⚠️ 关键：起点不能写死 `--tl-dot + 12px`。
+ *    那个表达式假设节点恒为 22px（带图标的尺寸），
+ *    但无图标时节点只有 10px 高 / 有图标时 22px ——
+ *    于是无图标那条线会在节点下方留 12px 空隙，
+ *    带图标那条则刚好贴边，两行看起来对不齐。
+ *
+ *    正确做法：让 item 用一个 CSS 变量记录"节点占位高度"，
+ *    线从该高度开始。
+ */
+.wd-timeline--vertical .wd-timeline__item {
+  /* 节点占位高度：默认圆点高，带图标时由 :has 覆盖 */
+  --tl-node-h: var(--tl-dot);
+}
+
+.wd-timeline--vertical .wd-timeline__item:has(.wd-timeline__node > .wd-icon) {
+  --tl-node-h: calc(var(--tl-dot) + 12px);
+}
+
+.wd-timeline--vertical .wd-timeline__item::before {
+  content: "";
+  position: absolute;
+  /* 与节点圆心同一个表达式 —— 两者都基于 --tl-node-col */
+  left: calc(var(--tl-node-col) / 2 - 0.5px);
+  /* 从节点底边稍下一点开始，避免线和圆点描边粘连 */
+  top: calc(var(--tl-node-h) + 3px + 4px);
+  bottom: 0;
+  width: 1px;
+  background: var(--wd-ink-5);
+}
+
+.wd-timeline--vertical.wd-timeline--line-none .wd-timeline__item::before {
+  display: none;
+}
+
+.wd-timeline--vertical.wd-timeline--line-dashed .wd-timeline__item::before {
+  background: repeating-linear-gradient(to bottom, var(--wd-tint-3) 0, var(--wd-tint-3) 3px, transparent 3px, transparent 7px);
+}
+
+/* ---------------- 节点 ---------------- */
+/*
+ * 节点尺寸：默认 = --tl-dot（10px 小圆点）；
+ * 带图标时自动放大到能容下图标 —— 否则图标会溢出节点边框，
+ * 视觉上像是"图标浮在外面"（实测 10px 节点塞 13-15px 图标）。
+ *
+ * ⚠️ 用 min-width/min-height 而不是 width/height：
+ * 有图标时让它自然长大，无图标时保持小巧。
+ */
+.wd-timeline__node {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  /*
+   * ⚠️ 必须显式 align-self: flex-start。
+   * 父级 .wd-timeline__item 是 flex 容器且未设 align-items，
+   * 默认 stretch 会把节点在交叉轴拉满 —— 实测 22x65（应为 22x22）。
+   * 节点是"点"，不该被拉伸成"条"。
+   */
+  align-self: flex-start;
+  min-width: var(--tl-dot);
+  min-height: var(--tl-dot);
+  border-radius: 50%;
+  /* 默认节点：空心描边，比实心更轻，不会把时间线压成一条黑点链 */
+  background: var(--wd-card);
+  box-shadow: inset 0 0 0 2px var(--wd-ink-4);
+  color: var(--wd-ink-2);
+}
+
+/* 带图标时：节点扩大为圆形徽章，图标完整居中 */
+.wd-timeline__node:has(> .wd-icon) {
+  min-width: calc(var(--tl-dot) + 12px);
+  min-height: calc(var(--tl-dot) + 12px);
+  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+}
+
+.wd-timeline__dot {
+  width: calc(var(--tl-dot) - 4px);
+  height: calc(var(--tl-dot) - 4px);
+  border-radius: 50%;
+  background: var(--wd-ink-4);
+}
+
+/* 高亮节点：主色实心 */
+.wd-timeline__item.is-active .wd-timeline__node {
+  background: var(--tl-color, var(--wd-red));
+  box-shadow: 0 0 0 3px var(--wd-ink-5);
+  color: #fff;
+}
+
+.wd-timeline__item.is-active .wd-timeline__dot {
+  background: #fff;
+}
+
+/* 自定义颜色：覆盖节点与圆点 */
+.wd-timeline__item {
+  --tl-color: var(--wd-red);
+}
+
+.wd-timeline__item.is-disabled .wd-timeline__node {
+  box-shadow: inset 0 0 0 2px var(--wd-tint-3);
+}
+
+.wd-timeline__item.is-disabled .wd-timeline__dot {
+  background: var(--wd-tint-3);
+}
+
+.wd-timeline__item.is-disabled .wd-timeline__title,
+.wd-timeline__item.is-disabled .wd-timeline__desc {
+  color: var(--wd-ink-3);
+}
+
+/* ---------------- 内容 ---------------- */
 .wd-timeline__body {
   flex: 1;
   min-width: 0;
+  padding-top: 1px;
+}
+
+.wd-timeline__period {
+  display: block;
+  margin-bottom: 3px;
+  /*
+   * ⚠️ 不要给 period 设 `flex: 0 0 4.5em`（老纵向双栏布局的约束）。
+   * 在 alternate/horizontal 的 grid/flex 里，固定 basis 会把标签压成竖排。
+   */
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  /* 时间标签用中灰：只提供上下文，不抢视线 */
+  color: var(--wd-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 只有 active 节点的时间标签才用主色 —— 这是"点睛"的位置 */
+.wd-timeline__item.is-active .wd-timeline__period {
+  color: var(--tl-color, var(--wd-red));
 }
 
 .wd-timeline__title {
-  margin: 0 0 0.4rem;
-  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 0 4px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--wd-ink);
+  line-height: 1.4;
+}
+
+.wd-timeline--sm .wd-timeline__title {
+  font-size: 13.5px;
 }
 
 .wd-timeline__desc {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.75;
+  font-size: 13px;
+  line-height: 1.7;
   color: var(--wd-ink-2);
 }
 
-/* 竖线变体：左侧带贯穿线 */
-.wd-timeline--line .wd-timeline__item {
-  position: relative;
-  padding-left: 1.5rem;
+.wd-timeline--sm .wd-timeline__desc {
+  font-size: 12.5px;
 }
 
-.wd-timeline--line .wd-timeline__item::before {
+/* ---------------- 可折叠 ---------------- */
+.wd-timeline__item.is-clickable {
+  cursor: pointer;
+}
+
+.wd-timeline__caret {
+  flex: none;
+  color: var(--wd-ink-3);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-timeline__caret.is-open {
+  transform: rotate(180deg);
+}
+
+.wd-timeline__detail {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: var(--wd-radius-sm);
+  background: var(--wd-field);
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--wd-ink-2);
+}
+
+/* ---------------- 横向 ---------------- */
+.wd-timeline--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+/*
+ * 横向时每个 item 等分。
+ * ⚠️ 不能用 flex:1 —— 内容长的项会被压缩到读不出；
+ * 用 min-width 保证可读，超出时容器横向滚动。
+ */
+.wd-timeline--horizontal .wd-timeline__item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding-right: var(--tl-gap);
+}
+
+/* 横向连接线：从节点右侧连到下一个节点 */
+.wd-timeline--horizontal .wd-timeline__item::before {
   content: "";
   position: absolute;
-  left: 4px;
-  top: 6px;
-  bottom: -1.5rem;
-  width: 1px;
-  background: var(--wd-ring-soft);
+  top: calc(var(--tl-dot) / 2 - 0.5px);
+  left: var(--tl-dot);
+  right: var(--tl-gap);
+  height: 1px;
+  background: var(--wd-tint-3);
 }
 
-.wd-timeline--line .wd-timeline__item:last-child::before {
+.wd-timeline--horizontal.wd-timeline--line-none .wd-timeline__item::before {
   display: none;
 }
 
-.wd-timeline--line .wd-timeline__item::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 6px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--wd-red);
+.wd-timeline--horizontal.wd-timeline--line-dashed .wd-timeline__item::before {
+  background: repeating-linear-gradient(to right, var(--wd-tint-3) 0, var(--wd-tint-3) 3px, transparent 3px, transparent 7px);
 }
 
-@media (max-width: 768px) {
-  .wd-timeline__item {
+/* 最后一项不画线（否则线会伸到空白处） */
+.wd-timeline--horizontal .wd-timeline__item.is-last::before {
+  display: none;
+}
+
+.wd-timeline--horizontal .wd-timeline__body {
+  padding-top: 0;
+}
+
+/* ---------------- 交替 ---------------- */
+/*
+ * 节点居中，内容左右交替。
+ * 实现方式：item 用 grid 三列（1fr auto 1fr），
+ * 奇数项内容放左、偶数项放右，节点始终在中间列。
+ */
+/*
+ * ⚠️ 必须显式写 column。
+ * `.wd-timeline` 基类没有设 flex-direction（默认 row），
+ * 之前 --vertical 和 --horizontal 各自覆盖了，唯独漏了 --alternate → 
+ * 三个 item 横向排开，每个只有 255px，内容全被挤成竖排单字。
+ * 症状很像"grid 轨道算错了"，实际是外层 flex 方向错了。
+ */
+.wd-timeline--alternate {
+  flex-direction: column;
+}
+
+.wd-timeline--alternate .wd-timeline__item {
+  position: relative;
+  display: grid;
+  /*
+   * ⚠️ 三个轨道都要能收缩：`1fr auto 1fr` 里的 1fr 默认 min-width 是 auto，
+   * 内容一长就把另一侧挤到极窄（实测把"2026 Q4"挤成了竖排单字）。
+   * 用 `minmax(0, 1fr)` 明确允许收缩，再配合 body 的 min-width:0。
+   */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0 18px;
+  align-items: start;
+  padding-bottom: var(--tl-gap);
+}
+
+.wd-timeline--alternate .wd-timeline__node {
+  grid-column: 2;
+  justify-self: center;
+  margin-top: 2px;
+}
+
+/* 奇数项（0,2,4...）：内容在左，第二列占位 */
+.wd-timeline--alternate .wd-timeline__item:nth-child(odd) .wd-timeline__body {
+  grid-column: 1;
+  text-align: right;
+  /* 允许收缩（与 minmax(0,1fr) 配合），否则长词仍会把列撑开 */
+  min-width: 0;
+}
+
+.wd-timeline--alternate .wd-timeline__item:nth-child(odd) .wd-timeline__period,
+.wd-timeline--alternate .wd-timeline__item:nth-child(odd) .wd-timeline__title {
+  justify-content: flex-end;
+}
+
+/*
+ * 偶数项（1,3,5...）：内容在右。
+ * 第一列要放一个空占位，否则内容会挤到节点左边。
+ */
+.wd-timeline--alternate .wd-timeline__item:nth-child(even) .wd-timeline__body {
+  grid-column: 3;
+  min-width: 0;
+}
+
+.wd-timeline--alternate .wd-timeline__item:nth-child(even) .wd-timeline__node {
+  grid-row: 1;
+}
+
+/* 居中贯穿线 */
+.wd-timeline--alternate .wd-timeline__item::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-0.5px);
+  top: calc(var(--tl-dot) + 4px);
+  bottom: 0;
+  width: 1px;
+  background: var(--wd-tint-3);
+}
+
+.wd-timeline--alternate.wd-timeline--line-none .wd-timeline__item::before {
+  display: none;
+}
+
+.wd-timeline--alternate.wd-timeline--line-dashed .wd-timeline__item::before {
+  background: repeating-linear-gradient(to bottom, var(--wd-tint-3) 0, var(--wd-tint-3) 3px, transparent 3px, transparent 7px);
+}
+
+.wd-timeline--alternate .wd-timeline__item.is-last::before {
+  display: none;
+}
+
+/* ---------------- 窄屏降级 ---------------- */
+/*
+ * 交替布局在窄屏上左右空间不够，强行保留会让文字挤成一条。
+ * 直接退回纵向单列 —— 这是移动端时间线的通行做法。
+ */
+@media (max-width: 640px) {
+  /*
+  * ⚠️ 必须显式写 column。
+  * `.wd-timeline` 基类没有设 flex-direction（默认 row），
+  * 之前 --vertical 和 --horizontal 各自覆盖了，唯独漏了 --alternate → 
+  * 三个 item 横向排开，每个只有 255px，内容全被挤成竖排单字。
+  * 症状很像"grid 轨道算错了"，实际是外层 flex 方向错了。
+  */
+  .wd-timeline--alternate {
     flex-direction: column;
-    gap: 0.5rem;
+  }
+  .wd-timeline--alternate .wd-timeline__item {
+    display: flex;
+    gap: 12px;
+    padding-bottom: var(--tl-gap);
+  }
+  .wd-timeline--alternate .wd-timeline__node {
+    margin-top: 3px;
+  }
+  .wd-timeline--alternate .wd-timeline__item:nth-child(odd) .wd-timeline__body,
+  .wd-timeline--alternate .wd-timeline__item:nth-child(even) .wd-timeline__body {
+    grid-column: auto;
+    text-align: left;
+  }
+  .wd-timeline--alternate .wd-timeline__item:nth-child(odd) .wd-timeline__period,
+  .wd-timeline--alternate .wd-timeline__item:nth-child(odd) .wd-timeline__title {
+    justify-content: flex-start;
+  }
+  .wd-timeline--alternate .wd-timeline__item::before {
+    left: calc(var(--tl-dot) / 2 - 0.5px);
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-timeline__caret {
+    transition: none;
   }
 }

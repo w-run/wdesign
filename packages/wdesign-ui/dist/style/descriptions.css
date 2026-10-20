@@ -61,6 +61,15 @@
 }
 
 /* ---- 尺寸 ---- */
+.wd-descriptions--lg .wd-descriptions__row {
+  padding: 13px 0;
+}
+
+.wd-descriptions--lg .wd-descriptions__label,
+.wd-descriptions--lg .wd-descriptions__value {
+  font-size: 13.5px;
+}
+
 .wd-descriptions--md .wd-descriptions__row {
   padding: 9px 0;
 }

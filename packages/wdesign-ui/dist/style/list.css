@@ -9,8 +9,9 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 12px 16px;
-  border-radius: var(--wd-radius-md);
+  padding: 12px 18px;
+  /* 可点击列表项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   transition: background var(--wd-dur-fast) ease;
 }
 
@@ -36,9 +37,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-1);
-  color: var(--wd-red-text);
+  border-radius: 50%;
+  /* 图标容器用中性灰，不用淡红（列表里每个条目都有一枚） */
+  background: var(--wd-field);
+  color: var(--wd-ink-2);
 }
 
 .wd-list-item__icon svg {
@@ -68,12 +70,12 @@
 @media (hover: hover) {
   .wd-list-item--clickable:hover .wd-list-item__icon {
     transform: translateX(2px);
-    background: var(--wd-tint-2);
-    color: var(--wd-red-text);
+    background: var(--wd-field-hover);
+    color: var(--wd-ink-2);
   }
 }
 .wd-list-item--clickable.is-hover .wd-list-item__icon {
   transform: translateX(2px);
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field-hover);
+  color: var(--wd-ink-2);
 }

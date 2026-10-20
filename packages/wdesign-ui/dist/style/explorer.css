@@ -31,7 +31,8 @@
   padding: 10px 12px;
   min-height: 40px;
   border: 0;
-  border-radius: var(--wd-radius-sm);
+  /* 可点击项优先胶囊 */
+  border-radius: var(--wd-radius-pill);
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
@@ -323,4 +324,13 @@
 .wd-fade-leave-to {
   opacity: 0;
   transform: translateY(6px);
+}
+
+/* 文件夹名（含省略号截断） */
+.wd-explorer__folder-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

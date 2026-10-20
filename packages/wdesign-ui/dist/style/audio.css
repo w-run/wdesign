@@ -1,42 +1,680 @@
 @charset "UTF-8";
 .wd-audio {
+  /*
+   * accent 是"强调色"，浅色卡片上应该是**深色**（ink），不是白色。
+   *
+   * ⚠️ 之前默认 --wd-card（白色）：那是给反色深卡片用的，
+   *    浅底上直接等同于背景色 —— 细进度条的已播放部分因此完全看不见。
+   *    反色卡片会在 .wd-audio--inverse 里单独覆盖成白色。
+   */
+  --wd-audio-accent: var(--wd-ink);
+  position: relative;
+  color: var(--wd-ink);
+  user-select: none;
+  font-size: 13px;
+}
+
+/* =============================================================
+ *  card —— 竖版卡片
+ * ============================================================= */
+/*
+ * card —— 遵循本设计系统的「无边框」语言：
+ *   白底 + 大圆角 + 单层浅阴影 + 足够留白，不用任何 border。
+ *
+ * ⚠️ 之前我在这里加了 inset 1px 描边，与本库「无边框风」冲突。
+ * 整个组件的层次只靠阴影和留白建立（同 .wd-card 的做法）。
+ *
+ * 间距设计（原来 18/20 挤在一起，缺少呼吸感）：
+ *   上下 20 / 左右 22 —— 与 .wd-card 的 22px 内距对齐
+ *   内部区块间距 16px —— 比 14 更松，让波形/时间/控件各自成组
+ */
+.wd-audio--card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  /* 元素本身放大了，垂直间距相应收缩 —— 否则整卡被撑高、读起来散 */
+  gap: 14px;
+  /*
+   * 内距：卡片是「留白型」组件，四周必须给足。
+   *
+   * 演进过程：18/20 → 24/26 → 32/34 → **36/40**。
+   * 卡片宽度同时收到 380px，内宽 300px —— 内距占卡宽 10.5%，
+   * 元素明显被"边框往里推"，不再是贴着边漂浮。
+   * 底部 34 略小于顶部 36：视觉重心稍上移，与标题居中的光学习惯一致。
+   */
+  padding: 36px 40px 34px;
+  border-radius: var(--wd-radius-xl);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow);
+  container-type: inline-size;
+  container-name: wd-audio;
+}
+
+/*
+ * 反色卡片：整卡用深色（不是大红大绿）。
+ *
+ * ⚠️ 之前的 accent 直接把传入色铺满整卡 —— 传个 #1db954 就是一大片绿，
+ * 非常刺眼，且与组件的红色主色系统打架。
+ *
+ * 改为**反色**方案：底色用 --wd-dark（深灰黑），文字反白，
+ * 强调色只用在「进度、播放键」这些真正需要强调的点上。
+ * 这样既能做出深色卡片的质感，又不会变成一块色板。
+ */
+.wd-audio--card.wd-audio--inverse {
+  background: var(--wd-dark);
+  color: var(--wd-dark-text);
+  /* 深色卡片同样只用阴影，不加描边 */
+  box-shadow: var(--wd-shadow-lg);
+}
+
+.wd-audio--inverse .wd-audio__subtitle {
+  color: var(--wd-on-dark);
+}
+
+.wd-audio--inverse .wd-audio__times {
+  color: var(--wd-on-dark-2);
+}
+
+.wd-audio--inverse .wd-audio__remain {
+  color: var(--wd-on-dark);
+}
+
+.wd-audio--inverse .wd-audio__ctl {
+  color: var(--wd-on-dark-2);
+}
+
+.wd-audio--inverse .wd-audio__ctl:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/*
+ * 反色卡片是**固定深色面**，不跟随主题翻转。
+ * ⚠️ 不能用 --wd-red-on-dark —— 它在深色主题下会变成浅粉，
+ * 在深底上既不够亮也失去"品牌红"的意味。
+ * 这里直接用一个固定的亮红：深底上足够醒目，浅深主题下表现一致。
+ */
+.wd-audio--inverse .wd-audio__wave-bar {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.wd-audio--inverse .wd-audio__wave-bar.is-on {
+  background: #FF5A65;
+}
+
+.wd-audio--inverse .wd-audio__main-btn {
+  background: var(--wd-dark-text);
+  color: var(--wd-dark);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.wd-audio--inverse .wd-audio__hero-cover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.wd-audio--inverse .wd-audio__rate-menu--card {
+  background: var(--wd-dark);
+  box-shadow: var(--wd-shadow-lg);
+  color: var(--wd-dark-text);
+}
+
+.wd-audio--inverse .wd-audio__rate-menu--card button {
+  color: var(--wd-on-dark-2);
+}
+
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__rate-menu--card button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+.wd-audio--inverse .wd-audio__rate-menu--card button.is-on {
+  background: var(--wd-dark-text);
+  color: var(--wd-dark);
+}
+
+/*
+ * 主题色底上的次级文字。
+ * .78 在 #1db954 这类中亮绿上对比不足，提到 .88；
+ * 倒计时更弱一档但仍需可读。
+ */
+/*
+ * 主题色底上的次级文本必须接近纯白 ——
+ * .78 / .88 在中亮绿(#1db954)上对比都不够，实测读起来发灰。
+ * 用 .92 起步，只有倒计时保留 .72 做层级区分。
+ */
+.wd-audio--accent .wd-audio__subtitle,
+.wd-audio--accent .wd-audio__ctl {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.wd-audio--accent .wd-audio__title {
+  color: #fff;
+}
+
+.wd-audio--accent .wd-audio__times {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.wd-audio--accent .wd-audio__remain {
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.wd-audio--accent .wd-audio__wave-bar {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.wd-audio--accent .wd-audio__wave-bar.is-on {
+  background: #fff;
+}
+
+.wd-audio--accent .wd-audio__main-btn {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/*
+ * 有封面时：封面 + 标题区横向排列。
+ * 用一个 wrapper 包住，避免封面孤立在第一行。
+ */
+.wd-audio--card.has-cover .wd-audio__top {
+  align-items: center;
+}
+
+/* ---------------- 顶部标题区 ---------------- */
+.wd-audio__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wd-audio__head {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.wd-audio--card .wd-audio__title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-audio--card .wd-audio__subtitle {
+  font-size: 13px;
+  color: var(--wd-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-audio__top-extra {
+  flex: none;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
+  gap: 4px;
+}
+
+/* ---------------- 主体：封面 ---------------- */
+/*
+ * 有封面时：横向排布（封面在左，标题在右）。
+ *
+ * ⚠️ 不能用移动端那种 1:1 大正方形 —— web 里卡片宽度由父容器决定，
+ * 在宽屏上会撑出一个占满半屏的巨大方块，把页面撑得极高。
+ * 横向排布在任何宽度下都稳定。
+ */
+.wd-audio__hero-cover {
+  position: relative;
+  flex: none;
+  width: 88px;
+  height: 88px;
+  border-radius: var(--wd-radius-md);
+  overflow: hidden;
+  background: var(--wd-field);
+}
+
+/* 窄容器（< 300px）时缩到 64px，避免挤压文字 */
+@container wd-audio (max-width: 300px) {
+  .wd-audio__hero-cover {
+    width: 64px;
+    height: 64px;
+  }
+}
+.wd-audio__hero-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 播放中角标：三根跳动条 */
+.wd-audio__hero-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.wd-audio__hero-badge i {
+  width: 2.5px;
+  border-radius: 1px;
+  background: #fff;
+  animation: wd-audio-eq 0.9s ease-in-out infinite;
+}
+
+.wd-audio__hero-badge i:nth-child(1) {
+  height: 8px;
+  animation-delay: -0.15s;
+}
+
+.wd-audio__hero-badge i:nth-child(2) {
+  height: 13px;
+  animation-delay: -0.45s;
+}
+
+.wd-audio__hero-badge i:nth-child(3) {
+  height: 10px;
+  animation-delay: -0.3s;
+}
+
+@keyframes wd-audio-eq {
+  0%, 100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+/* ---------------- 波形 ---------------- */
+/*
+ * 波形：**以中线上下对称**。
+ *
+ * ⚠️ 参考图里柱子是从中线向上下两端生长，不是我原来那样从底部长起。
+ * 底部生长看起来像柱状图，对称生长才像"音频波形"。
+ *
+ * 柱子用固定宽度（不 flex 撑开）—— flex:1 会让柱宽随容器变化，
+ * 宽屏上变成一片粗棒，窄屏上又细如针，与参考的等宽细柱不符。
+ */
+/*
+ * 波形容器。
+ *
+ * ⚠️ 柱数和间距现在都由 JS 按容器宽度算好（见 WdAudioPlayer 的 waveCount），
+ * 这里用 `justify-content: space-between` + 固定柱宽，
+ * 让柱子在容器内**均匀铺满**，而不是靠 gap 固定值。
+ *
+ * 原因：写死 gap 时，容器变宽只会让间距越拉越大；
+ * 改成 space-between 后，柱数变多、间距恒定，密度才是稳定的。
+ */
+.wd-audio__wave {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  cursor: pointer;
+  outline: none;
+  /* 允许溢出隐藏：极端窄容器下柱子不撑破布局 */
+  overflow: hidden;
+}
+
+/*
+ * 主体形态（无封面）：波形取代封面，高度必须够。
+ * 30 根粗柱，间距 3px —— 接近参考图绿色版的比例。
+ */
+/*
+ * 波形是主体，但高度要跟着容器宽度走 ——
+ * 桌面宽卡里 92px 会显得过重，窄卡里 48px 又太薄。
+ * 容器查询让它在 48~84px 之间自适应。
+ */
+.wd-audio__wave--hero {
+  height: 68px;
+  gap: 3px;
+  /*
+   * 左右各内缩 2px 做视觉补偿（上下保持 2px）。
+   *
+   * 波形是 `justify-content: space-between`，首末两根柱子紧贴容器边缘，
+   * 而上下两行是纯文本 —— 文本有字形侧边距（side bearing），视觉上不贴边。
+   * 柱状图是实心矩形，没有这层自然留白，几何对齐时**看起来更宽**。
+   *
+   * ⚠️ 曾试过 4px，在真机上偏窄（波形比标题内缩太多、显得缩进去）。
+   * 2px 刚好抵消 side bearing，与视觉边界齐平。
+   */
+  padding: 2px 2px;
+  justify-content: space-between;
+}
+
+@container wd-audio (max-width: 420px) {
+  .wd-audio__wave--hero {
+    height: 64px;
+  }
+}
+@container wd-audio (max-width: 320px) {
+  .wd-audio__wave--hero {
+    height: 52px;
+    gap: 2px;
+  }
+}
+/*
+ * 辅助形态（有封面）：细密一条，高度收到 42px。
+ * 90 根，间距 1.5px，像白噪声一样铺满 —— 参考白色版。
+ */
+.wd-audio__wave--fine {
+  height: 44px;
+  gap: 2px;
+  /* 与 --hero 用同一套视觉补偿：左右 2px。漏掉这里会导致带封面的卡片贴边。 */
+  padding: 0 2px;
+  justify-content: space-between;
+}
+
+@container wd-audio (max-width: 320px) {
+  .wd-audio__wave--fine {
+    height: 32px;
+  }
+}
+.wd-audio__wave:focus-visible {
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+  border-radius: 6px;
+}
+
+/*
+ * 柱子宽度：优先按容器自适应，但设上下限。
+ *
+ * 完全固定 2px 在窄卡里撑不满（波形只占 40% 宽，像被截断）；
+ * 完全 flex:1 在宽卡里又变成粗棒。
+ * 折中：flex 分配 + min/max 夹住，2px 是下限、4px 是上限。
+ */
+/*
+ * 柱子宽度：**由柱数决定**。
+ *
+ * ⚠️ 柱数现在由 JS 按容器宽度算（见 WdAudioPlayer 的 waveCount），
+ * 所以这里不需要 flex 分配宽度 —— 用固定宽度 + space-between，
+ * 柱数变多时自动变密，而不是「柱子变粗」或「间距被拉开」。
+ *
+ * 之前是 `flex: 1 1 auto` + min/max 夹住：
+ * 容器变宽时 30 根柱子只会被撑到 max-width(4px)，
+ * 剩下的空间全变成间距 → 看起来像稀疏栅栏。
+ */
+.wd-audio__wave-bar {
+  flex: 0 0 auto;
+  width: 3px;
+  border-radius: 1px;
+  /*
+   * 未播用中间调灰（约 78% 明度的灰），不是最浅的 ink-5 ——
+   * 参考图的未播段是清晰可见的浅灰，太浅会"消失"，
+   * 整条波形就只剩左侧一截，看不出总长度。
+   */
+  background: var(--wd-ink-3);
+  transition: background var(--wd-dur-fast) ease;
+  /* 关键：柱子自中线向两端生长 —— 由 transform: scaleY 驱动，不用 height */
+  align-self: center;
+}
+
+/*
+ * 进度用明度区分，不用颜色 ——
+ * 主题红在波形上过重，会把「进度」变成「警告」。
+ */
+.wd-audio__wave-bar.is-on {
+  background: var(--wd-ink);
+}
+
+.wd-audio__wave--hero .wd-audio__wave-bar {
+  border-radius: 2px;
+}
+
+.wd-audio__wave--fine .wd-audio__wave-bar {
+  border-radius: 1px;
+}
+
+/* ---------------- 时间 ---------------- */
+.wd-audio__times {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* 参考图里时间字号明显大于常规说明文字，且加粗 */
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--wd-ink);
+  margin-top: 2px;
+  min-height: 18px;
+}
+
+/* 未加载时右侧不显示占位符（`-:--` 比空白更干扰） */
+.wd-audio__remain:empty {
+  visibility: hidden;
+}
+
+.wd-audio__remain {
+  color: var(--wd-ink-2);
+  font-weight: 600;
+}
+
+/* ---------------- 控件行 ---------------- */
+/*
+ * 控件行。
+ *
+ * ⚠️ 曾经溢出：5 个控件 34+34+56+34+34 = 192px，加 4×6px 间隔 = 216px，
+ * 而 251px 宽的卡片内宽只有 199px —— 溢出 17px。
+ * `space-between` 在溢出时首项贴左、末项冲出右边界，
+ * 表现为「整排控件偏右」（末位右留白 8.7px，本该 26px，和左侧不对称）。
+ *
+ * 修法：先让内容能装下 —— 46×4 + 64 = 248，内宽 300px 有余量。
+ * 保留 space-between：间隙按剩余空间均分 ——
+ *   (300 - 248) / 4 = **13px**，控件紧凑不散。
+ */
+.wd-audio__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.wd-audio__ctl {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  /*
+   * 不加背景（设计语言是「无边框」，控件底会引入新色阶）。
+   *
+   * ⚠️ 由此带来的关键认知：**无底控件的「视觉尺寸」= 图标尺寸，不是盒子尺寸**。
+   * 之前写 44px 盒子配 19px 图标，算出 44/66=66.7%，
+   * 但用户看到的只有 19px 图标 → 19/66 = **29%**，所以"看着像 1/3"。
+   * 要放大观感，唯一有效的旋钮是**图标**，盒子只负责点击热区。
+   *
+   * 现在：盒子 46px（热区舒适），图标 22px（相对主键 64px 圆的观感明显提升）。
+   */
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-audio__ctl:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
+  }
+}
+.wd-audio__ctl--text {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * 占位符必须和 .wd-audio__ctl 同宽，否则缺失控件的行会重新错位。
+ * ⚠️ 改 .wd-audio__ctl 的宽高时，这里要同步。
+ */
+.wd-audio__ctl-spacer {
+  width: 46px;
+  height: 46px;
+  flex: none;
+}
+
+/*
+ * 播放键：视觉主体，但用 web 的尺度。
+ * 44px（不是移动端的 52px）—— web 页面里控件过大会抢走焦点，
+ * 44px 已足够与 34px 的次级控件拉开层级。
+ */
+.wd-audio__main-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /*
+   * 主键 64px / 次级 38px = **59.4% ≈ 60%**。
+   *
+   * ⚠️ 关键教训：之前写 44/66 算出 66.7%，"数字上"接近 2/3，
+   * 但截图里看着像 1/3 —— 因为次级控件是 **background: transparent**，
+   * 用户看到的不是 44px 的圆，而是里面 19px 的图标。
+   * 图标/主键 = 19/66 = 29%，正是"差不多 1/3"的来源。
+   *
+   * 所以比例必须按**可见尺寸**算：给次级控件加浅底，
+   * 让它有真实边界，38px 才会被读成 38px 而不是 19px。
+   */
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+}
+
+.wd-audio__main-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+}
+
+.wd-audio__main-btn:active {
+  transform: scale(0.97);
+}
+
+/*
+ * 注：播放三角的视觉补偿已修正到**图标本身**（play.svg 内部平移 12.4 单位），
+ * 不再依赖使用方写 transform hack。
+ * 原则：图标的视觉重心属于图标自身的责任，不该由每个使用方各自补偿。
+ */
+/* ---------------- 倍速菜单（card） ---------------- */
+/*
+ * 倍速菜单的定位上下文。
+ *
+ * ⚠️ 之前菜单直接挂在卡片上，用 `left:50% / bottom:74px` 定位 ——
+ * 那是相对**整张卡片**算的：水平在卡片正中、垂直在距底 74px 处。
+ * 结果菜单出现在卡片中央偏上，而不是「1× 按钮的上方」，
+ * 视觉上像是飘到了卡片的另一个区域。
+ *
+ * 修法：给按钮套一个 position:relative 的 wrapper，
+ * 菜单相对它绝对定位 —— 锚点就真正落在按钮上了。
+ */
+.wd-audio__rate-anchor {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+}
+
+.wd-audio__rate-menu--card {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  /* 纵向排列：5 个选项竖着放，横向并排会撑成一条长条越过卡片边界 */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-card);
-  color: var(--wd-ink);
-  font-size: 13px;
-  user-select: none;
+  box-shadow: var(--wd-shadow-pop);
+  z-index: 5;
+  /* 菜单可能比按钮宽：用 min-content 保证每个选项不换行 */
+  white-space: nowrap;
 }
 
-.wd-audio--compact {
-  padding: 7px 10px;
-  gap: 8px;
-  border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-1);
+.wd-audio__rate-menu--card button {
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-/* ---------------- 封面 ---------------- */
+@media (hover: hover) {
+  .wd-audio__rate-menu--card button:hover {
+    background: var(--wd-field-hover);
+  }
+}
+.wd-audio__rate-menu--card button.is-on {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+}
+
+/* =============================================================
+ *  bar —— 横条（封面 + 标题 + 细进度）
+ * ============================================================= */
+/* bar：同样是白底 + 阴影的无边框卡片，内距略放松 */
+.wd-audio--bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
+}
+
+/*
+ * bar：封面与播放键**二合一**。
+ *
+ * ⚠️ 之前是「封面方块 + 红色圆按钮」并排两个元素，
+ * 既占宽度又显得零碎（两个都在左边，视觉重心堆在一起）。
+ *
+ * 现在合并成一块：封面（或占位图）本身是可点击的播放区，
+ * 播放时在封面上叠加半透明遮罩 + 图标。
+ * 没有封面时用深色占位块 + 图标，依然是一个整体。
+ */
 .wd-audio__cover {
   position: relative;
   flex: none;
   width: 52px;
   height: 52px;
   border-radius: var(--wd-radius-sm);
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-dark);
+  color: var(--wd-dark-text);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.wd-audio--compact .wd-audio__cover {
-  width: 30px;
-  height: 30px;
-  border-radius: var(--wd-radius-xs);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 
 .wd-audio__cover img {
@@ -45,21 +683,45 @@
   object-fit: cover;
 }
 
-/* 播放中的三根跳动条：比转圈更轻，不抢注意力 */
-.wd-audio__pulse {
+/* 播放/暂停图标：叠在封面上，带一层暗色遮罩保证任何封面都看得清 */
+.wd-audio__cover-play {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding-bottom: 10px;
-  background: rgba(0, 0, 0, 0.34);
+  background: rgba(0, 0, 0, 0.32);
+  color: #fff;
+  transition: background var(--wd-dur-fast) ease;
 }
 
-.wd-audio--compact .wd-audio__pulse {
-  padding-bottom: 5px;
+@media (hover: hover) {
+  .wd-audio__cover:hover .wd-audio__cover-play {
+    background: rgba(0, 0, 0, 0.46);
+  }
+}
+@media (hover: hover) {
+  .wd-audio__cover:hover {
+    transform: scale(1.03);
+  }
+}
+/* 无封面时占位图标（降低存在感，不要和播放键打架） */
+.wd-audio__cover-placeholder {
+  /* 无封面时占位图标：作为背景纹理存在，但要比 .35 更可辨 */
+  opacity: 0.5;
+  color: var(--wd-dark-text);
+}
+
+.wd-audio__pulse {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: flex;
+  align-items: flex-end;
   gap: 1.5px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .wd-audio__pulse i {
@@ -84,65 +746,17 @@
   animation-delay: -0.3s;
 }
 
-@keyframes wd-audio-eq {
-  0%, 100% {
-    transform: scaleY(0.45);
-  }
-  50% {
-    transform: scaleY(1);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .wd-audio__pulse i {
-    animation: none;
-  }
-}
-/* ---------------- 播放键 ---------------- */
-.wd-audio__play {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--wd-red);
-  color: #fff;
-  cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, transform var(--wd-dur-fast) var(--wd-ease-out);
-}
-
-.wd-audio--compact .wd-audio__play {
-  width: 28px;
-  height: 28px;
-}
-
-/* 同视频播放键：三角形重心偏左，右移 1.5px 做视觉补偿 */
-.wd-audio__play svg {
-  transform: translateX(1.5px);
-}
-
-.wd-audio--compact .wd-audio__play svg {
-  transform: translateX(1px);
-}
-
-.wd-audio__play:hover {
-  background: var(--wd-red-hover, var(--wd-red-text));
-}
-
-.wd-audio__play:active {
-  transform: scale(0.94);
-}
-
-/* ---------------- 主区 ---------------- */
 .wd-audio__main {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 7px;
+}
+
+/* 让 main 与右侧控件之间有呼吸，不然 1× 会贴着总时长 */
+.wd-audio--bar {
+  gap: 16px;
 }
 
 .wd-audio__meta {
@@ -152,7 +766,7 @@
   min-width: 0;
 }
 
-.wd-audio__title {
+.wd-audio--bar .wd-audio__title {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -161,7 +775,7 @@
   font-size: 13px;
 }
 
-.wd-audio__subtitle {
+.wd-audio--bar .wd-audio__subtitle {
   flex: none;
   font-size: 11.5px;
   color: var(--wd-ink-2);
@@ -170,7 +784,25 @@
   white-space: nowrap;
 }
 
-/* ---------------- 进度 ---------------- */
+/*
+ * bar 里的波形：柱子数量多（有 waveform 数据时按数据长度），
+ * 用 justify-content: space-between + 固定柱宽会让它散成一片"梳子"。
+ * 这里改成居中且不撑满，柱子紧挨着，视觉上是一条连续的波形带。
+ */
+.wd-audio--bar .wd-audio__wave {
+  height: 24px;
+  gap: 1.5px;
+  flex: 1 1 auto;
+  min-width: 0;
+  justify-content: center;
+  padding: 0;
+}
+
+.wd-audio--bar .wd-audio__wave .wd-audio__wave-bar {
+  flex: 0 0 2px;
+  max-width: 2px;
+}
+
 .wd-audio__scrub {
   position: relative;
   height: 14px;
@@ -178,6 +810,8 @@
   align-items: center;
   cursor: pointer;
   outline: none;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .wd-audio__scrub:focus-visible {
@@ -207,12 +841,6 @@
   background: var(--wd-red);
 }
 
-.wd-audio__scrub:hover .wd-audio__track,
-.wd-audio__scrub:hover .wd-audio__buffer,
-.wd-audio__scrub:hover .wd-audio__played {
-  height: 5px;
-}
-
 .wd-audio__knob {
   position: absolute;
   top: 50%;
@@ -231,59 +859,56 @@
   transform: translateY(-50%) scale(1);
 }
 
-/* ---------------- 波形 ---------------- */
-.wd-audio__wave {
+/*
+ * 进度行：已播时间 / 进度条 / 总时长，三者同一行且垂直居中。
+ *
+ * ⚠️ 之前时间单独占一行，右侧比左侧封面高两行，整条重心偏上、封面显矮。
+ * 现在用 flex + align-items:center 让它们在一条基线上。
+ */
+.wd-audio__progress-row {
   display: flex;
   align-items: center;
-  gap: 2px;
-  height: 30px;
-  cursor: pointer;
-  outline: none;
+  gap: 8px;
+  min-width: 0;
 }
 
-.wd-audio--compact .wd-audio__wave {
-  height: 20px;
-  gap: 1.5px;
-}
-
-.wd-audio__wave:focus-visible {
-  box-shadow: 0 0 0 2px var(--wd-focus-ring);
-  border-radius: 4px;
-}
-
-.wd-audio__wave-bar {
-  flex: 1;
-  min-width: 1px;
-  border-radius: 1px;
-  background: var(--wd-ink-5);
-  transition: background var(--wd-dur-fast) ease;
-}
-
-.wd-audio__wave-bar.is-on {
-  background: var(--wd-red);
-}
-
-/* ---------------- 时间 ---------------- */
-.wd-audio__time {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+.wd-audio__time-cur,
+.wd-audio__time-total {
+  flex: none;
   font-size: 11.5px;
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.wd-audio__time-sep {
+.wd-audio__time-total {
   color: var(--wd-ink-3);
 }
 
-.wd-audio__err {
-  margin-left: 8px;
-  color: var(--wd-red-text);
-  font-weight: 600;
+/* 进度条在中间，占满剩余宽度 */
+.wd-audio__progress-row > .wd-audio__scrub,
+.wd-audio__progress-row > .wd-audio__wave {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-/* ---------------- 右侧控件 ---------------- */
+/*
+ * 波形模式下，时间不要被推到两端。
+ * 波形本身 flex:1 会吃掉所有空间，时间自然贴住它 ——
+ * 但如果波形是 space-between 布局，柱子会散开、时间也离得远。
+ * 这里给波形一点内边距，让视觉上更紧凑。
+ */
+.wd-audio--bar .wd-audio__wave {
+  padding: 0 2px;
+}
+
+.wd-audio__err {
+  color: var(--wd-red-text);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+/* ---------------- 侧栏控件 ---------------- */
 .wd-audio__side {
   flex: none;
   display: flex;
@@ -310,16 +935,16 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
-.wd-audio__ibtn:hover {
-  background: var(--wd-tint-2);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-audio__ibtn:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-audio__ibtn--text {
   font-variant-numeric: tabular-nums;
 }
 
-/* 音量：hover 展开 */
 .wd-audio__vol {
   display: flex;
   align-items: center;
@@ -346,7 +971,6 @@
   background: var(--wd-red);
 }
 
-/* 倍速菜单 */
 .wd-audio__rate {
   position: relative;
 }
@@ -378,11 +1002,362 @@
   white-space: nowrap;
 }
 
-.wd-audio__rate-menu button:hover {
-  background: var(--wd-tint-2);
+@media (hover: hover) {
+  .wd-audio__rate-menu button:hover {
+    background: var(--wd-field-hover);
+  }
 }
-
 .wd-audio__rate-menu button.is-on {
   color: var(--wd-red-text);
   font-weight: 700;
+}
+
+/* =============================================================
+ *  mini —— 单行迷你横条
+ * ============================================================= */
+/*
+ * mini：胶囊形状。
+ * 左右两端完全圆角（pill），与内部的圆形播放键呼应 ——
+ * 方角容器 + 圆按钮会很割裂。
+ */
+/*
+ * mini：胶囊 + 卡片色。
+ * 与其他卡片同一套语言：白底 + 阴影，无边框、无 tint 底色。
+ * 内距左右不对称（8 / 16）—— 让圆形播放键贴紧左端，视觉上更稳。
+ */
+.wd-audio--mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px 7px 8px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-sm);
+}
+
+.wd-audio__mini-play {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  cursor: pointer;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+@media (hover: hover) {
+  .wd-audio__mini-play:hover {
+    transform: scale(1.06);
+  }
+}
+.wd-audio__mini-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wd-audio__mini-text {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wd-audio--mini .wd-audio__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 12.5px;
+}
+
+.wd-audio--mini .wd-audio__subtitle {
+  flex: none;
+  font-size: 11px;
+  color: var(--wd-ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-audio__mini-progress {
+  cursor: pointer;
+  outline: none;
+  padding: 2px 0 0;
+}
+
+.wd-audio__mini-progress:focus-visible {
+  box-shadow: 0 0 0 2px var(--wd-focus-ring);
+  border-radius: 3px;
+}
+
+.wd-audio__mini-track {
+  display: block;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--wd-ink-5);
+  overflow: hidden;
+}
+
+.wd-audio__mini-fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--wd-ink);
+}
+
+.wd-audio__mini-time {
+  flex: none;
+  margin-left: 4px;
+  font-size: 11px;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* =============================================================
+ *  动效降级
+ * ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .wd-audio__pulse i,
+  .wd-audio__hero-badge i {
+    animation: none;
+  }
+  .wd-audio__main-btn:hover,
+  .wd-audio__play:active,
+  .wd-audio__mini-play:hover {
+    transform: none;
+  }
+}
+/* 窄容器：card 的音量键让位 */
+@media (max-width: 320px) {
+  .wd-audio--card .wd-audio__ctl {
+    width: 30px;
+    height: 30px;
+  }
+  .wd-audio--card .wd-audio__ctl-spacer {
+    width: 30px;
+    height: 30px;
+  }
+  .wd-audio__main-btn {
+    width: 46px;
+    height: 46px;
+  }
+}
+/* =============================================================
+ *  音量弹层
+ *
+ *  点音量按钮弹出纵向浮层：静音键 + 滑块 + 数值。
+ *  ⚠️ 之前按钮直接绑 toggleMute —— 一次点击就全静音，
+ *     想微调音量必须先静音，交互反直觉。
+ * ============================================================= */
+.wd-audio__vol {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+}
+
+.wd-audio__vol-pop {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  /*
+   * 弹出动效：从按钮方向"长出"。
+   * 用 scale + 位移 + 透明度组合，曲线带一点回弹
+   * （--wd-ease-spring-soft），比线性淡入更有物理感。
+   * ⚠️ transform-origin 设在底部居中 —— 动画从按钮处展开而非凭空出现。
+   */
+  transform-origin: bottom center;
+  animation: wd-audio-vol-in var(--wd-dur-pop) var(--wd-ease-spring-soft);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+/* 反色卡片（深底）上的浮层保持深色 */
+.wd-audio--inverse .wd-audio__vol-pop {
+  background: rgba(28, 28, 30, 0.96);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.wd-audio__vol-mute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-audio__vol-mute:hover {
+    background: var(--wd-field);
+  }
+}
+.wd-audio--inverse .wd-audio__vol-mute {
+  color: var(--wd-on-dark-2);
+}
+
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__vol-mute:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+/*
+ * 纵向滑块：用 writing-mode 把原生 range 转成竖直。
+ * ⚠️ 不要用 transform: rotate(-90deg) —— 那会让点击区域也旋转，
+ *    拖动方向和视觉方向对不上。writing-mode 是标准做法。
+ */
+.wd-audio__vol-slider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  width: 26px;
+}
+
+.wd-audio__vol-slider input[type=range] {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  height: 92px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 999px;
+  background: var(--wd-field);
+  cursor: pointer;
+}
+
+.wd-audio__vol-slider input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  box-shadow: 0 0 0 2px var(--wd-card);
+  cursor: grab;
+}
+
+.wd-audio--inverse .wd-audio__vol-slider input[type=range] {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.wd-audio--inverse .wd-audio__vol-slider input[type=range]::-webkit-slider-thumb {
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(28, 28, 30, 0.9);
+}
+
+.wd-audio__vol-num {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--wd-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-audio--inverse .wd-audio__vol-num {
+  color: var(--wd-on-dark-3);
+}
+
+/* =============================================================
+ *  细进度条风格（progressStyle="bar"）
+ *
+ *  与波形是两种视觉语言：
+ *    波形 = 内容可视化（让人"看见"音频的起伏）
+ *    进度条 = 纯粹的位置读取（信息密度高的场景更合适）
+ *  两条在同一个卡片里不并存，由 progressStyle 二选一。
+ * ============================================================= */
+.wd-audio__pbar {
+  position: relative;
+  width: 100%;
+  height: 6px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  cursor: pointer;
+  overflow: visible;
+  outline: none;
+}
+
+.wd-audio__pbar:focus-visible {
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+.wd-audio__pbar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-audio-accent, var(--wd-ink));
+  transition: width 0.12s linear;
+}
+
+/*
+ * 拖拽把手：hover 时才出现。
+ * 常驻会让 6px 的细条看起来很脏（一个圆点挂在线上）。
+ */
+.wd-audio__pbar-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--wd-audio-accent, var(--wd-ink));
+  box-shadow: 0 0 0 3px var(--wd-card);
+  transform: translateY(-50%) scale(0);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+  pointer-events: none;
+}
+
+.wd-audio__pbar:hover .wd-audio__pbar-thumb,
+.wd-audio__pbar:focus-visible .wd-audio__pbar-thumb {
+  transform: translateY(-50%) scale(1);
+}
+
+/* 反色卡片：轨道和填充换成深底配色 */
+.wd-audio--inverse .wd-audio__pbar {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.wd-audio--inverse .wd-audio__pbar-fill,
+.wd-audio--inverse .wd-audio__pbar-thumb {
+  background: #fff;
+}
+
+.wd-audio--inverse .wd-audio__pbar-thumb {
+  box-shadow: 0 0 0 3px rgba(28, 28, 30, 0.9);
+}
+
+@keyframes wd-audio-vol-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
 }

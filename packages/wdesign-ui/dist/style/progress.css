@@ -1,8 +1,14 @@
+@charset "UTF-8";
+/*
+ * 进度色可配置：`--wd-progress-color`，默认主题红。
+ * 派生色（深色卡内）也用 color-mix 从它算，换色时自动跟随。
+ */
 .wd-progress {
+  --wd-progress-color: var(--wd-red);
   height: 10px;
   width: 100%;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-2);
+  background: var(--wd-ink-5);
   overflow: hidden;
 }
 
@@ -14,7 +20,7 @@
   display: block;
   height: 100%;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-red);
+  background: var(--wd-progress-color);
   transition: width 0.3s ease;
 }
 
@@ -23,5 +29,6 @@
 }
 
 .wd-progress--on-dark .wd-progress__bar {
-  background: var(--wd-red-on-dark);
+  /* 深底上提亮，而不是换成固定的 --wd-red-on-dark —— 自定义色也要跟随 */
+  background: color-mix(in srgb, var(--wd-progress-color) 78%, #fff);
 }

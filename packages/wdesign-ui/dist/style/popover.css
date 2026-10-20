@@ -1,44 +1,110 @@
 @charset "UTF-8";
-.wd-pop-enter-active {
-  transition: opacity var(--wd-dur-pop) var(--wd-ease-out), transform var(--wd-dur-pop) var(--wd-ease-out);
+.wd-popover {
+  display: inline-flex;
+  max-width: 100%;
 }
 
-.wd-pop-enter-from {
-  opacity: 0;
-  transform: translateY(-8px) scale(0.97);
+/* 未提供 trigger 插槽时的兜底按钮：保持与其他组件一致的观感 */
+.wd-popover__default-trigger {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease;
 }
 
-.wd-pop-leave-active {
-  transition: opacity var(--wd-dur-pop-out) var(--wd-ease-sharp), transform var(--wd-dur-pop-out) var(--wd-ease-sharp);
-  /* 退场时不再需要交互，避免残留遮挡 */
-  pointer-events: none;
-}
-
-.wd-pop-leave-to {
-  opacity: 0;
-  transform: translateY(-4px) scale(0.99);
-}
-
-.wd-pop--up.wd-pop-enter-from,
-.wd-pop--up.wd-pop-leave-to {
-  transform: translateY(8px) scale(0.97);
-}
-
-.wd-pop--scale.wd-pop-enter-from {
-  transform: scale(0.94);
-}
-
-.wd-pop--scale.wd-pop-leave-to {
-  transform: scale(0.97);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .wd-pop-enter-from,
-  .wd-pop-leave-to,
-  .wd-pop--up.wd-pop-enter-from,
-  .wd-pop--up.wd-pop-leave-to,
-  .wd-pop--scale.wd-pop-enter-from,
-  .wd-pop--scale.wd-pop-leave-to {
-    transform: none;
+@media (hover: hover) {
+  .wd-popover__default-trigger:hover {
+    background: var(--wd-field-hover);
   }
+}
+.wd-popover__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  max-width: min(360px, 100vw - 32px);
+  padding: 14px 16px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+  color: var(--wd-ink);
+  font-size: 13.5px;
+  line-height: 1.6;
+  /*
+   * 显隐用 display + 类切换，不用 <Transition>。
+   *
+   * 理由（踩过两次）：
+   *   1. 无头/后台环境动画时钟停摆，Transition 的 enter-from 会残留，
+   *      面板卡在半透明状态永不完成
+   *   2. 本库其他浮层（Tooltip/Dropdown）都已统一成这个做法，
+   *      混用会让同一个页面的浮层行为不一致
+   */
+  display: none;
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.wd-popover__panel.is-open {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wd-popover__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.wd-popover__title {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--wd-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-popover__close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+.wd-popover__close:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+.wd-popover__body {
+  /* 内容块之间给一点默认节奏，避免使用者每次自己加间距 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 面板内的说明性文字：弱一档 */
+.wd-popover__body .wd-popover__hint {
+  color: var(--wd-ink-2);
+  font-size: 12.5px;
 }

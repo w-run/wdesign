@@ -162,7 +162,7 @@
 }
 .wd-markdown blockquote blockquote blockquote {
   margin-bottom: 0;
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
   box-shadow: none;
 }
 .wd-markdown blockquote blockquote blockquote::before {
@@ -301,4 +301,12 @@
 }
 .wd-markdown .hljs-decorator {
   color: #6394BF;
+}
+
+/*
+ * flush：嵌在已有 padding 的容器（如 WdCard）里时，
+ * 去掉外层内距，避免双重留白。
+ */
+.wd-markdown--flush {
+  padding: 0;
 }

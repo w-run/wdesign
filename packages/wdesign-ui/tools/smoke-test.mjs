@@ -29,12 +29,12 @@
  */
 import { readdirSync, readFileSync, existsSync } from 'node:fs'
 import { join, dirname, basename } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { createRequire } from 'node:module'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const COMP = join(ROOT, 'src/components')
-const require = createRequire('/var/minis/workspace/vuetest/index.js')
+const require = createRequire(fileURLToPath(import.meta.url))
 
 let pass = 0
 const fails = []
@@ -157,34 +157,26 @@ const DIST = join(ROOT, 'dist')
 if (!existsSync(DIST)) {
   fail('dist/ 不存在', '先跑 npm run build')
 } else {
-  for (const f of ['wdesign.esm.js', 'wdesign.cjs', 'wdesign.css', 'index.d.ts']) {
+  for (const f of ['wdesign-ui.esm.js', 'wdesign-ui.css', 'index.d.ts']) {
     if (existsSync(join(DIST, f))) ok(`dist/${f} 存在`)
     else fail(`dist/${f} 缺失`)
   }
-  /*
-   * CJS 必须能被 require（抓「产物引用了不存在模块」这类问题）。
-   * ⚠️ vue 是 peer dependency，本环境没装 —— 直接 require 必然失败，
-   * 且这个失败不代表产物有问题。所以先注入一个最小 vue stub。
-   */
-  try {
-    const Module = require('node:module')
-    const origResolve = Module._resolveFilename
-    Module._resolveFilename = function (request, ...args) {
-      if (request === 'vue') return 'vue-stub'
-      return origResolve.call(this, request, ...args)
+    /*
+     * ESM 产物必须能加载，且导出全部组件。
+     *
+     * 检查的是「导出是否齐全」，不只是「文件存在」——
+     * esbuild 默认的 tree-shaking 会把入口里看起来没人用的导出全删掉，
+     * 实测产出只剩 2 个函数、76 个组件全部消失。
+     * 构建脚本已加 --tree-shaking=false，这条检查防止它被改回去。
+     */
+    try {
+      const mod = await import(pathToFileURL(join(DIST, "wdesign-ui.esm.js")).href)
+      const n = Object.keys(mod).filter((k) => k.startsWith("Wd")).length
+      if (n >= 50) ok(`dist ESM 可加载（${n} 个组件）`)
+      else fail("dist ESM 组件数异常", `只有 ${n} 个 — 检查 tree-shaking`)
+    } catch (e) {
+      fail("dist ESM 无法加载", String(e).split("\n")[0])
     }
-    require.cache['vue-stub'] = {
-      id: 'vue-stub', filename: 'vue-stub', loaded: true,
-      exports: new Proxy({}, { get: () => () => ({}) }),
-    }
-    const cjs = require(join(DIST, 'wdesign.cjs'))
-    const n = Object.keys(cjs).filter((k) => k.startsWith('Wd')).length
-    if (n >= 50) ok(`dist/wdesign.cjs 可加载（${n} 个组件）`)
-    else fail(`dist/wdesign.cjs 组件数异常`, `只有 ${n} 个`)
-    Module._resolveFilename = origResolve
-  } catch (e) {
-    fail('dist/wdesign.cjs 无法 require', String(e).split('\n')[0])
-  }
 }
 
 /* ============================================================
@@ -344,15 +336,12 @@ function loadStyleSource() {
     ok('组件模板未串用其它组件的 BEM 块')
   }
 }
-/* ============================================================
- * 12. demo 资源引用必须带指纹
- * ========================================================== */
-const html = readFileSync(join(ROOT, 'demo/index.html'), 'utf8')
-const plainRefs = ['components.js', 'demo.js', 'demo.css'].filter((n) =>
-  new RegExp(`["']${n.replace('.', '\\.')}["']`).test(html),
-)
-if (plainRefs.length) fail('demo 资源未带指纹', plainRefs.join(', '))
-else ok('demo 资源引用均带指纹')
+/*
+ * 12. （已移除）demo 资源指纹检查
+ *
+ * demo 已拆到独立包 packages/wdesign-demo，
+ * 这项检查随之一并迁移，组件库不再依赖 demo 文件。
+ */
 
 /* ============================================================
  * 13. 组合式 API 必须已 import
@@ -504,84 +493,11 @@ const VUE_APIS = [
 }
 
 
-/* ============================================================
- * 15. 组件样式不能只存在于 demo 里
+/*
+ * 15. （已移除）demo 样式归属检查
  *
- * ===== 为什么需要 =====
- * WdIcon 的 `.wd-icon` 布局与 `weight` 加粗曾经只写在 demo.scss，
- * 结果是：
- *   · 其他项目引用图标包时拿不到这些样式（只能赌 SFC 的 <style> 注入）
- *   · demo 与真实包的样式会逐渐漂移
- *
- * 规则：任何 `.wd-*` 选择器（组件命名空间）都不该出现在 demo 样式里。
- * demo 只能定义自己的 `demo-*` / 页面专用辅助类。
- *
- * 例外：允许"依赖"组件状态修饰符来调整 demo 元素，例如
- *   `.wd-nav--vertical.is-collapsed .demo-nav-foot-item { ... }`
- * 这类规则的主语是 demo 元素，只是条件里引用了组件类名。
- * ========================================================== */
-{
-  const demoScss = readFileSync(join(ROOT, 'demo/demo.scss'), 'utf8')
-  const problems = []
-
-  const lines = demoScss.split('\n')
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
-    // 只看选择器行：以 . 或 & 开头，且包含 {（单行规则也包含）
-    if (!/^[.&]/.test(line)) continue
-    if (!line.includes('{')) continue
-
-    /*
-     * 取 { 之前的部分作为选择器。
-     * ⚠️ 必须兼容单行规则 `.foo { color: red; }` ——
-     *    之前只认"以 { 结尾"，单行规则因为后面还有内容是漏网之鱼。
-     */
-    const selector = line.slice(0, line.indexOf('{')).trim()
-    // 拆逗号分组，逐条判断
-    for (const part of selector.split(',')) {
-      const sel = part.trim()
-      if (!sel) continue
-
-      /*
-       * 主语 = **最右边**的复合选择器（真正被样式化的那个元素）。
-       *
-       * 例：`.wd-nav--vertical.is-collapsed .demo-nav-foot-item { ... }`
-       *   → 主语是 .demo-nav-foot-item（demo 元素），合法
-       *     .wd-nav--vertical 只是条件，不是被样式化的目标
-       *
-       * 之前错用"第一个"，把那两条合法规则误判成问题。
-       */
-      const parts = sel.split(/[\s>+~]+/).filter(Boolean)
-      const subject = parts[parts.length - 1] || ''
-
-      /*
-       * 允许"在外层容器里定制组件内部子元素"的写法：
-       *   `.hero-go .wd-icon { transform: translateX(3px) }`
-       * 主语虽然是组件类，但它是**被 demo 容器限定**的局部定制，
-       * 不会影响组件在别处的表现。
-       *
-       * 判据：选择器里存在一个 demo 自己的祖先（demo-* / hero-* / nav-* 等）。
-       * 真正该报的是「无条件定义组件类」，那才会污染全局。
-       */
-      const hasDemoAncestor = parts
-        .slice(0, -1)
-        .some((p) => /^\.(demo-|hero-|nav-|side-|sec-|foot-|vp-|grp-|ap-|vlist-|ic)/.test(p))
-
-      if (/^\.wd-/.test(subject) && !hasDemoAncestor) {
-        problems.push(`demo.scss:${i + 1} ${sel.slice(0, 50)}`)
-      }
-    }
-  }
-
-  if (problems.length) {
-    fail(
-      '组件样式写在 demo 里（其他项目拿不到）',
-      problems.slice(0, 5).join(' | ') + (problems.length > 5 ? ` …共 ${problems.length} 处` : ''),
-    )
-  } else {
-    ok('组件样式未混入 demo（.wd-* 主语规则为 0）')
-  }
-}
+ * demo 拆包后由 demo 自己的检查负责。
+ */
 
 /* ============================================================
  * 16. 图标包必须有独立的样式出口
@@ -591,11 +507,11 @@ const VUE_APIS = [
  * 必须同时提供可显式 import 的 style.css。
  * ========================================================== */
 {
-  const iconStyle = join(ROOT, '../wdesign-icons/src/style.css')
-  const pkgPath = join(ROOT, '../wdesign-icons/package.json')
+  const iconStyle = join(ROOT, '../icons/src/style.css')
+  const pkgPath = join(ROOT, '../icons/package.json')
 
   if (!existsSync(iconStyle)) {
-    fail('图标包缺少独立样式出口', 'wdesign-icons/src/style.css 不存在')
+    fail('图标包缺少独立样式出口', 'icons/src/style.css 不存在')
   } else {
     const css = readFileSync(iconStyle, 'utf8')
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'))
@@ -635,7 +551,7 @@ const VUE_APIS = [
     }
   }
   walk(join(ROOT, 'src/styles'))
-  walk(join(ROOT, 'demo'))
+  // demo 已拆到独立包，不在组件库内
 
   const decls = []
   for (const full of files) {

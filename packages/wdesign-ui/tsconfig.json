@@ -3,25 +3,27 @@
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-
     "jsx": "preserve",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-
     "noEmit": true,
-    "baseUrl": ".",
     "paths": {
-      "@w-run/wdesign-icons": ["../wdesign-icons/src/index.ts"]
+      "@w-run/wdesign-icons": [
+        "../icons/src/index.ts"
+      ]
     }
   },
   "include": [
@@ -29,5 +31,10 @@
     "src/**/*.d.ts",
     "src/**/*.vue"
   ],
-  "exclude": ["node_modules", "dist", ".demo-build", "demo"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".lib-build",
+    "../wdesign-demo"
+  ]
 }

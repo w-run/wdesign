@@ -27,14 +27,31 @@
   color: var(--wd-ink-2);
 }
 
+/*
+ * ===== 步骤条的三种状态 =====
+ *
+ *   wait    （未开始）  中性灰底 + 灰字
+ *   finish  （已完成）  **深色**实心 + 白勾
+ *   process （进行中）  **主题红** + 呼吸动画
+ *
+ * ⚠️ 之前的问题是：已完成节点是浅灰底，但连接线却是红色 ——
+ *    节点和线对不上，读起来像"线走完了、点还没走"，语义混乱。
+ *
+ * 现在统一为：
+ *   · 已走过的（finish + 它的连接线）→ 深色，表达"这段路已经走过"
+ *   · 正在走的（process）→ 主题红，唯一需要引导视线的位置
+ *   · 没走的（wait）→ 灰
+ *
+ * 红色只出现一次（当前步骤），符合"主色少而精"。
+ */
 .wd-steps__item--process .wd-steps__dot {
   background: var(--wd-red);
   color: #fff;
 }
 
 .wd-steps__item--finish .wd-steps__dot {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-ink);
+  color: #fff;
 }
 
 .wd-steps__label {
@@ -65,8 +82,12 @@
   margin: 13px 10px 0;
 }
 
+/*
+ * 已完成的连接线用**深色**，与 finish 节点同色。
+ * 之前是红色，导致"已完成步骤是灰点、连线却是红线"的割裂。
+ */
 .wd-steps__bar--done {
-  background: var(--wd-red);
+  background: var(--wd-ink);
 }
 
 /* ---- 微交互（精致版）---- */

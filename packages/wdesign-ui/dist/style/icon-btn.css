@@ -16,14 +16,14 @@
 
 @media (hover: hover) {
   .wd-icon-btn:hover {
-    background: var(--wd-tint-2);
-    color: var(--wd-red-text);
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
   }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-icon-btn.is-hover {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field-hover);
+  color: var(--wd-ink);
 }
 
 .wd-icon-btn:focus-visible {
@@ -37,13 +37,13 @@
 
 @media (hover: hover) {
   .wd-icon-btn--ghost:hover {
-    background: var(--wd-tint-2);
-    color: var(--wd-red-text);
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
   }
 }
 .wd-icon-btn--ghost.is-hover {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field-hover);
+  color: var(--wd-ink);
 }
 
 .wd-icon-btn--sm {
@@ -71,5 +71,5 @@
 }
 
 .wd-icon-btn:active {
-  box-shadow: 0 0 0 3px var(--wd-tint-2);
+  box-shadow: 0 0 0 3px var(--wd-ink-5);
 }

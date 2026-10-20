@@ -35,7 +35,7 @@ if (!existsSync(TSC)) {
 
 const targets = [
   { name: 'wdesign', config: join(ROOT, 'tsconfig.json') },
-  { name: 'wdesign-icons', config: join(ROOT, '../wdesign-icons/tsconfig.json') },
+  { name: 'wdesign-icons', config: join(ROOT, '../icons/tsconfig.json') },
 ]
 
 let failed = 0

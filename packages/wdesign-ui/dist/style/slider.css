@@ -1,5 +1,10 @@
 @charset "UTF-8";
 .wd-slider {
+  /*
+   * 滑块的可配色变量，默认主题红。
+   * 由 `color` prop 通过 inline style 覆盖。
+   */
+  --wd-slider-color: var(--wd-red);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -14,7 +19,16 @@
   height: 8px;
   margin: 0;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-2);
+  /*
+   * 轨道保持中性灰，**主色只用在滑块上**。
+   *
+   * 试过用主色的低透明度做轨道，但自定义属性里的 color-mix 不会被求值
+   * （--x: color-mix(...) 里的 var() 不参与计算，拿到的是字面量），
+   * 浏览器会把整条 background 丢弃。
+   * 与其绕一大圈做"浓度可调"的轨道，不如简单点：
+   * 轨道是结构（灰），滑块是状态（主色）。
+   */
+  background: var(--wd-field);
   outline: none;
 }
 
@@ -24,8 +38,12 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: var(--wd-shadow-knob);
+  /*
+   * 滑块用主色：它是"当前值"的指示器，属于需要引导视线的位置标记。
+   * 边界用一圈白描边保证在白卡/灰底上都清晰。
+   */
+  background: var(--wd-slider-color);
+  box-shadow: 0 0 0 3px var(--wd-card), var(--wd-shadow-knob);
   cursor: grab;
   transition: transform var(--wd-dur-fast) ease;
 }
@@ -54,10 +72,10 @@
 
 @media (hover: hover) {
   .wd-slider input[type=range]:hover::-webkit-slider-thumb {
-    box-shadow: 0 0 0 7px var(--wd-tint-2);
+    box-shadow: 0 0 0 7px var(--wd-ink-5);
   }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-slider input[type=range].is-hover::-webkit-slider-thumb {
-  box-shadow: 0 0 0 7px var(--wd-tint-2);
+  box-shadow: 0 0 0 7px var(--wd-ink-5);
 }

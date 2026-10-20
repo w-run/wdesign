@@ -82,27 +82,37 @@
   background: var(--wd-red-active);
 }
 .wd-btn--primary:disabled {
-  background: var(--wd-tint-1);
+  background: var(--wd-field);
   color: var(--wd-ink-3);
 }
 
+/*
+ * 次级按钮 · 中性灰块底。
+ *
+ * ⚠️ 原来是 `--wd-tint-2`（淡红底）+ 红字。
+ * 问题：tint 是"次级"语义 —— 它表达"这是个可选操作"，
+ * 不表达"注意/危险/品牌"。用淡红底会让页面上每个次级按钮
+ * 都像警告，与 danger 语义混淆。
+ * 极简黑白灰体系里，层级靠**明度**建立：primary 深底、tint 浅灰底、
+ * ghost 透明底 —— 颜色只留给真正的强调点。
+ */
 .wd-btn--tint {
-  background: var(--wd-tint-2);
-  color: var(--wd-red-text);
+  background: var(--wd-field);
+  color: var(--wd-ink);
 }
 @media (hover: hover) {
   .wd-btn--tint:hover:not(:disabled) {
-    background: var(--wd-tint-3);
+    background: var(--wd-field-hover);
   }
 }
 .wd-btn--tint.is-hover:not(:disabled) {
-  background: var(--wd-tint-3);
+  background: var(--wd-field-hover);
 }
 .wd-btn--tint:active:not(:disabled) {
   background: var(--wd-tint-4);
 }
 .wd-btn--tint:disabled {
-  background: var(--wd-tint-1);
+  background: var(--wd-field);
   color: var(--wd-ink-3);
 }
 
@@ -122,7 +132,7 @@
   background: var(--wd-dark-active);
 }
 .wd-btn--dark:disabled {
-  background: var(--wd-tint-1);
+  background: var(--wd-field);
   color: var(--wd-ink-3);
 }
 
@@ -139,7 +149,7 @@
   background: var(--wd-field);
 }
 .wd-btn--ghost:active:not(:disabled) {
-  background: var(--wd-tint-2);
+  background: var(--wd-field-hover);
 }
 .wd-btn--ghost:disabled {
   background: transparent;
@@ -183,15 +193,20 @@
 
 @media (hover: hover) {
   .wd-btn--tint:not(:disabled):hover {
-    background: var(--wd-tint-3);
+    background: var(--wd-field-hover);
   }
 }
 .wd-btn--tint:not(:disabled).is-hover {
-  background: var(--wd-tint-3);
+  background: var(--wd-field-hover);
 }
 
+/*
+ * active 比 hover 再深一档，**仍在中性灰范围内**。
+ * ⚠️ 之前写的是 --wd-tint-3（淡红）—— 按下时整块变粉，
+ * 配合 danger 语义会让人误以为操作出错。次级按钮全程不该出现红色。
+ */
 .wd-btn--tint:not(:disabled):active {
-  background: var(--wd-tint-4);
+  background: var(--wd-ink-5);
 }
 
 /* ---- 加载态 ---- */

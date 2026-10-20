@@ -11,7 +11,8 @@
   padding: 2px;
   cursor: pointer;
   display: inline-flex;
-  color: var(--wd-field-hover);
+  /* 未选中色可配，默认中性灰 */
+  color: var(--rate-color-off, var(--wd-field-hover));
   transition: transform var(--wd-dur) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
 
@@ -34,7 +35,7 @@
 }
 
 .wd-rate__item--on {
-  color: var(--wd-red-text);
+  color: var(--rate-color, var(--wd-red));
 }
 
 .wd-rate--disabled {

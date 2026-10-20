@@ -21,7 +21,7 @@
  *    demo.scss 曾经写过一次（且漏了伪元素），
  *    造成两处定义不一致。
  */
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
   -webkit-text-size-adjust: 100%;

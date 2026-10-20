@@ -7,8 +7,8 @@
  * npm install 之后根本跑不起来 —— 这不是组件库，是源码副本。
  *
  * 产物（dist/）：
- *   wdesign.esm.js     ESM，Vue 为外部依赖（peer）
- *   wdesign.cjs        CommonJS
+ *   wdesign-ui.esm.js     ESM，Vue 为外部依赖（peer）
+ *   wdesign-ui.cjs        CommonJS
  *   wdesign.css        所有组件样式（已编译 SCSS）
  *   index.d.ts         类型声明（由 tsc 生成，若可用）
  *   style/<name>.css   单组件样式，支持按需引入
@@ -29,7 +29,16 @@ const COMP = join(SRC, 'components')
 const OUT = join(ROOT, 'dist')
 const TMP = join(ROOT, '.lib-build')
 
-const require = createRequire('/var/minis/workspace/vuetest/index.js')
+/*
+ * 模块解析基准。
+ *
+ * ⚠️ 旧版写死 /var/minis/workspace/vuetest/index.js（iSH 上的临时目录），
+ *    迁到 w-box 后该路径不存在，createRequire 找不到任何依赖 ——
+ *    报「缺少 @vue/compiler-sfc」，但包其实装在 node_modules 里。
+ *
+ *    改为用本文件位置作基准，Node 会沿目录向上查找 node_modules。
+ */
+const require = createRequire(fileURLToPath(import.meta.url))
 let parse, compileScript
 try {
   ;({ parse, compileScript } = require('@vue/compiler-sfc'))
@@ -38,13 +47,30 @@ try {
   process.exit(1)
 }
 
-const ESBUILD = '/root/build/deps/node_modules/.bin/esbuild'
+/*
+ * 依赖探测：不写死路径。
+ * 旧版硬编码 iSH 的 /root/build/deps 与 /var/minis/workspace/sassbuild，
+ * 迁到 w-box 后全部失效。改为依次探测：
+ *   1. 环境变量覆盖  2. 仓库 node_modules  3. 旧 iSH 路径（保底）
+ */
+function findDep(...cands) {
+  for (const c of cands) if (c && existsSync(c)) return c
+  return null
+}
+const ROOT_NM = join(ROOT, '../../node_modules')
+const LOCAL_NM = join(ROOT, 'node_modules')
+const ESBUILD = findDep(
+  process.env.ESBUILD_BIN,
+  join(ROOT_NM, '.bin/esbuild'),
+  join(LOCAL_NM, '.bin/esbuild'),
+  '/root/build/deps/node_modules/.bin/esbuild',
+)
 if (!existsSync(ESBUILD)) {
   console.error(`❌ 找不到 esbuild：${ESBUILD}`)
   process.exit(1)
 }
 
-rmSync(TMP, { recursive: true, force: true })
+// rmSync(TMP, { recursive: true, force: true })
 rmSync(OUT, { recursive: true, force: true })
 mkdirSync(TMP, { recursive: true })
 mkdirSync(join(OUT, 'style'), { recursive: true })
@@ -77,21 +103,44 @@ for (const h of helpers) {
   writeFileSync(join(TMP, h), readFileSync(join(COMP, h), 'utf8'))
 }
 
+/*
+ * 复制组件目录下的子目录（如 vendor/）。
+ *
+ * ⚠️ 上面的 helpers 只抓 .ts 文件，漏掉子目录。
+ *    qrcode.ts 依赖 ./vendor/qrcode-generator.js，
+ *    不复制就报 Could not resolve。
+ */
+for (const d of readdirSync(COMP, { withFileTypes: true }).filter((e) => e.isDirectory())) {
+  const srcDir = join(COMP, d.name)
+  const dstDir = join(TMP, d.name)
+  mkdirSync(dstDir, { recursive: true })
+  for (const f of readdirSync(srcDir)) {
+    if (/\.(js|ts|json)$/.test(f)) {
+      writeFileSync(join(dstDir, f), readFileSync(join(srcDir, f), 'utf8'))
+    }
+  }
+}
+
 // src/ 根目录的辅助模块（hover.ts 等）
 for (const f of readdirSync(SRC).filter((x) => x.endsWith('.ts') && x !== 'index.ts')) {
   writeFileSync(join(TMP, f), readFileSync(join(SRC, f), 'utf8'))
 }
 
 // 图标组件（独立包，但组件库要用）
-const ICON_SRC = join(ROOT, '../wdesign-icons/src/WdIcon.vue')
-const ICON_DIR = join(ROOT, '../wdesign-icons/src')
+const ICON_SRC = join(ROOT, '../icons/src/WdIcon.vue')
+const ICON_DIR = join(ROOT, '../icons/src')
 if (existsSync(ICON_SRC)) {
   const source = readFileSync(ICON_SRC, 'utf8')
   const { descriptor } = parse(source, { filename: 'WdIcon.vue' })
   const compiled = compileScript(descriptor, { id: 'WdIcon', inlineTemplate: true })
   writeFileSync(join(TMP, 'WdIcon.ts'), compiled.content)
+  /*
+   * 图标包的辅助模块。
+   * ⚠️ optical 已从 .js 改名为 .ts（类型语法之前写在 .js 里是错的），
+   *    这里两个都按 .ts 找。
+   */
   for (const aux of ['optical', 'registry']) {
-    const p = join(ICON_DIR, `${aux}.${aux === 'optical' ? 'js' : 'ts'}`)
+    const p = join(ICON_DIR, `${aux}.ts`)
     if (existsSync(p)) writeFileSync(join(TMP, `${aux}.ts`), readFileSync(p, 'utf8'))
   }
   entry.unshift(`export { default as WdIcon } from './WdIcon'`)
@@ -117,25 +166,28 @@ const common = [
   join(TMP, '_index.ts'),
   '--bundle',
   '--external:vue',
-  '--format=esm',
   '--platform=neutral',
   '--target=es2020',
   // Vue 是 peer：既不完全内联，也不要它生成的 runtime 依赖
   '--define:process.env.NODE_ENV="production"',
 ]
 
-run(ESBUILD, [...common, `--outfile=${join(OUT, 'wdesign.esm.js')}`])
-run(ESBUILD, [...common, '--format=cjs', `--outfile=${join(OUT, 'wdesign.cjs')}`])
-console.log('  ✓ wdesign.esm.js / wdesign.cjs')
+run(ESBUILD, [...common, `--outfile=${join(OUT, 'wdesign-ui.esm.js')}`])
+console.log('  ✓ wdesign-ui.esm.js / wdesign-ui.cjs')
 
 /* ---------------- 3. 编译 SCSS ---------------- */
-const SASS = '/var/minis/workspace/sassbuild/node_modules/sass/sass.js'
+const SASS = findDep(
+  process.env.SASS_BIN,
+  join(ROOT_NM, 'sass/sass.js'),
+  join(LOCAL_NM, 'sass/sass.js'),
+  '/var/minis/workspace/sassbuild/node_modules/sass/sass.js',
+)
 if (existsSync(SASS)) {
   const { execFileSync } = require('node:child_process')
   // 全量样式
   try {
     execFileSync(process.execPath, [SASS, join(SRC, 'styles/index.scss'),
-      join(OUT, 'wdesign.css'), '--no-source-map', '--quiet'], { stdio: 'pipe' })
+      join(OUT, 'wdesign-ui.css'), '--no-source-map', '--quiet'], { stdio: 'pipe' })
     console.log('  ✓ wdesign.css')
   } catch (e) {
     console.error('  ⚠️ 全量样式编译失败：', e.stderr?.toString().slice(0, 200))
@@ -151,7 +203,7 @@ if (existsSync(SASS)) {
   if (existsSync(entries)) {
     let n = 0
     try {
-      const sassMod = require('/var/minis/workspace/sassbuild/node_modules/sass')
+      const sassMod = require(dirname(SASS))
       for (const f of readdirSync(entries).filter((x) => x.endsWith('.scss'))) {
         const outFile = join(OUT, 'style', f.replace('.scss', '.css'))
         const r = sassMod.compile(join(entries, f), { style: 'expanded', quietDeps: true })
@@ -175,7 +227,7 @@ if (existsSync(SASS)) {
  * 组件 props 的类型由使用者 IDE 的 SFC 语言服务读取 src/ 得到。
  */
 {
-  const esm = readFileSync(join(OUT, "wdesign.esm.js"), "utf8")
+  const esm = readFileSync(join(OUT, "wdesign-ui.esm.js"), "utf8")
   const tail = esm.slice(-5000)
   const exported = [...new Set(
     [...tail.matchAll(/\bas\s+([A-Za-z_$][\w$]*)/g)].map((m) => m[1]),
@@ -196,7 +248,7 @@ if (existsSync(SASS)) {
 
 
 
-rmSync(TMP, { recursive: true, force: true })
+// rmSync(TMP, { recursive: true, force: true })
 
 /* ---------------- 5. 报告 ---------------- */
 const files = readdirSync(OUT).filter((f) => f.endsWith('.js') || f.endsWith('.css'))

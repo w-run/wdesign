@@ -58,17 +58,23 @@
   transition: transform var(--wd-dur-fast) ease;
 }
 
+/* 单选同样用深色：见 checkbox 的说明 */
+/* 与 checkbox 共用同一套可配色变量约定 */
+.wd-radio {
+  --wd-check-color: var(--wd-ink);
+}
+
 .wd-radio--checked .wd-radio__dot {
-  background: var(--wd-red);
+  background: var(--wd-check-color);
 }
 
 @media (hover: hover) {
   .wd-radio--checked:hover .wd-radio__dot {
-    background: var(--wd-red-hover);
+    background: color-mix(in srgb, var(--wd-check-color) 82%, #000);
   }
 }
 .wd-radio--checked.is-hover .wd-radio__dot {
-  background: var(--wd-red-hover);
+  background: color-mix(in srgb, var(--wd-check-color) 82%, #000);
 }
 
 .wd-radio--checked .wd-radio__inner {
@@ -109,4 +115,12 @@
 
 .wd-radio:active .wd-radio__dot {
   transform: scale(0.94);
+}
+
+/* 单选项的文字标签（模板里一直在用，样式从未定义） */
+.wd-radio__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

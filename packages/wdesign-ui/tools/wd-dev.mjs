@@ -37,10 +37,41 @@ import { createRequire } from 'node:module'
 
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+
+/*
+ * 依赖探测。
+ *
+ * ⚠️ 旧版把 esbuild / sass 的路径写死成 iSH 上的
+ *    /root/build/deps 与 /var/minis/workspace/sassbuild，
+ *    迁到 w-box 后全部失效。改为依次探测：
+ *      1. 环境变量覆盖
+ *      2. 本仓库 node_modules（pnpm workspace 提升到根）
+ *      3. 包内 node_modules
+ */
+const ROOT_NM = join(ROOT, "../../node_modules")
+const LOCAL_NM = join(ROOT, "node_modules")
+
+function findBin(name, envKey) {
+  const cands = [
+    envKey ? process.env[envKey] : null,
+    join(ROOT_NM, ".bin", name),
+    join(LOCAL_NM, ".bin", name),
+  ]
+  return cands.find((c) => c && existsSync(c)) || name
+}
+
+function findPkg(name) {
+  for (const base of [ROOT_NM, LOCAL_NM]) {
+    const p = join(base, name)
+    if (existsSync(p)) return p
+  }
+  return name
+}
+
 const PORT = Number(process.argv.find((a) => a.startsWith('--port='))?.split('=')[1] || 5173)
 
-const require = createRequire('/var/minis/workspace/vuetest/index.js')
-const ESBUILD = '/root/build/deps/node_modules/.bin/esbuild'
+const require = createRequire(fileURLToPath(import.meta.url))
+const ESBUILD = findBin('esbuild')
 
 /* ---------------------------------------------------------------
  * 1. 依赖预构建（Vite 的 optimizeDeps 思路）
@@ -78,7 +109,7 @@ let sass = null
 function getSass() {
   if (!sass) {
     const t = Date.now()
-    sass = require('/var/minis/workspace/sassbuild/node_modules/sass')
+    sass = require(findPkg('sass'))
     console.log(`  sass 就绪（${Date.now() - t}ms）`)
   }
   return sass

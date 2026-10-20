@@ -1,14 +1,11 @@
 @charset "UTF-8";
 .wd-tooltip {
-  position: relative;
   display: inline-flex;
 }
 
 .wd-tooltip__bubble {
-  position: absolute;
-  z-index: 60;
-  left: 50%;
-  transform: translateX(-50%) translateY(2px);
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
   background: var(--wd-dark);
   color: var(--wd-dark-text);
   font-size: 12.5px;
@@ -19,20 +16,30 @@
   white-space: nowrap;
   box-shadow: var(--wd-shadow-pop);
   pointer-events: none;
+  /*
+    可见性交给 display，动画只负责淡入。
+    ⚠️ 不要在 .is-open 上写 transform —— 定位已由 JS 的 top/left 决定，
+       transform 会覆盖它导致错位（历史上就踩过：animation 的 transform
+       把 translateX(-50%) 的居中顶掉）。
+  */
+  display: none;
 }
 
-.wd-tooltip--top .wd-tooltip__bubble {
-  bottom: calc(100% + 10px);
+.wd-tooltip__bubble.is-open {
+  display: block;
+  animation: wd-tooltip-in 140ms var(--wd-ease-out) both;
 }
 
-.wd-tooltip--bottom .wd-tooltip__bubble {
-  top: calc(100% + 10px);
+@keyframes wd-tooltip-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
-/* 入场/退场由 <Transition name="wd-pop"> 负责（_popover.scss）。
-   ⚠️ 这里不要再挂 animation：它的 transform 会覆盖上面的 translateX(-50%) 居中，
-      导致气泡水平错位（历史 bug）。 */
-.wd-tooltip .wd-pop-enter-from,
-.wd-tooltip .wd-pop-leave-to {
-  transform: translateX(-50%) translateY(4px);
+@media (prefers-reduced-motion: reduce) {
+  .wd-tooltip__bubble.is-open {
+    animation: none;
+  }
 }

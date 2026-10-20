@@ -29,6 +29,16 @@
   transition: transform var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), width var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1), height var(--wd-dur-slow) cubic-bezier(0.25, 0.8, 0.35, 1);
 }
 
+/*
+ * 首帧落位：禁用过渡。
+ * 页面加载时滑块初始在 x=0，首次设置 transform 若有过渡，
+ * 会看到"从左滑进来"的动画 —— 那是初始状态，不该有过渡。
+ * 定位完成后由 JS 移除该类，后续切换恢复正常动画。
+ */
+.wd-segmented__slider.is-initial {
+  transition: none;
+}
+
 .wd-segmented--dark {
   background: var(--wd-dark-2);
 }
@@ -177,124 +187,4 @@
   overflow: hidden;
   visibility: hidden;
   pointer-events: none;
-}
-
-.wd-segmented-picker {
-  position: relative;
-  display: inline-block;
-  min-width: 168px;
-  max-width: 100%;
-}
-
-.wd-segmented-picker__trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  width: 100%;
-  padding: 0.65rem 0.9rem 0.65rem 1rem;
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--wd-ink, #191b1f);
-  background: var(--wd-field, #e9edf1);
-  border: none;
-  border-radius: var(--wd-radius-pill, 999px);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background-color var(--wd-dur-fast, 0.18s) var(--wd-ease-smooth, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-@media (hover: hover) {
-  .wd-segmented-picker__trigger:hover {
-    background: var(--wd-field-hover, #dfe4ea);
-  }
-}
-.wd-segmented-picker__trigger.is-hover {
-  background: var(--wd-field-hover, #dfe4ea);
-}
-
-.wd-segmented-picker__trigger:focus-visible {
-  outline: 2px solid var(--wd-red, #d62839);
-  outline-offset: 2px;
-}
-
-.wd-segmented-picker__label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.wd-segmented-picker__meta {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--wd-ink-2, #636A73);
-  font-variant-numeric: tabular-nums;
-}
-
-.wd-segmented-picker__caret {
-  margin-left: auto;
-  color: var(--wd-ink-2, #636A73);
-  transition: transform var(--wd-dur-fast, 0.18s) var(--wd-ease-smooth, cubic-bezier(0.4, 0, 0.2, 1));
-  flex: none;
-}
-
-.wd-segmented-picker__caret.is-open {
-  transform: rotate(180deg);
-}
-
-/* 面板（跟 WdDropdown 视觉同源） */
-.wd-segmented-picker__panel {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  min-width: 100%;
-  max-width: min(320px, 88vw);
-  max-height: min(320px, 60vh);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding: 8px;
-  background: var(--wd-card, #fff);
-  border-radius: var(--wd-radius-md, 14px);
-  box-shadow: var(--wd-shadow-hover, 0 12px 32px rgba(14, 15, 19, 0.14));
-  z-index: 60;
-  scrollbar-width: thin;
-}
-
-.wd-segmented-picker__option {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  width: 100%;
-  padding: 0.5rem 0.7rem;
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: 500;
-  text-align: left;
-  color: var(--wd-ink, #191b1f);
-  background: none;
-  border: none;
-  border-radius: var(--wd-radius-xs);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: background-color var(--wd-dur-fast, 0.18s) var(--wd-ease-smooth, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-@media (hover: hover) {
-  .wd-segmented-picker__option:hover {
-    background: var(--wd-field, #e9edf1);
-  }
-}
-.wd-segmented-picker__option.is-hover {
-  background: var(--wd-field, #e9edf1);
-}
-
-.wd-segmented-picker__option--active {
-  color: var(--wd-red, #d62839);
-  font-weight: 700;
-}
-
-.wd-segmented-picker__option--active svg {
-  color: var(--wd-red, #d62839);
-  flex: none;
 }

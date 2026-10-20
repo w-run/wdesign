@@ -23,8 +23,8 @@ import glob
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ICON_DIRS = [
-    os.path.join(ROOT, '../wdesign-icons/icons/outlined'),
-    os.path.join(ROOT, '../wdesign-icons/icons/filled'),
+    os.path.join(ROOT, '../icons/icons/outlined'),
+    os.path.join(ROOT, '../icons/icons/filled'),
 ]
 
 # Demo 里用于说明"这是图标名"的字段
@@ -92,7 +92,7 @@ def main():
         if guess:
             print(f'      可能是：{", ".join(guess)}')
 
-    print('\n用 `ls packages/wdesign-icons/icons/outlined` 查实际名字。')
+    print('\n用 `ls packages/icons/icons/outlined` 查实际名字。')
     return 1 if '--strict' in sys.argv else 0
 
 
