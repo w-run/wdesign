@@ -91,10 +91,21 @@ for (const f of signals) {
   // inlineTemplate: 模板编译进 setup，产物更快、少一次运行期编译
   const compiled = compileScript(descriptor, { id: name, inlineTemplate: true })
   // 编译后是 .ts 文件，把组件间的 .vue 引用改成无后缀（esbuild 会解析 .ts）
-  const code = compiled.content.replace(
-    /from\s+(['"])(\.\/[^'"]+)\.vue\1/g,
-    (_, q, p) => `from ${q}${p}${q}`,
-  )
+  const code = compiled.content
+    .replace(
+      /from\s+(['"])(\.\/[^'"]+)\.vue\1/g,
+      (_, q, p) => `from ${q}${p}${q}`,
+    )
+    /*
+     * 组件内部的 WdIcon 来自独立包（图标包源码里是 .vue，esbuild 没有 loader）。
+     * 打包前 WdIcon.vue 已经被编译成同目录的 WdIcon.ts（只有 default 导出），
+     * 所以这里把 `import { WdIcon } from 包名` 改写成默认导入 —— 否则会出现
+     *   No loader is configured for ".vue" files: ../icons/src/WdIcon.vue
+     */
+    .replace(
+      /import\s*\{\s*WdIcon\s*\}\s*from\s*(['"])@w-run\/wdesign-icons\1/g,
+      "import WdIcon from './WdIcon'",
+    )
   writeFileSync(join(TMP, `${name}.ts`), code)
   entry.push(`export { default as ${name} } from './${name}'`)
 }

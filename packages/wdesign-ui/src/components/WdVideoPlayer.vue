@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import WdDanmaku from './WdDanmaku.vue'
 import type { DanmakuItem } from './WdDanmaku.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'

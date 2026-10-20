@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { watchEffect } from 'vue'
 import { popDuration } from './pop-duration'
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useDismiss } from './anchor'
 import { popDuration } from './pop-duration'

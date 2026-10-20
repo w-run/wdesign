@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, ref, toRef, watchEffect } from 'vue'
 import { useScrollLock, useFocusTrap } from './overlay'
 import { nextZIndex } from './overlay-stack'

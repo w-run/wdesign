@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 defineOptions({ name: 'WdTabs' })

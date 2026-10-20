@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, ref } from 'vue'
+import WdInput from './WdInput.vue'
 
 defineOptions({ name: 'WdTransfer' })
 

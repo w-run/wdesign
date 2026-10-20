@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
 import { useAnchoredPosition, useDismiss } from './anchor'

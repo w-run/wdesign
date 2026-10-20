@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, ref, watch } from 'vue'
 import { useControllable } from './controllable'
 
