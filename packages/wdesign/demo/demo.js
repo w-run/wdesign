@@ -237,6 +237,25 @@ const app = createApp({
     return {
       popSeg: '全部',
       danmakuOn: true,
+      /* 农历示例：只在部分日期显示，验证"有文字/无文字"行高一致 */
+      lunarTexts: (function () {
+        var m = {}
+        var pad = function (n) { return n < 10 ? '0' + n : '' + n }
+        var b = new Date()
+        var y = b.getFullYear()
+        var mo = pad(b.getMonth() + 1)
+        var names = ['初一','初二','初三','初四','初五','初六','初七','初八','初九','初十',
+                     '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十',
+                     '廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十']
+        // 只给 1~20 号加农历（留一半空白，方便对比行高）
+        for (var d = 1; d <= 20; d++) {
+          m[y + '-' + mo + '-' + pad(d)] = names[(d + 2) % 30]
+        }
+        // 国庆
+        m[y + '-10-01'] = '国庆'
+        return m
+      })(),
+
       dateRange: '',
       markedDate: '',
       time1: '09:30',

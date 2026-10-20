@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>WDesign — 组件演示</title>
-<link rel="stylesheet" href="demo.82cdbb04.css">
+<link rel="stylesheet" href="demo.916b9585.css">
 </head>
 <body>
   <!--
@@ -796,11 +796,16 @@
           <span class="demo-cap">已选：{{ dateRange || '（未选）' }}</span>
         </div>
 
-        <!-- 标记 -->
+        <!-- 标记 + 文字 -->
         <div class="demo-col" style="flex:0 0 auto; gap:8px">
-          <div class="demo-cap">日期标记 · 同日多标记（生理期场景）</div>
+          <div class="demo-cap">日期标记（右上角）+ 底部农历</div>
           <div class="demo-stage demo-stage--tight">
-            <wd-calendar v-model="markedDate" :marks="periodMarks" :clearable="false"></wd-calendar>
+            <wd-calendar
+              v-model="markedDate"
+              :marks="periodMarks"
+              :texts="lunarTexts"
+              :clearable="false"
+            ></wd-calendar>
           </div>
           <div class="demo-row" style="gap:14px; margin-top:2px">
             <span class="demo-cap" style="display:inline-flex; align-items:center; gap:5px">
@@ -2075,8 +2080,8 @@ toast.<span class="hljs-title">success</span>(<span class="hljs-string">'部署�
 <script src="icons.optical.7cdd9cc2.js"></script>
 <script src="icons.data.ce2a9704.js"></script>
 <script src="demo-extra.6b59b3f1.js"></script>
-<script src="components.f37e1356.js"></script>
-<script src="demo.0a95e6a7.js"></script>
+<script src="components.ede15f7c.js"></script>
+<script src="demo.3deb3858.js"></script>
 
 <!-- Scrollspy：导航高亮 -->
 <script>

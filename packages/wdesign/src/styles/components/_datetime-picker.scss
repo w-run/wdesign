@@ -29,9 +29,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 220px;
+  min-width: 260px;
   height: var(--wd-size-md);
-  padding: 0 14px 0 18px;
+  padding: 0 18px 0 22px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-field);
   color: var(--wd-ink);
@@ -87,8 +87,9 @@
 .wd-datetime-picker__row {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  padding: 14px;
+  gap: 24px;
+  /* 与 Calendar / TimePicker 统一 */
+  padding: 24px 28px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow-sm);

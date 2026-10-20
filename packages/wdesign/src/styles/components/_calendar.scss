@@ -11,22 +11,38 @@
 
 @use '../mixins' as m;
 
+/*
+ * 日历容器尺寸。
+ *
+ * 内距参考音频卡片（36px 40px）的比例 —— 日历比它小一档，
+ * 但原来的 12px 太紧，日期贴着边框显得局促。
+ *
+ *   宽度 268 → 320（格子从 33px 增到 40px，点击目标更舒适）
+ *   内距 12  → 24（上下略小，左右略大，与网格的自然留白协调）
+ *   圆角 md → lg（尺寸变大后需要更大的圆角才不显得方）
+ */
 .wd-calendar {
   display: inline-flex;
   flex-direction: column;
-  gap: 6px;
-  width: 268px;
-  padding: 12px;
-  border-radius: var(--wd-radius-md);
+  gap: 14px;
+  width: 340px;
+  /*
+   * 内边距与 TimePicker / DateTimePicker 统一为 24px 28px。
+   * 三个日期时间类组件并排出现时，padding 不一致会让它们
+   * 看起来像三套不同的设计语言。
+   */
+  padding: 24px 28px;
+  border-radius: var(--wd-radius-lg);
   background: var(--wd-card);
   user-select: none;
   outline: none;
 }
 
 .wd-calendar--sm {
-  width: 232px;
-  padding: 10px;
-  gap: 4px;
+  width: 284px;
+  padding: 18px 20px;
+  gap: 8px;
+  border-radius: var(--wd-radius-md);
 }
 
 .wd-calendar:focus-visible {
@@ -34,23 +50,65 @@
 }
 
 /* ---------------- 头部 ---------------- */
+/*
+ * 头部：大号年月 + 右侧翻页。
+ *
+ * 参考「2026/07」那种排版：
+ *   · 年份和月份用大号粗体，斜杠用主色强调
+ *   · 整体**左对齐**，与下方日期网格的左边线对齐
+ *   · 翻页按钮收在右侧，不与标题争夺视觉中心
+ *
+ * ⚠️ 不用"‹ 2026 年 10 月 ›"的居中三栏：
+ *    那让标题变成被包围的"标签"，而不是页面的时间锚点。
+ *    同时中文「年月」在窄日历里很占宽，纯数字紧凑得多。
+ */
 .wd-calendar__head {
   display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0 2px 4px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 2px 10px;
 }
 
 .wd-calendar__month {
-  flex: 1;
-  text-align: center;
-  font-size: 13.5px;
-  font-weight: 700;
+  display: flex;
+  align-items: baseline;
+  gap: 1px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.03em;
   color: var(--wd-ink);
-  letter-spacing: -.01em;
 }
 
-.wd-calendar--sm .wd-calendar__month { font-size: 12.5px; }
+.wd-calendar__year,
+.wd-calendar__mon {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* 主色斜杠：整个标题唯一的彩色元素，起到视觉分隔作用 */
+.wd-calendar__slash {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--wd-red);
+  /* 斜杠本身较窄，给一点左右呼吸 */
+  margin: 0 1px;
+}
+
+.wd-calendar--sm .wd-calendar__year,
+.wd-calendar--sm .wd-calendar__mon,
+.wd-calendar--sm .wd-calendar__slash { font-size: 20px; }
+
+/* 右侧翻页按钮组 */
+.wd-calendar__navs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  /* 与标题基线对齐 */
+  align-self: center;
+}
 
 .wd-calendar__nav {
   flex: none;
@@ -216,56 +274,148 @@
 /* =============================================================
  *  区间选择
  *
- *  视觉模型：
- *    · 起点 / 终点 → 实心圆（深色），是区间的"两端"
- *    · 中间的日子 → 浅色底条（不是圆点），表达"被包含"
- *    · 底条要连成一片：相邻格之间不能有缝隙
+ *  ===== 视觉参考 =====
+ *  主流日期区间选择器（Airbnb / Booking / 参考图）的通行做法：
  *
- *  ⚠️ 中间段用"拉伸的矩形"而非圆点：
- *     圆点会让区间看起来像一串独立的选择，失去"连续段"的语义。
- *     实现上给中间格加 ::before 铺满整格宽度，两端做圆角收口。
+ *     7   [8]   9   10   11   14   [15]   16
+ *         └────────── 浅色胶囊 ──────────┘
+ *
+ *  · **起终点**：主色实心圆，白色数字
+ *  · **中间**：比圆略窄的浅色带，两端半圆收口 —— 视觉上是一条胶囊
+ *  · 圆比带**高**：圆的上下会凸出带子，这是关键 ——
+ *    如果圆和带等高，看起来就是一个大色块，不是一个"点"钉在一条"线"上
+ *
+ *  ===== 实现 =====
+ *  每个格子用 ::before 画"带的那一段"，用相邻格拼接成连续胶囊：
+ *    · 中间格：左右铺满，无圆角
+ *    · 起点：左边缘圆角（半胶囊），左半留白
+ *    · 终点：右边缘圆角，右半留白
+ *  起终点的实心圆用 ::after 叠在上面。
+ *
+ *  ⚠️ 三个踩过的坑：
+ *    1. 条用 z-index: -1 会沉到父级白底下面（完全看不见）
+ *    2. 格子背景染深色当圆 → 是方块不是圆，且被条盖住
+ *    3. 条高 100% → 铺满整格，看起来是色块不是带子
  * ============================================================= */
-.wd-calendar__cell.in-range {
-  position: relative;
-  color: var(--wd-ink);
-}
 
-/* 中间态：浅色底块，铺满整格（不留缝，才能连成一条） */
-.wd-calendar__cell.in-range::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--wd-tint-2);
-  border-radius: 0;
-  z-index: -1;
-}
-
-/* 起点右侧、终点左侧做收口 —— 与相邻的实心圆平滑衔接 */
-.wd-calendar__cell.is-range-start::before,
-.wd-calendar__cell.is-range-end::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--wd-tint-2);
-  z-index: -1;
-}
-
-.wd-calendar__cell.is-range-start::before {
-  border-top-left-radius: 50%;
-  border-bottom-left-radius: 50%;
-}
-
-.wd-calendar__cell.is-range-end::before {
-  border-top-right-radius: 50%;
-  border-bottom-right-radius: 50%;
-}
-
-/* 起终点本体：实心圆覆盖在底条上 */
+.wd-calendar__cell.in-range,
 .wd-calendar__cell.is-range-start,
 .wd-calendar__cell.is-range-end {
-  background: var(--wd-ink);
+  position: relative;
+  isolation: isolate;
+}
+
+/*
+ * 连接带。
+ * 高度 84%（比格子略窄）、垂直居中 —— 上下留出空气，
+ * 视觉上才是一条"穿过数字的线"而不是"整块底色"。
+ */
+/*
+ * ⚠️ 只有**完整区间**才画端点色带。
+ *
+ * 预备阶段（只点了一个日期、等第二个）时，起点右边不该有半截色带 ——
+ * 那看起来像"区间已经延伸到某个未知的终点"，是误导。
+ *
+ * 用 .is-range-complete 控制：由组件在 pending=false 时加到日历容器上。
+ */
+.wd-calendar.is-range-complete .wd-calendar__cell.in-range::before,
+.wd-calendar.is-range-complete .wd-calendar__cell.is-range-start::before,
+.wd-calendar.is-range-complete .wd-calendar__cell.is-range-end::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  /*
+   * 带子 88%，圆 100%。
+   * 78% 太细，看起来像一条"分割线"而不是"区间"；
+   * 88% 保留圆凸出 ~6%，同时带子本身有足够体量。
+   */
+  height: 88%;
+  background: var(--wd-tint-2);
+  z-index: 0;
+}
+
+/* 中间格：铺满 + 吃掉 grid 的 2px 间隙 */
+.wd-calendar.is-range-complete .wd-calendar__cell.in-range::before {
+  left: -1px;
+  right: -1px;
+  border-radius: 0;
+}
+
+/*
+ * 起点：左端半圆收口，右侧连到下一格。
+ * ⚠️ 不是 50% 圆角 —— 那是"把半格做成圆"；
+ *    要的是"整条胶囊的左半圆头"，所以左边用 50% 高度对应的半径。
+ */
+.wd-calendar.is-range-complete .wd-calendar__cell.is-range-start::before {
+  left: 0;
+  right: -1px;
+  border-top-left-radius: 999px;
+  border-bottom-left-radius: 999px;
+}
+
+/* 终点：右端半圆收口 */
+.wd-calendar.is-range-complete .wd-calendar__cell.is-range-end::before {
+  left: -1px;
+  right: 0;
+  border-top-right-radius: 999px;
+  border-bottom-right-radius: 999px;
+}
+
+/* 单日区间（起终点同一天）：完整胶囊 */
+.wd-calendar.is-range-complete .wd-calendar__cell.is-range-start.is-range-end::before {
+  left: 0;
+  right: 0;
+  border-radius: 999px;
+}
+
+/*
+ * 起终点：主色实心圆，**直径比带子略大**，
+ * 让它"凸出"带子上下 —— 这是参考图里最关键的视觉特征。
+ */
+.wd-calendar__cell.is-range-start::after,
+.wd-calendar__cell.is-range-end::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /*
+   * 圆比带子大一圈 —— 这是参考图里最关键的视觉关系。
+   * 圆占满格子（100%），带子只有 84%，
+   * 于是圆的上下各凸出约 8%，看起来是"点钉在线上的两端"。
+   */
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--wd-red);
+  z-index: 1;
+}
+
+/* 圆内数字：白色，压在最上层 */
+.wd-calendar__cell.is-range-start,
+.wd-calendar__cell.is-range-end {
   color: var(--wd-card);
   font-weight: 800;
+  z-index: 1;
+}
+
+.wd-calendar__cell.is-range-start .wd-calendar__day,
+.wd-calendar__cell.is-range-end .wd-calendar__day {
+  position: relative;
+  z-index: 2;
+  color: var(--wd-card);
+}
+
+/* 区间中间：数字用主色文字版，与浅色带形成足够的对比 */
+.wd-calendar__cell.in-range {
+  color: var(--wd-red-text);
+  font-weight: 700;
+}
+
+.wd-calendar__cell.in-range .wd-calendar__day {
+  position: relative;
+  z-index: 2;
 }
 
 /* ---------------- 标记点 ---------------- */
@@ -275,15 +425,36 @@
  * ⚠️ 不挤占日期数字的空间 —— 用绝对定位浮在下方，
  *    这样有标记和无标记的行高度一致（6 行网格不会跳动）。
  */
+/*
+ * 标记点容器：坐在**信息位**里，与日期数字不重叠。
+ * bottom 对齐到 reserved 区域的底部，所有格子位置一致。
+ */
+/*
+ * 标记点：坐在信息位里、靠上一点，贴近日期数字。
+ *
+ * ⚠️ bottom: 3px 会把它推到格子最底部 —— 与数字之间空出一大段，
+ *    看起来像"掉下去的点"。改成从信息位顶部往下排。
+ */
+/*
+ * 标记点：格子的**右上角**。
+ *
+ * ⚠️ 为什么改到右上角：
+ *    底部要留给农历/节假日文字，两者抢同一块空间。
+ *    右上角是纯空白，放小圆点既醒目又不干扰数字。
+ *
+ * ⚠️ 绝对定位，绝不参与布局 ——
+ *    否则有标记的行又会比别的行高。
+ */
 .wd-calendar__marks {
   position: absolute;
-  left: 50%;
-  bottom: 2px;
-  transform: translateX(-50%);
+  top: 3px;
+  right: 4px;
   display: flex;
   align-items: center;
-  gap: 2px;
+  justify-content: flex-end;
+  gap: 1.5px;
   pointer-events: none;
+  z-index: 3;
 }
 
 .wd-calendar__mark {
@@ -300,10 +471,131 @@
 }
 
 /* 有标记时数字上移一点，避免和圆点重叠 */
-.wd-calendar__cell.has-marks .wd-calendar__day {
-  transform: translateY(-3px);
+/* =============================================================
+ *  单元格信息位（日期数字 + 下方附属信息）
+ *
+ *  ===== 为什么要统一预留 =====
+ *  之前只在"有标记"的格子上加 padding-bottom 并把数字上移 3px ——
+ *  结果那一行的数字比同行其他数字高，整行看起来"被抬起来"。
+ *
+ *  正确做法：**所有格子都预留**同样的信息位高度。
+ *  有标记/有文字就填进去，没有就留空 ——
+ *  这样每一行的高度、数字基线完全一致，翻月也不会跳动。
+ *
+ *  ===== 高度 =====
+ *  数字占上部，下方 info 位固定 14px（可放一个 5px 圆点或 9px 小字）。
+ *  compact 模式下取消预留，格子变矮（用于密集场景）。
+ * ============================================================= */
+/*
+ * 单元格布局：用 **flex column + 两段固定高度**，
+ * 而不是给数字加 transform 位移。
+ *
+ * ⚠️ 之前用 `transform: translateY(-7px)` 把数字上移，
+ *    看似简单，实际会让数字**溢出格子边界**（测得 dayRect 顶部
+ *    比 cellRect 顶部还高 5px），且不同行的溢出量还不一致 ——
+ *    表现为个别日期"跑出格子"。
+ *
+ *    位移是视觉偏移，不参与布局；这里需要的是**真实的布局分配**。
+ *
+ * 现在：
+ *   · 数字区：flex: 1，垂直居中
+ *   · 信息位：固定 --cal-info-h 高，贴着底部
+ *   · 所有格子结构一致，行高完全相同
+ */
+/*
+ * ===== 单元格三层结构 =====
+ *
+ *        ⑧ ← 右上角标记点（绝对定位，不占位）
+ *      ┌─────┐
+ *      │  15 │ ← 数字永远在格子的**正中心**
+ *      │ 初二 │ ← 底部文字（绝对定位，不占位）
+ *      └─────┘
+ *
+ * ⚠️ 关键决定：**数字始终居中**。
+ *    之前为了给底部文字腾位置，把数字上移 —— 结果是
+ *    "有信息的格子数字偏高，没有的居中"，同一行内基线不齐。
+ *    现在数字固定居中，文字和标记点都用绝对定位**浮**上去，
+ *    完全不参与布局，所以所有格子天然等高、数字天然对齐。
+ *
+ * 代价：底部文字会略微溢出格子下沿（视觉上压到行间距里）。
+ *      日历网格的行高本来就有余量，实际看起来是"贴着数字下方"，
+ *      比把数字整体上移的观感自然得多。
+ */
+.wd-calendar__cell {
+  --cal-info-h: 12px;
+  /* 不需要任何内距预留 */
+  padding-bottom: 0;
+  /* 数字靠 flex 居中，不用位移 */
+  justify-content: center;
+  align-items: center;
 }
 
-.wd-calendar__cell.has-marks {
-  padding-bottom: 6px;
+.wd-calendar__cell .wd-calendar__day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: none;
+}
+
+/* compact：不留信息位，格子变矮 */
+.wd-calendar--compact .wd-calendar__cell {
+  --cal-info-h: 0px;
+}
+
+/* ---------------- 底部附属文字（农历 / 节假日） ---------------- */
+/*
+ * 绝对定位、浮在数字下方，**不参与布局** ——
+ * 所以有文字和没文字的格子高度完全一致。
+ *
+ * 位置：贴在格子下沿稍内，字号很小（10px）以免和数字抢注意力。
+ * 颜色用 ink-3（比 ink-2 更轻），它是"补充信息"不是主体。
+ */
+/*
+ * 底部附属文字（农历 / 节假日）。
+ *
+ * ⚠️ bottom: -1px 会**溢出到下一行** —— 日期网格行距只有 2px，
+ *    溢出的文字直接压住下一行的日期数字。
+ *    改成贴着格子内侧底部（bottom: 3px），
+ *    并配合数字的视觉重心上移一点（见 .day 的 padding-bottom）。
+ *
+ * ⚠️ 绝对定位不占位：有无文字的格子高度完全一致。
+ */
+.wd-calendar__text {
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  transform: translateX(-50%);
+  max-width: calc(100% - 2px);
+  font-size: 9.5px;
+  line-height: 1.1;
+  font-weight: 500;
+  color: var(--wd-ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/*
+ * 有底部文字时，数字不需要位移 ——
+ * 数字固定在格子中心，文字在下方 3px 处，
+ * 两者自然不重叠（格子 37px 高，数字约占中间 14px）。
+ */
+
+/* 选中的日期上，文字要与反色底协调 */
+.wd-calendar__cell.is-selected .wd-calendar__text {
+  color: var(--wd-card);
+  opacity: .8;
+}
+
+/* 区间中间态：文字用主色系，与带子协调 */
+.wd-calendar__cell.in-range .wd-calendar__text {
+  color: var(--wd-red-text);
+  opacity: .85;
+}
+
+/* compact 模式不显示文字 */
+.wd-calendar--compact .wd-calendar__text {
+  display: none;
 }
