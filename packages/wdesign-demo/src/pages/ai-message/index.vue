@@ -127,7 +127,7 @@ function onAction(label: string) {
     name="AiMessage"
     desc="AI 消息：深度思考 · 流式正文 · 外部驱动 · 用户气泡 · 操作按钮"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="普通问答"
       desc="只给 content 就是最简气泡，AI 在左；不带思考内容时不占思考区的空间"
     >
@@ -139,7 +139,7 @@ function onAction(label: string) {
       />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="深度思考面板"
       desc="reasoning 是独立折叠区，正文不受它影响；defaultReasoningOpen 决定初始展开，收起后点标题可以再打开"
     >
@@ -154,7 +154,7 @@ function onAction(label: string) {
       />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="内置流式输出"
       desc="streaming 打开后按 speed 每字符推进一次，最小 8 毫秒；吐完 emit stream-end，外层可以据此收起加载态"
     >
@@ -170,7 +170,7 @@ function onAction(label: string) {
       />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="外部驱动完整一轮"
       desc="先 thinking 三点脉动，再 reasoningStreaming 吐思考；思考吐完 emit reasoning-end，外层收到后才把正文写进 content —— 时序由调用方定，组件只负责表现"
     >
@@ -188,7 +188,7 @@ function onAction(label: string) {
       />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="用户侧消息与操作按钮"
       desc="self 让气泡靠右、头像换成深色；actions 每点一下 emit action(label)，回显和后续动作都留给外层"
     >

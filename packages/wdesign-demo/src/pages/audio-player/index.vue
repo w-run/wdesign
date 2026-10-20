@@ -28,7 +28,7 @@ function onTimeupdate(current: number, total: number) {
     name="AudioPlayer"
     desc="音频播放器：card / bar / mini 三种形态 · 封面与波形两种主体 · 反色卡 · 事件驱动"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="card · 有无封面两种主体"
       desc="有封面时封面是主体、波形缩成细密一条；不给封面时波形升格为主体，波峰走传进来的 waveform 数组"
     >
@@ -54,7 +54,7 @@ function onTimeupdate(current: number, total: number) {
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="card · 反色与细进度条"
       desc="inverse 是固定深色面，用来把单曲从页面里跳出来；progressStyle 改成 bar 就换成克制的细进度线"
     >
@@ -72,7 +72,7 @@ function onTimeupdate(current: number, total: number) {
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="bar · 列表内嵌"
       desc="bar 封面即播放键、时间与进度挤在同一行；给了 waveform 就走波形，不给就是细线，downloadable 多一个下载入口"
     >
@@ -95,7 +95,7 @@ function onTimeupdate(current: number, total: number) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="mini · 单行极简"
       desc="mini 适合固定底栏或列表尾巴；compact 是它的旧写法，等价于 variant=mini"
     >
@@ -106,7 +106,7 @@ function onTimeupdate(current: number, total: number) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="事件"
       desc="timeupdate 带 (current, duration)，上一首与下一首只发事件，换曲逻辑留给父级"
     >

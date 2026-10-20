@@ -70,8 +70,8 @@ const stats = [
 
 <style scoped>
 .home {
-  max-width: 960px;
-  margin: 0 auto;
+  /* 首页同样吃满内容区宽度 */
+  width: 100%;
   padding-bottom: 40px;
 }
 

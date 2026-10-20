@@ -16,7 +16,7 @@ const gallery = [
     name="ImagePreview"
     desc="图片预览：点击放大 · 滚轮缩放 · 旋转与还原 · 多图翻页"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="单图"
       desc="只给 src 时预览里只有一张，不出现左右翻页和计数"
     >
@@ -25,7 +25,7 @@ const gallery = [
       </WdImagePreview>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="多图"
       desc="给 list 才有翻页与 1 / 3 计数，index 决定这一张打开时停在哪一屏"
     >
@@ -42,7 +42,7 @@ const gallery = [
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="指定起始序号"
       desc="同一个缩略图也能从任意一张打开，index 从 0 起算，适合外部列表点进来"
     >
@@ -54,7 +54,7 @@ const gallery = [
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="自定义缩略图"
       desc="默认插槽放什么都可以，点击区域由组件包住，适合按钮式入口"
     >

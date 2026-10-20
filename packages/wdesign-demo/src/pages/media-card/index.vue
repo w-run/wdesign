@@ -36,7 +36,7 @@ function onOpen(value: boolean) {
     name="MediaCard"
     desc="媒体卡片：layout 与 mediaMode 两个正交维度 · 数据条 · 可折叠正文 · 工具与标题插槽"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="layout × mediaMode 四种组合"
       desc="layout 管内容压在图上还是排在图下，mediaMode 管图片铺满还是内嵌，两者互不绑定"
     >
@@ -90,7 +90,7 @@ function onOpen(value: boolean) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="数据条与主按钮"
       desc="stats 给 2~4 组最稳，超过 4 组会挤；body 在没有 collapsible 时始终展开，action 只发事件"
     >
@@ -125,7 +125,7 @@ function onOpen(value: boolean) {
       <p class="log">{{ log }}</p>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="可折叠"
       desc="collapsible 配 defaultOpen 决定初始状态，折叠只动内容区；这里同时监听 update:open"
     >
@@ -165,7 +165,7 @@ function onOpen(value: boolean) {
       <p class="log">{{ log }}</p>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="比例与圆角"
       desc="ratio 收 CSS aspect-ratio 字符串，换比例就换卡片高度；radius 三档 md / lg / xl 只改卡片圆角"
     >
@@ -209,7 +209,7 @@ function onOpen(value: boolean) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="插槽：工具按钮与标题补充"
       desc="#tools 落在媒体层右上角（自动排成圆形按钮），#headline-extra 紧跟副标题，适合放标签或计数"
     >

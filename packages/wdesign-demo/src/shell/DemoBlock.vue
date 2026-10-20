@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { computed, inject, ref } from "vue";
+import { useRoute } from "vue-router";
+import demoCode from "virtual:demo-code";
+
 /**
- * demo 页面的标准区块。
+ * 文档卡片：预览 + 源码。
  *
- * 版式语言照抄 iSH 存档那版（那版"有设计感"的关键就在这个面板）：
- *   · 标题 11.5px 全大写 + .12em 字距 + 前面一根 18×2 的彩色短杠
- *     —— 全站 76 页 × 4 块 ≈ 300 个面板，如果每块都染主题红，
- *        红就失去"强调"的意义了；所以用彩虹色按顺序轮换，
- *        它不承载语义，只做版面锚点（见 COLOR-DISCIPLINE.md）
- *   · 白卡 + shadow-sm，hover 抬到 shadow-hover
- *   · 上内距 26 / 侧 30：之前 24/28 配 15px 标题，显得又挤又小
+ * 源码不是手写的 —— 由 `tools/demo-code-plugin.mjs` 在构建期把本页
+ * 这个 <DemoBlock> 的模板原文抽出来（`virtual:demo-code`），按注册顺序对齐。
+ * 手写一份"示例代码"必然会跟 demo 漂移，那种不一致最难发现。
  *
- * ⚠️ 入场只做位移不做透明度。用 opacity 做入场的话，在无头渲染 /
- *    后台标签页 / 动画时钟停摆的环境里会卡在起始帧——元素永久不可见。
- *    纯 transform 即使停摆也只是位置差几像素，内容照常可读。
+ * 版式沿用 iSH 存档那套：11.5px 全大写标题 + 18×2 彩色短杠（按顺序轮换色相，
+ * 不染红）、白卡 + 柔影 + hover 抬升。
+ *
+ * ⚠️ 入场只做位移不做透明度：opacity 入场在无头渲染 / 后台标签页 /
+ *    动画时钟停摆的环境里会卡在起始帧，元素永久不可见（pitfalls 第 1 条）。
  */
 const props = withDefaults(
   defineProps<{
@@ -20,32 +22,75 @@ const props = withDefaults(
     title?: string;
     /** 补充说明 */
     desc?: string;
-    /** 跨列：1 = 半宽（默认），2 = 整宽（表格 / 播放器 / 日历这类宽内容） */
-    span?: 1 | 2;
+    /** 默认展开源码 */
+    defaultOpen?: boolean;
   }>(),
-  { span: 1 },
+  { defaultOpen: false },
 );
+
+/** 由 DemoPage 提供的自增序号，保证代码和卡片一一对应 */
+const registerIndex = inject<(() => number) | null>("wd-demo-index", null);
+const index = registerIndex ? registerIndex() : -1;
+
+const route = useRoute();
+const code = computed(() => demoCode[route.path]?.[index] ?? "");
+
+
+const open = ref(props.defaultOpen);
+const copied = ref<"" | "ok" | "fail">("");
+
+async function copyCode() {
+  try {
+    await navigator.clipboard.writeText(code.value);
+    copied.value = "ok";
+  } catch {
+    copied.value = "fail";
+  }
+  window.setTimeout(() => (copied.value = ""), 1600);
+}
 </script>
 
 <template>
-  <section class="demo-block" :class="{ 'demo-block--wide': props.span === 2 }">
-    <header v-if="title || desc" class="demo-block__head">
-      <h3 v-if="title" class="demo-block__title">{{ title }}</h3>
-      <p v-if="desc" class="demo-block__desc">{{ desc }}</p>
+  <section class="demo-block">
+    <header class="demo-block__head">
+      <div class="demo-block__meta">
+        <h3 v-if="title" class="demo-block__title">{{ title }}</h3>
+        <p v-if="desc" class="demo-block__desc">{{ desc }}</p>
+      </div>
+      <button
+        v-if="code"
+        type="button"
+        class="demo-block__more"
+        :class="{ 'is-open': open }"
+        :aria-expanded="open"
+        @click="open = !open"
+      >
+        {{ open ? "收起代码" : "代码" }}
+      </button>
     </header>
-    <div class="demo-block__body">
+
+    <div class="demo-block__preview">
       <slot />
+    </div>
+
+    <div v-if="open && code" class="demo-block__code">
+      <pre class="demo-block__pre"><code>{{ code }}</code></pre>
+      <button type="button" class="demo-block__copy" @click="copyCode">
+        {{ copied === "ok" ? "已复制" : copied === "fail" ? "复制失败" : "复制" }}
+      </button>
     </div>
   </section>
 </template>
 
 <style scoped>
 .demo-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100%;
   background: var(--wd-card);
   border-radius: var(--wd-radius-lg);
-  padding: 26px 30px 28px;
-  /* 用 30px 大扩散的柔影，而不是 12px 的小影：浅灰底上小影几乎看不见，
-     卡片会"贴"在背景上，整页像一块白板 */
+  padding: 24px 28px 26px;
   box-shadow: var(--wd-shadow);
   transition:
     box-shadow var(--wd-dur-slow) var(--wd-ease-out),
@@ -56,13 +101,17 @@ const props = withDefaults(
   box-shadow: var(--wd-shadow-hover);
 }
 
-/* 宽内容跨满两列 */
-.demo-block--wide {
-  grid-column: 1 / -1;
+.demo-block__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
 }
 
-.demo-block__head {
-  margin-bottom: 20px;
+.demo-block__meta {
+  /* 说明限宽，否则它自己的 max-content 会把卡片撑宽 */
+  max-width: 46ch;
 }
 
 .demo-block__title {
@@ -74,11 +123,10 @@ const props = withDefaults(
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  /* 标题用深灰不用主题红：300 个面板全红等于没有强调 */
   color: var(--wd-ink-2);
 }
 
-/* 标题前的彩色短杠：按面板顺序轮换色相，给每一块自己的坐标 */
+/* 标题前的彩色短杠：按卡片顺序轮换色相，给每一块自己的坐标 */
 .demo-block__title::before {
   content: "";
   display: inline-block;
@@ -120,9 +168,83 @@ const props = withDefaults(
   color: var(--wd-ink-3);
 }
 
-.demo-block__body {
+/* 代码开关：小胶囊，不跟内容抢注意力 */
+.demo-block__more {
+  flex: 0 0 auto;
+  height: 26px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-field);
+  font-family: var(--wd-font-family);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  transition:
+    background var(--wd-dur-fast) var(--wd-ease-smooth),
+    color var(--wd-dur-fast) var(--wd-ease-smooth);
+}
+
+.demo-block__more:hover {
+  background: var(--wd-ink-5);
+  color: var(--wd-ink);
+}
+
+.demo-block__more.is-open {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+}
+
+.demo-block__preview {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+/* ---------------- 源码区 ---------------- */
+.demo-block__code {
+  position: relative;
+  margin-top: 20px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-field);
+}
+
+.demo-block__pre {
+  margin: 0;
+  padding: 18px 20px;
+  /* 长示例别把一张卡撑成两屏高，超出内部滚动 */
+  max-height: 420px;
+  overflow: auto;
+  font-family: var(--wd-font-mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--wd-ink-2);
+  tab-size: 2;
+}
+
+.demo-block__copy {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: var(--wd-card);
+  font-family: var(--wd-font-family);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--wd-ink-2);
+  cursor: pointer;
+  box-shadow: var(--wd-shadow-sm);
+  transition:
+    color var(--wd-dur-fast) var(--wd-ease-smooth),
+    background var(--wd-dur-fast) var(--wd-ease-smooth);
+}
+
+.demo-block__copy:hover {
+  color: var(--wd-ink);
 }
 </style>

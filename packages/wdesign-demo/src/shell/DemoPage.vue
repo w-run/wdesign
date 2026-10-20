@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, provide } from "vue";
 import { useRoute } from "vue-router";
+import DemoApi from "./DemoApi.vue";
 
 /**
  * demo 页面的外壳：眉标 + 大标题 + 说明 + 内容区。
@@ -23,6 +24,15 @@ const props = defineProps<{
   desc?: string;
 }>();
 
+/**
+ * 给 DemoBlock 发序号：源码面板要按"第几块"去取本页对应的模板原文。
+ * setup 顺序 = 模板里的出现顺序，所以自增是确定性的；
+ * 每次进页面 DemoPage 重建、计数归零。
+ */
+let blockSeq = 0;
+provide("wd-demo-index", () => blockSeq++);
+
+
 const route = useRoute();
 const meta = computed(
   () => route.meta as { group?: string; covers?: string[]; order?: number },
@@ -39,28 +49,68 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
 
 <template>
   <article class="demo-page">
-    <header class="demo-page__head">
-      <p class="demo-page__eyebrow">
-        <span class="demo-page__dot" aria-hidden="true"></span>{{ eyebrow }}
-      </p>
-      <h1 class="demo-page__title">{{ props.name }}</h1>
-      <p v-if="props.desc" class="demo-page__desc">{{ props.desc }}</p>
-      <p v-if="covers.length" class="demo-page__covers">
-        <span class="demo-page__covers-label">组件</span>{{ covers.join(" · ") }}
-      </p>
-    </header>
-    <div class="demo-page__body">
-      <slot />
+    <div class="demo-page__main">
+      <header class="demo-page__head">
+        <p class="demo-page__eyebrow">
+          <span class="demo-page__dot" aria-hidden="true"></span>{{ eyebrow }}
+        </p>
+        <h1 class="demo-page__title">{{ props.name }}</h1>
+        <p v-if="props.desc" class="demo-page__desc">{{ props.desc }}</p>
+        <p v-if="covers.length" class="demo-page__covers">
+          <span class="demo-page__covers-label">组件</span>{{ covers.join(" · ") }}
+        </p>
+      </header>
+      <div class="demo-page__body">
+        <slot />
+      </div>
     </div>
+
+    <aside class="demo-page__aside">
+      <DemoApi />
+    </aside>
   </article>
 </template>
 
 <style scoped>
+/*
+ * 左右双栏：主栏是单列的文档卡片，右栏是页内目录。
+ *
+ * 不限宽（吃满内容区），但正文行长靠右栏自然收住 ——
+ * 单栏 + 全屏时会拉出 1500px 的行宽，读起来眼要来回扫。
+ * 窄屏时右栏直接不显示，退回纯单栏。
+ */
 .demo-page {
-  /* 收窄到 960：面板满宽时不至于把三个小按钮摊成一条 1000px 的空白带 */
-  max-width: 960px;
-  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 30vw);
+  gap: clamp(28px, 3vw, 56px);
+  align-items: start;
+  width: 100%;
   padding-top: clamp(28px, 4vw, 56px);
+}
+
+.demo-page__aside {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  padding: 8px 0 32px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 1180px) {
+  .demo-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* 窄屏：API 落到正文下面，内容顺序不变（先看示例再看参数） */
+  .demo-page__aside {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding-top: 8px;
+    box-shadow: inset 0 1px 0 var(--wd-ink-5);
+  }
 }
 
 .demo-page__head {
@@ -127,19 +177,16 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
 }
 
 /*
- * 内容区用两列网格，而不是一列堆叠。
+ * 单栏：一页就是一列文档卡片，从上往下读。
  *
- * 单列时每张卡片都是 900 宽、里面只有三五个按钮，右边一大片死白 ——
- * 这就是"小气吧啦"的直接来源：密度低、留白不成形。
- * 参考图（dashboard / 卡片墙）都是网格：一屏能扫到三四块，留白被自然填满。
- *
- * 宽内容（表格、播放器、日历…）用 DemoBlock 的 span=2 跨两列。
+ * 试过卡片墙（按内容宽度 flex-wrap 排），信息密度是上去了，
+ * 但代码面板一展开，右侧卡片被顶得参差不齐，读起来反而更累。
+ * 组件文档的正确形态是"一条线"：标题 → 预览 → 代码 → 下一个。
  */
 .demo-page__body {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 20px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 /*

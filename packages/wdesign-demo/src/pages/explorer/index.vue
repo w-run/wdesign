@@ -43,21 +43,21 @@ function onSelect(file: { name: string; size?: number }) {
 
 <template>
   <DemoPage name="Explorer" desc="文件浏览器：详情视图 · 图标视图 · 选中回调">
-    <DemoBlock :span="2"
+    <DemoBlock
       title="详情视图"
       desc="默认 details，左栏文件夹带条目计数，右栏按名称 / 大小 / 修改时间排列，适合找具体文件"
     >
       <WdExplorer :folders="folders" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="图标视图"
       desc="icons 视图用瓦片呈现，扫缩略图比读文件名快；条目多、名字长时还是回详情视图"
     >
       <WdExplorer :folders="folders" view="icons" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="选中回调"
       desc="文件条目点击触发 select，文件夹切换由组件内部管理，父级只需关心最终选中的文件"
     >

@@ -5,7 +5,10 @@ import { WdCard, WdContainer } from "@wdesign";
 </script>
 
 <template>
-  <DemoPage name="Container" desc="页面容器：限宽居中 · 三档内间距">
+  <DemoPage
+    name="Container"
+    desc="页面容器：限宽居中 · 三档内间距 · 满宽用法 · 窄于上限时的行为"
+  >
     <DemoBlock title="限宽居中" desc="内容超过阅读宽度后两侧自动留白，眼睛不用来回扫视整行">
       <WdContainer max-width="720px" class="frame">
         <WdCard padding="sm">maxWidth 720px：容器自身居中，内容宽度锁在 720px 内</WdCard>
@@ -44,6 +47,26 @@ import { WdCard, WdContainer } from "@wdesign";
         </p>
       </WdContainer>
     </DemoBlock>
+
+    <DemoBlock
+      title="满宽用法"
+      desc="看板、宽表格这类页不要限宽，横向空间本身就是信息密度；max-width 是上限不是定宽，容器始终 width: 100%"
+    >
+      <WdContainer max-width="100%" class="frame">
+        <WdCard padding="sm">maxWidth 100%：不设上限，内容吃满可用宽度</WdCard>
+      </WdContainer>
+    </DemoBlock>
+
+    <DemoBlock
+      title="边界：空间不够时"
+      desc="max-width 只在空间够的时候才生效：外层比上限窄，容器就跟着缩，不会撑出横向滚动条。所以别把 max-width 当成 width 用"
+    >
+      <div class="narrow">
+        <WdContainer max-width="720px" class="frame">
+          <WdCard padding="sm">外层 260px，上限 720px</WdCard>
+        </WdContainer>
+      </div>
+    </DemoBlock>
   </DemoPage>
 </template>
 
@@ -58,5 +81,9 @@ import { WdCard, WdContainer } from "@wdesign";
   font-size: 14px;
   line-height: 1.9;
   color: var(--wd-ink-2);
+}
+
+.narrow {
+  width: 260px;
 }
 </style>

@@ -41,7 +41,7 @@ const shortRows = rows.slice(0, 12);
 
 <template>
   <DemoPage name="VirtualList" desc="虚拟列表：一万条只渲染可视区 · 滚动监听 · 定位跳转">
-    <DemoBlock :span="2" title="可视区渲染" desc="固定行高才能精确算出窗口，一万条数据也只挂十几个节点">
+    <DemoBlock title="可视区渲染" desc="固定行高才能精确算出窗口，一万条数据也只挂十几个节点">
       <WdVirtualList :items="rows" :item-height="ITEM_H" :height="VIEW_H" :buffer="BUFFER" item-key="id">
         <template #default="{ item, index }">
           <div class="vrow">
@@ -56,7 +56,7 @@ const shortRows = rows.slice(0, 12);
       <span class="hint">共 {{ rows.length }} 条 · 每行 {{ ITEM_H }}px · 实际渲染约 {{ domRows }} 行</span>
     </DemoBlock>
 
-    <DemoBlock :span="2" title="滚动监听与触底" desc="scroll 回传偏移量，reach-end 在贴近底部时触发一次，可用于分页加载">
+    <DemoBlock title="滚动监听与触底" desc="scroll 回传偏移量，reach-end 在贴近底部时触发一次，可用于分页加载">
       <WdVirtualList
         :items="rows"
         :item-height="ITEM_H"
@@ -77,7 +77,7 @@ const shortRows = rows.slice(0, 12);
       <span class="hint">当前滚动偏移 {{ offset }}px · {{ endTip }}</span>
     </DemoBlock>
 
-    <DemoBlock :span="2" title="定位跳转" desc="组件暴露 scrollToIndex / scrollToTop，配合锚点做「跳到第 N 条」">
+    <DemoBlock title="定位跳转" desc="组件暴露 scrollToIndex / scrollToTop，配合锚点做「跳到第 N 条」">
       <WdVirtualList ref="vlist" :items="rows" :item-height="ITEM_H" :height="240" item-key="id">
         <template #default="{ item, index }">
           <div class="vrow">
@@ -94,7 +94,7 @@ const shortRows = rows.slice(0, 12);
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock :span="2" title="隐藏滚动条与空状态" desc="hideScrollbar 只是不画滚动条，滚轮与触控手势照常可用">
+    <DemoBlock title="隐藏滚动条与空状态" desc="hideScrollbar 只是不画滚动条，滚轮与触控手势照常可用">
       <WdVirtualList :items="shortRows" :item-height="ITEM_H" :height="180" item-key="id" hide-scrollbar>
         <template #default="{ item }">
           <div class="vrow">

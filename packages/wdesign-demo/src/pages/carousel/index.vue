@@ -23,21 +23,21 @@ const texts: Slide[] = [
     name="Carousel"
     desc="轮播：图片与纯文字两种内容 · 自动播放 · 圆点与箭头 · 首尾无缝循环 · 可接管每一屏"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="基础"
       desc="items 里给了 src 就渲染图片，用 object-fit: contain 完整显示、绝不裁切"
     >
       <WdCarousel :items="shots" :height="320" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="自动播放"
       desc="autoplay 是切换间隔（毫秒），鼠标移入暂停、移出继续，避免用户正在看时被抢走"
     >
       <WdCarousel :items="shots" :height="240" :autoplay="3000" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="纯文字与控件开关"
       desc="不给 src 时整屏显示 label；关掉 showDots 与 showArrows 后只剩自动播放和拖拽手势"
     >
@@ -50,14 +50,14 @@ const texts: Slide[] = [
       />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="关闭无缝循环"
       desc="loop 默认开启，末张到首张不会整条轨道倒回；关掉后循环会往回拉一屏，换来更直白的顺序"
     >
       <WdCarousel :items="shots" :height="240" :loop="false" :autoplay="2500" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="自定义每一屏"
       desc="用 #item 插槽接管整屏内容，item 与 index 由组件传进来"
     >

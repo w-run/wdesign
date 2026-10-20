@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import DemoPage from "@/shell/DemoPage.vue";
 import DemoBlock from "@/shell/DemoBlock.vue";
 import DemoRow from "@/shell/DemoRow.vue";
-import { WdButton, WdGroup, WdIcon } from "@wdesign";
+import { WdButton, WdGroup, WdIcon, WdInput } from "@wdesign";
+
+/** 分段选择：选中项靠 primary 底色表达，不靠加粗或下划线 */
+const ranges = ["日", "周", "月", "年"];
+const range = ref("月");
+
+const query = ref("");
 </script>
 
 <template>
-  <DemoPage name="Group" desc="组合容器：三种形态 · 方向 · 尺寸 · 等分 · 图标工具栏">
+  <DemoPage
+    name="Group"
+    desc="组合容器：三种形态 · 方向 · 尺寸 · 等分 · 图标工具栏 · 输入组合 · 分段选择"
+  >
     <DemoBlock title="三种形态" desc="capsule 是浅底胶囊，joined 靠子项底色拼合，inset 是凹槽里浮起的分段">
       <DemoRow :gap="16">
         <WdGroup variant="capsule" label="时间范围">
@@ -87,6 +97,34 @@ import { WdButton, WdGroup, WdIcon } from "@wdesign";
         </WdGroup>
       </DemoRow>
     </DemoBlock>
+
+    <DemoBlock
+      title="输入框 + 按钮"
+      desc="组合容器真正省事的地方：输入框与按钮共用一条外框。seamless（默认开）统一压掉子项自带的边框与圆角，否则就是胶囊里套胶囊"
+    >
+      <WdGroup variant="capsule" label="站内搜索">
+        <WdInput v-model="query" placeholder="搜索组件" />
+        <WdButton variant="primary">搜索</WdButton>
+      </WdGroup>
+      <p class="cap">关键词：{{ query || "（空）" }}</p>
+    </DemoBlock>
+
+    <DemoBlock
+      title="分段选择"
+      desc="选中态用 primary 表达，切换只改一个 ref；label 是给读屏的 aria-label，界面上不会出现可见文字 —— 要看得见的分组名请自己在组外写标题"
+    >
+      <WdGroup variant="inset" label="时间范围">
+        <WdButton
+          v-for="r in ranges"
+          :key="r"
+          :variant="range === r ? 'primary' : 'ghost'"
+          @click="range = r"
+        >
+          {{ r }}
+        </WdButton>
+      </WdGroup>
+      <p class="cap">当前粒度：{{ range }}</p>
+    </DemoBlock>
   </DemoPage>
 </template>
 
@@ -94,5 +132,12 @@ import { WdButton, WdGroup, WdIcon } from "@wdesign";
 .half {
   flex: 1 1 0;
   min-width: 0;
+}
+
+.cap {
+  margin: 0;
+  font-size: var(--wd-fs-sm);
+  line-height: 1.6;
+  color: var(--wd-ink-2);
 }
 </style>

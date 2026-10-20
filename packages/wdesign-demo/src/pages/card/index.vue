@@ -2,11 +2,21 @@
 import DemoPage from "@/shell/DemoPage.vue";
 import DemoBlock from "@/shell/DemoBlock.vue";
 import DemoRow from "@/shell/DemoRow.vue";
-import { WdCard, WdGrid, WdTag } from "@wdesign";
+import { WdButton, WdCard, WdGrid, WdTag } from "@wdesign";
+
+/** 卡内列表：状态用标签收口，行数一多就该换表格 */
+const rows = [
+  { label: "设计令牌", state: "已同步", ok: true },
+  { label: "组件文档", state: "待更新", ok: false },
+  { label: "示例页面", state: "已同步", ok: true },
+];
 </script>
 
 <template>
-  <DemoPage name="Card" desc="卡片：三种底色 · 三档内距 · 可悬停 · 内容结构">
+  <DemoPage
+    name="Card"
+    desc="卡片：三种底色 · 三档内距 · 可悬停 · 内容结构 · 头身脚组合 · 长文案边界"
+  >
     <DemoBlock title="变体" desc="default 是最常用的白卡，tint 用于次要信息，dark 用于需要压过页面的一小块">
       <WdGrid :columns="3" gap="md">
         <WdCard>
@@ -80,5 +90,102 @@ import { WdCard, WdGrid, WdTag } from "@wdesign";
         </WdCard>
       </WdGrid>
     </DemoBlock>
+
+    <DemoBlock
+      title="头 · 身 · 脚"
+      desc="卡片没有头部插槽，层次靠间距和一个主行动建立：标题与状态同一行、一句说明、按钮靠右 —— 主行动永远在最右"
+    >
+      <WdCard>
+        <div class="panel__head">
+          <span class="panel__title">发布设置</span>
+          <WdTag size="sm">草稿</WdTag>
+        </div>
+        <p class="panel__desc">选择发布范围后可以立刻上线，也可以先存草稿。</p>
+        <DemoRow :gap="8" class="panel__foot">
+          <WdButton variant="ghost" size="sm">存草稿</WdButton>
+          <WdButton variant="primary" size="sm">发布</WdButton>
+        </DemoRow>
+      </WdCard>
+    </DemoBlock>
+
+    <DemoBlock
+      title="卡内列表"
+      desc="一列信息靠留白分组，不用逐行画线；行数超过五六行就该换成表格或独立列表页，卡片撑不下这个信息量"
+    >
+      <WdCard>
+        <div class="rows">
+          <div v-for="row in rows" :key="row.label" class="rows__item">
+            <span class="rows__label">{{ row.label }}</span>
+            <WdTag size="sm" :variant="row.ok ? 'gray' : 'tint'">{{ row.state }}</WdTag>
+          </div>
+        </div>
+      </WdCard>
+    </DemoBlock>
+
+    <DemoBlock
+      title="边界：文案很长时"
+      desc="卡片不裁切也不限高：长文案把整张卡拉高，同一行里另一张就空出半截。标题控一行、说明控两行，完整内容留给详情页"
+    >
+      <DemoRow :gap="16" align="stretch">
+        <WdCard class="tight">
+          <div class="panel__title">标题控一行</div>
+          <p class="panel__desc">说明控制在两行以内，卡片只承担「扫一眼知道是什么」的职责。</p>
+        </WdCard>
+        <WdCard class="tight">
+          <div class="panel__title">这是一个明显过长、注定要折成三行的卡片标题</div>
+          <p class="panel__desc">
+            说明也跟着变长，于是同一行里高度被最长的那张撑开，另一张底部会留出一大块空白。
+          </p>
+        </WdCard>
+      </DemoRow>
+    </DemoBlock>
   </DemoPage>
 </template>
+
+<style scoped>
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel__title {
+  font-size: var(--wd-fs-lg);
+  font-weight: 700;
+  color: var(--wd-ink);
+}
+
+.panel__desc {
+  margin: 8px 0 16px;
+  font-size: var(--wd-fs-caption);
+  line-height: 1.65;
+  color: var(--wd-ink-2);
+}
+
+.panel__foot {
+  justify-content: flex-end;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rows__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.rows__label {
+  font-size: var(--wd-fs-ui);
+  color: var(--wd-ink);
+}
+
+.tight {
+  width: 240px;
+}
+</style>

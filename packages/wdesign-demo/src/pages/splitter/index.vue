@@ -21,7 +21,7 @@ function onResizeEnd(v: number) {
 
 <template>
   <DemoPage name="Splitter" desc="分栏：横向 · 纵向 · 边界限制 · 非受控初值">
-    <DemoBlock :span="2"
+    <DemoBlock
       title="横向分栏"
       desc="左右分栏必须给容器明确高度，否则容器塌成 0、分隔条拖不动；v-model 拿到的是主栏百分比"
     >
@@ -37,7 +37,7 @@ function onResizeEnd(v: number) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="纵向分栏"
       desc="direction 换成 vertical 即上下分栏，键盘上下箭头同样可调，双击分隔条回到初值"
     >
@@ -53,7 +53,7 @@ function onResizeEnd(v: number) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="边界与粗细"
       desc="min / max 会夹住拖拽范围，避免把某一栏挤到不可读；size 加大命中区，disabled 整体锁死"
     >
@@ -79,7 +79,7 @@ function onResizeEnd(v: number) {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="非受控与事件"
       desc="不传 modelValue 时用 defaultValue 起手，组件内部持值；resize 用于实时预览，resizeEnd 适合落库"
     >

@@ -2,11 +2,14 @@
 import DemoPage from "@/shell/DemoPage.vue";
 import DemoBlock from "@/shell/DemoBlock.vue";
 import DemoRow from "@/shell/DemoRow.vue";
-import { WdButton, WdCard, WdSpace, WdTag } from "@wdesign";
+import { WdButton, WdCard, WdIcon, WdSpace, WdTag } from "@wdesign";
 </script>
 
 <template>
-  <DemoPage name="Space" desc="间距容器：档位与像素 · 方向 · 两端对齐 · 等分 · 换行">
+  <DemoPage
+    name="Space"
+    desc="间距容器：档位与像素 · 方向 · 两端对齐 · 等分 · 换行 · 居中 · 卡片内组合"
+  >
     <DemoBlock title="间距档位" desc="间距只取固定的三档，页面里就不会出现八种不同的间隔">
       <WdSpace size="sm">
         <WdTag variant="gray">sm</WdTag>
@@ -21,7 +24,7 @@ import { WdButton, WdCard, WdSpace, WdTag } from "@wdesign";
       <WdSpace size="lg">
         <WdTag variant="gray">lg</WdTag>
         <WdTag variant="gray">宽松</WdTag>
-        <WdTag variant="gray">32px</WdTag>
+        <WdTag variant="gray">24px</WdTag>
       </WdSpace>
       <WdSpace :size="4">
         <WdTag variant="gray">数字</WdTag>
@@ -62,6 +65,39 @@ import { WdButton, WdCard, WdSpace, WdTag } from "@wdesign";
         <WdTag variant="gray">国际化</WdTag>
       </WdSpace>
     </DemoBlock>
+
+    <DemoBlock
+      title="居中"
+      desc="center 同时居中主轴与交叉轴，空状态、占位图这类两三行的内容用它最省事；它只管子项，盒子本身的高度还得自己给"
+    >
+      <div class="center-box">
+        <WdSpace direction="col" center class="fill">
+          <WdIcon name="search" :size="20" />
+          <span class="hint">没有匹配的结果</span>
+        </WdSpace>
+      </div>
+    </DemoBlock>
+
+    <DemoBlock
+      title="一张卡里的三段"
+      desc="头部两端对齐、清单纵向、按钮横排，三段都用 Space 组织：间隙全走档位，卡片高度不会因为某个手写 margin 忽高忽低"
+    >
+      <WdCard>
+        <WdSpace between class="fill">
+          <span class="title">本周任务</span>
+          <WdTag size="sm" variant="gray">共 12 条</WdTag>
+        </WdSpace>
+        <WdSpace direction="col" size="sm" class="fill stack">
+          <span class="row">周一 · 组件评审</span>
+          <span class="row">周三 · 令牌对齐</span>
+          <span class="row">周五 · 版本发布</span>
+        </WdSpace>
+        <WdSpace size="sm" class="fill">
+          <WdButton variant="ghost" size="sm">稍后处理</WdButton>
+          <WdButton variant="primary" size="sm">全部完成</WdButton>
+        </WdSpace>
+      </WdCard>
+    </DemoBlock>
   </DemoPage>
 </template>
 
@@ -81,5 +117,26 @@ import { WdButton, WdCard, WdSpace, WdTag } from "@wdesign";
   padding: 12px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-field);
+}
+
+.center-box {
+  display: flex;
+  height: 130px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-field);
+}
+
+.hint {
+  font-size: var(--wd-fs-caption);
+  color: var(--wd-ink-2);
+}
+
+.stack {
+  margin: 16px 0;
+}
+
+.row {
+  font-size: var(--wd-fs-caption);
+  color: var(--wd-ink-2);
 }
 </style>

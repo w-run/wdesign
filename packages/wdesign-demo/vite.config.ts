@@ -1,9 +1,12 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { fileURLToPath, URL } from "node:url";
+import { demoCode } from "./tools/demo-code-plugin.mjs";
 
 export default defineConfig({
-  plugins: [vue()],
+  // demoCode：构建期把每个页面 <DemoBlock> 的模板原文抽出来，
+  // 给「预览 + 源码」的文档卡片用（见 tools/demo-code-plugin.mjs）
+  plugins: [vue(), demoCode()],
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),

@@ -96,14 +96,14 @@ onBeforeUnmount(stopTyping);
     name="Markdown"
     desc="Markdown 渲染：内置零依赖解析器 · 全量转义 · 也接受外部渲染好的 HTML"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="内置解析器"
       desc="source 交给自研解析器，标题、列表、表格、代码块、引用、行内强调都在覆盖范围内；超出覆盖范围就换 html 方案"
     >
       <WdMarkdown :source="sample" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="flush：嵌进已带内距的容器"
       desc="flush 把组件自身的左右内距清零，留白全部交给外层卡片；现在默认内距是 0，先把写法固定下来，将来组件调整默认值也不会突然多出一层"
     >
@@ -112,14 +112,14 @@ onBeforeUnmount(stopTyping);
       </WdCard>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="html：接自己的渲染管线"
       desc="传了 html 就完全跳过内置解析，字符串里的标签会原样注入 —— 只用于已消毒、可信的内容"
     >
       <WdMarkdown :html="renderedHtml" />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="source 变化即刻重渲染"
       desc="解析结果跟着 source 走，适合写完一段渲染一段的草稿场景；逐字追加时排版不跳"
     >

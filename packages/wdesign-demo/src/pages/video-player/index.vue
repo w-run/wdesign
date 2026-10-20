@@ -36,7 +36,7 @@ function onRateChange(rate: number) {
     name="VideoPlayer"
     desc="视频播放器：点播与直播两种模式 · 选集抽屉 · 内置弹幕 · 插槽扩展控件"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="点播 · 选集与弹幕"
       desc="episodes 不带 src 时组件只发 change-episode，换源交给页面；弹幕直接吃 B 站 XML，开关走 v-model:danmaku-on"
     >
@@ -56,7 +56,7 @@ function onRateChange(rate: number) {
       </p>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="直播模式"
       desc="mode=live 去掉进度条，改显示脉动实时线与当前时刻；这里用点播片源模拟直播画面，不依赖外网流"
     >
@@ -70,7 +70,7 @@ function onRateChange(rate: number) {
       />
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="控件常显与插槽"
       desc="controlsMode=always 让控件不再自动淡出，适合演示与截图；#top-right 放清晰度、#overlay 放水印"
     >
@@ -89,7 +89,7 @@ function onRateChange(rate: number) {
       </WdVideoPlayer>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="自定义倍速与描边图标"
       desc="rates 决定倍速菜单档位并抛出 rate-change；iconStyle 改 outlined 后控件变细线，深色画面上建议保持 filled"
     >

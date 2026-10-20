@@ -65,7 +65,7 @@ function replay() {
     name="Danmaku"
     desc="弹幕层：滚动与顶部底部固定 · 三种数据源 · 轨道与字号可调 · 暂停定格"
   >
-    <DemoBlock :span="2"
+    <DemoBlock
       title="基础"
       desc="items 手写、current 由父级定时推进（真实场景直接接视频的 timeupdate），visible 与 paused 各自独立"
     >
@@ -94,7 +94,7 @@ function replay() {
       <p class="log">当前进度 {{ current.toFixed(1) }}s / {{ LOOP }}s</p>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="数据源 src"
       desc="给 src 就异步拉取，B 站 XML 自动识别；跨域需自备代理，同源文件可直接用"
     >
@@ -103,7 +103,7 @@ function replay() {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="原始文本 raw"
       desc="raw 用于本地解析，适合弹幕随页面一起下发；与 src 相比少一次网络请求"
     >
@@ -112,7 +112,7 @@ function replay() {
       </div>
     </DemoBlock>
 
-    <DemoBlock :span="2"
+    <DemoBlock
       title="轨道、字号与透明度"
       desc="rows 决定并行轨道数（窄容器给 4 行更稳），fontSize 与 opacity 直接作用于每一行"
     >
