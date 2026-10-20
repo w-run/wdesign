@@ -4,6 +4,8 @@ dist
 *.log
 .DS_Store
 
-
 # 开发约束记忆：本地维护，不入库
 .agents/
+
+# 本地 agent 配置（模型选择等），不入库
+.codebuddy/
