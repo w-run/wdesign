@@ -4,3 +4,6 @@ dist
 *.log
 .DS_Store
 
+
+# 开发约束记忆：本地维护，不入库
+.agents/
