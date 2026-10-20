@@ -76,7 +76,22 @@
 @import 'components/file-list';
 @import 'components/explorer';
 @import 'components/ai-msg';
-@import 'dark';
-
-
 @import 'components/danmaku';
+
+// 迁移期补写的组件原子件：曾漏在这里引入，导致这些组件在演示站里
+// 完全没有样式 —— 组件照常渲染、控制台无报错，典型的静默失效。
+@import 'components/divider';
+@import 'components/group';
+@import 'components/form';
+@import 'components/tree';
+@import 'components/descriptions';
+@import 'components/statistic';
+@import 'components/command';
+@import 'components/popconfirm';
+@import 'components/segmented-picker';
+@import 'components/audio';
+@import 'components/vlist';
+@import 'components/vplayer';
+
+// 深色覆盖必须最后引入
+@import 'dark';

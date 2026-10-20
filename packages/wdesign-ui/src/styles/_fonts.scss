@@ -31,6 +31,12 @@ $wd-font-cdn: 'https://box.w-run.net/npm/fonts' !default;
 // ---------------------------------------------------------------------------
 $wd-fontsans-path: '/fonts/wdesignsans' !default;
 
+// ⚠️ 开关：WDesignSans 是 WIP 的自托管分段字体，**文件不在本仓库**。
+// 默认关闭。之前是默认开着 —— 宿主没托管字体时，浏览器会按 unicode-range
+// 逐个请求那 28 个 woff2，一屏刷出 100+ 条 404/OTS 警告，把真问题埋掉，
+// 而且最终还是要回落到 Mona Sans。要验字体就自己托管文件再置 true。
+$wd-wdsans-enabled: false !default;
+
 $wd-fontsans-weights: (
   200: 'Thin',
   400: 'Regular',
@@ -70,15 +76,17 @@ $wd-fontsans-subsets: (
   ),
 );
 
-@each $family, $cfg in $wd-fontsans-subsets {
-  @each $weight, $weight-name in $wd-fontsans-weights {
-    @font-face {
-      font-family: $family;
-      src: url('#{$wd-fontsans-path}/#{map.get($cfg, file)}-#{$weight-name}.woff2') format('woff2');
-      font-weight: $weight;
-      font-style: normal;
-      font-display: swap;
-      unicode-range: map.get($cfg, range);
+@if $wd-wdsans-enabled {
+  @each $family, $cfg in $wd-fontsans-subsets {
+    @each $weight, $weight-name in $wd-fontsans-weights {
+      @font-face {
+        font-family: $family;
+        src: url('#{$wd-fontsans-path}/#{map.get($cfg, file)}-#{$weight-name}.woff2') format('woff2');
+        font-weight: $weight;
+        font-style: normal;
+        font-display: swap;
+        unicode-range: map.get($cfg, range);
+      }
     }
   }
 }
@@ -92,42 +100,56 @@ $wd-fontsans-stack-ja: 'WDesignSans Latin', 'WDesignSans CJK Symbol', 'WDesignSa
   'WDesignSans BIG5', 'WDesignSans BIG5 Extra', 'WDesignSans GB2312', 'WDesignSans GB2312 Extra' !default;
 
 // 按 html[lang] 自动切换（默认简中）
-html,
-html[lang='en'],
-html[lang^='en-'],
-html[lang='zh-CN'],
-html[lang='zh-cn'],
-html[lang='zh'] {
-  font-family: $wd-fontsans-stack;
+// 只有启用 WDesignSans 才有意义 —— 没字体时这些规则只是把字体栈换成
+// 一串不存在的家族，纯粹制造 404。
+@if $wd-wdsans-enabled {
+  html,
+  html[lang='en'],
+  html[lang^='en-'],
+  html[lang='zh-CN'],
+  html[lang='zh-cn'],
+  html[lang='zh'] {
+    font-family: $wd-fontsans-stack;
+  }
+  html[lang='zh-TW'],
+  html[lang='zh-tw'],
+  html[lang='zh-HK'],
+  html[lang='zh-hk'] {
+    font-family: $wd-fontsans-stack-tc;
+  }
+  html[lang='ja'],
+  html[lang^='ja-'] {
+    font-family: $wd-fontsans-stack-ja;
+  }
 }
-html[lang='zh-TW'],
-html[lang='zh-tw'],
-html[lang='zh-HK'],
-html[lang='zh-hk'] {
-  font-family: $wd-fontsans-stack-tc;
-}
-html[lang='ja'],
-html[lang^='ja-'] {
-  font-family: $wd-fontsans-stack-ja;
-}
+
+// ⚠️ 开关：Mona Sans / 思源黑体这两套 VF 字体默认从 CDN 取。
+// 宿主若想自带字体文件（自己写 @font-face，离线/内网场景），
+// 在 import 之前把它置 false —— 否则会多请求一次 CDN，
+// 内网环境下就是一条永远失败的网络错误。
+$wd-vf-fonts-enabled: true !default;
 
 // 拉丁 · Mona Sans VF（wght 200–900）
 // https://github.com/github/mona-sans
-@font-face {
-  font-family: 'Mona Sans';
-  src: url('#{$wd-font-cdn}/mona-sans-vf.woff2') format('woff2-variations');
-  font-weight: 200 900;
-  font-style: normal;
-  font-display: swap;
+@if $wd-vf-fonts-enabled {
+  @font-face {
+    font-family: 'Mona Sans';
+    src: url('#{$wd-font-cdn}/mona-sans-vf.woff2') format('woff2-variations');
+    font-weight: 200 900;
+    font-style: normal;
+    font-display: swap;
+  }
 }
 
 // 中文 · 思源黑体 SC VF（wght 200–900）
 // https://github.com/adobe-fonts/source-han-sans ｜ 可用 Noto Sans SC VF 直替
-@font-face {
-  font-family: 'Source Han Sans SC';
-  src: url('#{$wd-font-cdn}/noto-sans-sc-vf.woff2') format('woff2-variations'),
-       url('#{$wd-font-cdn}/noto-sans-sc-vf.ttf') format('truetype-variations');
-  font-weight: 200 900;
-  font-style: normal;
-  font-display: swap;
+@if $wd-vf-fonts-enabled {
+  @font-face {
+    font-family: 'Source Han Sans SC';
+    src: url('#{$wd-font-cdn}/noto-sans-sc-vf.woff2') format('woff2-variations'),
+         url('#{$wd-font-cdn}/noto-sans-sc-vf.ttf') format('truetype-variations');
+    font-weight: 200 900;
+    font-style: normal;
+    font-display: swap;
+  }
 }
