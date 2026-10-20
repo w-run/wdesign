@@ -46,6 +46,31 @@ body {
   transition: none;
 }
 
+/* 75 项必须滚动：库默认把滚动条藏了（追求干净），但演示站项太多，
+   藏了之后用户不知道下面还有内容，底边还会露出半行被裁的文字。 */
+.demo-side .wd-nav__list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wd-ink-5) transparent;
+  /* 列表滚到哪都被硬切一刀，最后一行永远露出半截字。
+     上下各垫 12px 渐隐，滚动边界就"淡出"而不是"切断"。 */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 12px,
+    #000 calc(100% - 12px),
+    transparent 100%
+  );
+}
+
+.demo-side .wd-nav__list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.demo-side .wd-nav__list::-webkit-scrollbar-thumb {
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-ink-5);
+}
+
 /* WdNav 的折叠按钮对演示站没用（76 项全是同一组图标，收起来认不出），
    而且它挂在品牌行右侧，鼠标扫过容易误点 */
 .demo-side .wd-nav__collapse {

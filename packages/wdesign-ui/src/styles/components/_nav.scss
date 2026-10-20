@@ -38,6 +38,14 @@
 /* ---------------- 项 ---------------- */
 .wd-nav__item {
   position: relative;
+  /*
+   * ⚠️ 必须禁止收缩。
+   * 导航项是 flex 子项，默认 flex-shrink 是 1。竖栏列表是"定高 + overflow-y:auto"，
+   * 项一多（演示站 75 项）浏览器不会让它滚动，而是按比例把每一项压扁：
+   * 声明 42px 实际渲染成 22px，文字和图标挤成一条"薯条"。
+   * 横栏同理，项多了会被压窄。
+   */
+  flex: none;
   display: inline-flex;
   align-items: center;
   gap: 9px;
