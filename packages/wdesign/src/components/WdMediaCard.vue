@@ -174,25 +174,30 @@ const isOverlay = computed(() => props.layout === 'overlay')
         <slot />
       </div>
 
-      <!-- 底部：CTA + 折叠箭头 -->
-      <div v-if="action || collapsible" class="wd-media-card__foot">
+      <!-- 主按钮：占满整行 -->
+      <button
+        v-if="action"
+        type="button"
+        class="wd-media-card__cta"
+        @click="emit('action')"
+      >
+        {{ action }}
+      </button>
+
+      <!--
+        折叠箭头：**独立成行、底部居中**（参考图的做法）。
+        ⚠️ 之前和 CTA 并排挤在右侧 —— 那是"工具栏"的布局，
+          而展开/收起是卡片的**全局动作**，应该独立、居中、易点。
+      -->
+      <div v-if="collapsible" class="wd-media-card__foot">
         <button
-          v-if="action"
-          type="button"
-          class="wd-media-card__cta"
-          @click="emit('action')"
-        >
-          {{ action }}
-        </button>
-        <button
-          v-if="collapsible"
           type="button"
           class="wd-media-card__toggle"
           :aria-expanded="open"
           :aria-label="open ? '收起' : '展开'"
           @click="toggle"
         >
-          <wd-icon :name="open ? 'chevron-up' : 'chevron-down'" :size="16" />
+          <wd-icon :name="open ? 'chevron-up' : 'chevron-down'" :size="18" />
         </button>
       </div>
     </div>

@@ -7293,7 +7293,7 @@ var WD_REAL_MODULE = (() => {
     class: "wd-media-card__text"
   };
   var _hoisted_174 = {
-    key: 3,
+    key: 4,
     class: "wd-media-card__foot"
   };
   var _hoisted_183 = ["aria-expanded", "aria-label"];
@@ -7471,22 +7471,22 @@ var WD_REAL_MODULE = (() => {
               )), [
                 [vShow, !__props.collapsible || open.value]
               ]) : createCommentVNode("v-if", true),
-              createCommentVNode(" \u5E95\u90E8\uFF1ACTA + \u6298\u53E0\u7BAD\u5934 "),
-              __props.action || __props.collapsible ? (openBlock(), createElementBlock("div", _hoisted_174, [
-                __props.action ? (openBlock(), createElementBlock(
-                  "button",
-                  {
-                    key: 0,
-                    type: "button",
-                    class: "wd-media-card__cta",
-                    onClick: _cache[0] || (_cache[0] = ($event) => emit("action"))
-                  },
-                  toDisplayString(__props.action),
-                  1
-                  /* TEXT */
-                )) : createCommentVNode("v-if", true),
-                __props.collapsible ? (openBlock(), createElementBlock("button", {
-                  key: 1,
+              createCommentVNode(" \u4E3B\u6309\u94AE\uFF1A\u5360\u6EE1\u6574\u884C "),
+              __props.action ? (openBlock(), createElementBlock(
+                "button",
+                {
+                  key: 3,
+                  type: "button",
+                  class: "wd-media-card__cta",
+                  onClick: _cache[0] || (_cache[0] = ($event) => emit("action"))
+                },
+                toDisplayString(__props.action),
+                1
+                /* TEXT */
+              )) : createCommentVNode("v-if", true),
+              createCommentVNode('\n        \u6298\u53E0\u7BAD\u5934\uFF1A**\u72EC\u7ACB\u6210\u884C\u3001\u5E95\u90E8\u5C45\u4E2D**\uFF08\u53C2\u8003\u56FE\u7684\u505A\u6CD5\uFF09\u3002\n        \u26A0\uFE0F \u4E4B\u524D\u548C CTA \u5E76\u6392\u6324\u5728\u53F3\u4FA7 \u2014\u2014 \u90A3\u662F"\u5DE5\u5177\u680F"\u7684\u5E03\u5C40\uFF0C\n          \u800C\u5C55\u5F00/\u6536\u8D77\u662F\u5361\u7247\u7684**\u5168\u5C40\u52A8\u4F5C**\uFF0C\u5E94\u8BE5\u72EC\u7ACB\u3001\u5C45\u4E2D\u3001\u6613\u70B9\u3002\n      '),
+              __props.collapsible ? (openBlock(), createElementBlock("div", _hoisted_174, [
+                createElementVNode("button", {
                   type: "button",
                   class: "wd-media-card__toggle",
                   "aria-expanded": open.value,
@@ -7495,9 +7495,9 @@ var WD_REAL_MODULE = (() => {
                 }, [
                   createVNode(_component_wd_icon, {
                     name: open.value ? "chevron-up" : "chevron-down",
-                    size: 16
+                    size: 18
                   }, null, 8, ["name"])
-                ], 8, _hoisted_183)) : createCommentVNode("v-if", true)
+                ], 8, _hoisted_183)
               ])) : createCommentVNode("v-if", true)
             ])) : createCommentVNode("v-if", true)
           ],
