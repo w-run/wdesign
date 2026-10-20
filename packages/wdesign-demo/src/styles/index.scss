@@ -1,0 +1,36 @@
+// =============================================================
+//  演示站样式入口
+//
+//  为什么多这一层：
+//   1. 字体不用设计库默认的 CDN —— 演示站直接吃仓库里的 VF 字体文件
+//      （packages/wdesign-ui/fonts/*.woff2），vite 会把它们打包成带哈希的
+//      资源。这样离线/内网也能出正确字形，也不会多请求一次外部 CDN。
+//      所以先把 $wd-vf-fonts-enabled 关掉，避免同一家族声明两遍。
+//   2. 字体栈只放设计指定的两套字体，不放 PingFang / 系统字体 ——
+//      演示站要展示的是设计系统的排版，落到系统字体上等于换了展示对象。
+//   3. WDesignSans 是 WIP 的分段字体，文件不在本仓库，保持关闭。
+// =============================================================
+
+$wd-vf-fonts-enabled: false;
+
+@import "@wdesign/styles/index";
+
+@font-face {
+  font-family: "Mona Sans";
+  src: url("@wdesign/../fonts/mona-sans-vf.woff2") format("woff2-variations");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Han Sans SC";
+  src: url("@wdesign/../fonts/noto-sans-sc-vf.woff2") format("woff2-variations");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --wd-font-family: "Mona Sans", "Source Han Sans SC";
+}

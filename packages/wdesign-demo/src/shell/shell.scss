@@ -11,7 +11,10 @@ body {
   margin: 0;
   display: flex;
   height: 100dvh;
-  font-family: var(--wd-font);
+  /* 曾经写成 var(--wd-font) —— 这个令牌不存在，整条声明被丢弃，
+     于是整站落到系统默认字体（Windows 上是微软雅黑），
+     不报错，只是"看起来不太对"。令牌名必须和 _vars.scss 对齐。 */
+  font-family: var(--wd-font-family);
   background: var(--wd-bg);
   color: var(--wd-ink);
 }
