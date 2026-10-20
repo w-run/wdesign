@@ -69,7 +69,7 @@ const locked = ref({ name: "林珊", email: "lin@w-run.net" });
     name="Form"
     desc="表单校验：规则分层 · 标签位置 · 提交结果回显 · 整体禁用"
   >
-    <DemoBlock
+    <DemoBlock :span="2"
       title="基础用法"
       desc="rules 以字段名为键，必填、长度、正则、自定义校验可叠加；直接提交空表单看错误提示"
     >
@@ -87,7 +87,7 @@ const locked = ref({ name: "林珊", email: "lin@w-run.net" });
       </WdForm>
     </DemoBlock>
 
-    <DemoBlock
+    <DemoBlock :span="2"
       title="标签位置"
       desc="top 适合窄容器与移动端，left 适合字段多、需要纵向对齐扫读的后台表单"
     >
@@ -122,7 +122,7 @@ const locked = ref({ name: "林珊", email: "lin@w-run.net" });
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock
+    <DemoBlock :span="2"
       title="提交与校验回显"
       desc="submit 只在全部通过后抛数据，validate 无论成败都抛结果，两个都能用来做页面反馈"
     >
@@ -153,7 +153,7 @@ const locked = ref({ name: "林珊", email: "lin@w-run.net" });
       <pre class="demo-pre">提交数据：{{ submitted || "（还没通过校验）" }}</pre>
     </DemoBlock>
 
-    <DemoBlock
+    <DemoBlock :span="2"
       title="整体禁用"
       desc="给 WdForm 一个 disabled，内部所有控件一起只读，不必逐个传 prop"
     >

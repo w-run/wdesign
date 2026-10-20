@@ -90,12 +90,12 @@ const permissionNodes = [
 
 <template>
   <DemoPage name="Tree" desc="树：层级展开 · 单选高亮 · 勾选级联 · 图标与引导线">
-    <DemoBlock title="基础与选中" desc="selectedKey 单选高亮，expandedKeys 受控展开；键盘上下键也能在节点间移动">
+    <DemoBlock :span="2" title="基础与选中" desc="selectedKey 单选高亮，expandedKeys 受控展开；键盘上下键也能在节点间移动">
       <WdTree v-model:expanded-keys="expanded" v-model:selected-key="selectedKey" :nodes="fileNodes" />
       <span class="hint">当前选中：{{ selectedKey ?? "无" }}</span>
     </DemoBlock>
 
-    <DemoBlock title="勾选与级联" desc="checkable 打开复选框，cascade 下勾父带全子、子全勾则父自动勾上">
+    <DemoBlock :span="2" title="勾选与级联" desc="checkable 打开复选框，cascade 下勾父带全子、子全勾则父自动勾上">
       <WdTree
         v-model:expanded-keys="checkExpanded"
         v-model:checked-keys="checkedKeys"
@@ -107,12 +107,12 @@ const permissionNodes = [
       <span class="hint">已勾选 {{ checkedKeys.length }} 项 · {{ checkTip }}</span>
     </DemoBlock>
 
-    <DemoBlock title="非级联勾选" desc="cascade=false 时父子互不影响，适合按项精确授权的场景">
+    <DemoBlock :span="2" title="非级联勾选" desc="cascade=false 时父子互不影响，适合按项精确授权的场景">
       <WdTree v-model:expanded-keys="looseExpanded" v-model:checked-keys="looseChecked" :nodes="permissionNodes" checkable :cascade="false" />
       <span class="hint">已授权 {{ looseChecked.length }} 项权限</span>
     </DemoBlock>
 
-    <DemoBlock title="图标、附件信息与引导线" desc="图标走 #icon 插槽换成 WdIcon，右侧体积用 #extra；show-line 画出层级引导线，indent 控制每级缩进">
+    <DemoBlock :span="2" title="图标、附件信息与引导线" desc="图标走 #icon 插槽换成 WdIcon，右侧体积用 #extra；show-line 画出层级引导线，indent 控制每级缩进">
       <WdTree
         v-model:expanded-keys="expanded"
         v-model:selected-key="selectedKey"

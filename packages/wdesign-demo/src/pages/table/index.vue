@@ -125,7 +125,7 @@ const fixedRows: Row[] = ["WdButton", "WdInput", "WdTable", "WdSelect", "WdModal
 
 <template>
   <DemoPage name="Table" desc="表格：勾选 · 排序 · 树形层级 · 行展开 · 固定列">
-    <DemoBlock title="基础与勾选" desc="selectable 打开勾选列，row-key 指定唯一标识，选中结果通过 v-model:selected 回传">
+    <DemoBlock :span="2" title="基础与勾选" desc="selectable 打开勾选列，row-key 指定唯一标识，选中结果通过 v-model:selected 回传">
       <WdTable v-model:selected="selected" :columns="repoCols" :rows="repoRows" selectable row-key="name">
         <template #cell-status="{ row }">
           <WdTag :variant="row.status === 'active' ? 'tint' : 'gray'" dot>
@@ -139,11 +139,11 @@ const fixedRows: Row[] = ["WdButton", "WdInput", "WdTable", "WdSelect", "WdModal
       <span class="hint">已选 {{ selected.length }} 行；点表头复选框可整表全选</span>
     </DemoBlock>
 
-    <DemoBlock title="排序与省略" desc="sortable 由表头点击驱动，数字按中文语序的 numeric 规则比较；ellipsis 给长文本截断">
+    <DemoBlock :span="2" title="排序与省略" desc="sortable 由表头点击驱动，数字按中文语序的 numeric 规则比较；ellipsis 给长文本截断">
       <WdTable :columns="sortCols" :rows="sortRows" row-key="store" size="sm" />
     </DemoBlock>
 
-    <DemoBlock title="树形数据" desc="tree 模式把 children 拍平后按层级缩进渲染，行仍然是同层 tr，列不会错位">
+    <DemoBlock :span="2" title="树形数据" desc="tree 模式把 children 拍平后按层级缩进渲染，行仍然是同层 tr，列不会错位">
       <WdTable
         :columns="treeCols"
         :rows="treeRows"
@@ -156,7 +156,7 @@ const fixedRows: Row[] = ["WdButton", "WdInput", "WdTable", "WdSelect", "WdModal
       <span class="hint">{{ treeTip }}</span>
     </DemoBlock>
 
-    <DemoBlock title="行展开详情" desc="expandable 时每行多一个箭头，详情写在 #expand 插槽里，默认横跨整行">
+    <DemoBlock :span="2" title="行展开详情" desc="expandable 时每行多一个箭头，详情写在 #expand 插槽里，默认横跨整行">
       <WdTable :columns="taskCols" :rows="taskRows" expandable row-key="id" size="sm" @row-click="onRowClick">
         <template #cell-status="{ row }">
           <WdTag :variant="row.status === '通过' ? 'tint' : 'gray'" size="sm">{{ row.status }}</WdTag>
@@ -168,7 +168,7 @@ const fixedRows: Row[] = ["WdButton", "WdInput", "WdTable", "WdSelect", "WdModal
       <span class="hint">{{ clicked }}</span>
     </DemoBlock>
 
-    <DemoBlock title="固定列与空状态" desc="首两列 fixed=left 贴边，配合 maxHeight 让表头固定、表体滚动；没有数据时走 emptyText">
+    <DemoBlock :span="2" title="固定列与空状态" desc="首两列 fixed=left 贴边，配合 maxHeight 让表头固定、表体滚动；没有数据时走 emptyText">
       <WdTable :columns="fixedCols" :rows="fixedRows" row-key="id" :max-height="220" size="sm" />
       <WdTable :columns="repoCols" :rows="[]" empty-text="该账号下暂无仓库数据" />
     </DemoBlock>

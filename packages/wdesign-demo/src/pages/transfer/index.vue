@@ -42,7 +42,7 @@ function onChange(values: (string | number)[], direction: "right" | "left") {
     name="Transfer"
     desc="穿梭框：左右两栏勾选搬运 · 搜索过滤 · 禁用项 · 变更方向回显"
   >
-    <DemoBlock
+    <DemoBlock :span="2"
       title="基础"
       desc="左侧待选、右侧已选，勾选后点中间箭头搬运；count 会区分「已勾几项」和「共几项」"
     >
@@ -56,7 +56,7 @@ function onChange(values: (string | number)[], direction: "right" | "left") {
       <p class="demo-val">已选 key：{{ picked.join(", ") || "（空）" }}</p>
     </DemoBlock>
 
-    <DemoBlock
+    <DemoBlock :span="2"
       title="描述与禁用项"
       desc="desc 补充身份信息，搜索会同时匹配 label 与 desc；disabled 的人无论怎么勾都不会被搬走"
     >
@@ -71,7 +71,7 @@ function onChange(values: (string | number)[], direction: "right" | "left") {
       <p class="demo-val">项目成员：{{ members.length }} 人</p>
     </DemoBlock>
 
-    <DemoBlock
+    <DemoBlock :span="2"
       title="关闭搜索 · 紧凑高度"
       desc="数据量少时关掉 filterable，height 收到 160，两栏并排也不占满屏"
     >
@@ -85,7 +85,7 @@ function onChange(values: (string | number)[], direction: "right" | "left") {
       />
     </DemoBlock>
 
-    <DemoBlock
+    <DemoBlock :span="2"
       title="变更方向回显"
       desc="change 的第二个参数说明这次是移入还是移出，便于做操作日志或埋点"
     >

@@ -1,5 +1,8 @@
 /* =============================================================
  *  demo 外壳：左侧栏 + 右内容，整屏固定、两栏各自滚动
+ *
+ *  尺寸参照 iSH 存档那一版：侧栏 248、行高 36、内容左右 56 / 底部 120。
+ *  之前是 232 / 34 / 44 / 80 —— 每项都小一档，叠在一起就是"小气"的观感。
  * ============================================================= */
 html,
 body {
@@ -31,10 +34,10 @@ body {
 
 /* ---------------- 侧栏 ---------------- */
 .demo-side {
-  flex: 0 0 232px;
+  flex: 0 0 248px;
   display: flex;
   flex-direction: column;
-  padding: 22px 14px 16px;
+  padding: 26px 16px 18px;
   background: var(--wd-card);
   box-shadow: inset -1px 0 0 var(--wd-ink-5);
   overflow-y: auto;
@@ -44,11 +47,11 @@ body {
 .side-brand {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 0 8px 18px;
-  font-size: 16.5px;
+  gap: 8px;
+  padding: 0 10px 22px;
+  font-size: 17px;
   font-weight: 800;
-  letter-spacing: -.02em;
+  letter-spacing: -0.02em;
   color: var(--wd-ink);
   text-decoration: none;
 }
@@ -68,10 +71,10 @@ body {
 }
 
 .side-group {
-  padding: 14px 12px 6px;
+  padding: 18px 12px 8px;
   font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--wd-ink-3);
 }
@@ -83,13 +86,17 @@ body {
 .side-link {
   display: flex;
   align-items: center;
-  height: 34px;
+  height: 36px;
   padding: 0 12px;
   border-radius: var(--wd-radius-pill);
   font-size: 13.5px;
   font-weight: 600;
   color: var(--wd-ink-2);
   text-decoration: none;
+  /* 侧栏 70+ 项，鼠标扫过时如果没有过渡，整列会"闪" */
+  transition:
+    background var(--wd-dur-fast) var(--wd-ease-smooth),
+    color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .side-link:hover {
@@ -107,8 +114,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 8px 0;
-  margin-top: 12px;
+  padding: 14px 10px 0;
+  margin-top: 14px;
   box-shadow: inset 0 1px 0 var(--wd-ink-5);
 }
 
@@ -119,13 +126,17 @@ body {
 }
 
 .side-theme {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--wd-ink-3);
+  font-size: 14px;
   cursor: pointer;
+  transition:
+    background var(--wd-dur-fast) var(--wd-ease-smooth),
+    color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .side-theme:hover {
@@ -139,17 +150,13 @@ body {
   min-width: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 32px 44px 80px;
+  /* 顶部零内距：留白交给每页自己的 padding-top，标题才不会挤在窗口边上 */
+  padding: 0 clamp(24px, 3.4vw, 56px) 120px;
+  scroll-behavior: smooth;
 }
 
-.demo-home h1 {
-  margin: 0 0 8px;
-  font-size: 40px;
-  font-weight: 800;
-  letter-spacing: -.03em;
-}
-
-.demo-home p {
-  margin: 0;
-  color: var(--wd-ink-2);
+@media (prefers-reduced-motion: reduce) {
+  .demo-main {
+    scroll-behavior: auto;
+  }
 }
