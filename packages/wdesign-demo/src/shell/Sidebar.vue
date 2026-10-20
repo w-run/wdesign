@@ -122,6 +122,17 @@ const items = computed<NavItem[]>(() =>
     }),
 );
 
+/**
+ * 首屏只展开"当前项所在的分组"，其余收起 —— 76 项一屏放不下，
+ * 全展开等于让用户自己往下刨。之后点分组头可自由开合，
+ * 换页时 WdNav 会自动把目标分组展开并把当前项滚进视野。
+ */
+const defaultCollapsed = computed(() => {
+  const groups = [...new Set(items.value.map((i) => i.group))];
+  const activeGroup = items.value.find((i) => i.key === route.path)?.group;
+  return groups.filter((g) => g !== activeGroup);
+});
+
 function toggleDark() {
   dark.value = !dark.value;
   document.documentElement.dataset.theme = dark.value ? "dark" : "light";
@@ -135,6 +146,8 @@ function toggleDark() {
     :items="items"
     :active="route.path"
     brand="WDesign"
+    collapsible-groups
+    :default-collapsed-groups="defaultCollapsed"
   >
     <template #footer>
       <span class="side-version">v1.0</span>

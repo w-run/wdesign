@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { WdIcon } from '@w-run/wdesign-icons'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 
 defineOptions({ name: 'WdNav' })
 
@@ -44,6 +44,20 @@ const props = withDefaults(
     sticky?: boolean
     /** 尺寸 */
     size?: 'sm' | 'md'
+    /**
+     * 分组可折叠（仅竖栏）。
+     *
+     * 导航一长（比如文档站侧栏几十项），眼睛找不到落点 ——
+     * 分组能收起来之后，一屏内就能看清"有哪几类"，需要时再展开。
+     */
+    collapsibleGroups?: boolean
+    /** 默认收起的分组名（配合 collapsibleGroups） */
+    defaultCollapsedGroups?: string[]
+    /**
+     * 当前项变化时自动滚进可视区（默认开）。
+     * 侧栏几十项时，从别处跳进一个深项，不做这件事就等于"看不见当前在哪"。
+     */
+    scrollActiveIntoView?: boolean
   }>(),
   {
     direction: 'horizontal',
@@ -54,6 +68,9 @@ const props = withDefaults(
     iconOnly: false,
     sticky: true,
     size: 'md',
+    collapsibleGroups: false,
+    defaultCollapsedGroups: () => [],
+    scrollActiveIntoView: true,
   },
 )
 
@@ -77,10 +94,57 @@ function onSelect(item: WdNavItem, e: MouseEvent) {
   emit('select', item)
 }
 
+/** 收起的分组名集合（内部维护；分组名重复时以第一个为准） */
+const collapsedGroups = ref<Set<string>>(new Set(props.defaultCollapsedGroups))
+
+function isGroupCollapsed(title: string) {
+  return collapsedGroups.value.has(title)
+}
+
+/** 收起的分组不渲染子项（v-for 里过滤，避免 v-if 和 v-for 写在同一节点上） */
+function visibleItems(g: { title: string; items: WdNavItem[] }) {
+  if (!props.collapsibleGroups || !g.title) return g.items
+  return isGroupCollapsed(g.title) ? [] : g.items
+}
+
+function toggleGroup(title: string) {
+  const next = new Set(collapsedGroups.value)
+  if (next.has(title)) next.delete(title)
+  else next.add(title)
+  collapsedGroups.value = next
+}
+
 function toggleCollapse() {
   if (props.iconOnly) return
   emit('update:collapsed', !props.collapsed)
 }
+
+/** 列表容器（用于把当前项滚进可视区） */
+const listEl = ref<HTMLElement | null>(null)
+
+/**
+ * active 变化时做两件事（竖栏才有意义）：
+ *   1. 它所在分组被收起 → 展开（否则当前项被藏在收起的分组里，等于丢了）
+ *   2. 把它滚进可视区（侧栏几十项时，跳进一个深项要能看见自己在哪）
+ */
+watch(
+  () => props.active,
+  async (key) => {
+    if (!key) return
+    if (props.collapsibleGroups) {
+      const item = props.items.find((it) => it.key === key)
+      if (item?.group && collapsedGroups.value.has(item.group)) {
+        const next = new Set(collapsedGroups.value)
+        next.delete(item.group)
+        collapsedGroups.value = next
+      }
+    }
+    if (!props.scrollActiveIntoView) return
+    await nextTick()
+    listEl.value?.querySelector('.is-active')?.scrollIntoView({ block: 'nearest' })
+  },
+  { immediate: true },
+)
 
 /**
  * 按 group 分组（仅竖栏用）。
@@ -139,13 +203,25 @@ const iconSize = computed(() => {
     </div>
 
     <!-- 导航项 -->
-    <div class="wd-nav__list">
+    <div ref="listEl" class="wd-nav__list">
       <template v-for="(g, gi) in groups" :key="gi">
-        <div v-if="g.title && !thin" class="wd-nav__group">{{ g.title }}</div>
+        <!-- 分组头：可折叠时是个按钮，点击收起/展开这一组 -->
+        <button
+          v-if="g.title && !thin && collapsibleGroups"
+          type="button"
+          class="wd-nav__group is-toggle"
+          :class="{ 'is-collapsed': isGroupCollapsed(g.title) }"
+          :aria-expanded="!isGroupCollapsed(g.title)"
+          @click="toggleGroup(g.title)"
+        >
+          <span>{{ g.title }}</span>
+          <wd-icon class="wd-nav__group-arrow" name="chevron-down" :size="12" />
+        </button>
+        <div v-else-if="g.title && !thin" class="wd-nav__group">{{ g.title }}</div>
 
         <component
           :is="it.href ? 'a' : 'button'"
-          v-for="it in g.items"
+          v-for="it in visibleItems(g)"
           :key="it.key"
           class="wd-nav__item"
           :class="{

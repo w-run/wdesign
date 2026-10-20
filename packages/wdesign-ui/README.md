@@ -143,7 +143,7 @@ app.mount('#app')
 
 | 组件 | 说明 |
 |---|---|
-| `WdNav` | 导航：横栏/竖栏、`collapsed`、`iconOnly`、`sticky` |
+| `WdNav` | 导航：横栏/竖栏、`collapsed`、`iconOnly`、`sticky`、**分组可折叠**（`collapsibleGroups` + `defaultCollapsedGroups`，active 落到收起分组会自动展开并滚入视野） |
 | `WdBreadcrumb` | 面包屑：`items`、`separator` |
 | `WdCommand` | 命令面板（⌘K）：分组、快捷键、远程 `search` |
 | `WdAffix` / `WdBacktop` | 吸附 / 回到顶部 |

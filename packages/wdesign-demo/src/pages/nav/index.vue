@@ -15,7 +15,21 @@ const topItems: { key: string; label: string; dot?: boolean; disabled?: boolean 
 ];
 
 const sideActive = ref("dashboard");
-const collapsed = ref(false);
+const collapsed = ref(false)
+
+/** 分组折叠演示：文档站那种一屏放不下的侧栏 */
+const docsActive = ref("/input");
+const docsItems = [
+  { key: "/button", label: "Button", icon: "button", group: "基础" },
+  { key: "/tag", label: "Tag", icon: "tag", group: "基础" },
+  { key: "/card", label: "Card", icon: "card", group: "基础" },
+  { key: "/input", label: "Input", icon: "input", group: "表单" },
+  { key: "/select", label: "Select", icon: "list", group: "表单" },
+  { key: "/table", label: "Table", icon: "bar-chart", group: "数据展示" },
+  { key: "/tree", label: "Tree", icon: "git-branch", group: "数据展示" },
+  { key: "/alert", label: "Alert", icon: "info-circle", group: "反馈" },
+  { key: "/toast", label: "Toast", icon: "message-circle", group: "反馈" },
+];;
 const sideItems: {
   key: string;
   label: string;
@@ -100,6 +114,22 @@ const mdItems: { key: string; label: string; dot?: boolean; disabled?: boolean }
     </DemoBlock>
 
     <DemoBlock
+      title="分组可折叠"
+      desc="项一多侧栏就成了一条翻不到底的长条。collapsibleGroups 把分组头变成开关；active 落到收起的分组里时会自动展开并滚进视野"
+    >
+      <div class="nav-stage nav-stage--short">
+        <WdNav
+          v-model:active="docsActive"
+          direction="vertical"
+          :items="docsItems"
+          brand="文档"
+          collapsible-groups
+          :default-collapsed-groups="['数据展示', '反馈']"
+        />
+      </div>
+    </DemoBlock>
+
+    <DemoBlock
       title="纯图标竖栏"
       desc="iconOnly 与 collapsed 不同：前者永远只有图标（保留 title 提示），后者只是可展开的收起状态"
     >
@@ -128,6 +158,8 @@ const mdItems: { key: string; label: string; dot?: boolean; disabled?: boolean }
 .nav-stage {
   display: flex;
   gap: 20px;
+  /* 舞台只包住导航本身，不撑满整张卡 —— 否则灰底会拉成一条 700px 的空槽 */
+  width: fit-content;
   height: 420px;
   padding: 8px;
   box-sizing: border-box;

@@ -104,6 +104,51 @@
   margin-top: 6px;
 }
 
+/*
+ * 可折叠的分组头：整行是一个按钮，右侧一个箭头表示开合。
+ * 只有它"能点"的时候才给 hover 底色 —— 不可折叠的分组头是静止标签，
+ * 给了 hover 会让人以为能点。
+ */
+.wd-nav__group.is-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--wd-radius-xs);
+  background: transparent;
+  /* 继承分组标签的排版，只补可交互部分 */
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  .wd-nav__group.is-toggle:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink-2);
+  }
+}
+
+.wd-nav__group-arrow {
+  flex: none;
+  color: var(--wd-ink-4);
+  /* 只动旋转，不动透明度（pitfalls 第 1 条：透明度承载状态会卡在起始帧） */
+  transition: transform var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-nav__group.is-collapsed .wd-nav__group-arrow {
+  transform: rotate(-90deg);
+}
+
 /* =============================================================
  *  横栏
  * ============================================================= */
