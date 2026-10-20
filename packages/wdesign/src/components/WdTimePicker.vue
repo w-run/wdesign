@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useControllable } from './controllable'
 
 defineOptions({ name: 'WdTimePicker' })
@@ -174,8 +174,129 @@ function syncOpenPart(p: 'hour' | 'minute' | 'second') {
   activePart.value = p
 }
 
+/* ---------------- 滚动吸附 ---------------- */
+/**
+ * 列滚动时自动吸附到最近的一项，并把选中值同步出去。
+ *
+ * 交互模型（参考 iOS 时间选择器）：
+ *   · 用户滚动 → 松手后自动对齐到最近的选项
+ *   · 对齐的同时**选中该项**，不需要再点一下
+ *
+ * ===== 为什么要"吸附"而不是纯自由滚动 =====
+ * 自由滚动时选项可能停在半格位置，看起来"没选中任何值"。
+ * 吸附保证每次停下都恰好落在某一项上，视觉和语义都清晰。
+ */
+const ITEM_H = 34 + 3 // 选项高 34 + gap 3
+
+/**
+ * 处理某一列的滚动结束。
+ *
+ * 用 debounce 而非 scrollend 事件：
+ *   scrollend 在 Safari 上支持较晚（16.4+），
+ *   而 scroll + 150ms 静默判定在所有浏览器都可靠。
+ */
+let scrollTimers: Record<string, number> = {}
+
+/**
+ * 「正在程序化滚动」标记。
+ *
+ * ⚠️ 必须有：对齐时调用 scrollTo 会再次触发 scroll 事件，
+ *    于是又进一次吸附 → 又算一次 idx → 又 scrollTo ……
+ *    形成自我激发的循环，最终停在某个意外位置
+ *    （实测滚到 45 分却选中 40 分，且 scrollTop 回落）。
+ *
+ *    这里在 scrollTo 期间设标记，忽略由此产生的 scroll。
+ */
+const programmatic: Record<string, boolean> = {}
+
+function onColScroll(part: 'hour' | 'minute' | 'second', e: Event) {
+  const el = e.currentTarget as HTMLElement
+  // 程序化滚动引起的事件，忽略
+  if (programmatic[part]) return
+  if (scrollTimers[part]) window.clearTimeout(scrollTimers[part])
+  scrollTimers[part] = window.setTimeout(() => {
+    /*
+     * ===== 换算（列有 padding-block，必须计入） =====
+     *
+     * 列的上下各有 PAD 的 padding，所以第 i 项中心的**内容坐标**是：
+     *
+     *      centerOf(i) = PAD + i * ITEM_H + ITEM_H / 2
+     *
+     * 它出现在视口中心的条件：
+     *
+     *      scrollTop + clientHeight / 2 === centerOf(i)
+     *  =>  scrollTop = PAD + i * ITEM_H + ITEM_H/2 - clientHeight/2
+     *
+     * 反过来求居中项：
+     *
+     *      i = round((scrollTop + clientHeight/2 - ITEM_H/2 - PAD) / ITEM_H)
+     *
+     * ⚠️ 两个方向必须用**同一个** PAD 值，否则吸附后来回跳。
+     * ⚠️ PAD 从实际样式里读，不硬编码 —— CSS 改了这里自动跟随。
+     */
+    const PAD = parseFloat(getComputedStyle(el).paddingTop) || 0
+    const scrollToCenter = (i: number) =>
+      PAD + i * ITEM_H + ITEM_H / 2 - el.clientHeight / 2
+
+    const idx = Math.round(
+      (el.scrollTop + el.clientHeight / 2 - ITEM_H / 2 - PAD) / ITEM_H,
+    )
+    const opts = [...el.querySelectorAll<HTMLElement>('.wd-time-picker__opt')]
+    const target = opts[idx]
+    if (!target) return
+
+    // 选中（跳过禁用项，滚到它上面就回退）
+    const val = Number(target.textContent)
+    if (part === 'hour') pickHour(val)
+    else if (part === 'minute') pickMinute(val)
+    else pickSecond(val)
+
+    // 对齐：把该项精确滚到中心（期间忽略 scroll 事件）
+    programmatic[part] = true
+    el.scrollTo({ top: scrollToCenter(idx), behavior: 'smooth' })
+    window.setTimeout(() => {
+      programmatic[part] = false
+    }, 400)
+  }, 150)
+}
+
 /* ---------------- 打开 / 关闭 ---------------- */
 const open = ref(false)
+
+/** 列元素引用，打开时需要按当前值定位 */
+const hourCol = ref<HTMLElement | null>(null)
+const minuteCol = ref<HTMLElement | null>(null)
+const secondCol = ref<HTMLElement | null>(null)
+
+/**
+ * 打开面板时，把三列滚到当前值的**正中**。
+ *
+ * ⚠️ 必须用 nextTick 等 DOM 渲染完 ——
+ *    面板是 v-if 控制的，刚设 open=true 时元素还不存在，
+ *    此时 scrollTop 写不进去（元素为 null）。
+ */
+watch(open, async (v) => {
+  if (!v) return
+  await nextTick()
+  const [h, m, sec] = parts.value
+
+  /**
+   * 把某一列滚到指定值。
+   * ⚠️ 公式与 onColScroll 里的 scrollToCenter 完全一致 ——
+   *    两处必须同源，否则打开时的位置和吸附后的位置会差半格。
+   */
+  const scrollToVal = (col: HTMLElement | null, val: number, list: number[]) => {
+    if (!col) return
+    const idx = list.indexOf(val)
+    if (idx < 0) return
+    const PAD = parseFloat(getComputedStyle(col).paddingTop) || 0
+    col.scrollTop = PAD + idx * ITEM_H + ITEM_H / 2 - col.clientHeight / 2
+  }
+
+  scrollToVal(hourCol.value, h, hours.value)
+  scrollToVal(minuteCol.value, m, minutes.value)
+  scrollToVal(secondCol.value, sec, seconds.value)
+})
 
 function toggle() {
   if (props.disabled) return
@@ -211,7 +332,13 @@ const display = computed(() => value.value || '--:--')
 
     <div v-if="open" class="wd-time-picker__panel">
       <!-- 时 -->
-      <div class="wd-time-picker__col" role="listbox" aria-label="小时">
+      <div
+        ref="hourCol"
+        class="wd-time-picker__col"
+        role="listbox"
+        aria-label="小时"
+        @scroll.passive="onColScroll('hour', $event)"
+      >
         <button
           v-for="h in hours"
           :key="h"
@@ -228,7 +355,13 @@ const display = computed(() => value.value || '--:--')
       <span class="wd-time-picker__sep">:</span>
 
       <!-- 分 -->
-      <div class="wd-time-picker__col" role="listbox" aria-label="分钟">
+      <div
+        ref="minuteCol"
+        class="wd-time-picker__col"
+        role="listbox"
+        aria-label="分钟"
+        @scroll.passive="onColScroll('minute', $event)"
+      >
         <button
           v-for="m in minutes"
           :key="m"
@@ -244,8 +377,14 @@ const display = computed(() => value.value || '--:--')
 
       <template v-if="second">
         <span class="wd-time-picker__sep">:</span>
-        <div class="wd-time-picker__col" role="listbox" aria-label="秒">
-          <button
+        <div
+          ref="secondCol"
+          class="wd-time-picker__col"
+          role="listbox"
+          aria-label="秒"
+          @scroll.passive="onColScroll('second', $event)"
+        >
+            <button
             v-for="s in seconds"
             :key="s"
             type="button"
@@ -256,7 +395,7 @@ const display = computed(() => value.value || '--:--')
             :disabled="secondDisabled(parts[0], parts[1], s)"
             @click="pickSecond(s)"
           >{{ pad(s) }}</button>
-        </div>
+          </div>
       </template>
     </div>
   </div>

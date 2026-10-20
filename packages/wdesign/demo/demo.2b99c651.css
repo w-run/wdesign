@@ -2762,6 +2762,118 @@ body {
   display: none;
 }
 
+/* =============================================================
+ *  年月快速选择弹层
+ *
+ *  点击「2026/10」标题弹出，两列滚动：年份 / 月份。
+ *
+ *  ⚠️ 为什么需要：
+ *     选 3 年前的日期要点 36 次「上一月」。
+ *     弹层方案两次点击到位。
+ *
+ *  ⚠️ 布局用 absolute + 覆盖在日期网格上：
+ *     这样不推挤下方内容，关闭时也不会引起跳动。
+ * ============================================================= */
+.wd-calendar {
+  position: relative;
+}
+
+/* 年月标题改成按钮后，去掉按钮的默认样式 */
+button.wd-calendar__month {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--wd-radius-sm);
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  button.wd-calendar__month:hover {
+    background: var(--wd-field);
+  }
+}
+button.wd-calendar__month:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* 提示可点击的小箭头 */
+.wd-calendar__month-caret {
+  color: var(--wd-ink-3);
+  margin-left: 2px;
+  /* 与文字基线对齐：稍微下移 */
+  align-self: center;
+  margin-top: 4px;
+}
+
+/* ---------------- 弹层本体 ---------------- */
+.wd-calendar__picker {
+  position: absolute;
+  top: 62px;
+  left: 24px;
+  right: 24px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+.wd-calendar__picker-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 208px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 2px;
+}
+
+.wd-calendar__picker-col::-webkit-scrollbar {
+  width: 4px;
+}
+
+.wd-calendar__picker-col::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-4);
+  border-radius: 999px;
+}
+
+.wd-calendar__picker-opt {
+  flex: none;
+  height: 32px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  /*
+   * ⚠️ 不做背景过渡 —— 选中是状态切换，
+   * 过渡会在时钟停摆环境里卡在起始帧（已踩多次）。
+   */
+}
+
+@media (hover: hover) {
+  .wd-calendar__picker-opt:hover:not(.is-on) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
+}
+.wd-calendar__picker-opt.is-on {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font-weight: 800;
+}
+
 .wd-time-picker {
   position: relative;
   display: inline-block;
@@ -2929,6 +3041,38 @@ body {
 .wd-time-picker__opt:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* =============================================================
+ *  滚动居中：用 padding 而非占位元素
+ *
+ *  ===== 为什么必须有 =====
+ *  要让某个选项能滚到**容器正中**，它上方需要有 clientHeight/2 的空间。
+ *  没有它，第 0 项只能贴顶部、最后一项只能贴底，
+ *  中间项也滚不到正中心 —— 实测 12 项、容器 280px，
+ *  最大滚动仅 165px，而"居中第 9 项"需要 211px，根本达不到，
+ *  吸附于是总落到错误的项上。
+ *
+ *  ===== 为什么用 padding 而不是子元素 =====
+ *  子元素写 `height: 50%` 时，百分比在 flex 容器里参考的是**内容高度**
+ *  而不是容器高度，算出来必然偏小（实测占位只有 6px）。
+ *  padding 的百分比则稳定参照**容器高度**，行为可预期。
+ *
+ *  上下各留 (clientHeight - ITEM_H) / 2：
+ *    scrollHeight = 选项总高 + clientHeight - ITEM_H
+ *    maxScroll    = 选项总高 - ITEM_H
+ *  → 首尾项恰好能居中，中间项自然也能。
+ * ============================================================= */
+.wd-time-picker__col {
+  /*
+   * 上下各 123px。
+   * 容器 280px、单项 34px、间距 3px →
+   *   (280 - 34) / 2 = 123
+   * 硬编码是因为这里需要一个**确定的高度**参与滚动计算，
+   * 用百分比反而不可控（见上面的说明）。
+   */
+  padding-block: 123px;
+  padding-inline: 2px;
 }
 
 .wd-datetime-picker {

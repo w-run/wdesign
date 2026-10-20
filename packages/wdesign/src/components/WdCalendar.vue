@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 defineOptions({ name: 'WdCalendar' })
 
@@ -298,6 +298,76 @@ const rangeEnd = ref('')
  */
 const rangePending = ref(false)
 
+/* ---------------- 年月选择弹层 ---------------- */
+/**
+ * 点击标题里的年月可以跳到任意年月 —— 不必逐月翻。
+ *
+ * 交互参考移动端的"滚轮选择器"：
+ *   · 左侧列：年份（当前年 ±30）
+ *   · 右侧列：月份 01-12
+ *   · 点击即切换，点外部关闭
+ *
+ * 为什么要做这个：
+ *   选 3 年前的日期要点 36 次「上一月」。改成弹层后两次点击到位。
+ */
+const root = ref<HTMLElement | null>(null)
+const pickerOpen = ref(false)
+const yearList = computed(() => {
+  const cur = new Date().getFullYear()
+  const out: number[] = []
+  // 当前年往前 30 年、往后 10 年，覆盖绝大多数业务场景
+  for (let y = cur - 30; y <= cur + 10; y++) out.push(y)
+  return out
+})
+
+function openPicker() {
+  pickerOpen.value = true
+}
+
+function closePicker() {
+  pickerOpen.value = false
+}
+
+function pickYear(y: number) {
+  view.value = { y, m: view.value.m }
+  emit('update:month', `${y}-${pad(view.value.m + 1)}`)
+  // 选完年继续留在弹层里选月，体验更顺
+}
+
+function pickMonth(m: number) {
+  view.value = { y: view.value.y, m }
+  emit('update:month', `${view.value.y}-${pad(m + 1)}`)
+  pickerOpen.value = false
+}
+
+/** 点外部关闭 */
+function onDocClick(e: MouseEvent) {
+  const root2 = root.value
+  if (root2 && !root2.contains(e.target as Node)) pickerOpen.value = false
+}
+
+watch(pickerOpen, (v) => {
+  if (v) document.addEventListener('click', onDocClick, true)
+  else document.removeEventListener('click', onDocClick, true)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', onDocClick, true)
+})
+
+/** 弹层打开时把当前年月滚到可见位置 */
+const yearColRef = ref<HTMLElement | null>(null)
+const monthColRef = ref<HTMLElement | null>(null)
+
+watch(pickerOpen, async (v) => {
+  if (!v) return
+  await nextTick()
+  const yEl = yearColRef.value?.querySelector<HTMLElement>('.is-on')
+  yEl?.scrollIntoView({ block: 'center' })
+  const mEl = monthColRef.value?.querySelector<HTMLElement>('.is-on')
+  mEl?.scrollIntoView({ block: 'center' })
+})
+
 const rangeSelected = computed(() => {
   if (props.mode !== 'range') return { start: '', end: '', pending: false }
   // 受控：从 modelValue 解析 `start~end`
@@ -431,6 +501,7 @@ function onKeydown(e: KeyboardEvent) {
 
 <template>
   <div
+    ref="root"
     class="wd-calendar"
     :class="[
       `wd-calendar--${size}`,
@@ -452,11 +523,18 @@ function onKeydown(e: KeyboardEvent) {
       这样标题是绝对的时间锚点，翻页只是附带的次要操作。
     -->
     <div class="wd-calendar__head">
-      <div class="wd-calendar__month" role="heading" aria-level="2">
+      <button
+        type="button"
+        class="wd-calendar__month"
+        :aria-expanded="pickerOpen"
+        aria-label="选择年份和月份"
+        @click.stop="openPicker"
+      >
         <span class="wd-calendar__year">{{ view.y }}</span>
         <span class="wd-calendar__slash" aria-hidden="true">/</span>
         <span class="wd-calendar__mon">{{ pad(view.m + 1) }}</span>
-      </div>
+        <wd-icon name="chevron-down" :size="14" class="wd-calendar__month-caret" />
+      </button>
       <div class="wd-calendar__navs">
         <button type="button" class="wd-calendar__nav" aria-label="上个月" @click="shiftMonth(-1)">
           <wd-icon name="chevron-left" :size="15" />
@@ -464,6 +542,30 @@ function onKeydown(e: KeyboardEvent) {
         <button type="button" class="wd-calendar__nav" aria-label="下个月" @click="shiftMonth(1)">
           <wd-icon name="chevron-right" :size="15" />
         </button>
+      </div>
+    </div>
+
+    <!-- 年月快速选择弹层 -->
+    <div v-if="pickerOpen" class="wd-calendar__picker" @click.stop>
+      <div class="wd-calendar__picker-col" ref="yearColRef">
+        <button
+          v-for="y in yearList"
+          :key="y"
+          type="button"
+          class="wd-calendar__picker-opt"
+          :class="{ 'is-on': y === view.y }"
+          @click="pickYear(y)"
+        >{{ y }}</button>
+      </div>
+      <div class="wd-calendar__picker-col" ref="monthColRef">
+        <button
+          v-for="m in 12"
+          :key="m"
+          type="button"
+          class="wd-calendar__picker-opt"
+          :class="{ 'is-on': m - 1 === view.m }"
+          @click="pickMonth(m - 1)"
+        >{{ pad(m) }}</button>
       </div>
     </div>
 

@@ -657,3 +657,116 @@
 .wd-calendar--compact .wd-calendar__text {
   display: none;
 }
+
+/* =============================================================
+ *  年月快速选择弹层
+ *
+ *  点击「2026/10」标题弹出，两列滚动：年份 / 月份。
+ *
+ *  ⚠️ 为什么需要：
+ *     选 3 年前的日期要点 36 次「上一月」。
+ *     弹层方案两次点击到位。
+ *
+ *  ⚠️ 布局用 absolute + 覆盖在日期网格上：
+ *     这样不推挤下方内容，关闭时也不会引起跳动。
+ * ============================================================= */
+.wd-calendar {
+  position: relative;
+}
+
+/* 年月标题改成按钮后，去掉按钮的默认样式 */
+button.wd-calendar__month {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--wd-radius-sm);
+  transition: background var(--wd-dur-fast) ease;
+}
+
+@media (hover: hover) {
+  button.wd-calendar__month:hover {
+    background: var(--wd-field);
+  }
+}
+
+button.wd-calendar__month:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);
+}
+
+/* 提示可点击的小箭头 */
+.wd-calendar__month-caret {
+  color: var(--wd-ink-3);
+  margin-left: 2px;
+  /* 与文字基线对齐：稍微下移 */
+  align-self: center;
+  margin-top: 4px;
+}
+
+/* ---------------- 弹层本体 ---------------- */
+.wd-calendar__picker {
+  position: absolute;
+  top: 62px;
+  left: 24px;
+  right: 24px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--wd-radius-md);
+  background: var(--wd-card);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+.wd-calendar__picker-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 208px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 2px;
+}
+
+.wd-calendar__picker-col::-webkit-scrollbar {
+  width: 4px;
+}
+.wd-calendar__picker-col::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-4);
+  border-radius: 999px;
+}
+
+.wd-calendar__picker-opt {
+  flex: none;
+  height: 32px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: transparent;
+  color: var(--wd-ink-2);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  /*
+   * ⚠️ 不做背景过渡 —— 选中是状态切换，
+   * 过渡会在时钟停摆环境里卡在起始帧（已踩多次）。
+   */
+}
+
+@media (hover: hover) {
+  .wd-calendar__picker-opt:hover:not(.is-on) {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
+}
+
+.wd-calendar__picker-opt.is-on {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font-weight: 800;
+}
