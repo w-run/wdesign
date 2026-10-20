@@ -150,6 +150,17 @@
 }
 
 /* 锚点面（--wd-dark）在深色主题下翻转为浅色 → 其上配套色需同步翻转 */
+/*
+ * 全局盒模型：**唯一设置点**。
+ *
+ * 包含 ::before / ::after —— 组件的伪元素（色带、圆点、遮罩）
+ * 都依赖它。漏掉伪元素会让这些元素回到 content-box，
+ * 出现"明明写了 width: 100% 却溢出一个 padding"的诡异现象。
+ *
+ * ⚠️ 其它样式文件不要再重复声明这条规则：
+ *    demo.scss 曾经写过一次（且漏了伪元素），
+ *    造成两处定义不一致。
+ */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -5577,38 +5588,7 @@ button.wd-calendar__month:focus-visible {
  * ⚠️ 之前把两者和 layout 绑死了（overlay→铺满、stacked→内嵌）。
  *    实际它们是**独立维度**：任何 layout 都可配任一 mediaMode。
  */
-/*
- * inset：图片内嵌。
- *
- * ⚠️ 不能用 `margin: 10px` + 默认 width:100%：
- *    100% 是相对**卡片内容宽**算的，再叠加左右各 10px 的 margin，
- *    总宽 = 卡片宽 + 20px —— **溢出卡片**。
- *    实测右侧超出 10px、左侧内缩 10px，看起来像"左白边右没边"。
- *
- *    正确做法：width 用 auto（flex 子项默认为 auto，会自然占满可用宽度），
- *    margin 只负责留白。
- */
-/*
- * ⚠️ `width: auto` 在 flex column 容器里**不会**缩窄 ——
- *    交叉轴默认 align-items: stretch，子项会拉伸到容器宽度，
- *    再叠加左右 margin 仍然溢出。
- *
- * 正确做法：把 width 显式写成 calc(100% - 左右 margin)，
- * 或者给容器加上 align-items: flex-start 让子项按内容宽度排布。
- * 这里用 calc 更直接，也不影响其它子项的拉伸行为。
- */
-/*
- * ⚠️ 关键：**必须同时覆盖 align-self**。
- *
- * 卡片是 flex column 容器，交叉轴默认 `align-items: normal`
- * （等价于 stretch）—— 子项的 width 会被**忽略**，强制拉伸到容器宽度。
- * 实测：写了 `width: calc(100% - 20px)`（=332px），
- * 实际计算值仍是 352px（卡片宽），再叠加 margin 就溢出 10px。
- *
- * 加 `align-self: stretch` 没用（本来就是），要显式给 width 生效的条件：
- * 用 margin 撑开而不是 width —— 让 stretch 自己算宽度。
- * 即：只写 margin，不写 width，子项会被拉伸到"容器宽 - margin"。
- */
+/* inset：图片内嵌，四周留白 + 独立圆角（留白见下方 padding 方案）。 */
 /*
  * ⚠️ flex column 的交叉轴 stretch 会**无视 width**，直接拉到容器宽。
  *    试过 width: calc(100% - 20px)、width: auto、align-self: stretch
@@ -13659,10 +13639,11 @@ html.dark-theme {
   font-style: normal;
   font-display: swap;
 }
-* {
-  box-sizing: border-box;
-}
-
+/*
+ * ⚠️ 不要再写 `* { box-sizing: border-box }` ——
+ *    src/styles/_base.scss 已全局设置（且包含 ::before / ::after）。
+ *    demo 里重复一遍不仅冗余，还漏了伪元素，与库的定义不一致。
+ */
 body {
   margin: 0;
   background: var(--wd-bg);

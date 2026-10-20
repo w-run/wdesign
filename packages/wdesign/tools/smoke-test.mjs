@@ -611,6 +611,71 @@ const VUE_APIS = [
   }
 }
 
+
+/* ============================================================
+ * 17. box-sizing 的全局声明唯一性
+ *
+ * ===== 为什么需要 =====
+ * `_base.scss` 里有一条 `*, *::before, *::after { box-sizing: border-box }`，
+ * 这是组件的正确渲染前提（伪元素也依赖它）。
+ *
+ * 但 demo.scss 曾经**又写了一遍**，而且漏了 ::before / ::after ——
+ * 两处定义不一致，排查盒模型问题时极易误判。
+ *
+ * 规则：全局 box-sizing 只能有一处声明，且必须包含伪元素。
+ * ========================================================== */
+{
+  const files = []
+  const walk = (dir) => {
+    if (!existsSync(dir)) return
+    for (const f of readdirSync(dir, { withFileTypes: true })) {
+      const full = join(dir, f.name)
+      if (f.isDirectory()) walk(full)
+      else if (f.name.endsWith('.scss')) files.push(full)
+    }
+  }
+  walk(join(ROOT, 'src/styles'))
+  walk(join(ROOT, 'demo'))
+
+  const decls = []
+  for (const full of files) {
+    const src = readFileSync(full, 'utf8')
+    // 去注释，避免注释里提到的 box-sizing 被误报
+    const clean = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '')
+    const rel = full.replace(ROOT + '/', '')
+
+    /*
+     * 只关心「通配符选择器」上的 box-sizing 声明 ——
+     * 组件内部的 `.foo { box-sizing: content-box }` 是合法且必要的。
+     */
+    const re = /(\*[^{}]*?)\{([^{}]*box-sizing[^{}]*)\}/g
+    let m
+    while ((m = re.exec(clean)) !== null) {
+      const selector = m[1].trim()
+      const body = m[2]
+      // 必须是通配符开头（`*` 或 `*, *::before, ...`）
+      if (!/^\*/.test(selector)) continue
+      decls.push({ rel, selector, hasPseudo: /::before|::after/.test(selector), body })
+    }
+  }
+
+  if (!decls.length) {
+    fail('全局 box-sizing 未声明', '_base.scss 里应当有一条 * 规则')
+  } else if (decls.length > 1) {
+    fail(
+      'box-sizing 被重复声明（应只有 _base.scss 一处）',
+      decls.map((d) => `${d.rel}: ${d.selector}`).join(' | '),
+    )
+  } else if (!decls[0].hasPseudo) {
+    fail(
+      '全局 box-sizing 漏了伪元素',
+      `${decls[0].rel} 的选择器是 "${decls[0].selector}"，应为 *, *::before, *::after`,
+    )
+  } else {
+    ok('全局 box-sizing 声明唯一且包含伪元素')
+  }
+}
+
 /* ============================================================ */
 console.log(`\n${'='.repeat(52)}`)
 console.log(`  冒烟测试：${pass} 通过 / ${fails.length} 失败`)

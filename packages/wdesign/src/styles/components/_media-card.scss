@@ -67,38 +67,8 @@
  * ⚠️ 之前把两者和 layout 绑死了（overlay→铺满、stacked→内嵌）。
  *    实际它们是**独立维度**：任何 layout 都可配任一 mediaMode。
  */
-/*
- * inset：图片内嵌。
- *
- * ⚠️ 不能用 `margin: 10px` + 默认 width:100%：
- *    100% 是相对**卡片内容宽**算的，再叠加左右各 10px 的 margin，
- *    总宽 = 卡片宽 + 20px —— **溢出卡片**。
- *    实测右侧超出 10px、左侧内缩 10px，看起来像"左白边右没边"。
- *
- *    正确做法：width 用 auto（flex 子项默认为 auto，会自然占满可用宽度），
- *    margin 只负责留白。
- */
-/*
- * ⚠️ `width: auto` 在 flex column 容器里**不会**缩窄 ——
- *    交叉轴默认 align-items: stretch，子项会拉伸到容器宽度，
- *    再叠加左右 margin 仍然溢出。
- *
- * 正确做法：把 width 显式写成 calc(100% - 左右 margin)，
- * 或者给容器加上 align-items: flex-start 让子项按内容宽度排布。
- * 这里用 calc 更直接，也不影响其它子项的拉伸行为。
- */
-/*
- * ⚠️ 关键：**必须同时覆盖 align-self**。
- *
- * 卡片是 flex column 容器，交叉轴默认 `align-items: normal`
- * （等价于 stretch）—— 子项的 width 会被**忽略**，强制拉伸到容器宽度。
- * 实测：写了 `width: calc(100% - 20px)`（=332px），
- * 实际计算值仍是 352px（卡片宽），再叠加 margin 就溢出 10px。
- *
- * 加 `align-self: stretch` 没用（本来就是），要显式给 width 生效的条件：
- * 用 margin 撑开而不是 width —— 让 stretch 自己算宽度。
- * 即：只写 margin，不写 width，子项会被拉伸到"容器宽 - margin"。
- */
+/* inset：图片内嵌，四周留白 + 独立圆角（留白见下方 padding 方案）。 */
+
 /*
  * ⚠️ flex column 的交叉轴 stretch 会**无视 width**，直接拉到容器宽。
  *    试过 width: calc(100% - 20px)、width: auto、align-self: stretch

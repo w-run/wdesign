@@ -109,7 +109,11 @@
 }
 
 // --------------------- demo shell ---------------------------
-* { box-sizing: border-box; }
+/*
+ * ⚠️ 不要再写 `* { box-sizing: border-box }` ——
+ *    src/styles/_base.scss 已全局设置（且包含 ::before / ::after）。
+ *    demo 里重复一遍不仅冗余，还漏了伪元素，与库的定义不一致。
+ */
 
 body {
   margin: 0;

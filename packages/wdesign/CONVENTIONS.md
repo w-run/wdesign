@@ -482,6 +482,31 @@ git checkout src/components/WdEmpty.vue
 检查器没被削弱。否则下一次它静默失效，比误报更危险。
 
 
+## 24. flex 交叉轴的 stretch 会覆盖子项的 `width`
+
+**症状**：给 flex 容器的子项写 `width: calc(100% - 20px)`，计算值却仍是
+容器全宽，再加上左右 `margin` 就溢出。
+
+**根因**：flex column 容器的交叉轴默认 `align-items: normal`（等价于
+`stretch`）—— 子项沿交叉轴被强行拉伸到容器宽度，**`width` 被忽略**。
+`align-self: stretch` 无效（本来就是），`width: auto` 也无效。
+
+```scss
+/* ❌ 332px 的声明被忽略，实际仍是 352px，再叠 margin 溢出 10px */
+.wrap { display: flex; flex-direction: column; }
+.item { width: calc(100% - 20px); margin: 0 10px; }
+
+/* ✅ 留白写在父级 padding，子项 width: 100% 填满内容盒 */
+.wrap { display: flex; flex-direction: column; padding: 0 10px; }
+.item { width: 100%; margin: 0; }
+```
+
+⚠️ 这与 `box-sizing` **无关**：全局已是 `border-box`（`_base.scss` 的
+`*` 规则，且包含 `::before/::after`）。排查时不要往 box-sizing 上想。
+
+判据：**只要父级是 flex 且没设 `align-items`，子项在交叉轴上的
+`width`/`height` 就不可靠**。需要精确尺寸时用 padding 或 `align-self`。
+
 ---
 
 # 三、提交前检查
