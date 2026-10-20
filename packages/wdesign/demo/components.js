@@ -7310,6 +7310,7 @@ var WD_REAL_MODULE = (() => {
       }
       const isOverlay = computed(() => props.layout === "overlay");
       const canCollapse = computed(() => props.collapsible && (!!props.body || !!slots.default));
+      const hasTextOnMedia = computed(() => isOverlay.value && !!(props.title || props.subtitle || props.badge));
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
         return openBlock(), createElementBlock(
@@ -7332,7 +7333,7 @@ var WD_REAL_MODULE = (() => {
               "div",
               {
                 key: 0,
-                class: "wd-media-card__media",
+                class: normalizeClass(["wd-media-card__media", { "has-text": hasTextOnMedia.value }]),
                 style: normalizeStyle({ aspectRatio: __props.ratio })
               },
               [
@@ -7369,8 +7370,8 @@ var WD_REAL_MODULE = (() => {
                 ])) : createCommentVNode("v-if", true),
                 createCommentVNode("\n        \u26A0\uFE0F overlay \u7684\u6807\u9898**\u4E0D\u5728\u8FD9\u91CC** \u2014\u2014 \u5B83\u7531 body \u7EDF\u4E00\u6E32\u67D3\u3002\n        \u5426\u5219\u4F1A\u51FA\u73B0\u4E24\u4EFD\u6807\u9898\uFF08\u5A92\u4F53\u5C42\u91CC\u7684 + body \u91CC\u7684\uFF09\u3002\n        \u5A92\u4F53\u5C42\u53EA\u8D1F\u8D23\u56FE\u7247\u3001scrim\u3001\u89D2\u6807\u548C\u5DE5\u5177\u6309\u94AE\u3002\n      ")
               ],
-              4
-              /* STYLE */
+              6
+              /* CLASS, STYLE */
             )) : createCommentVNode("v-if", true),
             createCommentVNode("\n      \u5185\u5BB9\u5C42\uFF1A\u53EA\u6709\u5728**\u786E\u5B9E\u6709\u5185\u5BB9**\u65F6\u624D\u6E32\u67D3\u3002\n      \u9010\u4E00\u5217\u51FA\u6240\u6709\u53EF\u80FD\u7684\u5185\u5BB9\u6765\u6E90\uFF0C\u4EFB\u4E00\u5B58\u5728\u5C31\u6E32\u67D3\uFF1A\n        \xB7 \u6807\u9898/\u526F\u6807\u9898\uFF08\u4EC5 stacked\uFF0Coverlay \u7684\u6807\u9898\u5728\u5A92\u4F53\u5C42\u91CC\uFF09\n        \xB7 headline-extra \u63D2\u69FD\n        \xB7 \u6570\u636E\u6761\n        \xB7 \u6B63\u6587 / \u9ED8\u8BA4\u63D2\u69FD\n        \xB7 CTA \u6309\u94AE\n        \xB7 \u6298\u53E0\u7BAD\u5934\n      \u26A0\uFE0F \u4E0D\u80FD\u5199\u6210 `!isOverlay || ...` \u2014\u2014\n         stacked \u4E14\u6240\u6709\u5185\u5BB9\u90FD\u4E3A\u7A7A\u65F6\uFF0C\u90A3\u4E2A `!isOverlay` \u4F1A\u8BA9\u7A7A\u5BB9\u5668\u7167\u6837\u6E32\u67D3\u3002\n    "),
             __props.title || __props.subtitle || _ctx.$slots["headline-extra"] || __props.stats.length || __props.body || _ctx.$slots.default || __props.action || __props.collapsible ? (openBlock(), createElementBlock("div", _hoisted_520, [

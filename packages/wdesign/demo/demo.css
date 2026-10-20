@@ -5577,9 +5577,71 @@ button.wd-calendar__month:focus-visible {
  * ⚠️ 之前把两者和 layout 绑死了（overlay→铺满、stacked→内嵌）。
  *    实际它们是**独立维度**：任何 layout 都可配任一 mediaMode。
  */
+/*
+ * inset：图片内嵌。
+ *
+ * ⚠️ 不能用 `margin: 10px` + 默认 width:100%：
+ *    100% 是相对**卡片内容宽**算的，再叠加左右各 10px 的 margin，
+ *    总宽 = 卡片宽 + 20px —— **溢出卡片**。
+ *    实测右侧超出 10px、左侧内缩 10px，看起来像"左白边右没边"。
+ *
+ *    正确做法：width 用 auto（flex 子项默认为 auto，会自然占满可用宽度），
+ *    margin 只负责留白。
+ */
+/*
+ * ⚠️ `width: auto` 在 flex column 容器里**不会**缩窄 ——
+ *    交叉轴默认 align-items: stretch，子项会拉伸到容器宽度，
+ *    再叠加左右 margin 仍然溢出。
+ *
+ * 正确做法：把 width 显式写成 calc(100% - 左右 margin)，
+ * 或者给容器加上 align-items: flex-start 让子项按内容宽度排布。
+ * 这里用 calc 更直接，也不影响其它子项的拉伸行为。
+ */
+/*
+ * ⚠️ 关键：**必须同时覆盖 align-self**。
+ *
+ * 卡片是 flex column 容器，交叉轴默认 `align-items: normal`
+ * （等价于 stretch）—— 子项的 width 会被**忽略**，强制拉伸到容器宽度。
+ * 实测：写了 `width: calc(100% - 20px)`（=332px），
+ * 实际计算值仍是 352px（卡片宽），再叠加 margin 就溢出 10px。
+ *
+ * 加 `align-self: stretch` 没用（本来就是），要显式给 width 生效的条件：
+ * 用 margin 撑开而不是 width —— 让 stretch 自己算宽度。
+ * 即：只写 margin，不写 width，子项会被拉伸到"容器宽 - margin"。
+ */
+/*
+ * ⚠️ flex column 的交叉轴 stretch 会**无视 width**，直接拉到容器宽。
+ *    试过 width: calc(100% - 20px)、width: auto、align-self: stretch
+ *    —— 全部无效（实测计算宽度始终 = 卡片宽）。
+ *
+ * 可行方案：把左右留白写进**父容器的 padding**，
+ * 子项用 width: 100% 自然填满"内容盒"。
+ * 父级 padding 是布局级的，不会被 stretch 覆盖。
+ */
+.wd-media-card--media-inset {
+  /* 左右 10px 的图片留白提升到卡片级 */
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .wd-media-card--media-inset .wd-media-card__media {
-  margin: 10px 10px 0;
+  width: 100%;
+  margin: 10px 0 0;
   border-radius: var(--wd-radius-lg);
+}
+
+/*
+ * inset 模式的阴影：**只在该图片上有文字覆盖时才加**。
+ *
+ * 判据来自组件的 has-text 类（overlay + 有标题/副标题/角标）。
+ * 没有文字压在图上时，图片只是一张配图，
+ * 加投影会让它显得"莫名其妙地浮起来"。
+ */
+.wd-media-card--media-inset .wd-media-card__media {
+  box-shadow: none;
+}
+
+.wd-media-card--media-inset .wd-media-card__media.has-text {
   box-shadow: 0 6px 20px rgba(25, 27, 31, 0.14);
 }
 
@@ -5737,13 +5799,28 @@ button.wd-calendar__month:focus-visible {
   padding: 18px 20px 0;
 }
 
+/*
+ * 标题字号分两档：
+ *   overlay（压在图上）22px —— 图片有面积，大标题压得住
+ *   stacked（白底内容区）17px —— 白底上 22px 会显得"头重脚轻"，
+ *                                 尤其卡片本身只有 300px 宽时
+ *
+ * ⚠️ 之前统一 22px，stacked 卡片的标题比正文重两倍，
+ *    比例明显失调（实测"Frostspire Range" 在白底上非常突兀）。
+ */
 .wd-media-card__title {
   margin: 0;
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.wd-media-card--overlay .wd-media-card__title {
+  font-size: 22px;
   letter-spacing: -0.025em;
   line-height: 1.22;
-  color: #fff;
 }
 
 .wd-media-card__headline--static .wd-media-card__title {
@@ -5949,16 +6026,18 @@ button.wd-calendar__month:focus-visible {
  * 不该和 CTA 挤在同一行右侧。
  */
 /*
- * 折叠箭头：紧贴上方内容，只留极小间距。
+ * 折叠箭头：紧贴上方内容。
  *
- * ⚠️ 原来 margin-top 4 + padding-top 6 = 10px 的额外空白，
- *    箭头像被"甩"在卡片最底部。参考图里箭头紧贴着正文/按钮，
- *    是同一块内容的一部分。
+ * ⚠️ 已经去掉 margin/padding，但 44px 的按钮本体仍有大量内部空白
+ *    （图标只有 18px，四周 13px 是点击热区）。
+ *    视觉上箭头离上方内容仍然很远 —— 用负 margin 抵消一半热区。
  */
 .wd-media-card__foot {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: -12px;
+  margin-bottom: -8px;
 }
 
 /*

@@ -107,6 +107,15 @@ const isOverlay = computed(() => props.layout === 'overlay')
  *    必须同时存在 collapsible 和实际内容才显示箭头。
  */
 const canCollapse = computed(() => props.collapsible && (!!props.body || !!slots.default))
+
+/**
+ * 图片上是否有文字覆盖。
+ *
+ * 只有 overlay 布局才有内容压在图上。
+ * 没有文字覆盖时，图片只是一张"配图"，不需要投影 ——
+ * 加阴影会让它显得"莫名其妙地浮起来"。
+ */
+const hasTextOnMedia = computed(() => isOverlay.value && !!(props.title || props.subtitle || props.badge))
 </script>
 
 <template>
@@ -124,7 +133,12 @@ const canCollapse = computed(() => props.collapsible && (!!props.body || !!slots
     ]"
   >
     <!-- ===== 媒体层 ===== -->
-    <div v-if="src" class="wd-media-card__media" :style="{ aspectRatio: ratio }">
+    <div
+      v-if="src"
+      class="wd-media-card__media"
+      :class="{ 'has-text': hasTextOnMedia }"
+      :style="{ aspectRatio: ratio }"
+    >
       <img :src="src" :alt="alt || title" class="wd-media-card__img" loading="lazy" />
       <!-- 渐变压暗：保证压在图上的文字可读 -->
       <div class="wd-media-card__scrim" aria-hidden="true"></div>
