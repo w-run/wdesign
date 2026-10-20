@@ -23,9 +23,13 @@ const props = withDefaults(
     modelValue?: Model
     /** 非受控模式的初始值（不传 modelValue 时生效） */
     defaultValue?: Model
+    /** 选项列表，字符串即 label 与 value 相同；对象项可带 disabled */
     options?: Option[]
+    /** 无选中值时显示的占位文字 */
     placeholder?: string
+    /** 禁用后不可展开、不可移除标签 */
     disabled?: boolean
+    /** 触发器尺寸档 sm | md | lg */
     size?: 'lg' | 'md' | 'sm'
     /** 多选 */
     multiple?: boolean
@@ -50,8 +54,11 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
+  /** 选中值变化时触发，单选为值、多选为数组，用于 v-model */
   (e: 'update:modelValue', value: Model): void
+  /** 选中值变化时触发，参数同 update:modelValue，非受控模式监听它 */
   (e: 'change', value: Model): void
+  /** 点击清除按钮后触发，此时值已清空 */
   (e: 'clear'): void
 }>()
 
@@ -96,8 +103,15 @@ const { value: ctlValue, set } = useControllable<Model>({
   modelValue: computed(() => props.modelValue),
   defaultValue: computed(() => props.defaultValue),
   fallback: (props.multiple ? [] : '') as Model,
+  /**
+   * ⚠️ 这里只能 emit，不能调上面的 set ——
+   * set 内部又会回调 onChange，等于自己调自己，
+   * 选中任何一项都会抛 `RangeError: Maximum call stack size exceeded`，
+   * 而且 v-model 永远不更新（界面停在初始值）。
+   */
   onChange: (v) => {
-    set(v)
+    emit('update:modelValue', v)
+    emit('change', v)
   },
 })
 

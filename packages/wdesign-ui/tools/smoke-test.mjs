@@ -707,6 +707,34 @@ const VUE_APIS = [
   }
 }
 
+/* ============================================================
+ * 20. useControllable 的 onChange 里不许回调 set（自递归）
+ *
+ * ===== 为什么需要 =====
+ * `set()` 内部会调 `onChange`；如果 onChange 里再写 `set(v)`，
+ * 就是自己调自己。WdSelect 这么写过：选中任何一项直接
+ * `RangeError: Maximum call stack size exceeded`，
+ * 而且 v-model 永远不更新 —— 界面停在初始值，看着像"点了没反应"。
+ *
+ * 规则：onChange 里只允许 emit，不允许调 set。
+ * ========================================================== */
+{
+  const offenders = []
+  for (const f of files) {
+    const src = readFileSync(join(COMP, f), 'utf8')
+    const m = src.match(/onChange:\s*\([^)]*\)\s*=>\s*\{([\s\S]*?)\n  \}/)
+    if (m && /\bset\s*\(/.test(m[1])) offenders.push(f)
+  }
+  if (offenders.length) {
+    fail(
+      'useControllable 的 onChange 里调了 set（自递归：栈溢出 + v-model 不更新）',
+      offenders.join('、'),
+    )
+  } else {
+    ok('useControllable 的回调没有自递归')
+  }
+}
+
 /* ============================================================ */
 console.log(`\n${'='.repeat(52)}`)
 console.log(`  冒烟测试：${pass} 通过 / ${fails.length} 失败`)
