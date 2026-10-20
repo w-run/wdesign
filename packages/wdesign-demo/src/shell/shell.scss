@@ -1,0 +1,152 @@
+/* =============================================================
+ *  demo 外壳：左侧栏 + 右内容，整屏固定、两栏各自滚动
+ * ============================================================= */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  height: 100dvh;
+  font-family: var(--wd-font);
+  background: var(--wd-bg);
+  color: var(--wd-ink);
+}
+
+#app {
+  display: contents;
+}
+
+.demo-shell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------- 侧栏 ---------------- */
+.demo-side {
+  flex: 0 0 232px;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 14px 16px;
+  background: var(--wd-card);
+  box-shadow: inset -1px 0 0 var(--wd-ink-5);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.side-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px 18px;
+  font-size: 16.5px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  color: var(--wd-ink);
+  text-decoration: none;
+}
+
+.side-brand-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--wd-red);
+}
+
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.side-group {
+  padding: 14px 12px 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--wd-ink-3);
+}
+
+.side-group:first-child {
+  padding-top: 0;
+}
+
+.side-link {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: var(--wd-radius-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--wd-ink-2);
+  text-decoration: none;
+}
+
+.side-link:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+.side-link.is-active {
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  font-weight: 700;
+}
+
+.side-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 8px 0;
+  margin-top: 12px;
+  box-shadow: inset 0 1px 0 var(--wd-ink-5);
+}
+
+.side-version {
+  font-family: var(--wd-font-mono);
+  font-size: 11px;
+  color: var(--wd-ink-3);
+}
+
+.side-theme {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wd-ink-3);
+  cursor: pointer;
+}
+
+.side-theme:hover {
+  background: var(--wd-field);
+  color: var(--wd-ink);
+}
+
+/* ---------------- 内容区 ---------------- */
+.demo-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 32px 44px 80px;
+}
+
+.demo-home h1 {
+  margin: 0 0 8px;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.demo-home p {
+  margin: 0;
+  color: var(--wd-ink-2);
+}

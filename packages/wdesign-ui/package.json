@@ -1,0 +1,47 @@
+{
+  "name": "@w-run/wdesign-ui",
+  "version": "1.0.0",
+  "description": "WDesign UI — 组件库（76 个组件 · 令牌驱动 · 全量 SCSS）",
+  "type": "module",
+  "main": "./dist/wdesign-ui.cjs",
+  "module": "./dist/wdesign-ui.esm.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/wdesign-ui.esm.js",
+      "require": "./dist/wdesign-ui.cjs"
+    },
+    "./style": "./dist/wdesign-ui.css",
+    "./style/*": "./dist/style/*.css",
+    "./src/*": "./src/*",
+    "./tokens.json": "./tokens.json"
+  },
+  "files": [
+    "dist",
+    "tokens.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node tools/build-lib.mjs",
+    "gen:index": "node tools/gen-index.mjs",
+    "check:tokens": "python3 tools/check-tokens.py --strict",
+    "check:icons": "python3 tools/check-icons.py --strict",
+    "typecheck": "node tools/typecheck.mjs",
+    "test": "node tools/smoke-test.mjs",
+    "audit": "python3 tools/design-audit.py",
+    "audit:strict": "python3 tools/design-audit.py --strict",
+    "hover:check": "python3 tools/hover-js.py --check",
+    "verify": "npm run check:tokens && npm run check:icons && npm run typecheck && npm run test",
+    "prepublishOnly": "npm run verify && npm run build"
+  },
+  "dependencies": {
+    "@w-run/wdesign-icons": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "vue": "^3.5.0"
+  }
+}
