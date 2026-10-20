@@ -496,6 +496,9 @@ function onKeydown(e: KeyboardEvent) {
       >
         <span class="wd-calendar__day">{{ c.day }}</span>
 
+        <!-- 今天：底部圆角短横线（压在文字层上，不占位） -->
+        <span v-if="c.isToday" class="wd-calendar__today-bar" aria-hidden="true"></span>
+
         <!-- 底部附属文字（农历/节假日）：绝对定位，不占位，不影响行高 -->
         <span v-if="c.text" class="wd-calendar__text" aria-hidden="true">{{ c.text }}</span>
 

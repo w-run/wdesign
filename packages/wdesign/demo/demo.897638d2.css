@@ -2277,7 +2277,19 @@ body {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  /*
+   * ⚠️ 日历格子**不做 background/color 过渡**。
+   *
+   * 三点原因：
+   *   1. 选中是"状态切换"而非"值的变化"，120ms 的渐变在这里
+   *      只让人觉得"点了没反应"，没有实际收益
+   *   2. 动画时钟停摆的环境（无头渲染 / 后台标签页 / 省电模式）里，
+   *      transition 会**卡在起始帧** —— 实测选中的格子背景一直是透明，
+   *      看起来像"选中样式完全失效"
+   *   3. 每天点一次的高频操作，渐变反而拖慢体感
+   *
+   * hover 的反馈保留（见 :hover 规则），但那是瞬时切换，不参与过渡。
+   */
 }
 
 .wd-calendar--sm .wd-calendar__cell {
@@ -2305,16 +2317,48 @@ body {
 }
 
 /* 今天：底部一个小圆点，不抢选中态 */
-.wd-calendar__cell.is-today::after {
-  content: "";
+/*
+ * 「今天」的标记：**底部圆角短横线**（参考图的处理）。
+ *
+ * ⚠️ 伪元素已被占满：::before 是区间色带、::after 是端点实心圆。
+ *    所以横线用**真实元素**而不是伪元素 —— 见模板里的 .wd-calendar__today-bar。
+ *
+ * 为什么用短横线而不是圆点：
+ *   · 圆点会和右上角的"标记点"混淆（两者都是小圆）
+ *   · 横线天然表达"下划线/强调"，与"今天"的语义吻合
+ *   · 压在文字层下方，不占额外空间，也不影响行高
+ */
+.wd-calendar__cell.is-today .wd-calendar__day {
+  color: var(--wd-red);
+  font-weight: 800;
+}
+
+/* 今天恰好被选中/作为区间端点时，数字回到反色（深底上要白字） */
+.wd-calendar__cell.is-today.is-selected .wd-calendar__day,
+.wd-calendar__cell.is-today.is-range-start .wd-calendar__day,
+.wd-calendar__cell.is-today.is-range-end .wd-calendar__day {
+  color: var(--wd-card);
+}
+
+/* 底部短横线 */
+.wd-calendar__today-bar {
   position: absolute;
-  bottom: 4px;
   left: 50%;
+  bottom: 4px;
   transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
+  width: 12px;
+  height: 2px;
+  border-radius: 999px;
   background: var(--wd-red);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 深色底上（选中/区间端点）横线改白色 */
+.wd-calendar__cell.is-selected .wd-calendar__today-bar,
+.wd-calendar__cell.is-range-start .wd-calendar__today-bar,
+.wd-calendar__cell.is-range-end .wd-calendar__today-bar {
+  background: var(--wd-card);
 }
 
 .wd-calendar__cell.is-selected {
@@ -2324,10 +2368,6 @@ body {
 }
 
 /* 选中项若是今天，圆点改成白色，否则在红底上看不见 */
-.wd-calendar__cell.is-selected.is-today::after {
-  background: rgba(255, 255, 255, 0.85);
-}
-
 .wd-calendar__cell.is-selected.is-out {
   color: rgba(255, 255, 255, 0.8);
 }
@@ -2564,10 +2604,24 @@ body {
   z-index: 3;
 }
 
+/*
+ * 单个标记圆点。
+ *
+ * ⚠️ 必须加**白色描边**：
+ *    红色标记点落在红色选中圆（--wd-red 实心）上时，
+ *    红点与红底完全融合 —— 点等于消失了。
+ *    围一圈白边后，无论底下是白底、浅粉带还是深红圆，
+ *    标记点都清晰可辨。
+ *
+ * 用 box-shadow 而不是 border：
+ *    border 会撑大元素尺寸（让点变大），
+ *    box-shadow 只画在外部，不改变布局尺寸。
+ */
 .wd-calendar__mark {
   display: block;
   border-radius: 50%;
   flex: none;
+  box-shadow: 0 0 0 1px var(--wd-card);
 }
 
 .wd-calendar__mark-more {
@@ -2673,9 +2727,11 @@ body {
   bottom: 3px;
   transform: translateX(-50%);
   max-width: calc(100% - 2px);
-  font-size: 9.5px;
+  /* 8.5px：再小就难以辨认，这个尺寸在 340px 宽的日历里刚好是"注脚"级别 */
+  font-size: 8.5px;
   line-height: 1.1;
   font-weight: 500;
+  letter-spacing: -0.01em;
   color: var(--wd-ink-3);
   white-space: nowrap;
   overflow: hidden;
@@ -2954,11 +3010,22 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 24px;
-  /* 与 Calendar / TimePicker 统一 */
-  padding: 24px 28px;
-  border-radius: var(--wd-radius-md);
+  /*
+   * ⚠️ 这里**不能再加 24px 28px**。
+   *
+   * 结构是：DateTimePicker 容器 > row > Calendar
+   * 而 Calendar 自己已经有 24px 28px 内距。
+   * 如果 row 再加一层，日历四周就变成 48px 56px ——
+   * 视觉上比单独的 DatePicker 松一档，两者并排时不像同一套。
+   *
+   * 所以 row 只负责**外框**（背景、圆角、阴影），
+   * 内距交给里面的 Calendar / TimePicker 自己。
+   */
+  border-radius: var(--wd-radius-lg);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow-sm);
+  /* 只留极小的呼吸，主要内距由子组件提供 */
+  padding: 4px;
 }
 
 .wd-datetime-picker__side {

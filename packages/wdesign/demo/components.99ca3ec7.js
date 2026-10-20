@@ -2036,19 +2036,24 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_103 = { class: "wd-calendar__day" };
   var _hoisted_117 = {
     key: 0,
-    class: "wd-calendar__text",
+    class: "wd-calendar__today-bar",
     "aria-hidden": "true"
   };
   var _hoisted_123 = {
     key: 1,
-    class: "wd-calendar__marks",
+    class: "wd-calendar__text",
     "aria-hidden": "true"
   };
   var _hoisted_133 = {
+    key: 2,
+    class: "wd-calendar__marks",
+    "aria-hidden": "true"
+  };
+  var _hoisted_143 = {
     key: 0,
     class: "wd-calendar__mark-more"
   };
-  var _hoisted_143 = {
+  var _hoisted_152 = {
     key: 0,
     class: "wd-calendar__foot"
   };
@@ -2393,16 +2398,18 @@ var WD_REAL_MODULE = (() => {
                     1
                     /* TEXT */
                   ),
+                  createCommentVNode(" \u4ECA\u5929\uFF1A\u5E95\u90E8\u5706\u89D2\u77ED\u6A2A\u7EBF\uFF08\u538B\u5728\u6587\u5B57\u5C42\u4E0A\uFF0C\u4E0D\u5360\u4F4D\uFF09 "),
+                  c.isToday ? (openBlock(), createElementBlock("span", _hoisted_117)) : createCommentVNode("v-if", true),
                   createCommentVNode(" \u5E95\u90E8\u9644\u5C5E\u6587\u5B57\uFF08\u519C\u5386/\u8282\u5047\u65E5\uFF09\uFF1A\u7EDD\u5BF9\u5B9A\u4F4D\uFF0C\u4E0D\u5360\u4F4D\uFF0C\u4E0D\u5F71\u54CD\u884C\u9AD8 "),
                   c.text ? (openBlock(), createElementBlock(
                     "span",
-                    _hoisted_117,
+                    _hoisted_123,
                     toDisplayString(c.text),
                     1
                     /* TEXT */
                   )) : createCommentVNode("v-if", true),
                   createCommentVNode("\n          \u6807\u8BB0\u70B9\uFF1A\u53F3\u4E0A\u89D2\uFF0C\u6700\u591A 3 \u4E2A\uFF0C\u8D85\u51FA +N\n        "),
-                  c.marks.length ? (openBlock(), createElementBlock("span", _hoisted_123, [
+                  c.marks.length ? (openBlock(), createElementBlock("span", _hoisted_133, [
                     (openBlock(true), createElementBlock(
                       Fragment,
                       null,
@@ -2428,7 +2435,7 @@ var WD_REAL_MODULE = (() => {
                     )),
                     c.marks.length > 3 ? (openBlock(), createElementBlock(
                       "span",
-                      _hoisted_133,
+                      _hoisted_143,
                       " +" + toDisplayString(c.marks.length - 3),
                       1
                       /* TEXT */
@@ -2441,7 +2448,7 @@ var WD_REAL_MODULE = (() => {
             ))
           ]),
           createCommentVNode(" \u5E95\u90E8\u64CD\u4F5C "),
-          __props.clearable || __props.showToday ? (openBlock(), createElementBlock("div", _hoisted_143, [
+          __props.clearable || __props.showToday ? (openBlock(), createElementBlock("div", _hoisted_152, [
             __props.clearable ? (openBlock(), createElementBlock("button", {
               key: 0,
               type: "button",
@@ -5792,7 +5799,7 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_1210 = ["onClick"];
   var _hoisted_137 = { class: "wd-explorer__name" };
   var _hoisted_144 = { class: "wd-explorer__file-chip" };
-  var _hoisted_152 = { class: "wd-explorer__file-name" };
+  var _hoisted_153 = { class: "wd-explorer__file-name" };
   var _hoisted_162 = { class: "is-num" };
   var _hoisted_172 = { class: "is-num" };
   var _hoisted_182 = {
@@ -5975,7 +5982,7 @@ var WD_REAL_MODULE = (() => {
                           ]),
                           createElementVNode(
                             "span",
-                            _hoisted_152,
+                            _hoisted_153,
                             toDisplayString(f.name),
                             1
                             /* TEXT */
@@ -7093,7 +7100,7 @@ var WD_REAL_MODULE = (() => {
   };
   var _hoisted_1310 = { class: "wd-media-card__stat-value" };
   var _hoisted_149 = { class: "wd-media-card__stat-label" };
-  var _hoisted_153 = {
+  var _hoisted_154 = {
     key: 2,
     class: "wd-media-card__expand"
   };
@@ -7264,7 +7271,7 @@ var WD_REAL_MODULE = (() => {
               createCommentVNode(" \u53EF\u5C55\u5F00\u533A\u57DF\uFF1A\u6B63\u6587 + \u63D2\u69FD "),
               __props.body || _ctx.$slots.default ? withDirectives((openBlock(), createElementBlock(
                 "div",
-                _hoisted_153,
+                _hoisted_154,
                 [
                   __props.body ? (openBlock(), createElementBlock(
                     "p",
@@ -7669,7 +7676,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdNav.ts
-  var _hoisted_154 = ["aria-label"];
+  var _hoisted_155 = ["aria-label"];
   var _hoisted_240 = { class: "wd-nav__brand" };
   var _hoisted_335 = {
     key: 0,
@@ -7862,13 +7869,13 @@ var WD_REAL_MODULE = (() => {
           _ctx.$slots.footer ? (openBlock(), createElementBlock("div", _hoisted_1113, [
             renderSlot(_ctx.$slots, "footer")
           ])) : createCommentVNode("v-if", true)
-        ], 10, _hoisted_154);
+        ], 10, _hoisted_155);
       };
     }
   });
 
   // .demo-build/WdNotification.ts
-  var _hoisted_155 = { class: "wd-notification__body" };
+  var _hoisted_156 = { class: "wd-notification__body" };
   var _hoisted_241 = {
     key: 0,
     class: "wd-notification__title"
@@ -7927,7 +7934,7 @@ var WD_REAL_MODULE = (() => {
                     2
                     /* CLASS */
                   ),
-                  createElementVNode("div", _hoisted_155, [
+                  createElementVNode("div", _hoisted_156, [
                     __props.title ? (openBlock(), createElementBlock(
                       "div",
                       _hoisted_241,
@@ -7970,7 +7977,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdOtp.ts
-  var _hoisted_156 = ["value", "disabled", "onInput", "onKeydown"];
+  var _hoisted_157 = ["value", "disabled", "onInput", "onKeydown"];
   var WdOtp_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdOtp" },
     __name: "WdOtp",
@@ -8051,7 +8058,7 @@ var WD_REAL_MODULE = (() => {
                   autocomplete: "one-time-code",
                   onInput: ($event) => onInput(i - 1, $event),
                   onKeydown: ($event) => onKeydown(i - 1, $event)
-                }, null, 40, _hoisted_156);
+                }, null, 40, _hoisted_157);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -8065,7 +8072,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdPagination.ts
-  var _hoisted_157 = {
+  var _hoisted_158 = {
     key: 0,
     class: "wd-pagination__total"
   };
@@ -8147,7 +8154,7 @@ var WD_REAL_MODULE = (() => {
           [
             __props.showTotal ? (openBlock(), createElementBlock(
               "span",
-              _hoisted_157,
+              _hoisted_158,
               " \u7B2C " + toDisplayString(from.value) + "\u2013" + toDisplayString(to.value) + " \u6761 / \u5171 " + toDisplayString(__props.total) + " \u6761 ",
               1
               /* TEXT */
@@ -8280,7 +8287,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdPopconfirm.ts
-  var _hoisted_158 = ["aria-label", "aria-hidden"];
+  var _hoisted_159 = ["aria-label", "aria-hidden"];
   var _hoisted_243 = { class: "wd-popconfirm__title" };
   var _hoisted_338 = {
     key: 0,
@@ -8458,7 +8465,7 @@ var WD_REAL_MODULE = (() => {
                     /* TEXT, CLASS */
                   )
                 ])
-              ], 14, _hoisted_158), [
+              ], 14, _hoisted_159), [
                 [vShow, mounted.value]
               ])
             ]))
@@ -8471,7 +8478,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdPopover.ts
-  var _hoisted_159 = {
+  var _hoisted_160 = {
     type: "button",
     class: "wd-popover__default-trigger"
   };
@@ -8599,7 +8606,7 @@ var WD_REAL_MODULE = (() => {
                 renderSlot(_ctx.$slots, "trigger", {}, () => [
                   createElementVNode(
                     "button",
-                    _hoisted_159,
+                    _hoisted_160,
                     toDisplayString(__props.title || "\u8BE6\u60C5"),
                     1
                     /* TEXT */
@@ -8657,7 +8664,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdPostItem.ts
-  var _hoisted_160 = { class: "wd-post-item__title" };
+  var _hoisted_161 = { class: "wd-post-item__title" };
   var _hoisted_245 = {
     key: 0,
     class: "wd-post-item__emoji"
@@ -8687,7 +8694,7 @@ var WD_REAL_MODULE = (() => {
           class: "wd-post-item"
         }, {
           default: withCtx(() => [
-            createElementVNode("h3", _hoisted_160, [
+            createElementVNode("h3", _hoisted_161, [
               __props.emoji ? (openBlock(), createElementBlock(
                 "span",
                 _hoisted_245,
@@ -8737,7 +8744,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdProgress.ts
-  var _hoisted_161 = ["aria-valuenow"];
+  var _hoisted_164 = ["aria-valuenow"];
   var WdProgress_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdProgress" },
     __name: "WdProgress",
@@ -8774,7 +8781,7 @@ var WD_REAL_MODULE = (() => {
             4
             /* STYLE */
           )
-        ], 14, _hoisted_161);
+        ], 14, _hoisted_164);
       };
     }
   });
@@ -10499,7 +10506,7 @@ var WD_REAL_MODULE = (() => {
   }
 
   // .demo-build/WdQRCode.ts
-  var _hoisted_164 = {
+  var _hoisted_165 = {
     key: 1,
     class: "wd-qrcode__empty"
   };
@@ -10634,7 +10641,7 @@ var WD_REAL_MODULE = (() => {
               null,
               4
               /* STYLE */
-            )) : !result.value ? (openBlock(), createElementBlock("div", _hoisted_164, "\u65E0\u5185\u5BB9")) : (openBlock(), createElementBlock("svg", {
+            )) : !result.value ? (openBlock(), createElementBlock("div", _hoisted_165, "\u65E0\u5185\u5BB9")) : (openBlock(), createElementBlock("svg", {
               key: 2,
               class: "wd-qrcode__svg",
               style: normalizeStyle(svgStyle.value),
@@ -10682,7 +10689,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdRadioGroup.ts
-  var _hoisted_165 = {
+  var _hoisted_166 = {
     class: "wd-radio-group",
     role: "radiogroup"
   };
@@ -10717,7 +10724,7 @@ var WD_REAL_MODULE = (() => {
         if (!props.disabled) set(value2);
       }
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_165, [
+        return openBlock(), createElementBlock("div", _hoisted_166, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -10758,7 +10765,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdRate.ts
-  var _hoisted_166 = ["aria-label", "aria-disabled"];
+  var _hoisted_167 = ["aria-label", "aria-disabled"];
   var _hoisted_248 = ["aria-checked", "aria-label", "tabindex", "disabled", "onPointerenter", "onClick"];
   var WdRate_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdRate" },
@@ -10864,13 +10871,13 @@ var WD_REAL_MODULE = (() => {
             128
             /* KEYED_FRAGMENT */
           ))
-        ], 46, _hoisted_166);
+        ], 46, _hoisted_167);
       };
     }
   });
 
   // .demo-build/WdResult.ts
-  var _hoisted_167 = { class: "wd-result__icon" };
+  var _hoisted_168 = { class: "wd-result__icon" };
   var _hoisted_249 = {
     key: 0,
     class: "wd-result__title"
@@ -10900,7 +10907,7 @@ var WD_REAL_MODULE = (() => {
             class: normalizeClass(["wd-result", `wd-result--${__props.status}`])
           },
           [
-            createElementVNode("div", _hoisted_167, [
+            createElementVNode("div", _hoisted_168, [
               renderSlot(_ctx.$slots, "icon", {}, () => [
                 __props.status === "success" ? (openBlock(), createBlock(_component_wd_icon, {
                   key: 0,
@@ -11131,7 +11138,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSegmented.ts
-  var _hoisted_168 = ["aria-hidden"];
+  var _hoisted_169 = ["aria-hidden"];
   var _hoisted_250 = ["aria-selected", "tabindex", "onClick"];
   var _hoisted_344 = {
     key: 0,
@@ -11345,7 +11352,7 @@ var WD_REAL_MODULE = (() => {
                 128
                 /* KEYED_FRAGMENT */
               ))
-            ], 42, _hoisted_168),
+            ], 42, _hoisted_169),
             createCommentVNode(" \u9009\u9879\u8FC7\u591A\uFF1A\u964D\u7EA7\u4E3A\u4E0B\u62C9\u7B5B\u9009 "),
             mode.value === "dropdown" ? (openBlock(), createElementBlock("div", _hoisted_344, [
               createElementVNode("button", {
@@ -11416,7 +11423,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSelect.ts
-  var _hoisted_169 = ["disabled", "aria-expanded"];
+  var _hoisted_170 = ["disabled", "aria-expanded"];
   var _hoisted_251 = {
     key: 0,
     class: "wd-select__tags"
@@ -11674,7 +11681,7 @@ var WD_REAL_MODULE = (() => {
                       size: 14
                     }, null, 8, ["class"])
                   ])
-                ], 10, _hoisted_169)
+                ], 10, _hoisted_170)
               ],
               34
               /* CLASS, NEED_HYDRATION */
@@ -11820,7 +11827,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSlider.ts
-  var _hoisted_170 = ["min", "max", "step", "value"];
+  var _hoisted_171 = ["min", "max", "step", "value"];
   var _hoisted_252 = {
     key: 0,
     class: "wd-slider__value"
@@ -11889,7 +11896,7 @@ var WD_REAL_MODULE = (() => {
               value: current.value,
               style: normalizeStyle(trackStyle.value),
               onInput
-            }, null, 44, _hoisted_170),
+            }, null, 44, _hoisted_171),
             __props.showValue ? (openBlock(), createElementBlock(
               "span",
               _hoisted_252,
@@ -11906,7 +11913,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSortableList.ts
-  var _hoisted_171 = ["onPointerdown"];
+  var _hoisted_174 = ["onPointerdown"];
   var _hoisted_253 = {
     class: "wd-sortable__handle",
     "aria-hidden": "true"
@@ -12060,7 +12067,7 @@ var WD_REAL_MODULE = (() => {
                         1
                         /* TEXT */
                       )
-                    ], 42, _hoisted_171);
+                    ], 42, _hoisted_174);
                   }),
                   128
                   /* KEYED_FRAGMENT */
@@ -12193,7 +12200,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSplitter.ts
-  var _hoisted_174 = ["aria-orientation", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-label"];
+  var _hoisted_175 = ["aria-orientation", "aria-valuenow", "aria-valuemin", "aria-valuemax", "aria-label"];
   var WdSplitter_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSplitter" },
     __name: "WdSplitter",
@@ -12349,7 +12356,7 @@ var WD_REAL_MODULE = (() => {
                 2
                 /* CLASS */
               )
-            ], 44, _hoisted_174),
+            ], 44, _hoisted_175),
             createElementVNode(
               "div",
               {
@@ -12371,7 +12378,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdStatistic.ts
-  var _hoisted_175 = { class: "wd-statistic" };
+  var _hoisted_176 = { class: "wd-statistic" };
   var _hoisted_254 = {
     key: 0,
     class: "wd-statistic__title"
@@ -12457,7 +12464,7 @@ var WD_REAL_MODULE = (() => {
         return sign + int + (dec ? "." + dec : "");
       });
       return (_ctx, _cache) => {
-        return openBlock(), createElementBlock("div", _hoisted_175, [
+        return openBlock(), createElementBlock("div", _hoisted_176, [
           __props.title ? (openBlock(), createElementBlock(
             "div",
             _hoisted_254,
@@ -12497,7 +12504,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSteps.ts
-  var _hoisted_176 = { class: "wd-steps" };
+  var _hoisted_177 = { class: "wd-steps" };
   var _hoisted_255 = { class: "wd-steps__dot" };
   var _hoisted_348 = { class: "wd-steps__label" };
   var _hoisted_441 = {
@@ -12523,7 +12530,7 @@ var WD_REAL_MODULE = (() => {
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_176, [
+        return openBlock(), createElementBlock("div", _hoisted_177, [
           (openBlock(true), createElementBlock(
             Fragment,
             null,
@@ -12599,7 +12606,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdSwitch.ts
-  var _hoisted_177 = ["aria-checked", "data-controlled", "disabled"];
+  var _hoisted_178 = ["aria-checked", "data-controlled", "disabled"];
   var WdSwitch_default = /* @__PURE__ */ defineComponent({
     ...{ name: "WdSwitch" },
     __name: "WdSwitch",
@@ -12641,13 +12648,13 @@ var WD_REAL_MODULE = (() => {
             -1
             /* CACHED */
           )
-        ])], 10, _hoisted_177);
+        ])], 10, _hoisted_178);
       };
     }
   });
 
   // .demo-build/WdTable.ts
-  var _hoisted_178 = {
+  var _hoisted_179 = {
     key: 0,
     class: "wd-table__th wd-table__th--expand",
     "aria-label": "\u5C55\u5F00"
@@ -12873,7 +12880,7 @@ var WD_REAL_MODULE = (() => {
               [
                 createElementVNode("thead", null, [
                   createElementVNode("tr", null, [
-                    __props.expandable ? (openBlock(), createElementBlock("th", _hoisted_178)) : createCommentVNode("v-if", true),
+                    __props.expandable ? (openBlock(), createElementBlock("th", _hoisted_179)) : createCommentVNode("v-if", true),
                     __props.selectable ? (openBlock(), createElementBlock("th", _hoisted_256, [
                       createElementVNode("button", {
                         type: "button",
@@ -13140,7 +13147,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTabs.ts
-  var _hoisted_179 = ["aria-selected", "disabled", "tabindex", "onClick"];
+  var _hoisted_180 = ["aria-selected", "disabled", "tabindex", "onClick"];
   var _hoisted_257 = { class: "wd-tabs__label" };
   var _hoisted_350 = ["aria-label", "onClick"];
   var WdTabs_default = /* @__PURE__ */ defineComponent({
@@ -13284,7 +13291,7 @@ var WD_REAL_MODULE = (() => {
                       size: 10
                     })
                   ], 8, _hoisted_350)) : createCommentVNode("v-if", true)
-                ], 10, _hoisted_179);
+                ], 10, _hoisted_180);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -13311,7 +13318,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTag.ts
-  var _hoisted_180 = {
+  var _hoisted_181 = {
     key: 0,
     class: "wd-tag__dot"
   };
@@ -13332,7 +13339,7 @@ var WD_REAL_MODULE = (() => {
             "data-wd-hover": ""
           },
           [
-            __props.dot ? (openBlock(), createElementBlock("i", _hoisted_180)) : createCommentVNode("v-if", true),
+            __props.dot ? (openBlock(), createElementBlock("i", _hoisted_181)) : createCommentVNode("v-if", true),
             renderSlot(_ctx.$slots, "default")
           ],
           2
@@ -13343,7 +13350,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTimeline.ts
-  var _hoisted_181 = ["onClick"];
+  var _hoisted_184 = ["onClick"];
   var _hoisted_258 = { class: "wd-timeline__node" };
   var _hoisted_351 = {
     key: 1,
@@ -13467,7 +13474,7 @@ var WD_REAL_MODULE = (() => {
                       [vShow, expanded.value.has(i)]
                     ]) : createCommentVNode("v-if", true)
                   ])
-                ], 14, _hoisted_181);
+                ], 14, _hoisted_184);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -13548,7 +13555,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTransfer.ts
-  var _hoisted_184 = { class: "wd-transfer__panel" };
+  var _hoisted_185 = { class: "wd-transfer__panel" };
   var _hoisted_259 = { class: "wd-transfer__head" };
   var _hoisted_352 = { class: "wd-transfer__check-all" };
   var _hoisted_444 = ["checked", ".indeterminate"];
@@ -13574,7 +13581,7 @@ var WD_REAL_MODULE = (() => {
   var _hoisted_1510 = { class: "wd-transfer__panel" };
   var _hoisted_1610 = { class: "wd-transfer__head" };
   var _hoisted_1710 = { class: "wd-transfer__check-all" };
-  var _hoisted_185 = ["checked", ".indeterminate"];
+  var _hoisted_186 = ["checked", ".indeterminate"];
   var _hoisted_193 = { class: "wd-transfer__count" };
   var _hoisted_203 = {
     key: 0,
@@ -13676,7 +13683,7 @@ var WD_REAL_MODULE = (() => {
           },
           [
             createCommentVNode(" ---------------- \u5DE6\u4FA7\uFF1A\u5F85\u9009 ---------------- "),
-            createElementVNode("div", _hoisted_184, [
+            createElementVNode("div", _hoisted_185, [
               createElementVNode("div", _hoisted_259, [
                 createElementVNode("label", _hoisted_352, [
                   createElementVNode("input", {
@@ -13821,7 +13828,7 @@ var WD_REAL_MODULE = (() => {
                     checked: isAllChecked(rightList.value, rightChecked.value),
                     ".indeterminate": rightChecked.value.size > 0 && !isAllChecked(rightList.value, rightChecked.value),
                     onChange: _cache[4] || (_cache[4] = ($event) => checkAll("right", rightList.value))
-                  }, null, 40, _hoisted_185),
+                  }, null, 40, _hoisted_186),
                   createElementVNode(
                     "span",
                     null,
@@ -13923,7 +13930,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdTree.ts
-  var _hoisted_186 = ["data-k", "tabindex", "aria-expanded", "aria-selected", "aria-disabled", "onClick", "onKeydown"];
+  var _hoisted_187 = ["data-k", "tabindex", "aria-expanded", "aria-selected", "aria-disabled", "onClick", "onKeydown"];
   var _hoisted_260 = ["onClick"];
   var _hoisted_353 = ["checked", ".indeterminate", "disabled", "onChange"];
   var _hoisted_445 = {
@@ -14185,7 +14192,7 @@ var WD_REAL_MODULE = (() => {
                       node: entry.node
                     })
                   ])) : createCommentVNode("v-if", true)
-                ], 46, _hoisted_186);
+                ], 46, _hoisted_187);
               }),
               128
               /* KEYED_FRAGMENT */
@@ -14206,7 +14213,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdUpload.ts
-  var _hoisted_187 = { class: "wd-upload" };
+  var _hoisted_188 = { class: "wd-upload" };
   var _hoisted_261 = { class: "wd-upload__icon" };
   var _hoisted_354 = {
     key: 0,
@@ -14296,7 +14303,7 @@ var WD_REAL_MODULE = (() => {
       }
       return (_ctx, _cache) => {
         const _component_wd_icon = resolveComponent("wd-icon");
-        return openBlock(), createElementBlock("div", _hoisted_187, [
+        return openBlock(), createElementBlock("div", _hoisted_188, [
           createElementVNode(
             "div",
             {
@@ -14423,7 +14430,7 @@ var WD_REAL_MODULE = (() => {
   });
 
   // .demo-build/WdVideoPlayer.ts
-  var _hoisted_188 = ["poster", "loop", "muted", "autoplay"];
+  var _hoisted_189 = ["poster", "loop", "muted", "autoplay"];
   var _hoisted_262 = {
     key: 0,
     class: "wd-vplayer__title"
@@ -14459,7 +14466,7 @@ var WD_REAL_MODULE = (() => {
     class: "wd-vplayer__time"
   };
   var _hoisted_1711 = { class: "wd-vplayer__time" };
-  var _hoisted_189 = ["aria-pressed"];
+  var _hoisted_1810 = ["aria-pressed"];
   var _hoisted_194 = { class: "wd-vplayer__vol" };
   var _hoisted_204 = ["aria-label"];
   var _hoisted_2112 = {
@@ -14879,7 +14886,7 @@ var WD_REAL_MODULE = (() => {
               }),
               onPlaying: _cache[5] || (_cache[5] = ($event) => errMsg.value = ""),
               onError
-            }, null, 40, _hoisted_188),
+            }, null, 40, _hoisted_189),
             createCommentVNode(" ===== \u70B9\u51FB\u5C42\uFF1A\u6574\u4E2A\u753B\u9762\u53EF\u6682\u505C\uFF08\u9F20\u6807\u6307\u9488\u4E0D\u663E\u793A\uFF09 ===== "),
             createElementVNode("div", {
               class: "wd-vplayer__hit",
@@ -15214,7 +15221,7 @@ var WD_REAL_MODULE = (() => {
                     "aria-pressed": __props.danmakuOn,
                     "aria-label": "\u5F39\u5E55",
                     onClick: _cache[8] || (_cache[8] = withModifiers(($event) => emit("update:danmakuOn", !__props.danmakuOn), ["stop"]))
-                  }, " \u5F39 ", 10, _hoisted_189)) : createCommentVNode("v-if", true),
+                  }, " \u5F39 ", 10, _hoisted_1810)) : createCommentVNode("v-if", true),
                   createCommentVNode(" \u53F3\u4FA7\u6269\u5C55\u4F4D\uFF1A\u5B57\u5E55\u3001\u97F3\u8F68\u3001\u6E05\u6670\u5EA6\u7B49\uFF08\u5728\u539F\u751F\u63A7\u4EF6\u4E4B\u524D\uFF09 "),
                   renderSlot(_ctx.$slots, "controls-end"),
                   createCommentVNode(" \u97F3\u91CF\uFF1Ahover \u5C55\u5F00\u6ED1\u6761\uFF0C\u907F\u514D\u957F\u671F\u5360\u5BBD "),

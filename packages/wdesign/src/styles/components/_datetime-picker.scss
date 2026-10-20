@@ -88,11 +88,22 @@
   display: flex;
   align-items: flex-start;
   gap: 24px;
-  /* 与 Calendar / TimePicker 统一 */
-  padding: 24px 28px;
-  border-radius: var(--wd-radius-md);
+  /*
+   * ⚠️ 这里**不能再加 24px 28px**。
+   *
+   * 结构是：DateTimePicker 容器 > row > Calendar
+   * 而 Calendar 自己已经有 24px 28px 内距。
+   * 如果 row 再加一层，日历四周就变成 48px 56px ——
+   * 视觉上比单独的 DatePicker 松一档，两者并排时不像同一套。
+   *
+   * 所以 row 只负责**外框**（背景、圆角、阴影），
+   * 内距交给里面的 Calendar / TimePicker 自己。
+   */
+  border-radius: var(--wd-radius-lg);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow-sm);
+  /* 只留极小的呼吸，主要内距由子组件提供 */
+  padding: 4px;
 }
 
 .wd-datetime-picker__side {
