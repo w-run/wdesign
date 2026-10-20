@@ -14,7 +14,8 @@
 
 .wd-nav {
   display: flex;
-  font-size: 13px;
+  /* 参考集里侧栏是 14~15px，13px 显得"缩"；行高也一并放到 42 */
+  font-size: 14px;
   color: var(--wd-ink-2);
 }
 
@@ -27,7 +28,7 @@
 }
 
 .wd-nav__brand-text {
-  font-size: 15.5px;
+  font-size: 16.5px;
   font-weight: 800;
   letter-spacing: -.02em;
   color: var(--wd-ink);
@@ -85,9 +86,10 @@
 }
 
 .wd-nav__group {
-  font-size: 10.5px;
+  /* 参考集里分组标签是 12~13px 量级；10.5px 在 76 项的长列表里几乎读不到 */
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--wd-ink-3);
   padding: 0 10px;
@@ -187,7 +189,7 @@
 .wd-nav--vertical {
   flex-direction: column;
   gap: 6px;
-  width: 208px;
+  width: 216px;
   height: 100%;
   padding: 18px 12px;
   border-radius: var(--wd-radius-lg);
@@ -246,7 +248,7 @@
 .wd-nav--vertical .wd-nav__list::-webkit-scrollbar { display: none; }
 
 .wd-nav--vertical .wd-nav__item {
-  height: 38px;
+  height: 42px;
   padding: 0 14px;
   /* 可点击项优先胶囊 */
   border-radius: var(--wd-radius-pill);

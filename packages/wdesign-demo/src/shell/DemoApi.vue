@@ -179,7 +179,7 @@ const comps = computed(() =>
 
 .api__name {
   font-family: var(--wd-font-mono);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--wd-ink);
 }
@@ -205,7 +205,7 @@ const comps = computed(() =>
   display: block;
   margin-top: 4px;
   font-family: var(--wd-font-mono);
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.55;
   color: var(--wd-ink-3);
   word-break: break-word;
@@ -213,7 +213,7 @@ const comps = computed(() =>
 
 .api__desc {
   margin: 6px 0 0;
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.7;
   color: var(--wd-ink-2);
 }

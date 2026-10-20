@@ -138,7 +138,7 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
 
 .demo-page__title {
   margin: 0;
-  font-size: clamp(34px, 3.4vw, 46px);
+  font-size: clamp(30px, 3vw, 40px);
   font-weight: 800;
   line-height: 1.08;
   letter-spacing: -0.035em;
@@ -148,7 +148,7 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
 .demo-page__desc {
   max-width: 62ch;
   margin: 14px 0 0;
-  font-size: 15px;
+  font-size: 15.5px;
   line-height: 1.75;
   color: var(--wd-ink-2);
 }

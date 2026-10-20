@@ -119,18 +119,19 @@ async function copyCode() {
   align-items: center;
   gap: 10px;
   margin: 0;
-  font-size: 11.5px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--wd-ink-2);
+  /* 参考集里卡片标题是 15~16px、正常大小写、600 字重；
+     11.5px 全大写那套是"杂志小标"的路子，放在这里显得又小又用力 */
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--wd-ink);
 }
 
 /* 标题前的彩色短杠：按卡片顺序轮换色相，给每一块自己的坐标 */
 .demo-block__title::before {
   content: "";
   display: inline-block;
-  width: 18px;
+  width: 20px;
   height: 2px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-ink-4);
@@ -162,10 +163,10 @@ async function copyCode() {
 }
 
 .demo-block__desc {
-  margin: 8px 0 0;
-  font-size: 13px;
+  margin: 7px 0 0;
+  font-size: 13.5px;
   line-height: 1.65;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
 }
 
 /* 代码开关：小胶囊，不跟内容抢注意力 */
