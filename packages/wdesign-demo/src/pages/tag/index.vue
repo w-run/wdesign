@@ -58,6 +58,18 @@ const stack = [
       </DemoRow>
     </DemoBlock>
 
+    <DemoBlock
+      title="状态 · 无底色"
+      desc="plain 去掉底色，只留同色圆点和彩字 —— 表格状态列一列二十行，铺色块会花；点 + 彩字已经够扫读"
+    >
+      <DemoRow>
+        <WdTag variant="success" dot plain>Success</WdTag>
+        <WdTag variant="warning" dot plain>Pending</WdTag>
+        <WdTag variant="danger" dot plain>Failed</WdTag>
+        <WdTag variant="gray" dot plain>Draft</WdTag>
+      </DemoRow>
+    </DemoBlock>
+
     <DemoBlock title="尺寸" desc="sm 跟在列表项后面不抢视线，lg 留给筛选区里可点的标签">
       <DemoRow>
         <WdTag size="sm">sm</WdTag>

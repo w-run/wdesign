@@ -273,6 +273,11 @@
   background: var(--wd-tint-1);
 }
 
+/*
+ * 磁贴图标按位置轮换 6 组淡彩（复用头像那套色板）。
+ * 参考里（文件管理器 / 文件夹网格）每个类型的图标是不同淡彩底 + 同色图形，
+ * 一眼能区分"这是图片 / 文档 / 音频"；全同色的红图标会让整片格子糊成一块。
+ */
 .wd-explorer__tile-icon {
   width: 48px;
   height: 48px;
@@ -340,4 +345,35 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* 磁贴淡彩轮换：按序 6 色循环（不需要数据层提供类型） */
+.wd-explorer__tile:nth-child(6n+1) .wd-explorer__tile-icon {
+  background: var(--wd-avatar-1-soft);
+  color: var(--wd-avatar-1-ink);
+}
+
+.wd-explorer__tile:nth-child(6n+2) .wd-explorer__tile-icon {
+  background: var(--wd-avatar-2-soft);
+  color: var(--wd-avatar-2-ink);
+}
+
+.wd-explorer__tile:nth-child(6n+3) .wd-explorer__tile-icon {
+  background: var(--wd-avatar-3-soft);
+  color: var(--wd-avatar-3-ink);
+}
+
+.wd-explorer__tile:nth-child(6n+4) .wd-explorer__tile-icon {
+  background: var(--wd-avatar-4-soft);
+  color: var(--wd-avatar-4-ink);
+}
+
+.wd-explorer__tile:nth-child(6n+5) .wd-explorer__tile-icon {
+  background: var(--wd-avatar-5-soft);
+  color: var(--wd-avatar-5-ink);
+}
+
+.wd-explorer__tile:nth-child(6n) .wd-explorer__tile-icon {
+  background: var(--wd-avatar-6-soft);
+  color: var(--wd-avatar-6-ink);
 }

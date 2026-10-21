@@ -61,6 +61,42 @@
   transform: scale(0.96);
 }
 
+/*
+ * 无底色版：只留点 + 彩字。
+ * 密集列表里一列 20 个色块会花成一片，而"彩色小圆点 + 同色文字"足够扫读。
+ * 左右内距收到最小，让它在表格单元格里不额外撑宽。
+ */
+.wd-tag--plain {
+  padding: 0 2px;
+  background: transparent;
+}
+
+.wd-tag--plain.wd-tag--success {
+  color: var(--wd-success-ink);
+}
+
+.wd-tag--plain.wd-tag--warning {
+  color: var(--wd-warning-ink);
+}
+
+.wd-tag--plain.wd-tag--danger {
+  color: var(--wd-danger-ink);
+}
+
+.wd-tag--plain.wd-tag--gray {
+  color: var(--wd-ink-2);
+}
+
+.wd-tag--plain.wd-tag--tint {
+  color: var(--wd-red-text);
+}
+
+@media (hover: hover) {
+  .wd-tag--plain:hover,
+  .wd-tag--plain.is-hover {
+    background: transparent;
+  }
+}
 .wd-tag__dot {
   width: 7px;
   height: 7px;
