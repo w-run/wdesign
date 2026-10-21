@@ -49,7 +49,9 @@ html.dark-theme {
 
   --wd-selected-bg:  #F2F2F5;   /* 强选中反相：近白实心 */
   --wd-selected-ink: #101014;   /* 其上近黑字 */
-  --wd-selected-row: #2E2E36;   /* 弱选中（整行）：只比卡面亮一档 */
+  /* 弱选中（整行）：卡面 #1C1C1E 上要"看得出被选中"，
+     #2E2E36 只有 6% 亮度差，下拉选中项几乎看不出来 → 提到 #34343C */
+  --wd-selected-row: #34343C;
 
   --wd-ink:        #{t.$wd-ink-dark};   /* 正文 → 亮 */
   --wd-ink-2:      #{t.$wd-ink-2-dark};   /* 次级 → 暗灰（反向迭代：原 #8888A0 对比不足，~6.3:1） */

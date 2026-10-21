@@ -202,14 +202,14 @@
   border-radius: 50%;
   cursor: pointer;
   background: transparent;
+  /* 继承的红色再叠 0.6 透明度，在淡红底上就"糊成一个点"（截图里根本看不出是 ×） */
   color: inherit;
-  opacity: 0.6;
-  transition: opacity var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+  /* 不要叠透明度：继承色本身就是淡红底上的红，再乘 0.6 就糊成一个点 */
+  transition: background var(--wd-dur-fast) ease;
 }
 
 @media (hover: hover) {
   .wd-select__tag-x:hover {
-    opacity: 1;
     background: var(--wd-tint-3);
   }
 }

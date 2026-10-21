@@ -244,7 +244,7 @@ watch(visible, (list) => {
               :aria-label="`移除 ${o.label}`"
               @click="removeTag(o.value, $event)"
             >
-              <wd-icon name="close" :size="10" />
+              <wd-icon name="close" :size="12" />
             </button>
           </span>
           <span v-if="overflowCount" class="wd-select__tag wd-select__tag--more">+{{ overflowCount }}</span>
