@@ -67,8 +67,12 @@ const comps = computed(() =>
         <h2 class="api__comp">{{ c.name }}</h2>
         <p class="api__summary">
           <span>{{ c.api.props.length }} 属性</span>
-          <span v-if="c.api.emits.length">{{ c.api.emits.length }} 事件</span>
-          <span v-if="c.api.slots.length">{{ c.api.slots.length }} 插槽</span>
+          <template v-if="c.api.emits.length">
+            <span class="api__sep">·</span><span>{{ c.api.emits.length }} 事件</span>
+          </template>
+          <template v-if="c.api.slots.length">
+            <span class="api__sep">·</span><span>{{ c.api.slots.length }} 插槽</span>
+          </template>
         </p>
       </header>
 
@@ -153,10 +157,16 @@ const comps = computed(() =>
 
 .api__summary {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 6px;
   margin: 12px 0 0;
   font-size: 11.5px;
-  color: var(--wd-ink-3);
+  /* 摘要行是"元信息"，用 ink-2 而不是 ink-3：11.5px 的灰字在白卡上本来就很淡 */
+  color: var(--wd-ink-2);
+}
+
+.api__sep {
+  color: var(--wd-ink-4);
 }
 
 .api__group + .api__group {
@@ -212,7 +222,9 @@ const comps = computed(() =>
   max-width: 56%;
   padding: 2px 8px;
   border-radius: var(--wd-radius-pill);
-  background: var(--wd-tint-1);
+  color: var(--wd-ink-2);
+  /* 中性底：API 是信息区，粉色胶囊一排看下来太抢眼（6 个 false 就是 6 个红点） */
+  background: var(--wd-field);
   font-family: var(--wd-font-mono);
   font-size: 11.5px;
   color: var(--wd-ink-2);

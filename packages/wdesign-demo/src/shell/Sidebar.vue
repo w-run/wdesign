@@ -26,7 +26,7 @@ const PAGE_ICON: Record<string, string> = {
   "audio-player": "headphones",
   "avatar": "avatar-female",
   "backtop": "go-top",
-  "badge": "bulb",
+  "badge": "circle-alt",
   "breadcrumb": "chevron-right",
   "button": "button",
   "calendar": "calendar-alt",

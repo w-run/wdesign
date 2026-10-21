@@ -109,6 +109,39 @@ body {
   color: var(--wd-ink);
 }
 
+/* ---------------- 滚动条 ----------------
+ * 默认滚动条（尤其 Windows）是 17px 宽的灰槽，压在设计感上非常扎眼。
+ * 这里统一成 10px 细条 + 圆角滑块，只在悬停时加深。
+ */
+html,
+body,
+.demo-main,
+.demo-page__aside,
+.demo-block__pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wd-ink-4) transparent;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.demo-main::-webkit-scrollbar,
+.demo-page__aside::-webkit-scrollbar,
+.demo-block__pre::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.demo-main::-webkit-scrollbar-thumb,
+.demo-page__aside::-webkit-scrollbar-thumb,
+.demo-block__pre::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-ink-4);
+  background-clip: content-box;
+}
+
 /* ---------------- 内容区 ---------------- */
 .demo-main {
   flex: 1 1 auto;

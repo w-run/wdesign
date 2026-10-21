@@ -116,6 +116,7 @@ async function copyCode() {
 }
 
 .demo-block__head {
+  gap: 16px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -179,7 +180,8 @@ async function copyCode() {
 .demo-block__desc {
   margin: 8px 0 0;
   font-size: var(--wd-fs-body);
-  line-height: 1.7;
+  /* 行高 1.7 → 1.8：中文正文 14.5px 在 1.7 下密不透风，参考站都在 1.8 以上 */
+  line-height: 1.8;
   font-weight: var(--wd-fw-regular);
   color: var(--wd-ink-2);
 }

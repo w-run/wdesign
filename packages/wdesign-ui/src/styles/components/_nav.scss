@@ -364,8 +364,6 @@
   background: var(--wd-selected-bg);
   color: var(--wd-selected-ink);
   font-weight: var(--wd-fw-bold);
-  /* 给圆点留出位置，避免文字左移 */
-  padding-left: 26px;
 }
 
 .wd-nav--vertical.is-collapsed .wd-nav__item.is-active {
@@ -380,8 +378,8 @@
 .wd-nav--vertical .wd-nav__item.is-active::before {
   content: '';
   position: absolute;
-  /* 胶囊内左侧，与内容垂直居中 */
-  left: 11px;
+  /* 落在项自身的内距里（padding 14），不占内容流 —— 图标和文字不因选中而位移 */
+  left: 9px;
   top: 50%;
   transform: translateY(-50%);
   width: 5px;

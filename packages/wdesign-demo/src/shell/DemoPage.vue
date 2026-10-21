@@ -146,10 +146,12 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
 }
 
 .demo-page__desc {
-  max-width: 58ch;
-  margin: 16px 0 0;
-  font-size: var(--wd-fs-body);
-  line-height: 1.7;
+  max-width: 54ch;
+  margin: 18px 0 0;
+  /* 页面说明比卡片正文大一档（16 vs 14.5）—— 参考站的副标题都是正文的 1.2 倍，
+     行高也放到 1.8（Apple / 鸿蒙首页都在 1.7~1.9 之间） */
+  font-size: 16px;
+  line-height: 1.8;
   font-weight: var(--wd-fw-regular);
   color: var(--wd-ink-2);
 }
@@ -184,10 +186,26 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
  * 但代码面板一展开，右侧卡片被顶得参差不齐，读起来反而更累。
  * 组件文档的正确形态是"一条线"：标题 → 预览 → 代码 → 下一个。
  */
+/*
+ * 卡片宽度：**同一页内取齐**。
+ * 各块按自身内容 fit-content 时，Edge 会参差不齐（610 / 420 / 300），
+ * 左边缘对齐、右边缘像被啃过 —— 看着像手工摆的，不像成体系。
+ * 用 inline-grid + max-content 列：列宽 = 本页最宽的那块，
+ * 其余卡片跟着对齐，又不会撑满整列留出大片空白。
+ */
+.demo-page__body :deep(.demo-block) {
+  /* 列宽已按本页最宽卡片定好，其余卡片撑满列宽 —— 右边缘才能齐。
+     必须走 :deep()：.demo-block 自己那条 `width: fit-content` 带 scoped 属性，
+     权重比 `.demo-page__body > *` 高，直接写会被盖掉。 */
+  width: 100%;
+}
+
 .demo-page__body {
-  display: flex;
-  flex-direction: column;
+  display: inline-grid;
+  grid-auto-rows: min-content;
+  grid-template-columns: minmax(0, max-content);
   gap: 24px;
+  max-width: 100%;
 }
 
 /*
