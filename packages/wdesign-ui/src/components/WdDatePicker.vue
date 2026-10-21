@@ -216,14 +216,14 @@ onBeforeUnmount(() => {
             :key="m"
             type="button"
             class="wd-datepicker__month-item"
-            :class="{ 'is-on': i === view.value.getMonth() }"
+            :class="{ 'is-on': i === view.getMonth() }"
             @click="pickMonth(i)"
           >
             {{ m }}
           </button>
         </div>
 
-        <template v-else>
+        <div v-else class="wd-datepicker__days">
         <div class="wd-datepicker__week"><span v-for="w in WEEK" :key="w">{{ w }}</span></div>
         <div class="wd-datepicker__grid">
           <button
@@ -243,7 +243,7 @@ onBeforeUnmount(() => {
             {{ d.label }}
           </button>
         </div>
-        </template>
+        </div>
         <div class="wd-datepicker__foot">
           <button type="button" class="wd-datepicker__todaybtn" @click="pickToday">回到今天</button>
         </div>

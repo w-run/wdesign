@@ -199,3 +199,7 @@
 .wd-datepicker__day--disabled:hover {
   background: transparent;
 }
+
+
+/* 日视图容器（与月视图互斥） */
+.wd-datepicker__days { display: block; }

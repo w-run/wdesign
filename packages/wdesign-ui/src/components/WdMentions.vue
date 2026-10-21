@@ -213,6 +213,14 @@ const charCount = computed(() => text.value.length)
       @click="detectMention"
     ></textarea>
 
+    <!--
+      ⚠️ 必须 Teleport 到 body。
+      `useAnchoredPosition` 返回的是**文档坐标**（rect + scroll），面板却是 `position: absolute`：
+      只要祖先有 `position: relative`（卡片、表格单元格都是），坐标就会再叠加一次祖先偏移 ——
+      面板直接飞到右下角几百像素外（用户实测"弹出层不知道飞哪去了"）。
+      其他浮层（select / dropdown / popover / datepicker）早就 Teleport 了，只有这里漏了。
+    -->
+    <Teleport to="body">
     <div v-if="open" ref="panelEl" class="wd-mentions__panel" :style="panelStyle" role="listbox">
       <button
         v-for="(u, i) in filtered"
@@ -238,6 +246,7 @@ const charCount = computed(() => text.value.length)
         </span>
       </button>
     </div>
+    </Teleport>
 
     <span v-if="charCount" class="wd-mentions__count">{{ charCount }}</span>
   </div>
