@@ -154,22 +154,22 @@ const slowMotion = ref(false);
  */
 onMounted(() => {
   /*
-   * 动效开关的优先级（从高到低）：
-   *   1. URL 参数：?motion=slow 强制播放（时长拉长 5~8 倍）、?motion=off 强制关闭
-   *      —— 给"换台电脑看"或"录屏演示"用，不用改系统设置
-   *   2. 系统 prefers-reduced-motion：reduce 时默认打开慢放
-   *      （远程桌面 / 部分 Windows 默认就是 reduce，会把所有动画压成 0.01ms）
-   *   3. 都不命中：正常播放
+  /*
+   * 默认**就播放动效**。
+   *
+   * 这是演示站，动效本身是要被评审的内容 —— 跟随系统 reduce 会导致
+   * "用户以为这个库没有动效"（远程桌面 / 部分 Windows 默认就是 reduce）。
+   * 想看系统原样：`?motion=off`；想慢放拆解：`?motion=slow`。
    */
   const forced = new URLSearchParams(location.search).get("motion");
-  const osReduce =
-    typeof matchMedia === "function" &&
-    matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const on = forced === "slow" || (forced !== "off" && osReduce);
-  slowMotion.value = on;
-  if (on) document.documentElement.dataset.motion = "slow";
-  else delete document.documentElement.dataset.motion;
+  if (forced === "off") {
+    delete document.documentElement.dataset.motion;
+    slowMotion.value = false;
+    return;
+  }
+  // 默认 on：绕过系统的 reduce，但保持正常时长；?motion=slow 才拉长 5~8 倍
+  slowMotion.value = forced === "slow";
+  document.documentElement.dataset.motion = slowMotion.value ? "slow" : "on";
 });
 
 function toggleMotion() {

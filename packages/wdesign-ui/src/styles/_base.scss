@@ -69,15 +69,15 @@ body {
 /*
  * 尊重系统的"减少动态效果"。
  *
- * ⚠️ 但这里必须留一个**显式逃生口**：`html[data-motion="slow"]` 时不生效。
+ * ⚠️ 但这里必须留一个**显式逃生口**：`html[data-motion="on"|"slow"]` 时不生效。
  *    原因很实际：远程桌面 / 部分 Windows 环境的 prefers-reduced-motion 默认是 reduce，
  *    结果是**整套动效全被系统级掐掉**，用户以为"这个库根本没有动效"。
  *    演示站侧栏的 `⏱` 就是那个开关（顺便把时长拉长 5~8 倍便于观察）。
  */
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-motion="slow"]) *,
-  html:not([data-motion="slow"]) *::before,
-  html:not([data-motion="slow"]) *::after {
+  html:not([data-motion="on"]):not([data-motion="slow"]) *,
+  html:not([data-motion="on"]):not([data-motion="slow"]) *::before,
+  html:not([data-motion="on"]):not([data-motion="slow"]) *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
@@ -113,6 +113,22 @@ body {
  *     时钟停摆时最坏情况是停在某个中间值，元素仍清晰可见。
  * ============================================================= */
 /* 显式逃生口：演示站 ⏱ 打开时无视系统的 reduce（否则整套动效验收不了） */
+html[data-motion="on"] .wd-btn:focus-visible,
+html[data-motion="on"] .wd-input:focus-within,
+html[data-motion="on"] .wd-select:focus-within .wd-select__trigger,
+html[data-motion="on"] .wd-select--open .wd-select__trigger,
+html[data-motion="on"] .wd-group:focus-within,
+html[data-motion="on"] .wd-checkbox:focus-visible,
+html[data-motion="on"] .wd-radio:focus-visible,
+html[data-motion="on"] .wd-switch:focus-visible,
+html[data-motion="on"] .wd-otp__box:focus,
+html[data-motion="on"] .wd-rate__item:focus-visible,
+html[data-motion="on"] .wd-pagination__btn:focus-visible,
+html[data-motion="on"] .wd-tree__node:focus-visible,
+html[data-motion="on"] .wd-tabs__item:focus-visible {
+  animation: wd-focus-breathe 1.4s cubic-bezier(.4, 0, .3, 1) infinite alternate;
+}
+
 html[data-motion="slow"] .wd-btn:focus-visible,
 html[data-motion="slow"] .wd-input:focus-within,
 html[data-motion="slow"] .wd-select:focus-within .wd-select__trigger,
