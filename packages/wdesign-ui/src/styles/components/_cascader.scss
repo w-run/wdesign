@@ -97,6 +97,8 @@
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
   z-index: 1200;
   display: none;
+  /* 与触发器同宽起步：面板比触发器窄会显得"缩了一号" */
+  min-width: 176px;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 6px;
