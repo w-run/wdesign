@@ -372,7 +372,9 @@
  * 剩下的空间全变成间距 → 看起来像稀疏栅栏。
  */
 .wd-audio__wave-bar {
-  flex: 0 0 auto;
+  /* 允许轻微收缩 + 最小宽度：柱数算偏 1~2 根时是"略窄"而不是"被裁" */
+  flex: 0 1 3px;
+  min-width: 1.5px;
   width: 3px;
   border-radius: 1px;
   /*

@@ -89,6 +89,15 @@
   align-items: flex-start;
   gap: 24px;
   /*
+   * 放不下就换行 —— 日历（约 340）+ 时间（167）+ 间距 ≈ 540。
+   * 之前的堆叠规则绑在 `@media (max-width: 520px)` 上，那是**视口**宽度：
+   * 视口 1280、卡片只有 469 时媒体查询不触发，整块 539 宽的浮层
+   * 直接溢出卡片右缘，「时间」列被切掉一截。
+   * 改用 flex-wrap 按**可用宽度**决定，跟视口无关。
+   */
+  flex-wrap: wrap;
+  max-width: 100%;
+  /*
    * ⚠️ 这里**不能再加 24px 28px**。
    *
    * 结构是：DateTimePicker 容器 > row > Calendar

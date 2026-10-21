@@ -170,8 +170,14 @@ const hasCover = computed(() => !!props.cover)
  * 现在按容器实际宽度算：柱宽固定，柱数 = floor(宽度 / 步距)。
  * 用 ResizeObserver 监听宽度变化，卡片换列/旋转屏幕时自动重算。
  */
-const BAR_PITCH_THICK = 7   // 无封面：柱宽 + 间距
-const BAR_PITCH_FINE = 4    // 有封面：更细密
+/*
+ * 步距必须等于「柱宽 + gap」，否则算出来的柱数放不下，末尾几根被裁。
+ * 实测：柱 3px；无封面 gap 1.5px、有封面 gap 2px。
+ * ⚠️ 这里曾经写 4，而 `--fine` 的真实步距是 5（3+2）——
+ * 69 根挤进 280px，最后 13 根被 `overflow: hidden` 切掉，波形右端看着"断了一截"。
+ */
+const BAR_PITCH_THICK = 4.5 // 无封面：3 + 1.5
+const BAR_PITCH_FINE = 5    // 有封面：3 + 2
 
 const waveWidth = ref(0)
 const waveEl = ref<HTMLElement | null>(null)
