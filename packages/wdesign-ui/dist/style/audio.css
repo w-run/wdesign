@@ -69,19 +69,19 @@
 }
 
 .wd-audio--inverse .wd-audio__subtitle {
-  color: var(--wd-on-dark);
+  color: var(--wd-dark-text-2);
 }
 
 .wd-audio--inverse .wd-audio__times {
-  color: var(--wd-on-dark-2);
+  color: var(--wd-dark-text-2);
 }
 
 .wd-audio--inverse .wd-audio__remain {
-  color: var(--wd-on-dark);
+  color: var(--wd-dark-text-2);
 }
 
 .wd-audio--inverse .wd-audio__ctl {
-  color: var(--wd-on-dark-2);
+  color: var(--wd-dark-text-2);
 }
 
 .wd-audio--inverse .wd-audio__ctl:hover {
@@ -120,7 +120,7 @@
 }
 
 .wd-audio--inverse .wd-audio__rate-menu--card button {
-  color: var(--wd-on-dark-2);
+  color: var(--wd-dark-text-2);
 }
 
 @media (hover: hover) {
@@ -1218,7 +1218,7 @@
   }
 }
 .wd-audio--inverse .wd-audio__vol-mute {
-  color: var(--wd-on-dark-2);
+  color: var(--wd-dark-text-2);
 }
 
 @media (hover: hover) {
@@ -1280,7 +1280,7 @@
 }
 
 .wd-audio--inverse .wd-audio__vol-num {
-  color: var(--wd-on-dark-3);
+  color: var(--wd-dark-text-2);
 }
 
 /* =============================================================

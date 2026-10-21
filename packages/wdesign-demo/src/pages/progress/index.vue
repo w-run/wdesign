@@ -112,6 +112,6 @@ const colors = [
   margin: 0;
   font-size: 13px;
   font-weight: 700;
-  color: var(--wd-on-dark-text);
+  color: var(--wd-dark-text);
 }
 </style>

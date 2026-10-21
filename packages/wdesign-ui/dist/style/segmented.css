@@ -44,17 +44,17 @@
 }
 
 .wd-segmented--dark .wd-segmented__item {
-  color: var(--wd-on-dark);
+  color: var(--wd-dark-text-2);
 }
 
 @media (hover: hover) {
   .wd-segmented--dark .wd-segmented__item:hover {
-    color: #fff;
+    color: var(--wd-dark-text);
   }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-segmented--dark .wd-segmented__item.is-hover {
-  color: #fff;
+  color: var(--wd-dark-text);
 }
 
 .wd-segmented--dark .wd-segmented__slider {
