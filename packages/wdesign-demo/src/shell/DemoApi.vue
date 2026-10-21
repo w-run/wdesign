@@ -67,8 +67,8 @@ const comps = computed(() =>
         <h2 class="api__comp">{{ c.name }}</h2>
         <p class="api__summary">
           <span>{{ c.api.props.length }} 属性</span>
-          <span>{{ c.api.emits.length }} 事件</span>
-          <span>{{ c.api.slots.length }} 插槽</span>
+          <span v-if="c.api.emits.length">{{ c.api.emits.length }} 事件</span>
+          <span v-if="c.api.slots.length">{{ c.api.slots.length }} 插槽</span>
         </p>
       </header>
 

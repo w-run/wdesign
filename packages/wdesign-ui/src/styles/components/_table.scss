@@ -43,7 +43,8 @@
 .wd-table tbody tr { transition: background var(--wd-dur-fast) ease; }
 .wd-table--striped tbody tr:nth-child(even) { background: var(--wd-bg); }
 @media (hover: hover) {
-  .wd-table tbody tr:hover { background: var(--wd-tint-1); }
+  /* 勾选行已有选中底，hover 不能再刷成淡红 */
+  .wd-table tbody tr:hover:not(.wd-table__row--checked) { background: var(--wd-tint-1); }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-table tbody tr.is-hover { background: var(--wd-tint-1); }

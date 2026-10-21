@@ -36,10 +36,19 @@
 .wd-select--disabled { opacity: .6; pointer-events: none; }
 
 /* Teleport 到 body：定位由 JS 计算（top/left + matchWidth），这里只管视觉 */
-.wd-select__menu.is-open { display: flex; }
+.wd-select__menu.is-open {
+  display: flex;
+  /* display 切换式浮层：打开靠 animation 给"浮出"，否则是硬切 */
+  animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
+  transform-origin: top center;
+}
 
 .wd-select__menu {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  /* 面板宽度跟着选项文字走：之前只有触发器的 200px，长选项会被折成两行 */
+  width: max-content;
+  min-width: 220px;
+  max-width: min(380px, calc(100vw - 32px));
   z-index: 1200;
   padding: 8px;
   display: none;
@@ -68,9 +77,10 @@
   text-align: left;
 }
 @media (hover: hover) {
-  .wd-select__option:hover { background: var(--wd-field); }
+  .wd-select__option:hover:not(.wd-select__option--active) { background: var(--wd-field); }
 }
-.wd-select__option.is-hover { background: var(--wd-field); }
+/* 键盘高亮：选中项已经有了选中底，不能再被 it 覆盖成浅灰 */
+.wd-select__option.is-hover:not(.wd-select__option--active) { background: var(--wd-field); }
 
 /*
  * 选中项用**中性底 + 加粗 + 勾选标记**表达，不用红色底。

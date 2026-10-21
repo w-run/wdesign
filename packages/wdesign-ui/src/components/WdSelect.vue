@@ -272,7 +272,7 @@ watch(visible, (list) => {
       ref="menuEl"
       class="wd-select__menu"
       :class="{ 'is-open': open }"
-      :style="{ top: pos.top + 'px', left: pos.left + 'px', minWidth: '200px' }"
+      :style="{ top: pos.top + 'px', left: pos.left + 'px', minWidth: '220px' }"
       role="listbox"
       :aria-multiselectable="multiple || undefined"
     >

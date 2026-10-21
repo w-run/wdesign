@@ -111,6 +111,8 @@ async function copyCode() {
 
 .demo-block:hover {
   box-shadow: var(--wd-shadow-hover);
+  /* 只换阴影太"安静"，抬 2px 才有实体感；缓动用弹簧，收得干脆 */
+  transform: translateY(-2px);
 }
 
 .demo-block__head {

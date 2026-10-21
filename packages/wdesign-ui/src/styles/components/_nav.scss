@@ -60,6 +60,12 @@
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
 
+.wd-nav__item:active:not(.is-disabled) {
+  /* 按下的即时反馈：比 hover 更进一步，手指/鼠标都能感到"点到了" */
+  transform: scale(.98);
+  transition-duration: var(--wd-dur-fast);
+}
+
 .wd-nav__item.is-disabled {
   color: var(--wd-ink-4);
   cursor: not-allowed;
@@ -197,7 +203,7 @@
  * 看起来像选中态没消失。桌面端才启用悬停反馈。
  */
 @media (hover: hover) {
-  .wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled) {
+  .wd-nav--horizontal .wd-nav__item:hover:not(.is-disabled):not(.is-active) {
     background: var(--wd-field);
     color: var(--wd-ink);
   }
@@ -252,7 +258,9 @@
 }
 
 .wd-nav--vertical.is-collapsed {
-  width: 60px;
+  /* 46 的项 + 左右 8 内距 = 62，留 2px 余量，折叠动画不会把圆切掉 */
+  width: 62px;
+  padding: 18px 8px;
 }
 
 .wd-nav--vertical .wd-nav__brand {
@@ -262,8 +270,19 @@
 }
 
 .wd-nav--vertical.is-collapsed .wd-nav__brand {
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   padding: 0;
+}
+
+/*
+ * 折叠态必须把品牌字藏掉。
+ * 它原来只是"居中"，文字还占着宽度 —— 62px 的栏里塞着品牌名 + 折叠按钮，
+ * 两者一起溢出，按钮被挤出容器（用户实测到的"logo 把按钮挤出去"就是这条）。
+ */
+.wd-nav--vertical.is-collapsed .wd-nav__brand-text {
+  display: none;
 }
 
 .wd-nav__collapse {
@@ -308,13 +327,23 @@
   gap: 11px;
 }
 
+/*
+ * 折叠态每一项 46×46 的正圆。
+ * 原来只写了 `justify-content: center; padding: 0`，宽度仍是 100%、
+ * 高度 42 —— 渲染出来是 36×42 的胶囊，四角弧不匀，看着"不是圆"。
+ */
 .wd-nav--vertical.is-collapsed .wd-nav__item {
-  justify-content: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  margin: 0 auto;
   padding: 0;
+  justify-content: center;
+  border-radius: 50%;
 }
 
 @media (hover: hover) {
-  .wd-nav--vertical .wd-nav__item:hover:not(.is-disabled) {
+  .wd-nav--vertical .wd-nav__item:hover:not(.is-disabled):not(.is-active) {
     background: var(--wd-field);
     color: var(--wd-ink);
   }
@@ -341,6 +370,11 @@
 
 .wd-nav--vertical.is-collapsed .wd-nav__item.is-active {
   padding-left: 0;
+}
+
+/* 纯图标态不画"当前位置"小圆点：46px 的圆里没有它的位置，压上图标就是脏点 */
+.wd-nav--vertical.is-collapsed .wd-nav__item.is-active::before {
+  display: none;
 }
 
 .wd-nav--vertical .wd-nav__item.is-active::before {

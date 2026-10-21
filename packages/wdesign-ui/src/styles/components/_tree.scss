@@ -27,7 +27,7 @@
   transition: background var(--wd-dur-fast) ease;
 }
 @media (hover: hover) {
-  .wd-tree__node:hover { background: var(--wd-field-hover); }
+  .wd-tree__node:hover:not(.wd-tree__node--selected) { background: var(--wd-field-hover); }
 }
 .wd-tree__node:focus-visible {
   box-shadow: inset 0 0 0 2px var(--wd-focus-ring);

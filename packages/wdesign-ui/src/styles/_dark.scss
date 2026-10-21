@@ -44,8 +44,8 @@ html.dark-theme {
   --wd-img-filter-invert: invert(1) hue-rotate(180deg) brightness(.86);
   --wd-logo-filter:       brightness(1.25);
   --wd-logo-opacity:      .8;
-  --wd-tint-1:     #2A1A1E;   /* 浅红底（暗色版） */
-  --wd-tint-2:     #3A2025;
+  --wd-tint-1:     #332025;   /* 浅红底（暗色版）：原来 #2A1A1E 在深色卡面上几乎看不出 */
+  --wd-tint-2:     #45272D;
   --wd-tint-3:     #4A2830;
   --wd-tint-4:     #5A3540;
   --wd-red-text:   #EE7A85;   /* 红色文字款：浅色红在深底仅 3.4–3.8:1，换亮红后 ≥4.7:1 */
@@ -62,10 +62,15 @@ html.dark-theme {
   --wd-dark-3:      #4A4A52;
   --wd-ring-soft:   rgba(255, 255, 255, .14);
   --wd-underline:   rgba(255, 255, 255, .4);
-  --wd-shadow:        0 12px 30px rgba(0, 0, 0, .45);
-  --wd-shadow-hover:  0 16px 40px rgba(0, 0, 0, .55);
-  --wd-shadow-sm:     0 4px 12px rgba(0, 0, 0, .4);
-  --wd-shadow-pop:    0 12px 28px rgba(0, 0, 0, .5);
+  /*
+   * 深色下阴影几乎看不见（黑投影落在黑底上），卡面 #1C1C1E 又只比页面底 #121214
+   * 亮一点点 —— 结果是"卡片贴在背景上"，没有层级。
+   * 所以阴影阶梯统一**掺一道 1px 亮描边**：深色主题里靠描边划分面，而不是靠投影。
+   */
+  --wd-shadow:        0 0 0 1px rgba(255, 255, 255, .07), 0 12px 30px rgba(0, 0, 0, .45);
+  --wd-shadow-hover:  0 0 0 1px rgba(255, 255, 255, .10), 0 16px 40px rgba(0, 0, 0, .55);
+  --wd-shadow-sm:     0 0 0 1px rgba(255, 255, 255, .06), 0 4px 12px rgba(0, 0, 0, .4);
+  --wd-shadow-pop:    0 0 0 1px rgba(255, 255, 255, .10), 0 12px 28px rgba(0, 0, 0, .5);
   --wd-shadow-lg:     0 24px 60px rgba(0, 0, 0, .6);
   --wd-shadow-knob:   0 2px 8px rgba(0, 0, 0, .5);
   --wd-mark-bg:       rgba(214, 40, 57, .28);

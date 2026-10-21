@@ -64,6 +64,8 @@
 }
 
 .wd-popover__panel.is-open {
+  animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
+  transform-origin: top center;
   display: block;
   opacity: 1;
   transform: translateY(0);
@@ -116,4 +118,23 @@
 .wd-popover__body .wd-popover__hint {
   color: var(--wd-ink-2);
   font-size: 12.5px;
+}
+
+
+/* =============================================================
+ *  面板浮出（浮层/下拉/气泡共用）
+ *
+ *  这些组件不走 <Transition>（enter 阶段依赖 nextFrame，动画时钟停摆时会卡住），
+ *  而是 `display` 切换 —— 所以**打开时必须自带 animation**，否则就是一个硬切。
+ *  之前 popover / select / dropdown 三处只有 display 变化，等于没有动效。
+ * ============================================================= */
+@keyframes wd-surface-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
