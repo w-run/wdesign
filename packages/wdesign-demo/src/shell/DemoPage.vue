@@ -194,20 +194,26 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
  * 其余卡片跟着对齐，又不会撑满整列留出大片空白。
  */
 .demo-page__body :deep(.demo-block) {
-  /* 列宽已按本页最宽卡片定好，其余卡片撑满列宽 —— 右边缘才能齐。
-     必须走 :deep()：.demo-block 自己那条 `width: fit-content` 带 scoped 属性，
-     权重比 `.demo-page__body > *` 高，直接写会被盖掉。 */
+  /* 卡片撑满列宽：一页内所有卡片同宽（右边缘齐），又不会被 fit-content 收窄。
+     必须走 :deep()：`.demo-block` 自己那条 `width: fit-content` 带 scoped 属性，
+     权重更高，直接写会被盖掉。 */
   width: 100%;
 }
 
 .demo-page__body {
-  display: inline-grid;
+  /*
+   * 必须是 1fr（占满可用宽度），不能用 max-content。
+   * 用 max-content 时列宽 = 本页最宽那张卡片（约 613），剩下的空间就变成
+   * 正文和右侧 API 卡之间的一条"东非大裂谷"。
+   * 卡片宽度交给 `.demo-block { width: 100% }` 统一撑开，边缘照样齐。
+   */
+  display: grid;
   grid-auto-rows: min-content;
-  grid-template-columns: minmax(0, max-content);
-  /* 区块间距 24 → 28：参考站（android.com / 鸿蒙）每个分区之间的呼吸都更大，
-     24px 读下来像"连成一片"，分不出段落 */
+  grid-template-columns: minmax(0, 1fr);
+  /* 区块间距 28：参考站分区间距大于元素间距 */
   gap: 28px;
-  max-width: 100%;
+  width: 100%;
+  min-width: 0;
 }
 
 /*

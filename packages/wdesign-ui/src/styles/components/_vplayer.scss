@@ -404,11 +404,32 @@
  *    展开过程中圆头看起来像"刀片"。改用 translateX + 透明度，
  *    形状始终保持不变，只是从按钮里"滑出来"。
  */
+/*
+ * 音量控件：收起时**只占一个圆按钮的宽度**，悬停才展开成"图标 + 滑条"的胶囊。
+ *
+ * 之前是给滑条预留 62px、只把它透明掉 —— 控件始终 104 宽，
+ * 控制栏里白白占着一条空位，看着像"那里有个残废的滑条"。
+ * 现在动的是**容器宽度**：32 → 106，滑条被容器裁住，展开时再滑出来。
+ * 宽度动画只影响这一组控件，邻居会跟着让位 —— 这正是"展开"该有的表现。
+ */
 .wd-vplayer__vol {
   display: flex;
   align-items: center;
-  /* 给滑条预留固定宽度，收起时也不收回 */
   flex: none;
+  width: 34px;
+  overflow: hidden;
+  border-radius: var(--wd-radius-pill);
+  transition:
+    width var(--wd-dur) var(--wd-ease-spring-soft),
+    background var(--wd-dur) var(--wd-ease-out);
+}
+
+/* 展开态：多出来的一圈底，让它读成"一个胶囊"而不是"按钮旁边浮着一条线" */
+.wd-vplayer__vol:hover,
+.wd-vplayer__vol:focus-within,
+.wd-vplayer__vol.is-open {
+  width: 106px;
+  background: var(--wd-mask);
 }
 
 .wd-vplayer__vol-slider {
@@ -419,17 +440,17 @@
   background: var(--wd-on-dark-3);
   cursor: pointer;
   overflow: hidden;
-  /* 收起态：滑到按钮后面藏起来，不可见、不可点，但仍占位 */
+  /* 收起态：藏在按钮后面，不可见也不可点（容器宽度会把它裁掉） */
   opacity: 0;
   transform: translateX(14px);
   pointer-events: none;
   transition:
     opacity var(--wd-dur) var(--wd-ease-out),
-    transform var(--wd-dur) var(--wd-ease-out);
+    transform var(--wd-dur) var(--wd-ease-spring-soft);
 }
 
 .wd-vplayer__vol:hover .wd-vplayer__vol-slider,
-.wd-vplayer__vol-slider:focus-within,
+.wd-vplayer__vol:focus-within .wd-vplayer__vol-slider,
 .wd-vplayer__vol.is-open .wd-vplayer__vol-slider {
   opacity: 1;
   transform: translateX(0);
@@ -729,9 +750,11 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 8px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: min-content;
+  /* 单列列表：一行一集，序号 + 标题。三列格子只能塞下"第 12 集"这种短标签，
+     标题一长就被截断，而且几十个等宽格子看不出"正在看哪一集" */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   gap: 6px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, .28) transparent;
@@ -744,6 +767,98 @@
 .wd-vplayer__drawer-body::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, .28);
   border-radius: 999px;
+}
+
+/* ---------------- 选集列表（一行一集） ---------------- */
+.wd-vplayer__ep-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--wd-radius-sm);
+  background: transparent;
+  color: var(--wd-on-dark-2);
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out),
+    color var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+/* 序号：等宽小字，列宽固定，几十行才对得齐 */
+.wd-vplayer__ep-index {
+  flex: none;
+  min-width: 26px;
+  font-family: var(--wd-font-mono);
+  font-size: 11.5px;
+  color: var(--wd-on-dark-3);
+  text-align: right;
+}
+
+.wd-vplayer__ep-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (hover: hover) {
+  .wd-vplayer__ep-row:not(.is-on):hover {
+    background: rgba(255, 255, 255, .08);
+    color: var(--wd-on-dark-text);
+  }
+}
+.wd-vplayer__ep-row.is-hover:not(.is-on) {
+  background: rgba(255, 255, 255, .08);
+  color: var(--wd-on-dark-text);
+}
+
+/* 正在播的那一集：反相实心 + 序号变白，扫一眼就知道停在哪 */
+.wd-vplayer__ep-row.is-on {
+  background: var(--wd-on-dark-text);
+  color: var(--wd-ink);
+  font-weight: var(--wd-fw-medium);
+}
+.wd-vplayer__ep-row.is-on .wd-vplayer__ep-index { color: var(--wd-ink-2); }
+.wd-vplayer__ep-row.is-off { opacity: .4; cursor: not-allowed; }
+
+/* ---------------- 分页 tabs（1-100 / 101-200） ---------------- */
+.wd-vplayer__ep-tabs {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 8px 0;
+}
+
+.wd-vplayer__ep-tab {
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: rgba(255, 255, 255, .07);
+  color: var(--wd-on-dark-2);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out),
+    color var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+@media (hover: hover) {
+  .wd-vplayer__ep-tab:hover { background: rgba(255, 255, 255, .14); color: var(--wd-on-dark-text); }
+}
+
+.wd-vplayer__ep-tab.is-on {
+  background: var(--wd-on-dark-text);
+  color: var(--wd-ink);
+  font-weight: var(--wd-fw-medium);
 }
 
 /* 抽屉内的集数按钮：胶囊，够小能排三列 */

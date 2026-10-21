@@ -116,7 +116,13 @@ const playing = ref(false)
 const current = ref(0)
 const duration = ref(0)
 const buffered = ref(0)
-const volume = ref(props.initialVolume)
+/*
+ * ⚠️ 这个 ref 原来叫 `volume` —— **和 prop `volume`（是否显示音量控件）同名**，
+ * 于是在模板里 `v-if="volume"` 取到的是这个 0~1 的数值：
+ * 音量 dragged 到 0 时 `v-if` 变 false → **整个音量控件（连图标）直接消失**。
+ * 改名 volLevel，语义也更清楚（它是"音量级别"，不是"有没有音量控件"）。
+ */
+const volLevel = ref(props.initialVolume)
 const muted = ref(false)
 /**
  * 音量弹层的开关。
@@ -312,7 +318,7 @@ function setVolume(e: MouseEvent) {
   const a = audio.value
   if (!a) return
   const r = pctFrom(e, e.currentTarget as HTMLElement)
-  volume.value = r
+  volLevel.value = r
   a.volume = r
   a.muted = r === 0
   muted.value = a.muted
@@ -323,7 +329,7 @@ function toggleMute() {
   if (!a) return
   a.muted = !a.muted
   muted.value = a.muted
-  if (!a.muted && a.volume === 0) { a.volume = 0.5; volume.value = 0.5 }
+  if (!a.muted && a.volume === 0) { a.volume = 0.5; volLevel.value = 0.5 }
 }
 
 /**
@@ -336,7 +342,7 @@ function onVolumeInput(e: Event) {
   if (!a) return
   const r = Number((e.target as HTMLInputElement).value) / 100
   const v = Math.max(0, Math.min(1, r))
-  volume.value = v
+  volLevel.value = v
   a.volume = v
   a.muted = v === 0
   muted.value = a.muted
@@ -545,12 +551,12 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
                 type="range"
                 min="0"
                 max="100"
-                :value="Math.round(volume * 100)"
+                :value="Math.round(volLevel * 100)"
                 aria-label="音量"
                 @input="onVolumeInput"
               />
             </div>
-            <span class="wd-audio__vol-num">{{ Math.round(volume * 100) }}</span>
+            <span class="wd-audio__vol-num">{{ Math.round(volLevel * 100) }}</span>
           </div>
         </div>
         <span v-else class="wd-audio__ctl-spacer"></span>
@@ -621,7 +627,7 @@ defineExpose({ play: () => audio.value?.play(), pause: () => audio.value?.pause(
             <wd-icon :name="muted ? 'volume-mute' : 'volume-up'" :variant="iconStyle" :size="15" />
           </button>
           <div class="wd-audio__vol-track" @click="setVolume">
-            <span class="wd-audio__vol-fill" :style="{ width: (muted ? 0 : volume * 100) + '%' }"></span>
+            <span class="wd-audio__vol-fill" :style="{ width: (muted ? 0 : volLevel * 100) + '%' }"></span>
           </div>
         </div>
 

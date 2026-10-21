@@ -51,6 +51,11 @@ const props = withDefaults(
     episodeNav?: boolean
     /** 显示选集面板 */
     playlist?: boolean
+    /**
+     * 选集每页显示多少集，超出后自动按「1-100 / 101-200」分页。
+     * 集数一多，一口气铺几百个格子既难找又难看，分页 + 列表才好用。
+     */
+    episodePageSize?: number
     /** 显示画中画 */
     pip?: boolean
     /**
@@ -110,6 +115,7 @@ const props = withDefaults(
     currentEpisode: undefined,
     episodeNav: true,
     playlist: true,
+    episodePageSize: 100,
     pip: true,
     hls: 'auto',
     liveSync: true,
@@ -173,8 +179,26 @@ type HlsCtor = new (cfg?: Record<string, unknown>) => {
   recoverMediaError(): void
 }
 let hls: InstanceType<HlsCtor> | null = null
-const HLS = (globalThis as { Hls?: HlsCtor }).Hls
-const isM3u8 = computed(() => /\.m3u8(\?|$)/i.test(props.src))
+/*
+ * ⚠️ 不能用 setup 时的一次性快照。
+ * hls.js 常由页面以 `<script defer>` 引入，**执行顺序可能在应用模块之后** ——
+ * 快照会拿到 undefined，于是 m3u8 被当普通文件丢给 <video>，
+ * Chrome 原生不支持 HLS，表现就是"一直转圈 / 加载超时"。
+ */
+const getHls = () => (globalThis as { Hls?: HlsCtor }).Hls
+/*
+ * 是否 HLS。
+ *
+ * ⚠️ 不能只看结尾：走同源代理时 src 是 `/live?u=<urlencoded 源地址>`，
+ * 结尾是编码后的 `...%2Fcctv1.m3u8`，原来的正则判不出来 → 当普通 mp4 处理 → 播不了。
+ * 所以先解码再判，并且允许 .m3u8 出现在任意位置。
+ */
+const isM3u8 = computed(() => {
+  const src = props.src || ''
+  let decoded = src
+  try { decoded = decodeURIComponent(src) } catch { /* 非法编码就用原串 */ }
+  return /\.m3u8/i.test(src) || /\.m3u8/i.test(decoded)
+})
 
 /**
  * 加载超时兜底。
@@ -210,7 +234,14 @@ function destroyHls() {
  */
 const canNativeHls = () => {
   const v = document.createElement('video')
-  return !!v.canPlayType('application/vnd.apple.mpegurl')
+  /*
+   * ⚠️ 只认 `'probably'`。
+   * Chrome on Windows 对 `application/vnd.apple.mpegurl` 会返回 **'maybe'**，
+   * 但实际**播不了**（实测 error.code = 4 / networkState = 3）。
+   * 之前用 `!!canPlayType(...)` 判定 → 走了"原生优先"分支 → 直播黑屏转圈。
+   * 真原生支持 HLS 的只有 Safari / iOS（返回 'probably'）。
+   */
+  return v.canPlayType('application/vnd.apple.mpegurl') === 'probably'
 }
 
 /**
@@ -251,14 +282,20 @@ function mountSource() {
   // 1) 原生优先（Safari / iOS / 支持 HLS 的 WebKit）
   if (canNativeHls()) {
     // 标记：若原生播放报错，error 处理里会降级到 hls.js
-    tryFallbackHls = !!HLS && hasMSE()
+    tryFallbackHls = !!getHls() && hasMSE()
     v.src = props.src
     return
   }
 
-  // 2) 原生不支持 → hls.js
-  if (HLS && hasMSE()) {
-    attachHls()
+  // 2) 原生不支持 → hls.js（可能还在加载，等它 2s）
+  if (hasMSE()) {
+    const waitHls = (n = 20): void => {
+      if (getHls()) { attachHls(); return }
+      if (n > 0) { setTimeout(() => waitHls(n - 1), 100); return }
+      // 等不到就交给浏览器，由 error 兜底提示
+      v.src = props.src
+    }
+    waitHls()
     return
   }
 
@@ -269,8 +306,9 @@ function mountSource() {
 /** 用 hls.js 挂载（MSE） */
 function attachHls() {
   const v = video.value
-  if (!v || !HLS) return
-  hls = new HLS({
+  const Ctor = getHls()
+  if (!v || !Ctor) return
+  hls = new Ctor({
     // 直播从近边缘起播，别从头拉一堆积压分片
     liveSyncDurationCount: props.liveSync ? 3 : 6,
     enableWorker: true,
@@ -436,6 +474,41 @@ function togglePanel(p: 'playlist' | 'rate') {
 }
 
 /* ---------------- 选集 ---------------- */
+/** 当前页码（从 0 开始） */
+const epPage = ref(0)
+
+/** 分页：每页 episodePageSize 集，算出 [起, 止] 与标签「1-100」 */
+const epPages = computed(() => {
+  /*
+   * ⚠️ 页大小必须兜底。`Math.max(1, undefined)` 是 NaN —— 于是 to = NaN、
+   * slice(0, NaN) 得到空数组，**整个选集列表直接消失**（曾经真的发生过）。
+   */
+  const raw = props.episodePageSize
+  const size = typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 100
+  const out: { key: number; label: string; from: number; to: number }[] = []
+  for (let from = 0; from < props.episodes.length; from += size) {
+    const to = Math.min(from + size, props.episodes.length)
+    out.push({ key: from, label: `${from + 1}-${to}`, from, to })
+  }
+  return out
+})
+
+/** 当前页的集数（只有一页时就是全部） */
+const epPageItems = computed(() => {
+  const page = epPages.value[epPage.value]
+  if (!page) return props.episodes
+  return props.episodes.slice(page.from, page.to).map((ep, i) => ({ ep, index: page.from + i }))
+})
+
+/** 打开面板时，自动跳到当前集所在的那一页 */
+function syncPageToCurrent() {
+  const i = epIndex.value
+  if (i < 0) return
+  const raw = props.episodePageSize
+  const size = typeof raw === 'number' && Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 100
+  epPage.value = Math.floor(i / size)
+}
+
 const epIndex = computed(() =>
   props.episodes.findIndex((e) => e.key === props.currentEpisode),
 )
@@ -443,6 +516,15 @@ const hasPrev = computed(() => props.episodeNav && epIndex.value > 0)
 const hasNext = computed(
   () => props.episodeNav && epIndex.value >= 0 && epIndex.value < props.episodes.length - 1,
 )
+
+/*
+ * 面板一打开就跳到当前集所在页。
+ * ⚠️ 必须写在 epIndex 之后 —— 写在前面会在 setup 阶段读未初始化的 const，
+ * 抛 ReferenceError（TDZ），表现是**整个播放器不渲染**。
+ */
+watch([() => panelOpen.value, epIndex], () => {
+  if (panelOpen.value === 'playlist') syncPageToCurrent()
+})
 
 function goEpisode(ep: WdEpisode | undefined, idx: number) {
   if (!ep || ep.disabled) return
@@ -485,7 +567,7 @@ function onError() {
   const v = video.value
 
   // 原生 HLS 播放失败 → 若还有 hls.js 这条路，降级再试一次
-  if (tryFallbackHls && HLS && hasMSE()) {
+  if (tryFallbackHls && getHls() && hasMSE()) {
     tryFallbackHls = false
     attachHls()
     return
@@ -678,18 +760,36 @@ onBeforeUnmount(() => {
           <wd-icon name="close" :variant="iconStyle" :size="14" />
         </button>
       </div>
+      <!-- 分���：集数多时按「1-100 / 101-200」切页，避免一次铺几百行 -->
+      <div v-if="epPages.length > 1" class="wd-vplayer__ep-tabs" role="tablist" aria-label="选集分页">
+        <button
+          v-for="(pg, pi) in epPages"
+          :key="pg.key"
+          type="button"
+          role="tab"
+          class="wd-vplayer__ep-tab"
+          :class="{ 'is-on': epPage === pi }"
+          :aria-selected="epPage === pi"
+          @click.stop="epPage = pi"
+        >
+          {{ pg.label }}
+        </button>
+      </div>
+
+      <!-- 列表：一行一集，序号 + 标题 + 标记；选中行用反相实心，眼前有"正在看"的落点 -->
       <div class="wd-vplayer__drawer-body">
         <button
-          v-for="(ep, i) in episodes"
-          :key="ep.key"
+          v-for="row in epPageItems"
+          :key="row.ep.key"
           type="button"
-          class="wd-vplayer__ep"
-          :class="{ 'is-on': ep.key === currentEpisode, 'is-off': ep.disabled }"
-          :disabled="ep.disabled"
-          @click="goEpisode(ep, i)"
+          class="wd-vplayer__ep-row"
+          :class="{ 'is-on': row.ep.key === currentEpisode, 'is-off': row.ep.disabled }"
+          :disabled="row.ep.disabled"
+          @click="goEpisode(row.ep, row.index)"
         >
-          <span>{{ ep.label }}</span>
-          <i v-if="ep.tag" class="wd-vplayer__ep-tag">{{ ep.tag }}</i>
+          <span class="wd-vplayer__ep-index">{{ row.index + 1 }}</span>
+          <span class="wd-vplayer__ep-label">{{ row.ep.label }}</span>
+          <i v-if="row.ep.tag" class="wd-vplayer__ep-tag">{{ row.ep.tag }}</i>
         </button>
       </div>
     </div>

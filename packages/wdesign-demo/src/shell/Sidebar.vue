@@ -153,11 +153,23 @@ const slowMotion = ref(false);
  * 用户仍可点 ⏱ 关掉（关掉后回到系统行为）。
  */
 onMounted(() => {
-  if (typeof matchMedia !== "function") return;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    slowMotion.value = true;
-    document.documentElement.dataset.motion = "slow";
-  }
+  /*
+   * 动效开关的优先级（从高到低）：
+   *   1. URL 参数：?motion=slow 强制播放（时长拉长 5~8 倍）、?motion=off 强制关闭
+   *      —— 给"换台电脑看"或"录屏演示"用，不用改系统设置
+   *   2. 系统 prefers-reduced-motion：reduce 时默认打开慢放
+   *      （远程桌面 / 部分 Windows 默认就是 reduce，会把所有动画压成 0.01ms）
+   *   3. 都不命中：正常播放
+   */
+  const forced = new URLSearchParams(location.search).get("motion");
+  const osReduce =
+    typeof matchMedia === "function" &&
+    matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const on = forced === "slow" || (forced !== "off" && osReduce);
+  slowMotion.value = on;
+  if (on) document.documentElement.dataset.motion = "slow";
+  else delete document.documentElement.dataset.motion;
 });
 
 function toggleMotion() {
