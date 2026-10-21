@@ -37,19 +37,11 @@
   }
   & .wd-btn__arrow.wd-icon { display: inline-flex; }
 
-  /* 纯图标按钮的悬停 / 按下：圆要"活"起来 */
-  @media (hover: hover) {
-    &.wd-btn--icon:hover:not(:disabled) {
-      transform: translateY(-1px) scale(1.04);
-    }
-    &.wd-btn--icon:hover:not(:disabled) .wd-btn__arrow {
-      transform: translate(1px, -1px);
-    }
-  }
-
-  &.wd-btn--icon:active:not(:disabled) {
-    transform: scale(.94);
-  }
+  /*
+   * 纯图标按钮：悬停/按下**不做尺寸变化、也不做位移**。
+   * 圆按钮在密集工具条里成排出现，一放大就互相挤、还会让整排"呼吸"；
+   * 反馈只靠底色变化（各 variant 各自的 hover 底色）。
+   */
 
   // ---- 图标按钮（圆形，宽高同档位；padding 必须归零，否则宽会被 padding 撑开）
   &.wd-btn--icon { width: var(--wd-size-md); height: var(--wd-size-md); padding: 0; }
