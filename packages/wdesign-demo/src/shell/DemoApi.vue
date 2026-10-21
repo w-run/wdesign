@@ -73,7 +73,7 @@ const comps = computed(() =>
           <article v-for="p in c.api.props" :key="p.name" class="api__item">
             <div class="api__line">
               <code class="api__name">{{ p.name }}</code>
-              <code v-if="p.default" class="api__default">{{ formatDefault(p.default) }}</code>
+              <code v-if="formatDefault(p.default)" class="api__default">{{ formatDefault(p.default) }}</code>
             </div>
             <code class="api__type">{{ p.type }}</code>
             <p v-if="p.desc" class="api__desc">{{ plain(p.desc) }}</p>

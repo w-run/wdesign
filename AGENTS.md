@@ -70,6 +70,21 @@ bash tools/publish-npm.sh   # 发布到公共 npm
 | 行内间距 | `DemoRow` 默认 gap 16、`align-items: flex-start` |
 | 入场 | 每块错开 40ms 的 `translateY(10px)` —— **只动位移不动透明度**（pitfalls 第 1 条） |
 
+### 逐组件排查（显示缺陷）
+
+改完壳之后必须**逐页看渲染**，机械扫描只能定位、不能定论。已用过的两类探针：
+
+| 探针 | 查什么 | 已知误报 |
+|---|---|---|
+| 几何 | `scrollWidth/clientWidth`、越界、图片丢失 | badge 数字气泡（绝对定位）、carousel 轨道外的 slide、table 省略号单元格、`wd-btn` 的 sheen 伪元素（`top/bottom:-60%` 撑出 scrollHeight） |
+| 文本裁切 | Range 量文本矩形 vs 最近 `overflow:hidden` 祖先 | 祖先若是 `body`（页面滚动容器）会把折叠下方所有文本判成"被裁" |
+
+真正抓到过的：`WdSelect` onChange 自递归（栈溢出）、WdNav 项被 flex 压缩、
+API 表 `undefined` 胶囊 / `/**` 残留 / 反引号、导航页灰底撑满卡片。
+
+**动效怎么看**：远程链路 120ms 的过渡肉眼看不见 —— 侧栏底部 `⏱` 慢放开关把
+`--wd-dur-*` 整体拉长 5~8 倍；判断"有没有动效"先开它再看。
+
 判据：**像一份组件文档**，不是一块卡片墙。左栏一条线读下来：标题 → 预览 → 代码；
 右栏随时能查属性。想靠"多列并排"提高密度 = 走错方向（试过，代码一展开就参差不齐）。
 
