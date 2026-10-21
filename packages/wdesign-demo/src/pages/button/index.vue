@@ -51,7 +51,7 @@ function onSubmit() {
 
     <DemoBlock
       title="链接按钮"
-      desc="arrow 追加上右箭头（↗），用于「了解更多 / 去某处」。纯图标用 md 档（44px 圆、箭头 18），配文字时用 sm + ghost，箭头收到 15px 不抢正文"
+      desc="arrow 追加上右箭头（↗），用于「了解更多 / 去某处」。纯图标用 md 档（44px 圆、箭头 20），配文字时用 sm + ghost，箭头收到 15px 不抢正文"
     >
       <DemoRow :gap="20">
         <WdButton icon-only arrow aria-label="了解更多" />

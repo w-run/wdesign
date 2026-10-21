@@ -43,28 +43,21 @@
 }
 .wd-btn {
   /*
-   * 图标按钮里的图标尺寸跟着按钮档位走。
-   * 之前完全由调用方传 `:size`，一传 16 就变成"44px 圆里塞个 16px 小点"。
-   * 这里用 CSS 兜住（CSS 宽度 > svg 的 width 属性），调用方仍可覆盖。
+   * 纯图标里的箭头：不要左距，且必须块级 —— 行内盒带基线偏移，看着"不在正中心"。
+   * 尺寸由 WdButton 的 `:size` 传；**不要在这里写 width/height**：
+   * 那会把 svg 压成固定值（例如 20），而外层 .wd-icon 是 22.8（prop × 光学系数），
+   * svg 靠左上对齐 → 整个图标偏左上（用户实测就是这条）。
    */
-  /* 纯图标按钮里的箭头：不要左距，且必须块级居中（行内盒会带基线偏移） */
-  /* 纯图标：箭头不要左距，且要块级（行内盒带基线偏移 → 看着"不在正中心"）。
-     尺寸由 WdButton 的 :size 传，不在这里写 —— 写了也被内联样式压掉。 */
 }
 .wd-btn.wd-btn--icon .wd-btn__arrow {
   display: block;
   margin-left: 0;
 }
-.wd-btn.wd-btn--icon > svg, .wd-btn.wd-btn--icon > .wd-icon > svg {
-  width: 20px;
-  height: 20px;
-}
-.wd-btn.wd-btn--icon.wd-btn--lg > svg, .wd-btn.wd-btn--icon.wd-btn--lg > .wd-icon > svg {
-  width: 22px;
-  height: 22px;
+.wd-btn .wd-btn__arrow.wd-icon {
+  display: inline-flex;
 }
 .wd-btn {
-  /* 纯图标按钮的悬停/按下：圆要"活"起来，否则和静态图形无异 */
+  /* 纯图标按钮的悬停 / 按下：圆要"活"起来 */
 }
 @media (hover: hover) {
   .wd-btn.wd-btn--icon:hover:not(:disabled) {
@@ -77,10 +70,6 @@
 .wd-btn.wd-btn--icon:active:not(:disabled) {
   transform: scale(0.94);
 }
-.wd-btn.wd-btn--icon.wd-btn--sm > svg, .wd-btn.wd-btn--icon.wd-btn--sm > .wd-icon > svg {
-  width: 17px;
-  height: 17px;
-}
 .wd-btn.wd-btn--icon {
   width: var(--wd-size-md);
   height: var(--wd-size-md);
@@ -90,30 +79,9 @@
   width: var(--wd-size-lg);
   height: var(--wd-size-lg);
 }
-.wd-btn.wd-btn--icon.wd-btn--md {
-  width: var(--wd-size-md);
-  height: var(--wd-size-md);
-}
 .wd-btn.wd-btn--icon.wd-btn--sm {
   width: var(--wd-size-sm);
   height: var(--wd-size-sm);
-}
-.wd-btn {
-  /*
-   * 链接箭头：跟按钮文本同色，尺寸按"是否纯图标"分两档 ——
-   * 纯图标按钮（44）里 18px，配文字时 15px（比正文小半档，不抢话）。
-   */
-}
-.wd-btn .wd-btn__arrow {
-  flex: none;
-  /* 与文字的间距：文字 + 箭头挤在一起会读成"了解更↗多"，留 6px 呼吸 */
-  margin-left: 6px;
-  width: 15px;
-  height: 15px;
-  transition: transform var(--wd-dur-fast) var(--wd-ease-spring-soft);
-}
-.wd-btn .wd-btn__arrow.wd-icon {
-  display: inline-flex;
 }
 .wd-btn {
   /* 悬停时箭头往右上轻移 2px —— 指向"要去的地方"，是最省的动效表达 */
