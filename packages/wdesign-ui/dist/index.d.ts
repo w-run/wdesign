@@ -63,9 +63,11 @@ export declare const WdSortableList: any
 export declare const WdSpace: any
 export declare const WdSpinner: any
 export declare const WdSplitter: any
+export declare const WdStatBar: any
 export declare const WdStatistic: any
 export declare const WdSteps: any
 export declare const WdSwitch: any
+export declare const WdTabBar: any
 export declare const WdTable: any
 export declare const WdTabs: any
 export declare const WdTag: any

@@ -3,7 +3,7 @@ import { ref } from "vue";
 import DemoPage from "@/shell/DemoPage.vue";
 import DemoBlock from "@/shell/DemoBlock.vue";
 import DemoRow from "@/shell/DemoRow.vue";
-import { WdStatistic, WdButton, WdIcon } from "@wdesign";
+import { WdStatistic, WdStatBar, WdButton, WdIcon } from "@wdesign";
 
 /* 数值变化会重新触发滚动动画，这里用按钮模拟实时成交额上报 */
 const gmv = ref(286400);
@@ -15,6 +15,38 @@ function addGmv() {
 
 <template>
   <DemoPage name="Statistic" desc="统计数值：入场计数动画 · 前后缀与精度 · 千分位 · 底部说明">
+    <DemoBlock
+      title="统计条"
+      desc="一组数字 + 细竖线 + 浅底，放在页面或卡片顶部。环比用小胶囊（↑ 绿 / ↓ 红）压在数字右侧，只作注解"
+    >
+      <WdStatBar
+        :items="[
+          { value: 1992, label: '客户总数', trend: '4%', dir: 'up' },
+          { value: 43, label: '进行中的任务', trend: '2%', dir: 'down' },
+          { value: 31, label: '洽谈中的项目' },
+        ]"
+      />
+    </DemoBlock>
+
+    <DemoBlock title="尺寸与无底版" desc="sm 用于表格上方，lg 用于页面顶部；surface=false 去掉底色，直接贴在卡片顶部">
+      <DemoRow :gap="20">
+        <WdStatBar
+          size="sm"
+          :items="[
+            { value: 128, label: '今日新增' },
+            { value: '4.2', suffix: 'k', label: '累计访问' },
+          ]"
+        />
+        <WdStatBar
+          :surface="false"
+          :items="[
+            { value: '¥', suffix: '26,124', label: '本月收入', trend: '12%', dir: 'up' },
+            { value: 321, label: '退款单量', trend: '3%', dir: 'down' },
+          ]"
+        />
+      </DemoRow>
+    </DemoBlock>
+
     <DemoBlock title="基础与计数动画" desc="默认从 0 滚到目标值，数值变化时会重新跑一遍，用于实时看板">
       <DemoRow :gap="32" align="flex-end">
         <WdStatistic title="今日成交额（元）" :value="gmv" />

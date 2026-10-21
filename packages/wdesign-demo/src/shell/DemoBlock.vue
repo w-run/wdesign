@@ -153,7 +153,8 @@ async function copyCode() {
 }
 
 .demo-block:nth-child(8n + 1) .demo-block__title::before {
-  background: var(--wd-rainbow-red);
+  /* 第一根不用彩虹红：红在本库专供品牌与危险，面板装饰用橙起头 */
+  background: var(--wd-rainbow-orange);
 }
 .demo-block:nth-child(8n + 2) .demo-block__title::before {
   background: var(--wd-rainbow-orange);

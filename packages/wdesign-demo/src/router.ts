@@ -289,6 +289,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { group: "数据展示", title: "Tabs", order: 9, covers: ["WdTabs"] },
   },
   {
+    path: "/tab-bar",
+    name: "tab-bar",
+    component: () => import("./pages/tab-bar/index.vue"),
+    meta: { group: "数据展示", title: "TabBar", order: 10, covers: ["WdTabBar"] },
+  },
+  {
     path: "/steps",
     name: "steps",
     component: () => import("./pages/steps/index.vue"),

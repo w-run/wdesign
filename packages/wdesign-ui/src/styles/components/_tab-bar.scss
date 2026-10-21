@@ -1,0 +1,126 @@
+// =============================================================
+//  WDesign — TabBar（底部导航）
+//
+//  移动端主导航：一条胶囊里 3~5 个图标+文字，右侧可挂一个独立 FAB。
+//  参考界面里它**悬浮**在内容之上（四周留白 + 投影），而不是贴死屏幕底部 ——
+//  贴死会显得"系统原生"，悬浮才有产品设计感。
+// =============================================================
+.wd-tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  background: var(--wd-card);
+  border-top: 1px solid var(--wd-field-hover);
+}
+
+.wd-tab-bar__rail {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+}
+
+.wd-tab-bar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--wd-ink-3);
+  font: inherit;
+  cursor: pointer;
+  border-radius: var(--wd-radius-md);
+  transition: color var(--wd-dur-fast) var(--wd-ease-out),
+    background var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+.wd-tab-bar__icon {
+  position: relative;
+  display: inline-flex;
+}
+
+.wd-tab-bar__label {
+  font-size: 11px;
+  font-weight: var(--wd-fw-medium);
+  letter-spacing: 0.01em;
+}
+
+/* 选中项：图标与文字同时变主色并加重 —— 只变颜色在浅底上不够明显 */
+.wd-tab-bar__item.is-on {
+  color: var(--wd-ink);
+}
+
+.wd-tab-bar__item.is-on .wd-tab-bar__label {
+  font-weight: var(--wd-fw-bold);
+}
+
+@media (hover: hover) {
+  .wd-tab-bar__item:not(.is-on):hover {
+    color: var(--wd-ink-2);
+    background: var(--wd-field);
+  }
+}
+
+/* 角标：数字压在图标的右上角 */
+.wd-tab-bar__badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-red);
+  color: #fff;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: var(--wd-fw-semibold);
+  line-height: 16px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--wd-card);
+}
+
+/* ---------------- 悬浮胶囊形态 ---------------- */
+.wd-tab-bar--floating {
+  width: min(420px, calc(100% - 32px));
+  margin: 0 auto 12px;
+  padding: 6px;
+  border-top: 0;
+  border-radius: var(--wd-radius-pill);
+  box-shadow: var(--wd-shadow-pop);
+}
+
+/* FAB：独立的圆形主按钮，跟胶囊留 12px 缝 */
+.wd-tab-bar__fab {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--wd-ink);
+  color: var(--wd-card);
+  cursor: pointer;
+  box-shadow: var(--wd-shadow-pop);
+  transition: transform var(--wd-dur-fast) var(--wd-ease-spring-soft);
+}
+
+.wd-tab-bar__fab:active {
+  transform: scale(0.94);
+}
+
+.wd-tab-bar--floating.wd-tab-bar--with-fab {
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}

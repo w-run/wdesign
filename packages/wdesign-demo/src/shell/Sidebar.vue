@@ -84,6 +84,7 @@ const PAGE_ICON: Record<string, string> = {
   "switch": "sliders-box",
   "table": "bar-chart",
   "tabs": "columns",
+  "tab-bar": "layout-grid",
   "tag": "tag",
   "time-picker": "clock",
   "timeline": "history",
