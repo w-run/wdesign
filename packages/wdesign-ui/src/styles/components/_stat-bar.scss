@@ -39,6 +39,8 @@
 .wd-stat-bar__value {
   display: flex;
   align-items: baseline;
+  /* 允许换行：窄容器里 trend 胶囊会溢出到相邻列，压住下一个数字 */
+  flex-wrap: wrap;
   gap: 3px;
   min-width: 0;
   font-variant-numeric: tabular-nums;
@@ -121,3 +123,36 @@
 /* 不带底时不需要额外的左右内距补偿 */
 .wd-stat-bar:not(.wd-stat-bar--surface) .wd-stat-bar__item:first-child { padding-left: 0; }
 .wd-stat-bar:not(.wd-stat-bar--surface) .wd-stat-bar__item:last-child { padding-right: 0; }
+
+
+/* =============================================================
+ *  窄屏（< 720）：3~4 列改 2 列
+ *
+ *  318px 容器里均分 3 列只有 103px，"1992 + ↗4%" 放不下，
+ *  胶囊会压到下一列的数字上；标签也被挤成"进行中的任/务"。
+ *  两列 + 去掉竖线（第二行没有竖线参照，留着反而乱），改用行间距分隔。
+ * ============================================================= */
+@media (max-width: 720px) {
+  .wd-stat-bar {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 14px;
+  }
+
+  .wd-stat-bar__item {
+    padding: 0;
+  }
+
+  .wd-stat-bar__item + .wd-stat-bar__item {
+    border-left: 0;
+  }
+
+  .wd-stat-bar__num {
+    font-size: 22px;
+  }
+
+  /* 奇数项时最后一项横跨两列 —— 否则左下角永远空一块 */
+  .wd-stat-bar__item:last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+}
