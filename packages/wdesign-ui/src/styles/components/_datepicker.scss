@@ -1,7 +1,14 @@
 // WDesign — DatePicker
 @use '../mixins' as m;
 
-.wd-datepicker { position: relative; display: inline-block; min-width: 220px; }
+.wd-datepicker {
+  position: relative;
+  /* 显式宽度：inline-block 在 column flex 里会被拉满，单个日期选择器铺到 870px 宽
+     完全不像输入框。给一个与 Input / Select 一致的默认宽度，需要更宽再覆盖 */
+  display: inline-flex;
+  width: 220px;
+  max-width: 100%;
+}
 
 /*
  * 触发器尺寸走 --wd-size-* 令牌，与 Input / Select / Cascader 对齐。
@@ -108,10 +115,12 @@
 .wd-datepicker__todaybtn {
   border: 0;
   background: transparent;
-  color: var(--wd-red-text);
+  /* 次要操作，用中性色：红在本库留给主操作与危险态，
+     面板底部一个"回到今天"用红会比选中日期还抢眼 */
+  color: var(--wd-ink-2);
   font: inherit;
   font-size: 13px;
-  font-weight: var(--wd-fw-semibold);
+  font-weight: var(--wd-fw-medium);
   padding: 5px 12px;
   border-radius: var(--wd-radius-pill);
   cursor: pointer;
