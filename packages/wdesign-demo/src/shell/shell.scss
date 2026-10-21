@@ -177,3 +177,33 @@ html[data-motion="slow"] {
   --wd-dur-theme: 1.4s;
   --wd-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+
+/* ---------------- 窄屏：侧栏收成图标栏 ----------------
+ * 之前 <900px 时侧栏仍是 236px 固定宽，正文只剩 140px ——
+ * 步骤条溢出错位、表格横向滚动、API 卡被挤没。
+ * 这里把侧栏压成 68px 图标栏（隐藏文字与分组标题），正文回到可用宽度。
+ */
+@media (max-width: 1024px) {
+  .demo-side.wd-nav--vertical {
+    flex: 0 0 68px;
+    width: 68px;
+    padding: 16px 8px 12px;
+  }
+
+  /* 文字、分组标题、分组箭头全部让位，只留图标 */
+  .demo-side .wd-nav__label,
+  .demo-side .wd-nav__group,
+  .demo-side .wd-nav__brand-text,
+  .demo-side .side-version {
+    display: none;
+  }
+
+  .demo-side .wd-nav__item {
+    justify-content: center;
+    padding: 0;
+  }
+
+  /* 折叠按钮在图标栏里没有意义，藏掉 */
+  .demo-side .wd-nav__collapse { display: none; }
+}

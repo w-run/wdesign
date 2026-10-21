@@ -10,7 +10,14 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  flex: none;
+  /*
+   * 允许收缩 + min-width: 0：
+   * 之前是 `flex: none` —— 4~5 步带 desc 时整条把容器顶破，
+   * 窄屏直接横向溢出（正文出现横向滚动条）。现在容器不够宽时
+   * 步骤收窄、文字省略，连线仍保持最小可见宽度。
+   */
+  flex: 0 1 auto;
+  min-width: 0;
   max-width: 130px;
 }
 
@@ -59,6 +66,11 @@
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   text-align: center;
+  /* 窄容器下省略而不是撑破布局 */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wd-steps__item--process .wd-steps__label {
@@ -72,10 +84,16 @@
   font-size: 11.5px;
   color: var(--wd-ink-2);
   margin-top: 2px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .wd-steps__bar {
-  flex: 1;
+  /* 最小 10px：再窄就成"一个点"，不如让它保持一段短线 */
+  flex: 1 1 10px;
+  min-width: 10px;
   height: 3px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-field);
@@ -97,4 +115,41 @@
 
 .wd-steps__dot {
   transition: transform var(--wd-dur) var(--wd-ease-spring);
+}
+
+/* =============================================================
+ *  窄屏（< 640）：改成竖向步骤条
+ *
+ *  横向 5 步在 380px 容器里，每步只剩 2 个字（"提交…"），
+ *  连线也被压成 10px 的短横 —— 信息几乎全丢。
+ *  竖向排列后文字完整、连线是真实的一段竖线，才是移动端该有的形态。
+ * ============================================================= */
+@media (max-width: 640px) {
+  .wd-steps {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .wd-steps__item {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    max-width: none;
+    min-height: 40px;
+  }
+  .wd-steps__label,
+  .wd-steps__desc {
+    text-align: left;
+    white-space: normal;
+    overflow: visible;
+    max-width: none;
+  }
+  /* 竖向连线：3px 宽的短线，左边距对齐圆点中心 */
+  .wd-steps__bar {
+    flex: 0 0 20px;
+    width: 3px;
+    min-width: 0;
+    height: auto;
+    margin: 2px 0 2px 13px;
+  }
 }
