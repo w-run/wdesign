@@ -107,6 +107,14 @@ $wd-mask:     rgba(28, 28, 28, .42) !default; // 遮罩（深色主题会覆盖�
  * 半透明深底 + backdrop-blur + 一道细亮边，白字就能压在任何亮度的照片上。
  * 不支持 backdrop-filter 的浏览器靠 @supports 兜底成更实的底色。
  */
+/*
+ * 细边（hairline）。
+ * 深色下卡面（#1C1C1E）与页底（#131316）只差 3% 亮度，仅靠阴影几乎看不出边界；
+ * 一道 8% 白边比加重阴影更干净 —— 阴影会让整页发灰。
+ * 浅色主题保持透明，不改变现有观感。
+ */
+$wd-hairline: transparent !default;
+
 $wd-glass-bg:     rgba(20, 20, 22, .42) !default;
 $wd-glass-border: rgba(255, 255, 255, .18) !default;
 $wd-glass-blur:   12px !default;

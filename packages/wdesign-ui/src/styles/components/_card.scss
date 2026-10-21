@@ -4,6 +4,8 @@
   background: var(--wd-card);
   border-radius: var(--wd-radius-lg);
   padding: 22px;
+  /* 深色主题下卡面与页底只差 3% 亮度，靠一道 hairline 把边界勾出来 */
+  border: 1px solid var(--wd-hairline);
   box-shadow: var(--wd-shadow);
 }
 .wd-card--tint { background: var(--wd-tint-2); }

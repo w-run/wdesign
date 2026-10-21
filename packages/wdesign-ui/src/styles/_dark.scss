@@ -13,7 +13,9 @@
 html[data-theme="dark"],
 html.dark-theme {
   --wd-bg:         #{t.$wd-bg-dark};   /* 深底 */
-  --wd-card:       #{t.$wd-card-dark};   /* 深卡 */
+  --wd-card:       #{t.$wd-card-dark};
+  /* 深色卡面与页底只差 3% 亮度：一道 8% 白边比加重阴影更干净 */
+  --wd-hairline: rgba(255, 255, 255, .08);   /* 深卡 */
   --wd-field:      #{t.$wd-field-dark};   /* 深控件底 */
   --wd-dark:       #{t.$wd-dark-dark};   /* 深色锚点反转 */
   --wd-dark-text:  #{t.$wd-card-dark};   /* 锚点反转后其上的文字用深色 */
