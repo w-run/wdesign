@@ -34,7 +34,7 @@ $wd-ink-3:      #A5ADB8 !default; // 占位 / 三级说明（原来 #B8BEC7 在�
 // 反向迭代（源：w-run/blog）：更完整的弱文本梯度，供时间戳/分割/禁用使用
 $wd-ink-4:      #CDD2D7 !default; // 极弱（时间戳 / 次要标注）
 $wd-ink-5:      #E3E6EA !default; // 最弱（分割 / 描边 / 禁用）
-$wd-bg:         #F7F8FA !default; // 页面底 L0
+$wd-bg:         #F3F4F7 !default; // 页面底 L0（android.com 的底比白卡深一档，层级靠面差而非投影）
 $wd-card:       #FFFFFF !default; // 卡片 L1
 $wd-dark:       #1C1C1C !default; // 深色一级 · 锚点 L4
 $wd-dark-2:     #2F2F2F !default; // 深色二级 · 浮层 / 悬停
@@ -140,8 +140,8 @@ $wd-radius-xl:   32px !default;
 $wd-radius-pill: 999px !default;
 
 // --- Shadow · 只允许一层 ------------------------------------
-$wd-shadow:       0 12px 30px rgba(25, 27, 31, .06) !default;
-$wd-shadow-hover: 0 16px 40px rgba(25, 27, 31, .09) !default;
+$wd-shadow:       0 2px 10px rgba(25, 27, 31, .04) !default;
+$wd-shadow-hover: 0 10px 26px rgba(25, 27, 31, .07) !default;
 
 // --- Spacing · 4pt 基准 -------------------------------------
 $wd-space-1:  4px  !default;

@@ -30,6 +30,9 @@
    * 之前完全由调用方传 `:size`，一传 16 就变成"44px 圆里塞个 16px 小点"。
    * 这里用 CSS 兜住（CSS 宽度 > svg 的 width 属性），调用方仍可覆盖。
    */
+  /* 纯图标按钮里的箭头不需要左边距 */
+  &.wd-btn--icon .wd-btn__arrow { margin-left: 0; }
+
   &.wd-btn--icon > svg,
   &.wd-btn--icon > .wd-icon > svg {
     width: 20px;
@@ -52,6 +55,8 @@
    */
   & .wd-btn__arrow {
     flex: none;
+    /* 与文字的间距：文字 + 箭头挤在一起会读成"了解更↗多"，留 6px 呼吸 */
+    margin-left: 6px;
     width: 15px;
     height: 15px;
     transition: transform var(--wd-dur-fast) var(--wd-ease-spring-soft);

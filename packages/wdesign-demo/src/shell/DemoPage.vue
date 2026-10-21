@@ -204,7 +204,9 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
   display: inline-grid;
   grid-auto-rows: min-content;
   grid-template-columns: minmax(0, max-content);
-  gap: 24px;
+  /* 区块间距 24 → 28：参考站（android.com / 鸿蒙）每个分区之间的呼吸都更大，
+     24px 读下来像"连成一片"，分不出段落 */
+  gap: 28px;
   max-width: 100%;
 }
 
