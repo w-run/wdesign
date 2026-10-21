@@ -16,6 +16,8 @@ export interface WdNavItem {
   disabled?: boolean
   /** 右上角小圆点（有新内容时提示） */
   dot?: boolean
+  /** 数字角标（未读数 / 待办数）。与 dot 二选一，数量型信息用 badge */
+  badge?: number | string
   /** 内部分组标题（仅竖栏有意义） */
   group?: string
 }
@@ -99,6 +101,33 @@ function onSelect(item: WdNavItem, e: MouseEvent) {
 }
 
 /** 收起的分组名集合（内部维护；分组名重复时以第一个为准） */
+/*
+ * 键盘导航：竖栏 ↑↓、横栏 ←→、Home/End 到首末项。
+ * 导航是一组同类控件，只能用 Tab 一个个过是最低标准；
+ * 方向键在组内移动才是列表该有的行为。
+ */
+const navEl = ref<HTMLElement | null>(null)
+
+function onNavKeydown(e: KeyboardEvent) {
+  const forward = isVertical.value ? 'ArrowDown' : 'ArrowRight'
+  const backward = isVertical.value ? 'ArrowUp' : 'ArrowLeft'
+  if (![forward, backward, 'Home', 'End'].includes(e.key)) return
+  const list = Array.from(
+    navEl.value?.querySelectorAll<HTMLElement>('.wd-nav__item:not(:disabled)') ?? [],
+  )
+  if (!list.length) return
+  const cur = list.indexOf(document.activeElement as HTMLElement)
+  let next = cur
+  if (e.key === 'Home') next = 0
+  else if (e.key === 'End') next = list.length - 1
+  else if (e.key === forward) next = Math.min(list.length - 1, cur + 1)
+  else next = Math.max(0, cur - 1)
+  if (next !== cur) {
+    e.preventDefault()
+    list[next]?.focus()
+  }
+}
+
 const collapsedGroups = ref<Set<string>>(new Set(props.defaultCollapsedGroups))
 
 function isGroupCollapsed(title: string) {
@@ -174,6 +203,7 @@ const iconSize = computed(() => {
 
 <template>
   <nav
+    ref="navEl"
     class="wd-nav"
     :class="[
       `wd-nav--${direction}`,
@@ -184,6 +214,7 @@ const iconSize = computed(() => {
       },
     ]"
     :aria-label="brand || '导航'"
+    @keydown="onNavKeydown"
   >
     <!-- 品牌区 -->
     <div class="wd-nav__brand">
@@ -249,6 +280,7 @@ const iconSize = computed(() => {
             <wd-icon v-if="it.icon" :name="it.icon" :size="iconSize" />
             <span v-else class="wd-nav__icon-fallback">{{ (it.label || '?').slice(0, 1) }}</span>
             <span v-if="it.dot" class="wd-nav__dot"></span>
+            <i v-if="it.badge" class="wd-nav__badge">{{ it.badge }}</i>
           </span>
           <span v-if="!thin && it.label" class="wd-nav__label">{{ it.label }}</span>
         </component>

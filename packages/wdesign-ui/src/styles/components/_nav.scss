@@ -426,3 +426,32 @@
   .wd-nav--vertical,
   .wd-nav__collapse { transition: none; }
 }
+
+
+/*
+ * 数字角标：贴在图标右上角，代替"小红点"表达数量。
+ * 折叠态（thin）下也保留 —— 未读数恰恰是折叠时最需要看到的信息。
+ */
+.wd-nav__badge {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-red);
+  color: var(--wd-on-dark-text);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: var(--wd-fw-semibold);
+  line-height: 16px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--wd-card);
+}
+
+/* 折叠态图标居中，角标跟着右移一点 */
+.wd-nav.is-collapsed .wd-nav__badge {
+  top: 1px;
+  right: 0;
+}

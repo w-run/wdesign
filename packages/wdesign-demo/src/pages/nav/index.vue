@@ -6,9 +6,9 @@ import DemoRow from "@/shell/DemoRow.vue";
 import { WdNav, WdIcon, WdButton } from "@wdesign";
 
 const topActive = ref("overview");
-const topItems: { key: string; label: string; dot?: boolean; disabled?: boolean }[] = [
+const topItems: { key: string; label: string; dot?: boolean; badge?: number | string; disabled?: boolean }[] = [
   { key: "overview", label: "概览" },
-  { key: "orders", label: "订单", dot: true },
+  { key: "orders", label: "订单", badge: 12 },
   { key: "finance", label: "财务" },
   { key: "report", label: "报表" },
   { key: "archive", label: "归档", disabled: true },
