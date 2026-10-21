@@ -6,7 +6,18 @@ import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdSegmented' })
 
-type Option = string | { label: string; value: string | number }
+type Option =
+  | string
+  | {
+      label: string
+      value: string | number
+      /** 图标名（wd-icon）；`layout="stack"` 时显示在文字上方 */
+      icon?: string
+      /** 选中态图标（可选，填充图标更适合表达"当前"） */
+      activeIcon?: string
+      /** 右上角数字角标 */
+      badge?: number | string
+    }
 type Mode = 'flat' | 'scroll' | 'dropdown'
 
 const props = withDefaults(
@@ -29,8 +40,25 @@ const props = withDefaults(
     overflow?: 'wrap' | 'scroll' | 'auto'
     /** auto 模式下，超过多少个选项就从「滚动」降级为「下拉」 */
     overflowMax?: number
+    /**
+     * 选项内部排布：
+     *   'inline' 横向 —— 只有文字（默认）
+     *   'stack'  纵向 —— 图标在上、文字在下（底部导航 / 图标标签切换用）
+     */
+    layout?: 'inline' | 'stack'
+    /** 纯图标：不渲染文字，选项收成正方形（配合 layout="stack"） */
+    iconOnly?: boolean
   }>(),
-  { modelValue: '', options: () => [], block: false, tone: 'light', overflow: 'wrap', overflowMax: 15 },
+  {
+    modelValue: '',
+    options: () => [],
+    block: false,
+    tone: 'light',
+    overflow: 'wrap',
+    overflowMax: 15,
+    layout: 'inline',
+    iconOnly: false,
+  },
 )
 
 const emit = defineEmits<{
@@ -38,8 +66,17 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string | number): void
 }>()
 
+/**
+ * 统一成对象形态。
+ * ⚠️ 不能在模板里用 `'icon' in o` 判断 —— 字符串选项上 `in` 会抛 TypeError，
+ * 整个分段控件都渲染不出来（实测页面直接空白）。这里一次性规范化。
+ */
 const items = computed(() =>
-  props.options.map((o) => (typeof o === 'string' ? { label: o, value: o } : o)),
+  props.options.map((o) =>
+    typeof o === 'string'
+      ? { label: o, value: o, icon: undefined, activeIcon: undefined, badge: undefined }
+      : { icon: undefined, activeIcon: undefined, badge: undefined, ...o },
+  ),
 )
 const activeLabel = computed(
   () => items.value.find((o) => o.value === props.modelValue)?.label ?? '',
@@ -247,7 +284,12 @@ watch(items, () =>
     <div
       ref="track"
       class="wd-segmented"
-      :class="{ 'wd-segmented--block': block, 'wd-segmented--dark': tone === 'dark' }"
+      :class="{
+        'wd-segmented--block': block,
+        'wd-segmented--dark': tone === 'dark',
+        'wd-segmented--stack': layout === 'stack',
+        'wd-segmented--icon-only': iconOnly,
+      }"
       :aria-hidden="mode === 'dropdown'"
       role="tablist"
       @scroll="updateFades"
@@ -262,9 +304,17 @@ watch(items, () =>
         :class="{ 'wd-segmented__item--active': o.value === modelValue }"
         :aria-selected="o.value === modelValue"
         :tabindex="mode === 'dropdown' ? -1 : 0"
+        :aria-label="iconOnly ? o.label : undefined"
         @click="emit('update:modelValue', o.value)"
       >
-        {{ o.label }}
+        <span v-if="o.icon" class="wd-segmented__icon">
+          <wd-icon
+            :name="o.value === modelValue && o.activeIcon ? o.activeIcon : o.icon"
+            :size="22"
+          />
+          <i v-if="o.badge" class="wd-segmented__badge">{{ o.badge }}</i>
+        </span>
+        <span v-if="!iconOnly" class="wd-segmented__label">{{ o.label }}</span>
       </button>
     </div>
 

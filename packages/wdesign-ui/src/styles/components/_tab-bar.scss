@@ -1,192 +1,77 @@
 // =============================================================
 //  WDesign — TabBar（底部导航）
 //
-//  移动端主导航：一条胶囊里 3~5 个图标+文字，右侧可挂一个独立 FAB。
-//  参考界面里它**悬浮**在内容之上（四周留白 + 投影），而不是贴死屏幕底部 ——
-//  贴死会显得"系统原生"，悬浮才有产品设计感。
+//  ⚠️ 这里**只负责外壳**：胶囊底、投影、FAB 排布。
+//  项 / 滑块 / 角标 / 首帧落位全部来自 WdSegmented（`layout="stack"`），
+//  所以 TabBar 与 Segmented 的动效天然一致 —— 不需要维护第二份实现。
+//
+//  之前那套独立实现踩过的两个坑（留档，别再犯）：
+//    · 胶囊画在容器上 → 右侧 FAB 被塞进胶囊里，3 个 tab 时容器只剩 141px
+//    · 滑块用固定 `top: 4px` + JS 写高度 → 与 item 差 2~4px，文字贴着滑块底边
 // =============================================================
 .wd-tab-bar {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 6px 8px;
-  background: var(--wd-card);
-  border-top: 1px solid var(--wd-field-hover);
 }
 
-.wd-tab-bar__rail {
-  position: relative;
-  display: flex;
+.wd-tab-bar__seg {
   flex: 1;
   min-width: 0;
-  align-items: center;
 }
 
 /*
- * 滑动高亮块 —— 与 WdSegmented 的 `__slider` 完全同一套：同样的令牌、
- * 同样的 `.is-initial` 首帧处理、同样的 cubic-bezier(.25,.8,.35,1)。
- * 由 `useSlidingIndicator` 计算位置，不在这里写任何 JS 相关的魔法数。
+ * 外壳已经是胶囊了，Segmented 自己的灰底必须去掉 ——
+ * 否则白胶囊里再套一块灰底（双层底，看着像"胶囊里的胶囊"）。
+ * 滑块改用反相实心：白胶囊 + 近黑滑块，层级一眼可见。
  */
-.wd-tab-bar__slider {
-  position: absolute;
-  top: 4px;
-  left: 0;
-  z-index: 0;
-  border-radius: var(--wd-radius-pill);
-  background: var(--wd-selected-bg);
-  transition:
-    transform var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1),
-    width var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1),
-    height var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1);
-}
-
-.wd-tab-bar__slider.is-initial { transition: none; }
-
-.wd-tab-bar__item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-width: 0;
-  height: 52px;
-  padding: 0;
-  border: 0;
+/*
+ * ⚠️ 全局 SCSS 里**不能写 `:deep()`** —— 它只在 SFC 的 scoped style 里有效，
+ * 写成普通 CSS 就是未知伪类，**整条规则被浏览器丢弃**（含同一组里的合法选择器），
+ * 表现是"样式写了但没生效"。本项目第 3 条 pitfall 就是它。
+ */
+.wd-tab-bar .wd-segmented {
   background: transparent;
-  color: var(--wd-ink-3);
-  font: inherit;
-  cursor: pointer;
-  border-radius: var(--wd-radius-md);
-  transition: color var(--wd-dur-fast) var(--wd-ease-out),
-    background var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-tab-bar__icon {
-  position: relative;
-  display: inline-flex;
+.wd-tab-bar .wd-segmented__slider {
+  background: var(--wd-selected-bg);
 }
 
-.wd-tab-bar__label {
-  font-size: 11px;
-  font-weight: var(--wd-fw-medium);
-  letter-spacing: 0.01em;
-}
-
-/* 选中项：滑块是反相实心，图标与文字跟着变成 selected-ink */
-.wd-tab-bar__item {
-  position: relative;
-  z-index: 1;
-}
-
-.wd-tab-bar__item.is-on {
+.wd-tab-bar .wd-segmented__item--active {
   color: var(--wd-selected-ink);
 }
 
-.wd-tab-bar__item.is-on .wd-tab-bar__label {
-  font-weight: var(--wd-fw-bold);
-}
-
-@media (hover: hover) {
-  .wd-tab-bar__item:not(.is-on):hover {
-    color: var(--wd-ink-2);
-    background: var(--wd-field);
-  }
-}
-
-/* 角标：数字压在图标的右上角 */
-.wd-tab-bar__badge {
-  position: absolute;
-  top: -4px;
-  right: -8px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: var(--wd-radius-pill);
-  background: var(--wd-red);
-  color: #fff;
-  font-size: 10px;
-  font-style: normal;
-  font-weight: var(--wd-fw-semibold);
-  line-height: 16px;
-  text-align: center;
-  box-shadow: 0 0 0 2px var(--wd-card);
-}
-
-/* ---------------- 纯图标形态 ---------------- */
-/*
- * 参考图（IMG_4424）里纯图标导航的高亮是一枚**圆**，包住图标，
- * 而不是整块矩形 —— 所以图标外面套一个固定 40px 的圆形容器，
- * 让滑动指示器跟着这个圆走（JS 只负责平移，形状交给 CSS）。
- */
-.wd-tab-bar--icon-only .wd-tab-bar__item {
-  height: 48px;
-  gap: 0;
-  /* 纯图标不需要均分整条宽度，按内容收缩才有"工具条"的紧凑感 */
-  flex: none;
-  width: 52px;
-}
-
-/* 纯图标胶囊按内容收缩并居中（参考图里 3 个图标就占半条） */
-.wd-tab-bar--floating.wd-tab-bar--icon-only {
-  width: fit-content;
-  max-width: calc(100% - 24px);
-}
-
-.wd-tab-bar__icon--orb {
-  width: 38px;
-  height: 38px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: transform var(--wd-dur-fast) var(--wd-ease-spring-soft);
-}
-
-/* 图标在圆里视觉居中：比数学居中更稳 */
-.wd-tab-bar--icon-only .wd-tab-bar__item.is-on .wd-tab-bar__icon--orb {
-  transform: none;
-}
-
-/*
- * 未选中图标用 ink-3，不要用 opacity：
- * opacity 是"和背景混"，在白胶囊上 45% 会淡到几乎看不见；
- * ink-3 本身已经是克制的灰，既有层级又清楚。
- */
-.wd-tab-bar--icon-only .wd-tab-bar__item:not(.is-on) .wd-tab-bar__icon--orb {
-  color: var(--wd-ink-3);
-}
-
-.wd-tab-bar__item.is-on .wd-tab-bar__icon {
-  /* 图标在滑块上略上移 0.5px：视觉居中比数学居中更稳 */
-  transform: translateY(-0.5px);
-}
-
-/* ---------------- 悬浮胶囊形态 ---------------- */
-/*
- * 胶囊画在 **rail** 上，不是整个容器上。
- * 容器还包含右侧的 FAB —— 之前把胶囊画在容器上，FAB 就被包进了胶囊里，
- * 3 个 tab 时容器只有 141px 宽，文字挤成一团（"显示异常"就是这个）。
- */
+/* ---------------- 悬浮胶囊 ---------------- */
 .wd-tab-bar--floating {
   width: min(420px, calc(100% - 32px));
   margin: 0 auto 12px;
-  padding: 0;
-  background: transparent;
-  border-top: 0;
-  box-shadow: none;
 }
 
-.wd-tab-bar--floating .wd-tab-bar__rail {
-  flex: 1;
+.wd-tab-bar--floating .wd-tab-bar__seg {
   padding: 6px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-card);
   box-shadow: var(--wd-shadow-pop);
 }
 
-/* FAB：独立的圆形主按钮，与胶囊之间留 10px 缝（来自容器的 gap） */
+/* 纯图标：按内容收缩，别把 3 个图标摊满整条 */
+.wd-tab-bar--floating.wd-tab-bar--icon-only {
+  width: fit-content;
+  max-width: calc(100% - 24px);
+}
+
+.wd-tab-bar--floating.wd-tab-bar--icon-only .wd-tab-bar__seg {
+  flex: none;
+}
+
+/* 有 FAB：整条更宽，胶囊吃掉剩余宽度，FAB 独立在右侧 */
+.wd-tab-bar--floating.wd-tab-bar--with-fab {
+  width: min(460px, calc(100% - 24px));
+}
+
+/* ---------------- FAB ---------------- */
 .wd-tab-bar__fab {
   flex: none;
   display: inline-flex;
@@ -207,7 +92,10 @@
   transform: scale(0.94);
 }
 
-.wd-tab-bar--floating.wd-tab-bar--with-fab {
-  /* 有 FAB 时整条更宽：胶囊吃掉剩余宽度，FAB 独立在右侧 */
-  width: min(460px, calc(100% - 24px));
+/* ---------------- 通栏（floating=false） ---------------- */
+.wd-tab-bar:not(.wd-tab-bar--floating) {
+  width: 100%;
+  padding: 4px 6px;
+  background: var(--wd-card);
+  border-top: 1px solid var(--wd-field-hover);
 }

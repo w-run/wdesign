@@ -7,8 +7,8 @@ import { WdTabBar } from "@wdesign";
 
 const items = [
   { key: "home", label: "首页", icon: "home" },
-  { key: "explore", label: "发现", icon: "compass" },
-  { key: "message", label: "消息", icon: "chat", badge: 3 },
+  { key: "explore", label: "发现", icon: "search" },
+  { key: "message", label: "消息", icon: "message-circle", badge: 3 },
   { key: "me", label: "我的", icon: "user" },
 ];
 
@@ -40,7 +40,7 @@ const log = ref("（还没点）");
 
     <DemoBlock
       title="纯图标胶囊"
-      desc="iconOnly 去掉文字，高亮变成包住图标的圆（参考移动端 Toolkit 型导航）；未选中图标压到 45%，靠明暗表达层级"
+      desc="iconOnly 去掉文字，高亮变成包住图标的圆（参考移动端 Toolkit 型导航）；未选中图标收到 ink-3，靠明暗表达层级"
     >
       <div class="stage">
         <div class="stage__body">内容区</div>
@@ -73,8 +73,9 @@ const log = ref("（还没点）");
   /* 手机宽度居中：卡片很宽时不能让模拟框贴左 */
   margin: 0 auto;
   width: min(420px, 100%);
-  height: 300px;
-  padding: 12px;
+  height: 340px;
+  /* 底部留 16：悬浮胶囊要和容器边缘脱开，贴死就变成原生 tabbar 了 */
+  padding: 12px 12px 16px;
   border-radius: var(--wd-radius-lg);
   background: var(--wd-bg);
 }
@@ -87,6 +88,8 @@ const log = ref("（还没点）");
 /* 内容区只是占位：说明导航是浮在内容之上的 */
 .stage__body {
   flex: 1;
+  /* 和胶囊之间要留缝：贴在一起会读成"胶囊压在内容上" */
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

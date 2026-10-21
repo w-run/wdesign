@@ -145,3 +145,71 @@
   visibility: hidden;
   pointer-events: none;
 }
+
+
+/* =============================================================
+ *  stack 布局：图标在上、文字在下（底部导航 / 图标标签切换）
+ *
+ *  TabBar 就是这套配置的预设（见 _tab-bar.scss）—— 滑块、hover、
+ *  首帧落位、暗色、溢出全继承，不再维护第二份实现。
+ * ============================================================= */
+.wd-segmented--stack .wd-segmented__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 52px;
+  padding: 0 14px;
+}
+
+.wd-segmented__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wd-segmented__label {
+  font-size: 11px;
+  font-weight: var(--wd-fw-medium);
+  /* 行高 1.2：默认行高含 descender，文字会贴住滑块底边 */
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.wd-segmented--stack .wd-segmented__item--active .wd-segmented__label {
+  font-weight: var(--wd-fw-bold);
+}
+
+/* 角标 */
+.wd-segmented__badge {
+  position: absolute;
+  top: -3px;
+  right: -7px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3.5px;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-red);
+  color: var(--wd-on-dark-text);
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: var(--wd-fw-semibold);
+  line-height: 14px;
+  text-align: center;
+  box-shadow: 0 0 0 2px var(--wd-card);
+}
+
+/* 纯图标：不渲染文字，选项收成正方形，未选中压到 ink-3 */
+.wd-segmented--icon-only .wd-segmented__item {
+  flex: none;
+  width: 52px;
+  height: 48px;
+  padding: 0;
+  gap: 0;
+}
+
+.wd-segmented--icon-only .wd-segmented__item:not(.wd-segmented__item--active) .wd-segmented__icon {
+  color: var(--wd-ink-3);
+}
