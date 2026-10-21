@@ -32,7 +32,7 @@ const props = withDefaults(
     checkedKeys?: (string | number)[]
     /** 勾选是否级联到父子 */
     cascade?: boolean
-    /** 支持多选（配合 checkable） */
+    /** 显示层级引导线（竖线 + 横钩），适合目录型数据 */
     showLine?: boolean
     /** 空数据文案 */
     emptyText?: string

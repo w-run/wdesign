@@ -27,6 +27,8 @@ const names = computed<string[]>(() =>
 function formatDefault(raw: string) {
   const value = raw.replace(/^\(\)\s*=>\s*/, "").trim();
   if (value === "''" || value === '""') return "空字符串";
+  // undefined 表示"没有默认值"，不该渲染成一个写着 undefined 的粉色胶囊
+  if (value === "undefined") return "";
   if (value === "() => []" || value === "[]") return "[]";
   return value;
 }

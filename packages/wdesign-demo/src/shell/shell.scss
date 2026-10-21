@@ -125,3 +125,22 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/*
+ * 慢放模式（侧栏底部那个 ⏱ 按钮）。
+ *
+ * 用途很实际：远程桌面 / 穿透链路上帧率低，120ms 的过渡根本看不见，
+ * 于是"有没有动效"没法判断。这里把时长令牌整体拉长 5~8 倍，
+ * 动效的起止、缓动曲线都能一帧一帧看清；它只是在 :root 上改令牌值，
+ * 不改任何组件的写法，关掉即恢复。
+ */
+html[data-motion="slow"] {
+  --wd-dur: 1s;
+  --wd-dur-fast: 0.7s;
+  --wd-dur-slow: 1.4s;
+  --wd-dur-reveal: 2s;
+  --wd-dur-pop: 1.2s;
+  --wd-dur-pop-out: 1s;
+  --wd-dur-theme: 1.4s;
+  --wd-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

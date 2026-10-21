@@ -53,6 +53,9 @@ function genericBody(src, keyword) {
 /** 把一段 JSDoc 压成一行说明 */
 function cleanComment(raw) {
   return raw
+    // ⚠️ 必须先 trim：多行注释的第一行是带缩进的 `    /**`，
+    // 不去掉前导空格，下面按行首匹配的 /** 就剥不掉，说明里会残留 `/**`
+    .trim()
     .replace(/^\/\*\*?/, "")
     .replace(/\*\/$/, "")
     .split("\n")

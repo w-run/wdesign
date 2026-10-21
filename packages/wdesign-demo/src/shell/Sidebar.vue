@@ -137,6 +137,18 @@ function toggleDark() {
   dark.value = !dark.value;
   document.documentElement.dataset.theme = dark.value ? "dark" : "light";
 }
+
+/**
+ * 慢放：把动效时长整体拉长，方便在远程桌面 / 低帧率链路上看清过渡。
+ * 只是给 <html> 挂 data-motion，令牌值由 shell.scss 覆盖。
+ */
+const slowMotion = ref(false);
+
+function toggleMotion() {
+  slowMotion.value = !slowMotion.value;
+  if (slowMotion.value) document.documentElement.dataset.motion = "slow";
+  else delete document.documentElement.dataset.motion;
+}
 </script>
 
 <template>
@@ -151,6 +163,15 @@ function toggleDark() {
   >
     <template #footer>
       <span class="side-version">v1.0</span>
+      <button
+        class="side-theme"
+        type="button"
+        :class="{ 'is-on': slowMotion }"
+        title="慢放动效（远程看不清过渡时用）"
+        @click="toggleMotion"
+      >
+        ⏱
+      </button>
       <button class="side-theme" type="button" title="切换主题" @click="toggleDark">
         {{ dark ? "☀" : "☾" }}
       </button>
