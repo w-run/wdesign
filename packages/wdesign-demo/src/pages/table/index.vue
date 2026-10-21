@@ -128,7 +128,7 @@ const fixedRows: Row[] = ["WdButton", "WdInput", "WdTable", "WdSelect", "WdModal
     <DemoBlock title="基础与勾选" desc="selectable 打开勾选列，row-key 指定唯一标识，选中结果通过 v-model:selected 回传">
       <WdTable v-model:selected="selected" :columns="repoCols" :rows="repoRows" selectable row-key="name">
         <template #cell-status="{ row }">
-          <WdTag :variant="row.status === 'active' ? 'tint' : 'gray'" dot>
+          <WdTag :variant="row.status === 'active' ? 'success' : 'gray'" dot>
             {{ row.status === "active" ? "活跃" : "归档" }}
           </WdTag>
         </template>
@@ -159,7 +159,7 @@ const fixedRows: Row[] = ["WdButton", "WdInput", "WdTable", "WdSelect", "WdModal
     <DemoBlock title="行展开详情" desc="expandable 时每行多一个箭头，详情写在 #expand 插槽里，默认横跨整行">
       <WdTable :columns="taskCols" :rows="taskRows" expandable row-key="id" size="sm" @row-click="onRowClick">
         <template #cell-status="{ row }">
-          <WdTag :variant="row.status === '通过' ? 'tint' : 'gray'" size="sm">{{ row.status }}</WdTag>
+          <WdTag :variant="row.status === '通过' ? 'success' : 'gray'" size="sm">{{ row.status }}</WdTag>
         </template>
         <template #expand="{ row }">
           <span class="detail">{{ row.detail }}</span>

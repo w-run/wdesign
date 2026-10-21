@@ -53,7 +53,7 @@ const customItems = [
       <WdCollapse v-model="customOpen" :items="customItems">
         <template #item-0>
           <span class="row">
-            <WdTag variant="tint" size="sm">已发货</WdTag>
+            <WdTag variant="success" size="sm">已发货</WdTag>
             <span class="row__text">WD-20261017-0042 · 顺丰 SF7712004388</span>
           </span>
           <span class="row">
