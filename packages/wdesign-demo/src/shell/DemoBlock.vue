@@ -2,7 +2,7 @@
 import { computed, inject, ref } from "vue";
 import { useRoute } from "vue-router";
 import demoCode from "virtual:demo-code";
-import { highlightTemplate } from "./highlight";
+
 
 /**
  * 文档卡片：预览 + 源码。
@@ -34,10 +34,31 @@ const registerIndex = inject<(() => number) | null>("wd-demo-index", null);
 const index = registerIndex ? registerIndex() : -1;
 
 const route = useRoute();
-const code = computed(() => demoCode[route.path]?.[index] ?? "");
+/*
+ * 构建期已用 shiki + 我们自己的 VS Code 主题高亮好（`{ code, html }`），
+ * 运行时只负责渲染，不再做词法分析。
+ * 兼容旧形状（纯字符串）：老缓存或高亮不可用时仍能显示源码。
+ */
+const entry = computed(() => demoCode[route.path]?.[index]);
+const code = computed(() => {
+  const e = entry.value;
+  return typeof e === "string" ? e : (e?.code ?? "");
+});
 
 
-const highlighted = computed(() => highlightTemplate(code.value));
+const highlighted = computed(() => {
+  const e = entry.value;
+  if (e && typeof e === "object" && e.html) return e.html;
+  return escapeHtml(code.value);
+});
+
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 const open = ref(props.defaultOpen);
 const copied = ref<"" | "ok" | "fail">("");
@@ -250,32 +271,38 @@ async function copyCode() {
   font-family: inherit;
 }
 
-/* 语法着色：只区分「标签 / 属性 / 字符串 / 插值」四类，够读就行。
-   颜色取自装饰用的彩虹令牌（不承载语义），深色主题下同样成立。 */
-.demo-block__pre :deep(.tk-tag) {
+/*
+ * 语法着色交给构建期的 shiki + 我们自己的 VS Code 主题
+ * （theme/wdesign-light.json / wdesign-dark.json）。
+ *
+ * shiki 双主题输出：每个 token 的样式是 `color: var(--shiki-light)`，
+ * 深色主题的色值挂在 `--shiki-dark`。所以这里只需要在深色下把变量换过去，
+ * **不用重新高亮、也不用维护两套 .tk-* 类**。
+ */
+.demo-block__pre code {
+  font-family: inherit;
+}
+
+.demo-block__pre :deep(.line) {
+  display: block;
+}
+
+/*
+ * shiki 的 defaultColor: 'light' 会把浅色直接写成内联 `color:#xxx`，
+ * 深色值挂在同一个 span 的 `--shiki-dark` 上。所以深色主题只需要把这个变量翻出来。
+ */
+html[data-theme="dark"] .demo-block__pre :deep(span[style*="--shiki-dark"]) {
+  color: var(--shiki-dark) !important;
+}
+
+/* 行内代码（desc 里的 `code`）沿用同一套语义色，但只有一档 */
+.demo-block__desc :deep(code) {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--wd-field);
+  font-family: var(--wd-font-mono);
+  font-size: 12px;
   color: var(--wd-ink);
-  font-weight: var(--wd-fw-medium);
-}
-
-.demo-block__pre :deep(.tk-attr) {
-  color: var(--wd-rainbow-indigo);
-}
-
-.demo-block__pre :deep(.tk-str) {
-  color: var(--wd-rainbow-green);
-}
-
-.demo-block__pre :deep(.tk-interp) {
-  color: var(--wd-rainbow-amber);
-}
-
-.demo-block__pre :deep(.tk-punct) {
-  color: var(--wd-ink-4);
-}
-
-.demo-block__pre :deep(.tk-comment) {
-  color: var(--wd-ink-4);
-  font-style: italic;
 }
 
 .demo-block__copy {

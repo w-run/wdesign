@@ -1,0 +1,63 @@
+{
+  "name": "WDesign Dark",
+  "type": "dark",
+  "semanticHighlighting": true,
+  "colors": {
+    "editor.background": "#17181B",
+    "editor.foreground": "#E8E8EC",
+    "editorLineNumber.foreground": "#5B6172",
+    "editorLineNumber.activeForeground": "#A8ADBB",
+    "editor.selectionBackground": "#2E2E36",
+    "editorCursor.foreground": "#E84A5A"
+  },
+  "tokenColors": [
+    {
+      "scope": ["comment", "punctuation.definition.comment"],
+      "settings": { "foreground": "#6E7480", "fontStyle": "italic" }
+    },
+    {
+      "scope": ["string", "string.quoted", "string.template", "punctuation.definition.string"],
+      "settings": { "foreground": "#6FD3A8" }
+    },
+    {
+      "scope": ["constant.numeric", "constant.language", "constant.character"],
+      "settings": { "foreground": "#F0BC72" }
+    },
+    {
+      "scope": ["keyword", "storage", "storage.type", "storage.modifier"],
+      "settings": { "foreground": "#FF9AA6" }
+    },
+    {
+      "scope": ["keyword.operator", "punctuation.separator", "punctuation.terminator"],
+      "settings": { "foreground": "#A8ADBB" }
+    },
+    {
+      "scope": ["entity.name.function", "support.function", "meta.function-call"],
+      "settings": { "foreground": "#8FB4FF" }
+    },
+    {
+      "scope": ["entity.name.tag", "punctuation.definition.tag"],
+      "settings": { "foreground": "#F594B5" }
+    },
+    {
+      "scope": ["entity.other.attribute-name", "meta.attribute"],
+      "settings": { "foreground": "#B3A6FF" }
+    },
+    {
+      "scope": ["support.type", "entity.name.type", "entity.name.class"],
+      "settings": { "foreground": "#7FD0E8" }
+    },
+    {
+      "scope": ["variable", "variable.parameter", "variable.other.property", "meta.object-literal.key"],
+      "settings": { "foreground": "#D6D8DE" }
+    },
+    {
+      "scope": ["punctuation", "meta.brace", "meta.tag"],
+      "settings": { "foreground": "#8E94A4" }
+    },
+    {
+      "scope": ["meta.interpolation", "punctuation.section.embedded"],
+      "settings": { "foreground": "#FF9AA6" }
+    }
+  ]
+}

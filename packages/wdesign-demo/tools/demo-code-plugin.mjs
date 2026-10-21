@@ -18,6 +18,7 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { extractAll } from "./extract-api.mjs";
+import { highlight } from "./highlight.mjs";
 
 const VIRTUAL_ID = "virtual:demo-code";
 const RESOLVED_ID = "\0" + VIRTUAL_ID;
@@ -110,13 +111,19 @@ function collectPages(pagesDir, out = []) {
 export function demoCode() {
   const pagesDir = join(process.cwd(), "src/pages");
 
-  const build = () => {
+  const build = async () => {
     const map = {};
     for (const { dir, file } of collectPages(pagesDir)) {
       const source = readFileSync(file, "utf8");
+      const blocks = extractBlocks(source);
       // ⚠️ 只发 blocks，不发整个 SFC：76 页全文加起来 500KB+，
       //    会白白计入首包（构建产物从 190KB 涨到 380KB 就是它干的）
-      map[dir === "home" ? "/" : `/${dir}`] = extractBlocks(source);
+      // 每块同时给源码与高亮后的 HTML（shiki + 我们的 VS Code 主题）
+      const items = [];
+      for (const code of blocks) {
+        items.push({ code, html: await highlight(code, "vue") });
+      }
+      map[dir === "home" ? "/" : `/${dir}`] = items;
     }
     return map;
   };
@@ -130,8 +137,11 @@ export function demoCode() {
       return null;
     },
 
-    load(id) {
-      if (id === RESOLVED_ID) return `export default ${JSON.stringify(build())};`;
+    async load(id) {
+      if (id === RESOLVED_ID) {
+        const data = await build();
+        return `export default ${JSON.stringify(data)};`;
+      }
       if (id === API_RESOLVED) {
         const compDir = join(process.cwd(), "../wdesign-ui/src/components");
         return `export default ${JSON.stringify(extractAll(compDir))};`;
