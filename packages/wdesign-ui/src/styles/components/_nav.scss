@@ -312,6 +312,13 @@
   flex-direction: column;
   align-items: stretch;
   gap: 3px;
+  /*
+   * ⚠️ `min-height: 0` 不能省。
+   * 列表是 flex 子项（flex: 1），默认 min-height: auto 意味着**不会小于内容高度** ——
+   * 于是 overflow-y: auto 形同虚设，项多时列表把整个导航撑破、溢出到卡片外面
+   * （演示站 /nav 的竖栏就压到了下一块标题上）。
+   */
+  min-height: 0;
   /* 列表可滚动，footer 固定在底部 */
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -340,6 +347,11 @@
   padding: 0;
   justify-content: center;
   border-radius: 50%;
+  /*
+   * 纯图标态图标承担全部语义（没有文字兜底），比带文字的导航要再重一档：
+   * ink-3 在白卡上太淡，扫视时几乎看不清有哪些入口。
+   */
+  color: var(--wd-ink-2);
 }
 
 @media (hover: hover) {

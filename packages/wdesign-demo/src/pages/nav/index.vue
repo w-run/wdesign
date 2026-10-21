@@ -133,7 +133,7 @@ const mdItems: { key: string; label: string; dot?: boolean; disabled?: boolean }
       title="纯图标竖栏"
       desc="iconOnly 与 collapsed 不同：前者永远只有图标（保留 title 提示），后者只是可展开的收起状态"
     >
-      <div class="nav-stage nav-stage--short">
+      <div class="nav-stage nav-stage--short nav-stage--icon">
         <WdNav
           v-model:active="iconActive"
           direction="vertical"
@@ -170,5 +170,19 @@ const mdItems: { key: string; label: string; dot?: boolean; disabled?: boolean }
 
 .nav-stage--short {
   height: 300px;
+}
+
+/*
+ * 纯图标舞台：4 个图标的工具栏按内容高度贴顶。
+ * ⚠️ 必须限定在这一块 —— 同样的 align-items: flex-start + height: auto
+ * 套到「分组可折叠」那块的 20 多个项上，导航会被内容撑到 444px、溢出舞台。
+ */
+.nav-stage--icon {
+  height: 240px;
+  align-items: flex-start;
+}
+
+.nav-stage--icon .wd-nav {
+  height: auto;
 }
 </style>
