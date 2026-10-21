@@ -77,11 +77,19 @@ const panelEl = ref<HTMLElement | null>(null)
  */
 const activeQuery = ref<{ start: number; query: string } | null>(null)
 
-function detectMention() {
+/**
+ * 检测光标前是否有一段 `@xxx`。
+ *
+ * ⚠️ 必须接受"当前输入值"参数，不能只读 `text.value`：
+ * 受控模式（v-model）下 `text` 来自 `props.modelValue`，
+ * 而父组件在同一个 tick 里还没把新值传回来 —— `detectMention()` 读到的是**旧文本**，
+ * 于是刚敲下的 `@` 永远检测不到，浮层打不开（"Mentions 失效"就是这么来的）。
+ */
+function detectMention(value?: string) {
   const el = ta.value
   if (!el) return
   const pos = el.selectionStart ?? 0
-  const before = text.value.slice(0, pos)
+  const before = (value ?? text.value).slice(0, pos)
   const at = before.lastIndexOf(props.trigger)
   if (at < 0) { activeQuery.value = null; return }
 
@@ -124,9 +132,10 @@ function pick(user: WdMentionUser) {
   if (!a || !el) return
 
   const insert = props.trigger + (user.value ?? user.label)
-  const pos = el.selectionStart ?? text.value.length
-  const before = text.value.slice(0, a.start)
-  const after = text.value.slice(pos)
+  const live = el.value
+  const pos = el.selectionStart ?? live.length
+  const before = live.slice(0, a.start)
+  const after = live.slice(pos)
   // 末尾补空格，方便继续输入
   const next = before + insert + ' ' + after
 
@@ -153,7 +162,8 @@ function onInput(e: Event) {
   if (!isControlled.value) inner.value = v
   emit('update:modelValue', v)
   emit('change', v)
-  detectMention()
+  // 把刚输入的值直接传进去，不要等 props 回流
+  detectMention(v)
 }
 
 /* ---------------- 键盘 ---------------- */

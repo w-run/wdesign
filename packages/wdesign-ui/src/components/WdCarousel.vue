@@ -24,8 +24,21 @@ const props = withDefaults(
     showArrows?: boolean
     /** 首尾无缝循环（默认开启）：末张→首张不倒退整条轨道 */
     loop?: boolean
+    /**
+     * 悬停 / 聚焦时暂停自动播放。
+     * 默认开 —— 鼠标停在图上还在自动翻页是最劝退的轮播体验。
+     */
+    pauseOnHover?: boolean
   }>(),
-  { items: () => [], height: 260, autoplay: 0, showDots: true, showArrows: true, loop: true },
+  {
+    items: () => [],
+    height: 260,
+    autoplay: 0,
+    showDots: true,
+    showArrows: true,
+    loop: true,
+    pauseOnHover: true,
+  },
 )
 
 const PALETTE = ['var(--wd-tint-2)', 'var(--wd-success-soft)', 'var(--wd-warning-soft)', 'var(--wd-field)']
@@ -132,6 +145,12 @@ function restart() {
 function stop() {
   if (timer) { window.clearInterval(timer); timer = null }
 }
+/* 键盘左右切换：轮播是"可聚焦的展示区"，键盘用户也要能翻 */
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'ArrowLeft') { e.preventDefault(); prev() }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); next() }
+}
+
 onMounted(() => {
   pos.value = looping() ? 1 : 0
   restart()
@@ -193,8 +212,14 @@ function detach() {
     ref="root"
     class="wd-carousel"
     :style="{ height: height + 'px' }"
-    @mouseenter="stop"
-    @mouseleave="restart"
+    tabindex="0"
+    role="region"
+    aria-roledescription="轮播"
+    @mouseenter="pauseOnHover && stop()"
+    @mouseleave="pauseOnHover && restart()"
+    @focusin="pauseOnHover && stop()"
+    @focusout="pauseOnHover && restart()"
+    @keydown="onKeydown"
     @pointerdown="onDown"
   >
     <div class="wd-carousel__track" :style="trackStyle" @transitionend="onTransitionEnd">
