@@ -55,7 +55,8 @@
  * 与 danger 语义混淆。深色块在黑白灰体系里已经足够明确。
  * 与 WdTree / WdTransfer 的自绘勾选保持一致。
  */
-.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-check-color); color: #fff; }
+.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-check-color); /* 勾选符号必须与勾选底反相：深色主题下 --wd-ink 翻成近白，符号再写死 #fff 就看不见了 */
+  color: var(--wd-card); }
 @media (hover: hover) {
   .wd-checkbox--checked:hover .wd-checkbox__box { background: var(--wd-check-hover); }
 }
@@ -74,7 +75,8 @@
  */
 .wd-checkbox--checked.wd-checkbox--disabled .wd-checkbox__box {
   background: var(--wd-check-disabled);
-  color: #fff;
+  /* 勾选符号必须与勾选底反相：深色主题下 --wd-ink 翻成近白，符号再写死 #fff 就看不见了 */
+  color: var(--wd-card);
 }
 /* ---- 微交互（精致版）---- */
 .wd-checkbox__box svg path {

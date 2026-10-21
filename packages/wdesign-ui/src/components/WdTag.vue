@@ -3,8 +3,16 @@ defineOptions({ name: 'WdTag' })
 
 withDefaults(
   defineProps<{
-    /** 视觉风格：tint 淡色底 / gray 中性灰 / dark 深色实底 */
-    variant?: 'tint' | 'gray' | 'dark'
+    /**
+     * 视觉风格。
+     *
+     * ⚠️ 语义分工（避免"红=出错"和"红=话题"撞在一起）：
+     *   · `tint`  主题淡红 —— **话题 / 分类**（#设计 #前端），不是状态
+     *   · `success` 绿 / `warning` 琥珀 / `gray` 中性 —— **状态**
+     *   · `danger` 红 —— 只用于"失败 / 已封禁"这类真危险状态
+     *   · `dark`  深色实底 —— 强调元信息（置顶、官方）
+     */
+    variant?: 'tint' | 'success' | 'warning' | 'gray' | 'danger' | 'dark'
     /** 尺寸档：sm | md | lg，不传为默认 md */
     size?: 'lg' | 'md' | 'sm'
     /** 前置状态圆点（固定主色红） */

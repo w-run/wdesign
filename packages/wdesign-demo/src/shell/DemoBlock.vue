@@ -238,8 +238,9 @@ async function copyCode() {
   max-width: 660px;
   overflow: auto;
   font-family: var(--wd-font-mono);
-  font-size: 13px;
-  line-height: 1.75;
+  /* Monaspace 更宽更胀，代码块同字号降半档；中文走思源（92% size-adjust） */
+  font-size: 12.5px;
+  line-height: 1.8;
   color: var(--wd-ink-2);
   tab-size: 2;
 }

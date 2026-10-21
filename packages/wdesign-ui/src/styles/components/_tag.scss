@@ -13,7 +13,14 @@
 }
 .wd-tag--lg { height: 36px; padding: 0 20px; font-size: var(--wd-font-size-md); }
 .wd-tag--sm { height: 22px; padding: 0 10px; font-size: var(--wd-font-size-sm); }
+/* 话题 / 分类：主题淡红（红在这里是"品牌标签"，不是错误） */
 .wd-tag--tint { background: var(--wd-tint-2); color: var(--wd-red-text); }
+
+/* 状态：语义色。绿=正常、琥珀=待处理/警告、灰=中性、红=失败（唯一保留的红色状态） */
+.wd-tag--success { background: var(--wd-success-soft); color: var(--wd-success-ink); }
+.wd-tag--warning { background: var(--wd-warning-soft); color: var(--wd-warning-ink); }
+/* 危险态用深红（与主题红区分：主题红=品牌/话题，深红=失败/封禁） */
+.wd-tag--danger { background: var(--wd-danger-soft); color: var(--wd-danger-ink); }
 .wd-tag--gray { background: var(--wd-field); color: var(--wd-ink-2); }
 .wd-tag--dark { background: var(--wd-dark); color: var(--wd-dark-text); }
 .wd-tag:active { transform: scale(.96); }
@@ -23,11 +30,9 @@
   height: 7px;
   flex: none;
   border-radius: 50%;
-  background: var(--wd-red);
+  /* 点跟随标签自身的语义色：绿标签配红点是纯粹的歧义 */
+  background: currentColor;
 }
-.wd-tag__dot--success { background: var(--wd-success); }
-.wd-tag__dot--warning { background: var(--wd-warning); }
-.wd-tag__dot--gray { background: var(--wd-ink-3); }
 /* ---- 微交互（精致版）---- */
 .wd-tag { transition: background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out); }
 @media (hover: hover) {

@@ -54,7 +54,25 @@ $wd-vf-fonts-enabled: false;
   font-display: swap;
 }
 
+/*
+ * 等宽场景里的中文用思源，但**要缩到 92%**。
+ *
+ * 原因：Monaspace Neon 的 x-height 偏大，同样 13px 下拉丁显得饱满，
+ * 而思源（CJK 全角）在同一字号里视觉更"重"更大 —— 直接混排就是"中文比英文大一档"。
+ * 用 size-adjust 单独压一个只给等宽上下文用的字形族，中英才相称。
+ * （不直接改主字体族的 size-adjust：那会影响正文排版。）
+ */
+@font-face {
+  font-family: "Source Han Sans Mono-ish";
+  src: url("@wdesign/../fonts/noto-sans-sc-vf.woff2") format("woff2-variations");
+  font-weight: 200 900;
+  font-style: normal;
+  size-adjust: 92%;
+  font-display: swap;
+}
+
 :root {
   --wd-font-family: "Mona Sans", "Source Han Sans SC";
-  --wd-font-mono: "Monaspace Neon", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --wd-font-mono: "Monaspace Neon", "Source Han Sans Mono-ish", ui-monospace, "SF Mono",
+    Menlo, Consolas, monospace;
 }

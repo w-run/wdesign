@@ -33,13 +33,28 @@ const stack = [
 <template>
   <DemoPage
     name="Tag"
-    desc="标签：三种底色 · 三档尺寸 · 圆点态 · 图标与计数 · 可点选与溢出边界"
+    desc="标签：话题与状态分工 · 六种底色 · 三档尺寸 · 圆点态 · 图标与计数 · 可点选"
   >
-    <DemoBlock title="变体" desc="tint 用于分类，gray 用于次要信息，dark 用在小面积强调">
+    <DemoBlock
+      title="话题标签"
+      desc="tint 是主题淡红，专门表示「话题 / 分类」（#设计 #前端）。红在这里是品牌色，不承担错误语义"
+    >
       <DemoRow>
-        <WdTag>设计</WdTag>
-        <WdTag variant="gray">草稿</WdTag>
-        <WdTag variant="dark">置顶</WdTag>
+        <WdTag># 设计</WdTag>
+        <WdTag># 前端</WdTag>
+        <WdTag variant="dark">官方</WdTag>
+      </DemoRow>
+    </DemoBlock>
+
+    <DemoBlock
+      title="状态标签"
+      desc="状态必须用语义色：success 绿=正常、warning 琥珀=待处理、gray=中性、danger 红=失败。别拿主题红当「进行中」，否则和报错撞车"
+    >
+      <DemoRow>
+        <WdTag variant="success" dot>运行中</WdTag>
+        <WdTag variant="warning" dot>待审核</WdTag>
+        <WdTag variant="gray" dot>草稿</WdTag>
+        <WdTag variant="danger" dot>已封禁</WdTag>
       </DemoRow>
     </DemoBlock>
 
@@ -51,10 +66,10 @@ const stack = [
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock title="圆点态" desc="dot 用来表达状态，圆点比纯文字更容易被扫到">
+    <DemoBlock title="圆点跟随变体" desc="dot 的颜色取自标签自身（currentColor），不再固定红点 —— 绿标签配红点是纯粹的歧义">
       <DemoRow>
-        <WdTag dot>运行中</WdTag>
-        <WdTag variant="gray" dot>待处理</WdTag>
+        <WdTag variant="success" dot>已连接</WdTag>
+        <WdTag variant="tint" dot>热门话题</WdTag>
         <WdTag variant="dark" dot>已归档</WdTag>
       </DemoRow>
     </DemoBlock>

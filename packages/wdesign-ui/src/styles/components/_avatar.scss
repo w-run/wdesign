@@ -26,9 +26,16 @@
  * 不用红色系 —— 红是主色，不该拿来做装饰分类。
  * 用灰度层次区分即可，识别主要靠首字母/图片本身。
  */
-.wd-avatar--tone-1 { background: var(--wd-ink-5); color: var(--wd-ink-2); }
-.wd-avatar--tone-2 { background: var(--wd-bg); color: var(--wd-ink-2); }
-.wd-avatar--tone-3 { background: var(--wd-field); color: var(--wd-ink-2); }
+/*
+ * 6 组淡彩（原来 tone-1/2/3 全是灰：ink-5 / bg / field + 同一个 ink-2 字色）。
+ * 灰色头像在列表里既分不清人，也读不出"这是个人"。
+ */
+.wd-avatar--tone-1 { background: var(--wd-avatar-1-soft); color: var(--wd-avatar-1-ink); }
+.wd-avatar--tone-2 { background: var(--wd-avatar-2-soft); color: var(--wd-avatar-2-ink); }
+.wd-avatar--tone-3 { background: var(--wd-avatar-3-soft); color: var(--wd-avatar-3-ink); }
+.wd-avatar--tone-4 { background: var(--wd-avatar-4-soft); color: var(--wd-avatar-4-ink); }
+.wd-avatar--tone-5 { background: var(--wd-avatar-5-soft); color: var(--wd-avatar-5-ink); }
+.wd-avatar--tone-6 { background: var(--wd-avatar-6-soft); color: var(--wd-avatar-6-ink); }
 .wd-avatar--dark { background: var(--wd-dark); color: var(--wd-dark-text); }
 .wd-avatar--sm { width: 34px; height: 34px; font-size: 12.5px; }
 .wd-avatar--lg { width: 56px; height: 56px; font-size: 18px; }

@@ -34,6 +34,19 @@ html.dark-theme {
   --wd-focus-ring:       rgba(232, 74, 90, .30);
   --wd-focus-ring-soft:  rgba(232, 74, 90, .24);
 
+  /* 深色下 danger 走"更深的红底 + 提亮的红字"，仍与主题红区分 */
+  --wd-danger:      #C2273C;
+  --wd-danger-soft: #3A1418;
+  --wd-danger-ink:  #FF9AA6;
+
+  /* 头像淡彩在深色下换成"同色相深底 + 提亮字" */
+  --wd-avatar-1-soft: #1B2540; --wd-avatar-1-ink: #8FB4FF;
+  --wd-avatar-2-soft: #16302A; --wd-avatar-2-ink: #6FD3A8;
+  --wd-avatar-3-soft: #35281A; --wd-avatar-3-ink: #F0BC72;
+  --wd-avatar-4-soft: #331E27; --wd-avatar-4-ink: #F594B5;
+  --wd-avatar-5-soft: #241F3D; --wd-avatar-5-ink: #B3A6FF;
+  --wd-avatar-6-soft: #152B33; --wd-avatar-6-ink: #7FD0E8;
+
   --wd-selected-bg:  #F2F2F5;   /* 强选中反相：近白实心 */
   --wd-selected-ink: #101014;   /* 其上近黑字 */
   --wd-selected-row: #2E2E36;   /* 弱选中（整行）：只比卡面亮一档 */

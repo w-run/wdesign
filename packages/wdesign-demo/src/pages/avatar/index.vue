@@ -39,12 +39,15 @@ const people = [
 
     <DemoBlock
       title="明度档位"
-      desc="tone 全部落在中性灰族里，只做明度区分；tone 0（默认）= 按名字自动分配"
+      desc="6 组低饱和淡彩（蓝/绿/琥珀/玫/紫/青），底与文字同色相；tone 0（默认）= 按名字哈希稳定分配，同一个人永远同色"
     >
       <DemoRow :gap="12">
         <WdAvatar name="甲" :tone="1" />
         <WdAvatar name="乙" :tone="2" />
         <WdAvatar name="丙" :tone="3" />
+        <WdAvatar name="丁" :tone="4" />
+        <WdAvatar name="戊" :tone="5" />
+        <WdAvatar name="己" :tone="6" />
         <WdAvatar name="深" dark />
       </DemoRow>
     </DemoBlock>

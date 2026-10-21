@@ -41,6 +41,20 @@ $wd-dark-2:     #2F2F2F !default; // 深色二级 · 浮层 / 悬停
 $wd-dark-text:  #FFFFFF !default; // 深色锚点上的文字（深色主题翻转为深字）
 
 // --- Semantic · 仅小面积（状态点 / 小字提示） --------------
+/*
+ * 头像淡彩色板（6 组）。
+ *
+ * 全灰头像等于没有信息：列表里 10 个人长得一模一样，也不像"人"。
+ * 用低饱和淡彩底 + 同色相深字，按名字 hash 稳定分配 —— 同一个人永远同一个颜色。
+ * 彩度压得很低（L≈95%），保证不抢内容、深浅主题都不刺眼。
+ */
+$wd-avatar-1-soft: #E7EEFC !default; $wd-avatar-1-ink: #1D4ED8 !default; // 蓝
+$wd-avatar-2-soft: #E4F5EC !default; $wd-avatar-2-ink: #17734F !default; // 绿
+$wd-avatar-3-soft: #FBF0DF !default; $wd-avatar-3-ink: #8A5A12 !default; // 琥珀
+$wd-avatar-4-soft: #FBEBF1 !default; $wd-avatar-4-ink: #A3325C !default; // 玫
+$wd-avatar-5-soft: #EEEBFB !default; $wd-avatar-5-ink: #4C3BB0 !default; // 紫
+$wd-avatar-6-soft: #E3F2F7 !default; $wd-avatar-6-ink: #166A80 !default; // 青
+
 $wd-success:    #2FA57C !default;
 $wd-warning:    #E8A33D !default;
 $wd-success-soft: #E8F6F0 !default; // 成功 · 浅底
@@ -122,7 +136,14 @@ $wd-dark-active-dark: #D0D0D0 !default;
 $wd-mark-bg:      rgba(214, 40, 57, .14) !default; // 文本高亮
 $wd-link-underline: rgba(214, 40, 57, .35) !default; // 链接下划线
 
-$wd-danger:     $wd-red !default;
+/*
+ * danger 用**深红**，和主题红（#D62839）分开。
+ * 主题红是"品牌/主要行动/话题"；失败、已封禁这类真正的危险态要更沉，
+ * 否则页面上"主按钮"和"错误标签"是一个颜色，读起来就乱了。
+ */
+$wd-danger:      #A3162A !default;
+$wd-danger-soft: #F8E7EA !default; // 危险 · 淡底
+$wd-danger-ink:  #8C1122 !default; // 危险 · 文字（淡底上 6.2:1）
 
 // --- Focus Ring --------------------------------------------
 // 整体压淡约一半 —— 原先 .22/.14/.08 在白底上都偏"红得扎眼"，
@@ -169,7 +190,7 @@ $wd-space-16: 64px !default;
 // 字体：拉丁 Mona Sans + 中文 思源黑体（Source Han Sans SC）—— 均为 VF 可变字体
 // 字体栈：WDesignSans 优先（WIP，可先用），Mona Sans / 系统中文字体兜底
 $wd-font-family: "WDesignSans Latin", "WDesignSans CJK Symbol", "WDesignSans GB2312", "WDesignSans GB2312 Extra", "WDesignSans BIG5", "WDesignSans BIG5 Extra", "WDesignSans JIS", "Mona Sans", "Source Han Sans SC", "PingFang SC", -apple-system, BlinkMacSystemFont, "Inter", sans-serif !default;
-$wd-font-mono:   "Monaspace Neon", ui-monospace, "SF Mono", Menlo, Consolas, monospace !default; // 等宽：Monaspace Neon（此前写的 "Mona Sans Mono" 并不存在，一直在回落系统字体）
+$wd-font-mono:   "Monaspace Neon", "Source Han Sans Mono-ish", ui-monospace, "SF Mono", Menlo, Consolas, monospace !default; // 等宽：Monaspace Neon（此前写的 "Mona Sans Mono" 并不存在，一直在回落系统字体）
 $wd-fs-display:  56px !default; // 800
 $wd-fs-h1:       32px !default; // 800
 $wd-fs-h2:       24px !default; // 700

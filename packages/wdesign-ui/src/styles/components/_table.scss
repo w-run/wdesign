@@ -87,7 +87,8 @@
   cursor: pointer;
   background: transparent;
   box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
-  color: #fff;
+  /* 与 checkbox 同理：勾选底是 --wd-ink（深色主题下翻成近白），符号必须反相 */
+  color: var(--wd-card);
   transition: background var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-out);
 }
 @media (hover: hover) {

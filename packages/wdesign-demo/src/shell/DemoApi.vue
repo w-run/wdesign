@@ -24,6 +24,15 @@ const names = computed<string[]>(() =>
  * 右栏是纯文本渲染，反引号会原样露出来，所以统一去掉 ——
  * 不改成 <code> 是有意为之：说明文字来自源码，走 v-html 等于开一个注入口。
  */
+/**
+ * 类型行里的 ` | ` 换成「细空格 + 竖线 + 细空格」。
+ * Monaspace Neon 的空格宽 0.6em，普通空格会让 `'a' | 'b'` 散成一排；
+ * 细空格（U+2009）约 0.2em，读起来仍然是"或"，但更紧、更像类型声明。
+ */
+function typeText(text: string) {
+  return (text || '').replace(/\s*\|\s*/g, '\u2009|\u2009');
+}
+
 function plain(text: string) {
   return (
     text
@@ -85,7 +94,7 @@ const comps = computed(() =>
               <code class="api__name">{{ p.name }}</code>
               <code v-if="formatDefault(p.default)" class="api__default">{{ formatDefault(p.default) }}</code>
             </div>
-            <code class="api__type">{{ p.type }}</code>
+            <code class="api__type">{{ typeText(p.type) }}</code>
             <p v-if="p.desc" class="api__desc">{{ plain(p.desc) }}</p>
           </article>
         </div>
@@ -211,8 +220,10 @@ const comps = computed(() =>
 
 .api__name {
   font-family: var(--wd-font-mono);
-  font-size: var(--wd-fs-body);
+  /* Monaspace Neon 比系统等宽更宽，同字号更"胀" —— 整体降一档 */
+  font-size: 13.5px;
   font-weight: var(--wd-fw-semibold);
+  letter-spacing: -0.01em;
   color: var(--wd-ink);
 }
 
@@ -220,13 +231,13 @@ const comps = computed(() =>
 .api__default {
   flex: 0 0 auto;
   max-width: 56%;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: var(--wd-radius-pill);
+  font-size: 11px;
   color: var(--wd-ink-2);
   /* 中性底：API 是信息区，粉色胶囊一排看下来太抢眼（6 个 false 就是 6 个红点） */
   background: var(--wd-field);
   font-family: var(--wd-font-mono);
-  font-size: 11.5px;
   color: var(--wd-ink-2);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -239,8 +250,8 @@ const comps = computed(() =>
   display: block;
   margin-top: 4px;
   font-family: var(--wd-font-mono);
-  font-size: 13px;
-  line-height: 1.55;
+  font-size: 12.5px;
+  line-height: 1.6;
   color: var(--wd-ink-2);
   word-break: break-word;
 }
