@@ -1150,7 +1150,7 @@
   bottom: 0;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-audio-accent, var(--wd-ink));
-  transition: width .12s linear;
+  transition: width var(--wd-dur-fast) linear;
 }
 
 /*

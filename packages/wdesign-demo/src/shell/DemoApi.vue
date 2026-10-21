@@ -20,6 +20,15 @@ const names = computed<string[]>(() =>
 );
 
 /**
+ * 组件源码的注释里常用反引号标代码（如「默认 `不限`」）。
+ * 右栏是纯文本渲染，反引号会原样露出来，所以统一去掉 ——
+ * 不改成 <code> 是有意为之：说明文字来自源码，走 v-html 等于开一个注入口。
+ */
+function plain(text: string) {
+  return text.replace(/`/g, "");
+}
+
+/**
  * `withDefaults` 的默认值展示：
  *   () => []  →  []          函数式默认值去掉箭头
  *   ''        →  （空）      空字符串单独标注，否则胶囊里什么都没有，像 bug
@@ -67,7 +76,7 @@ const comps = computed(() =>
               <code v-if="p.default" class="api__default">{{ formatDefault(p.default) }}</code>
             </div>
             <code class="api__type">{{ p.type }}</code>
-            <p v-if="p.desc" class="api__desc">{{ p.desc }}</p>
+            <p v-if="p.desc" class="api__desc">{{ plain(p.desc) }}</p>
           </article>
         </div>
       </div>
@@ -81,7 +90,7 @@ const comps = computed(() =>
               <code class="api__name">{{ e.name }}</code>
             </div>
             <code v-if="e.params" class="api__type">{{ e.params }}</code>
-            <p v-if="e.desc" class="api__desc">{{ e.desc }}</p>
+            <p v-if="e.desc" class="api__desc">{{ plain(e.desc) }}</p>
           </article>
         </div>
       </div>

@@ -11,7 +11,7 @@
 .wd-carousel__track {
   display: flex;
   height: 100%;
-  transition: transform 0.45s var(--wd-ease);
+  transition: transform var(--wd-dur-reveal) var(--wd-ease);
 }
 
 .wd-carousel__slide {
