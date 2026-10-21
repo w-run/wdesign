@@ -30,8 +30,9 @@
     "audit": "python3 tools/design-audit.py",
     "audit:strict": "python3 tools/design-audit.py --strict",
     "hover:check": "python3 tools/hover-js.py --check",
-    "verify": "npm run check:tokens && npm run check:icons && npm run typecheck && npm run test",
-    "prepublishOnly": "npm run verify && npm run build"
+    "verify": "npm run check:tokens && npm run check:icons && npm run check:template-refs && npm run typecheck && npm run test",
+    "prepublishOnly": "npm run verify && npm run build",
+    "check:template-refs": "python3 tools/check-template-refs.py"
   },
   "dependencies": {
     "@w-run/wdesign-icons": "workspace:*"

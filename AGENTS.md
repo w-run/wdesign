@@ -156,6 +156,30 @@ curl -s -o /dev/null -w "62904=%{http_code}\n" http://srv.addr.w-run.net:62904/
 ss -lntp | grep 5273
 ```
 
+
+## 代码高亮主题（wdesign-demo）
+
+代码面板的高亮由**构建期 shiki** 产出，主题是标准 VS Code 主题 JSON：
+
+| 文件 | 用途 |
+|---|---|
+| `packages/wdesign-demo/theme/wdesign-light.json` | 浅色主题（同时也是可用的 VS Code 主题） |
+| `packages/wdesign-demo/theme/wdesign-dark.json` | 深色主题 |
+| `packages/wdesign-demo/tools/highlight.mjs` | 构建期调 shiki，双主题输出（`--shiki-dark`） |
+
+改配色只改这两个 JSON：文档里的代码、和你在 VS Code 里看到的，是**同一份**色板。
+想在本机 VS Code 里用：把 JSON 放进 `~/.vscode/extensions/` 下任一主题扩展，
+或直接用「Preferences: Color Theme → 从文件安装」。
+
+## 检查器（`pnpm --filter @w-run/wdesign-ui verify` 已包含）
+
+| 检查 | 抓什么 |
+|---|---|
+| `check-tokens.py` | `var(--wd-*)` 未定义 / 带 fallback |
+| `check-icons.py` | 图标名不存在 |
+| `check-template-refs.py` | **模板里误写 `xxx.value`** —— 模板自动解包，写了就是 undefined，render 抛错、DOM 停在上一帧（点不动、aria 不翻转，极难查） |
+| `smoke-test.mjs` | 每个组件的渲染冒烟 |
+
 ## 四条最高优先级
 
 1. **不许静默失效** —— 不报错但不起作用的写法必须改掉
