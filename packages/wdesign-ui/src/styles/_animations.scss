@@ -65,12 +65,6 @@
 // ── 尺寸档位已迁移至 _tokens.scss（控件尺寸属令牌层）──
 
 // ── 精致微动效关键帧 ──
-// 光影掠过（填充面：让"光"滑过，而非位移/缩放）
-@keyframes wd-sheen {
-  from { transform: translateX(-130%) skewX(-18deg); opacity: 0; }
-  25%  { opacity: 1; }
-  to   { transform: translateX(330%) skewX(-18deg); opacity: 0; }
-}
 // 说明：本文件的脉冲/外环使用「主题红常量」rgba(214,40,57,·)——红在浅深两主题下恒为 #D62839，
 // 故不令牌化（令牌化的价值在于随主题翻转，而它不翻转）。灰色环值随 --wd-ink-2 同步维护。
 // 柔光呼吸（当前步骤 / 进行中状态：缓慢、克制）

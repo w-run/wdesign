@@ -42,7 +42,7 @@ const props = withDefaults(
      */
     weight?: 'thin' | 'normal' | 'medium' | 'bold'
   }>(),
-  { variant: 'outlined', size: 24, filled: false, optical: true, weight: 'medium' },
+  { variant: 'outlined', size: 24, filled: false, optical: true, weight: 'thin' },
 )
 
 const svg = ref('')

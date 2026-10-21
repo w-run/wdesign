@@ -48,13 +48,12 @@
    * 这里用 CSS 兜住（CSS 宽度 > svg 的 width 属性），调用方仍可覆盖。
    */
   /* 纯图标按钮里的箭头：不要左距，且必须块级居中（行内盒会带基线偏移） */
+  /* 纯图标：箭头不要左距，且要块级（行内盒带基线偏移 → 看着"不在正中心"）。
+     尺寸由 WdButton 的 :size 传，不在这里写 —— 写了也被内联样式压掉。 */
 }
 .wd-btn.wd-btn--icon .wd-btn__arrow {
   display: block;
   margin-left: 0;
-  /* 44px 的圆里 20px 还显小，箭头提到 22（比例 ~50%，和系统图标按钮一致） */
-  width: 22px;
-  height: 22px;
 }
 .wd-btn.wd-btn--icon > svg, .wd-btn.wd-btn--icon > .wd-icon > svg {
   width: 20px;
@@ -225,7 +224,19 @@
   color: var(--wd-ink-3);
 }
 
-/* ---- 微交互（精致版）---- */
+/*
+ * 按钮里的图标加半档粗细。
+ *
+ * 为什么只在这里加：全库默认用 thin（细线图标一粗就糊，用户也提过"有些图标不适合加粗"），
+ * 但按钮图标只有 15~22px，太细会在色块上"消失"。8/256 在 20px 上约 0.6px ——
+ * 只补"看得见"，不改变图标本身的风格。
+ * ⚠️ 必须 !important：WdIcon 把 --wd-icon-stroke 写成内联变量，内联优先级更高。
+ */
+.wd-btn .wd-icon {
+  --wd-icon-stroke: 8 !important;
+}
+
+/* ---- 微交互 ---- */
 .wd-btn {
   position: relative;
   overflow: hidden;
@@ -236,30 +247,12 @@
   transform: scale(0.985);
 }
 
-.wd-btn--primary::after,
-.wd-btn--dark::after {
-  content: "";
-  position: absolute;
-  top: -60%;
-  bottom: -60%;
-  left: 0;
-  width: 38%;
-  /* 高光扫过：白色常量（深色按钮上的反光，不随主题翻转） */
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.38), transparent);
-  transform: translateX(-130%) skewX(-18deg);
-  opacity: 0;
-  pointer-events: none;
-}
-
-@media (hover: hover) {
-  .wd-btn--primary:not(:disabled):hover::after, .wd-btn--dark:not(:disabled):hover::after {
-    animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out);
-  }
-}
-.wd-btn--primary:not(:disabled).is-hover::after, .wd-btn--dark:not(:disabled).is-hover::after {
-  animation: wd-sheen var(--wd-dur-slow) var(--wd-ease-out);
-}
-
+/*
+ * ⚠️ 这里原本有一道"高光扫过"（sheen）：伪元素 38% 宽的白色渐变扫过按钮。
+ * 用户明确说不要 —— 它让按钮看起来像营销页的 CTA，抢注意力，
+ * 而且在深色变体上边缘会露出一道白杠。
+ * 悬停反馈改为只做"底色变化 + 极轻微抬升"，见下方 hover 规则。
+ */
 @media (hover: hover) {
   .wd-btn--tint:not(:disabled):hover {
     background: var(--wd-field-hover);

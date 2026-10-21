@@ -44,6 +44,19 @@ const props = withDefaults(
   },
 )
 
+/**
+ * 箭头尺寸。
+ *
+ * ⚠️ 必须用 `:size` 传，不能用 CSS 覆盖 —— WdIcon 把尺寸写成内联 style，
+ *    内联优先级高于样式表（之前 `.wd-btn--icon .wd-btn__arrow { width: 22px }`
+ *    就因为这个一直没生效，看起来"图标还是小"）。
+ *    纯图标：md 20 / lg 22 / sm 17；配文字：15。
+ */
+const arrowSize = computed(() => {
+  if (!props.iconOnly) return 15
+  return props.size === 'lg' ? 22 : props.size === 'sm' ? 17 : 20
+})
+
 const emit = defineEmits<{
   /** 点击时触发，参数为原始 MouseEvent；disabled 或 loading 时不触发 */
   (e: 'click', event: MouseEvent): void
@@ -84,7 +97,7 @@ function onClick(e: MouseEvent) {
         v-if="arrow"
         class="wd-btn__arrow"
         name="arrow-up-right"
-        :size="iconOnly ? 18 : 15"
+        :size="arrowSize"
       />
     </template>
   </button>
