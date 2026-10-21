@@ -65,7 +65,7 @@
 
 .wd-sortable__label {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
 }
 
 /* 拖动过程中悬浮镜像 */

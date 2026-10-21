@@ -25,7 +25,7 @@
   padding: 0.65rem 0.9rem 0.65rem 1rem;
   font: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   color: var(--wd-ink);
   background: var(--wd-field);
   border: none;
@@ -49,7 +49,7 @@
 }
 .wd-segmented-picker__meta {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
 }
@@ -90,7 +90,7 @@
   padding: 0.5rem 0.7rem;
   font: inherit;
   font-size: 13.5px;
-  font-weight: 500;
+  font-weight: var(--wd-fw-medium);
   text-align: left;
   color: var(--wd-ink);
   background: none;
@@ -107,7 +107,7 @@
 
 .wd-segmented-picker__option--active {
   color: var(--wd-red);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 .wd-segmented-picker__option--active svg {
   color: var(--wd-red);

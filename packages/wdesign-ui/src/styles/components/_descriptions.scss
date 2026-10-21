@@ -35,7 +35,7 @@
   min-width: 0;
   max-width: 40%;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   line-height: 1.6;
   /* 标签本身也该换行，而不是被压成一条竖线 */
@@ -81,7 +81,7 @@
   font-size: 12px;
   color: var(--wd-ink-2);
 }
-.wd-descriptions--vertical .wd-descriptions__value { font-weight: 600; }
+.wd-descriptions--vertical .wd-descriptions__value { font-weight: var(--wd-fw-medium); }
 
 /* ---- 斑马纹：按行交替 ---- */
 .wd-descriptions--striped .wd-descriptions__row:nth-child(odd) {

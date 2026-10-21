@@ -62,7 +62,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
 }
 
@@ -100,7 +100,7 @@
 
 .wd-time-picker__sep {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-3);
   padding-bottom: 2px;
 }
@@ -150,7 +150,7 @@
   color: var(--wd-ink-2);
   font: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
@@ -167,7 +167,7 @@
 .wd-time-picker__opt.is-on {
   background: var(--wd-ink);
   color: var(--wd-card);
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
 }
 
 .wd-time-picker__opt.is-off {

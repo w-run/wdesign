@@ -32,7 +32,7 @@
 
 .wd-breadcrumb__item--current {
   color: var(--wd-ink);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   cursor: default;
 }
 

@@ -15,7 +15,7 @@
   color: var(--wd-ink-2);
   font: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -90,7 +90,7 @@
 .wd-pagination__simple-text {
   padding: 0 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   color: var(--wd-ink);
   font-variant-numeric: tabular-nums;
 }

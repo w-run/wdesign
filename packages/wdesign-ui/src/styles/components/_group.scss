@@ -430,7 +430,7 @@
 .wd-group__item--static {
   color: var(--wd-ink-2);
   padding: 0 calc(var(--wd-group-pad) * 0.7);
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   user-select: none;
 }
 

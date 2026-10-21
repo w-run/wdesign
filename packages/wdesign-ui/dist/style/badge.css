@@ -28,7 +28,7 @@
   background: var(--wd-red);
   color: #fff;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   line-height: 1;
   display: inline-flex;
   align-items: center;

@@ -22,7 +22,7 @@
 }
 
 .wd-alert__title {
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   font-size: 14.5px;
 }
 

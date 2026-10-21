@@ -82,14 +82,14 @@
 .wd-calendar__year,
 .wd-calendar__mon {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   line-height: 1;
 }
 
 /* 主色斜杠：整个标题唯一的彩色元素，起到视觉分隔作用 */
 .wd-calendar__slash {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   line-height: 1;
   color: var(--wd-red);
   /* 斜杠本身较窄，给一点左右呼吸 */
@@ -145,7 +145,7 @@
 .wd-calendar__weekday {
   text-align: center;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   padding: 4px 0;
   letter-spacing: .02em;
@@ -171,7 +171,7 @@
   color: var(--wd-ink);
   font: inherit;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   /*
@@ -202,7 +202,7 @@
  */
 .wd-calendar__cell.is-out {
   color: var(--wd-ink-3);
-  font-weight: 500;
+  font-weight: var(--wd-fw-medium);
 }
 
 .wd-calendar__cell.is-disabled {
@@ -225,7 +225,7 @@
  */
 .wd-calendar__cell.is-today .wd-calendar__day {
   color: var(--wd-red);
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
 }
 
 /* 今天恰好被选中/作为区间端点时，数字回到反色（深底上要白字） */
@@ -259,7 +259,7 @@
 .wd-calendar__cell.is-selected {
   background: var(--wd-red);
   color: #fff;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
 }
 
 /* 选中项若是今天，圆点改成白色，否则在红底上看不见 */
@@ -293,7 +293,7 @@
   color: var(--wd-ink-2);
   font: inherit;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
@@ -438,7 +438,7 @@
 .wd-calendar__cell.is-range-start,
 .wd-calendar__cell.is-range-end {
   color: var(--wd-card);
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   z-index: 1;
 }
 
@@ -452,7 +452,7 @@
 /* 区间中间：数字用主色文字版，与浅色带形成足够的对比 */
 .wd-calendar__cell.in-range {
   color: var(--wd-red-text);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-calendar__cell.in-range .wd-calendar__day {
@@ -521,7 +521,7 @@
 
 .wd-calendar__mark-more {
   font-size: 7px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   line-height: 1;
   color: var(--wd-ink-3);
 }
@@ -625,7 +625,7 @@
   /* 8.5px：再小就难以辨认，这个尺寸在 340px 宽的日历里刚好是"注脚"级别 */
   font-size: 8.5px;
   line-height: 1.1;
-  font-weight: 500;
+  font-weight: var(--wd-fw-medium);
   letter-spacing: -.01em;
   color: var(--wd-ink-3);
   white-space: nowrap;
@@ -749,7 +749,7 @@ button.wd-calendar__month:focus-visible {
   color: var(--wd-ink-2);
   font: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   /*
@@ -768,5 +768,5 @@ button.wd-calendar__month:focus-visible {
 .wd-calendar__picker-opt.is-on {
   background: var(--wd-ink);
   color: var(--wd-card);
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
 }

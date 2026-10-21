@@ -21,7 +21,7 @@
   // ---- 标题
   h1, h2, h3, h4, h5, h6 {
     margin: 1.6em 0 .6em;
-    font-weight: 800;
+    font-weight: var(--wd-fw-bold);
     letter-spacing: -.01em;
     line-height: 1.3;
   }
@@ -49,7 +49,7 @@
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
 
-  strong, b { font-weight: 700; }
+  strong, b { font-weight: var(--wd-fw-semibold); }
   em { font-style: italic; }
   mark { padding: .05em .35em; border-radius: 6px; background: var(--wd-mark-bg); color: inherit; }
   small { font-size: .88em; color: var(--wd-ink-2); }
@@ -131,7 +131,7 @@ a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hov
   ul ul, ul ol, ol ol, ol ul { margin: .35em 0 0; }
   li { margin: .3em 0; }
   li::marker { color: var(--wd-red-text); }
-  ol li::marker { color: var(--wd-ink-2); font-weight: 600; }
+  ol li::marker { color: var(--wd-ink-2); font-weight: var(--wd-fw-medium); }
   li > p { margin: .4em 0; }
   .task-list-item { list-style: none; }
   .task-list-item input[type='checkbox'],
@@ -155,7 +155,7 @@ a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hov
     overflow: hidden;
     box-shadow: var(--wd-shadow);
     th, td { padding: 11px 16px; text-align: left; }
-    thead th { background: var(--wd-field); font-size: 13px; font-weight: 700; color: var(--wd-ink); }
+    thead th { background: var(--wd-field); font-size: 13px; font-weight: var(--wd-fw-semibold); color: var(--wd-ink); }
     tbody tr:nth-child(even) { background: var(--wd-bg); }
 @media (hover: hover) {
   tbody tr:hover { background: var(--wd-tint-1); }
@@ -181,7 +181,7 @@ tbody tr.is-hover { background: var(--wd-tint-1); }
 
   // ---- 定义列表
   dl { margin: 0 0 1.25em; }
-  dt { font-weight: 700; margin-top: .8em; }
+  dt { font-weight: var(--wd-fw-semibold); margin-top: .8em; }
   dd { margin: .2em 0 0; padding-left: 1.2em; color: var(--wd-ink-2); }
 
   // ---- hljs 深色代码配色（配套 pre 的深色块）

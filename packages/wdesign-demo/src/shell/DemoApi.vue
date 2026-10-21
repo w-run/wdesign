@@ -146,7 +146,7 @@ const comps = computed(() =>
   background: var(--wd-field);
   font-family: var(--wd-font-mono);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   letter-spacing: -0.01em;
   color: var(--wd-ink);
 }

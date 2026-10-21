@@ -59,13 +59,13 @@
 
 .wd-upload__hint strong {
   color: var(--wd-red-text);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-upload__browse {
   font-size: 13px;
   color: var(--wd-red-text);
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
 }
 
 .wd-upload__input {
@@ -107,7 +107,7 @@
 
 .wd-upload__name {
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -164,6 +164,6 @@
   display: block;
   margin-top: 8px;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   color: var(--wd-red-text);
 }

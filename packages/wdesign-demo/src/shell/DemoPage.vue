@@ -123,7 +123,7 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
   gap: 8px;
   margin: 0 0 18px;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--wd-ink-2);
@@ -172,7 +172,7 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
   background: var(--wd-field);
   font-family: var(--wd-font-family);
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.08em;
   color: var(--wd-ink-3);
 }

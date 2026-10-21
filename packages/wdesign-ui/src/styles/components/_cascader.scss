@@ -170,13 +170,13 @@
 /* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
 .wd-cascader__option.is-active {
   background: var(--wd-field-hover);
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
 }
 
 /* 真正的选中项 */
 .wd-cascader__option.is-selected {
   color: var(--wd-red-text);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-cascader__option.is-disabled {

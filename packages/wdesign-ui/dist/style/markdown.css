@@ -15,7 +15,7 @@
 }
 .wd-markdown h1, .wd-markdown h2, .wd-markdown h3, .wd-markdown h4, .wd-markdown h5, .wd-markdown h6 {
   margin: 1.6em 0 0.6em;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   letter-spacing: -0.01em;
   line-height: 1.3;
 }
@@ -63,7 +63,7 @@
   text-decoration-color: var(--wd-red-hover);
 }
 .wd-markdown strong, .wd-markdown b {
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 .wd-markdown em {
   font-style: italic;
@@ -183,7 +183,7 @@
 }
 .wd-markdown ol li::marker {
   color: var(--wd-ink-2);
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
 }
 .wd-markdown li > p {
   margin: 0.4em 0;
@@ -217,7 +217,7 @@
 .wd-markdown table thead th {
   background: var(--wd-field);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink);
 }
 .wd-markdown table tbody tr:nth-child(even) {
@@ -258,7 +258,7 @@
   margin: 0 0 1.25em;
 }
 .wd-markdown dt {
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   margin-top: 0.8em;
 }
 .wd-markdown dd {

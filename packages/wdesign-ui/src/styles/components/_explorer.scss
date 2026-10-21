@@ -20,7 +20,7 @@
 .wd-explorer__side-title {
   padding: 4px 10px 8px;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   letter-spacing: .04em;
   color: var(--wd-ink-2);
 }
@@ -37,7 +37,7 @@
   color: var(--wd-ink-2);
   font: inherit;
   font-size: 13.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   cursor: pointer;
   text-align: left;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
@@ -71,7 +71,7 @@
 }
 .wd-explorer__crumb.is-hover { color: var(--wd-red-text); }
 
-.wd-explorer__crumb--cur { color: var(--wd-ink); font-weight: 700; cursor: default; }
+.wd-explorer__crumb--cur { color: var(--wd-ink); font-weight: var(--wd-fw-semibold); cursor: default; }
 .wd-explorer__sep { color: var(--wd-ink-3); }
 
 .wd-explorer__views {
@@ -117,7 +117,7 @@
 .wd-explorer__table thead th {
   padding: 9px 10px;
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   text-align: left;
   background: var(--wd-bg);
@@ -207,7 +207,7 @@
   overflow: hidden;
   word-break: break-all;
   font-size: 12.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   line-height: 1.35;
   text-align: center;
 }

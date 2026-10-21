@@ -192,7 +192,7 @@ async function copyCode() {
   background: var(--wd-field);
   font-family: var(--wd-font-family);
   font-size: 11.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.04em;
   color: var(--wd-ink-2);
   cursor: pointer;
@@ -248,7 +248,7 @@ async function copyCode() {
    颜色取自装饰用的彩虹令牌（不承载语义），深色主题下同样成立。 */
 .demo-block__pre :deep(.tk-tag) {
   color: var(--wd-ink);
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
 }
 
 .demo-block__pre :deep(.tk-attr) {
@@ -283,7 +283,7 @@ async function copyCode() {
   background: var(--wd-card);
   font-family: var(--wd-font-family);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   cursor: pointer;
   box-shadow: var(--wd-shadow-sm);

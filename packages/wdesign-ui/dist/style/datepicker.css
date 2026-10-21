@@ -92,7 +92,7 @@
 
 .wd-datepicker__month {
   font-size: 14.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-datepicker__nav {
@@ -109,7 +109,7 @@
 .wd-datepicker__week span {
   text-align: center;
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
 }
 
@@ -149,13 +149,13 @@
 
 .wd-datepicker__day--today {
   color: var(--wd-red-text);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-datepicker__day--selected {
   background: var(--wd-red);
   color: #fff;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 @media (hover: hover) {
@@ -179,7 +179,7 @@
   color: var(--wd-red-text);
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   padding: 5px 12px;
   border-radius: var(--wd-radius-pill);
   cursor: pointer;

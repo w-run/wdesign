@@ -30,7 +30,7 @@
   position: absolute;
   left: 0;
   white-space: nowrap;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   text-shadow: 0 1px 3px rgba(0, 0, 0, .85);
   opacity: var(--dm-opacity, 1);
   /* 从容器右外侧进来，到左外侧离开 */

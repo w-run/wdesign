@@ -28,7 +28,7 @@
 
 .wd-card__stat {
   font-size: 40px;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   letter-spacing: -.02em;
   line-height: 1.15;
   color: var(--wd-red-text);

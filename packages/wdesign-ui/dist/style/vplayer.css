@@ -149,7 +149,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   font-size: 13.5px;
   color: var(--wd-on-dark-text);
 }
@@ -174,7 +174,7 @@
   background: var(--wd-red);
   color: #fff;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.02em;
 }
 
@@ -384,7 +384,7 @@
 
 .wd-vplayer__btn--text {
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   font-variant-numeric: tabular-nums;
   padding: 0 7px;
 }
@@ -522,7 +522,7 @@
 }
 .wd-vplayer__panel--rates button.is-on {
   color: var(--wd-red-on-dark);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 /* 选集面板 */
@@ -555,7 +555,7 @@
   flex: none;
   padding: 10px 12px 8px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-on-dark);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -593,7 +593,7 @@
 .wd-vplayer__ep.is-on {
   background: var(--wd-red);
   color: #fff;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-vplayer__ep.is-off {
@@ -748,7 +748,7 @@
   gap: 10px;
   padding: 12px 12px 10px 14px;
   font-size: 12.5px;
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-on-dark-text);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -815,7 +815,7 @@
   color: var(--wd-on-dark-2);
   font: inherit;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;

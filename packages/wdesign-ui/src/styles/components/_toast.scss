@@ -21,7 +21,7 @@
   background: var(--wd-toast-bg);
   color: var(--wd-ink);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   line-height: 1.4;
   box-shadow: var(--wd-shadow-pop);
   backdrop-filter: blur(14px) saturate(1.4);

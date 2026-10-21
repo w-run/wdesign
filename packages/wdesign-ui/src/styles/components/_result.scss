@@ -22,6 +22,6 @@
 .wd-result--warning .wd-result__icon { background: var(--wd-warning-soft); color: var(--wd-warning-ink); }
 .wd-result--error .wd-result__icon { background: var(--wd-tint-2); color: var(--wd-red-text); }
 
-.wd-result__title { font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
+.wd-result__title { font-size: 19px; font-weight: var(--wd-fw-bold); letter-spacing: -.01em; }
 .wd-result__desc { margin-top: 8px; font-size: 14px; color: var(--wd-ink-2); max-width: 440px; }
 .wd-result__extra { margin-top: 22px; display: flex; gap: 10px; justify-content: center; }

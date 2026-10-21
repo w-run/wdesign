@@ -32,7 +32,7 @@
 
 .wd-form-item__label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   line-height: 1.4;
   display: inline-flex;
@@ -42,7 +42,7 @@
 
 .wd-form-item__req {
   color: var(--wd-red-text);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
   line-height: 1;
 }
 

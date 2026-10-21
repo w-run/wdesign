@@ -14,7 +14,7 @@
 .wd-alert__icon { flex: none; margin-top: 5px; }
 
 .wd-alert__body { flex: 1; min-width: 0; }
-.wd-alert__title { font-weight: 700; font-size: 14.5px; }
+.wd-alert__title { font-weight: var(--wd-fw-semibold); font-size: 14.5px; }
 .wd-alert__desc { color: var(--wd-ink-2); margin-top: 2px; }
 
 .wd-alert__close {

@@ -92,7 +92,7 @@
 
 .wd-drawer__title {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   letter-spacing: -0.01em;
 }
 

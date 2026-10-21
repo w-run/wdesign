@@ -42,7 +42,7 @@
   flex: 1;
   min-width: 0;
   font-size: 14.5px;
-  font-weight: 600;
+  font-weight: var(--wd-fw-medium);
   @include m.truncate;
 }
 .wd-list-item__meta { font-size: 13px; color: var(--wd-ink-2); }
