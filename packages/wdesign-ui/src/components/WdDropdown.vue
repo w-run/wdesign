@@ -37,7 +37,8 @@ const root = ref<HTMLElement>()
 const triggerEl = ref<HTMLElement | null>(null)
 const menuEl = ref<HTMLElement | null>(null)
 /** 点击外部关闭：统一走 anchor.ts 的实现（mousedown，比 click 更早、更可靠） */
-useDismiss([root], () => { open.value = false }, open)
+/* 同 DatePicker：菜单在 body 下，必须登记 panelEl，否则菜单项点不动 */
+useDismiss([root, triggerEl, menuEl], () => { open.value = false }, open)
 
 
 /**

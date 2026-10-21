@@ -39,7 +39,8 @@ const open = ref(false)
 const root = ref<HTMLElement>()
 const panelEl = ref<HTMLElement | null>(null)
 /** 点击外部关闭：统一走 anchor.ts 的实现（mousedown，比 click 更早、更可靠） */
-useDismiss([root], () => { open.value = false }, open)
+/* ⚠️ 面板 Teleport 到 body，必须把 panelEl 也登记为"内部" —— 只登记 root 时，面板里的每一次点击都被判成"点外面"，先关面板、选中事件永远收不到 */
+useDismiss([root, panelEl], () => { open.value = false }, open)
 
 
 /** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
@@ -63,6 +64,28 @@ function fmt(d: Date) {
 }
 
 const monthLabel = computed(() => `${view.value.getFullYear()} 年 ${view.value.getMonth() + 1} 月`)
+
+/*
+ * 年月视图。
+ * 只按"上个月/下个月"翻，回看两年前要点 24 次 —— 标题点开直接给 12 个月网格，
+ * 年份用两侧箭头按年翻（参考 Calendar 里的 picker 交互）。
+ */
+const viewMode = ref<'day' | 'month'>('day')
+const MONTHS = Array.from({ length: 12 }, (_, i) => `${i + 1} 月`)
+
+function toggleMonthView() {
+  viewMode.value = viewMode.value === 'day' ? 'month' : 'day'
+}
+function pickMonth(m: number) {
+  view.value = new Date(view.value.getFullYear(), m, 1)
+  viewMode.value = 'day'
+}
+function prevYear() {
+  view.value = new Date(view.value.getFullYear() - 1, view.value.getMonth(), 1)
+}
+function nextYear() {
+  view.value = new Date(view.value.getFullYear() + 1, view.value.getMonth(), 1)
+}
 
 const days = computed(() => {
   const first = view.value
@@ -141,16 +164,51 @@ onBeforeUnmount(() => {
       :style="{ top: pos.top + 'px', left: pos.left + 'px' }"
     >
         <div class="wd-datepicker__head">
-          <span class="wd-datepicker__month">{{ monthLabel }}</span>
+          <button
+            type="button"
+            class="wd-datepicker__month"
+            :aria-expanded="viewMode === 'month'"
+            aria-label="选择年份和月份"
+            @click="toggleMonthView"
+          >
+            {{ monthLabel }}
+            <wd-icon :name="viewMode === 'month' ? 'chevron-up' : 'chevron-down'" :size="13" />
+          </button>
           <span class="wd-datepicker__nav">
-            <button type="button" class="wd-icon-btn wd-icon-btn--sm" aria-label="上个月" @click="prevMonth">
+            <button
+              type="button"
+              class="wd-icon-btn wd-icon-btn--sm"
+              :aria-label="viewMode === 'month' ? '上一年' : '上个月'"
+              @click="viewMode === 'month' ? prevYear() : prevMonth()"
+            >
               <wd-icon name="chevron-left" :size="14" />
             </button>
-            <button type="button" class="wd-icon-btn wd-icon-btn--sm" aria-label="下个月" @click="nextMonth">
+            <button
+              type="button"
+              class="wd-icon-btn wd-icon-btn--sm"
+              :aria-label="viewMode === 'month' ? '下一年' : '下个月'"
+              @click="viewMode === 'month' ? nextYear() : nextMonth()"
+            >
               <wd-icon name="chevron-right" :size="14" />
             </button>
           </span>
         </div>
+
+        <!-- 月视图：12 个月网格，点一下回到日视图 -->
+        <div v-if="viewMode === 'month'" class="wd-datepicker__months">
+          <button
+            v-for="(m, i) in MONTHS"
+            :key="m"
+            type="button"
+            class="wd-datepicker__month-item"
+            :class="{ 'is-on': i === view.value.getMonth() }"
+            @click="pickMonth(i)"
+          >
+            {{ m }}
+          </button>
+        </div>
+
+        <template v-else>
         <div class="wd-datepicker__week"><span v-for="w in WEEK" :key="w">{{ w }}</span></div>
         <div class="wd-datepicker__grid">
           <button
@@ -168,6 +226,7 @@ onBeforeUnmount(() => {
             {{ d.label }}
           </button>
         </div>
+        </template>
         <div class="wd-datepicker__foot">
           <button type="button" class="wd-datepicker__todaybtn" @click="pickToday">回到今天</button>
         </div>

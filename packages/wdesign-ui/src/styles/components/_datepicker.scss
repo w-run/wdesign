@@ -129,3 +129,58 @@
   @include m.truncate;
   color: var(--wd-ink);
 }
+
+
+/* ---------------- 月视图（点标题展开） ---------------- */
+.wd-datepicker__month {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px 3px 9px;
+  border: 0;
+  border-radius: var(--wd-radius-pill);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: var(--wd-fw-semibold);
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+@media (hover: hover) {
+  .wd-datepicker__month:hover { background: var(--wd-field); }
+}
+.wd-datepicker__month.is-hover { background: var(--wd-field); }
+
+.wd-datepicker__months {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 4px 2px 8px;
+}
+
+.wd-datepicker__month-item {
+  height: 36px;
+  border: 0;
+  border-radius: var(--wd-radius-sm);
+  background: transparent;
+  color: var(--wd-ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background var(--wd-dur-fast) var(--wd-ease-out),
+    color var(--wd-dur-fast) var(--wd-ease-out);
+}
+
+@media (hover: hover) {
+  .wd-datepicker__month-item:hover:not(.is-on) { background: var(--wd-field); }
+}
+.wd-datepicker__month-item.is-hover:not(.is-on) { background: var(--wd-field); }
+
+/* 当前月：反相实心，一眼看出"现在停在哪个月" */
+.wd-datepicker__month-item.is-on {
+  background: var(--wd-selected-bg);
+  color: var(--wd-selected-ink);
+  font-weight: var(--wd-fw-semibold);
+}
