@@ -22,10 +22,14 @@ const props = withDefaults(
     placeholder?: string
     /** 禁用：触发器不可点击，浮层无法打开 */
     disabled?: boolean
+    /** 最早可选日期（含），格式 YYYY-MM-DD */
+    min?: string
+    /** 最晚可选日期（含），格式 YYYY-MM-DD */
+    max?: string
     /** 尺寸，与 Input / Select / Cascader 一致 */
     size?: 'sm' | 'md' | 'lg'
   }>(),
-  { modelValue: '', placeholder: '选择日期', disabled: false, size: 'md' },
+  { modelValue: '', placeholder: '选择日期', disabled: false, size: 'md', min: '', max: '' },
 )
 
 /** 点选某天后触发，参数为 'YYYY-MM-DD' 字符串，同时用于 v-model 并关闭浮层 */
@@ -93,7 +97,14 @@ const days = computed(() => {
   const start = new Date(first)
   start.setDate(1 - startIdx)
   const today = fmt(new Date())
-  const list: { key: string; label: number; muted: boolean; today: boolean; selected: boolean }[] = []
+  const list: {
+    key: string
+    label: number
+    muted: boolean
+    today: boolean
+    selected: boolean
+    disabled: boolean
+  }[] = []
   for (let i = 0; i < 42; i++) {
     const d = new Date(start)
     d.setDate(start.getDate() + i)
@@ -104,6 +115,8 @@ const days = computed(() => {
       muted: d.getMonth() !== first.getMonth(),
       today: key === today,
       selected: key === props.modelValue,
+      // min / max 之外的日子灰掉且不可点（表单里最常见的约束）
+      disabled: (!!props.min && key < props.min) || (!!props.max && key > props.max),
     })
   }
   return list
@@ -116,6 +129,8 @@ function nextMonth() {
   view.value = new Date(view.value.getFullYear(), view.value.getMonth() + 1, 1)
 }
 function pick(key: string) {
+  if (props.min && key < props.min) return
+  if (props.max && key > props.max) return
   emit('update:modelValue', key)
   open.value = false
 }
@@ -220,7 +235,9 @@ onBeforeUnmount(() => {
               'wd-datepicker__day--muted': d.muted,
               'wd-datepicker__day--today': d.today,
               'wd-datepicker__day--selected': d.selected,
+              'wd-datepicker__day--disabled': d.disabled,
             }"
+            :disabled="d.disabled"
             @click="pick(d.key)"
           >
             {{ d.label }}

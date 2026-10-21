@@ -10,6 +10,7 @@ const small = ref("");
 const medium = ref("");
 const large = ref("");
 const custom = ref("");
+const ranged = ref("");
 </script>
 
 <template>
@@ -37,6 +38,16 @@ const custom = ref("");
       <p class="demo-val">
         sm：{{ small || "（未选）" }} ｜ md：{{ medium || "（未选）" }} ｜ lg：{{ large || "（未选）" }}
       </p>
+    </DemoBlock>
+
+    <DemoBlock
+      title="可选范围 · 年月快跳"
+      desc="min / max 限制可选取值（超出范围的日子划掉且点不动）；点标题可以展开 12 个月网格，两侧箭头按年翻 —— 回看两年前不用点 24 次"
+    >
+      <DemoRow :gap="14">
+        <WdDatePicker v-model="ranged" min="2026-10-01" max="2026-12-31" placeholder="只能选本季度" />
+      </DemoRow>
+      <p class="demo-val">季度内日期：{{ ranged || "（未选）" }}</p>
     </DemoBlock>
 
     <DemoBlock

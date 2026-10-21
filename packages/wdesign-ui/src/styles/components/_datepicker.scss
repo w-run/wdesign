@@ -184,3 +184,18 @@
   color: var(--wd-selected-ink);
   font-weight: var(--wd-fw-semibold);
 }
+
+
+/* 超出 min / max 的日子：灰掉且划线感，明确"不可选"而不是"不存在的日期" */
+.wd-datepicker__day--disabled,
+.wd-datepicker__day--disabled.wd-datepicker__day--muted {
+  color: var(--wd-ink-4);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.wd-datepicker__day--disabled:hover {
+  background: transparent;
+}
