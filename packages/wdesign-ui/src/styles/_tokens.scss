@@ -169,7 +169,7 @@ $wd-space-16: 64px !default;
 // 字体：拉丁 Mona Sans + 中文 思源黑体（Source Han Sans SC）—— 均为 VF 可变字体
 // 字体栈：WDesignSans 优先（WIP，可先用），Mona Sans / 系统中文字体兜底
 $wd-font-family: "WDesignSans Latin", "WDesignSans CJK Symbol", "WDesignSans GB2312", "WDesignSans GB2312 Extra", "WDesignSans BIG5", "WDesignSans BIG5 Extra", "WDesignSans JIS", "Mona Sans", "Source Han Sans SC", "PingFang SC", -apple-system, BlinkMacSystemFont, "Inter", sans-serif !default;
-$wd-font-mono:   "Mona Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace !default;
+$wd-font-mono:   "Monaspace Neon", ui-monospace, "SF Mono", Menlo, Consolas, monospace !default; // 等宽：Monaspace Neon（此前写的 "Mona Sans Mono" 并不存在，一直在回落系统字体）
 $wd-fs-display:  56px !default; // 800
 $wd-fs-h1:       32px !default; // 800
 $wd-fs-h2:       24px !default; // 700

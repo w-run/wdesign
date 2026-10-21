@@ -31,6 +31,30 @@ $wd-vf-fonts-enabled: false;
   font-display: swap;
 }
 
+/*
+ * Monaspace Neon —— 等宽字体（右侧 API 卡、代码块、时间码都用它）。
+ *
+ * 之前 `--wd-font-mono` 写的是 "Mona Sans Mono"，但**这个字体并不在本仓库**，
+ * 实际一直回落到 ui-monospace / Consolas —— 等于没有等宽字体设计。
+ * 字体文件放在 wdesign-ui/fonts/，只取了 latin 子集（等宽场景只有代码与数字）。
+ */
+@font-face {
+  font-family: "Monaspace Neon";
+  src: url("@wdesign/../fonts/monaspace-neon-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Monaspace Neon";
+  src: url("@wdesign/../fonts/monaspace-neon-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --wd-font-family: "Mona Sans", "Source Han Sans SC";
+  --wd-font-mono: "Monaspace Neon", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
