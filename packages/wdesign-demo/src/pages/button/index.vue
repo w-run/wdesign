@@ -49,6 +49,18 @@ function onSubmit() {
       </DemoRow>
     </DemoBlock>
 
+    <DemoBlock
+      title="链接按钮"
+      desc="arrow 追加上右箭头（↗），用于「了解更多 / 去某处」。纯图标用 md 档（44px 圆、箭头 18），配文字时用 sm + ghost，箭头收到 15px 不抢正文"
+    >
+      <DemoRow :gap="20">
+        <WdButton icon-only arrow aria-label="了解更多" />
+        <WdButton icon-only arrow variant="tint" size="sm" aria-label="详解" />
+        <WdButton variant="ghost" size="sm" arrow>了解更多</WdButton>
+        <WdButton variant="tint" size="sm" arrow>查看全部 12 项</WdButton>
+      </DemoRow>
+    </DemoBlock>
+
     <DemoBlock title="尺寸" desc="sm 用于密集工具栏，lg 用于页面的主 CTA">
       <DemoRow>
         <WdButton variant="primary" size="lg">大尺寸</WdButton>

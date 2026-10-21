@@ -4,36 +4,44 @@
   display: inline-flex;
 }
 
+/*
+ * 角标几何。
+ *
+ * ⚠️ 尺寸必须"小、往外挪"。
+ * 原来 19px 高、只外移 4~6px，挂在 20px 的图标上等于盖住 80% 的图形 ——
+ * 图标是宿主，角标只是提示，不能反客为主。
+ * 现在：气泡 16px、圆点 8px，往外压 6~7px，让图形保持可辨认。
+ */
 .wd-badge__dot,
 .wd-badge__count {
   position: absolute;
   z-index: 1;
-  top: -4px;
-  right: -6px;
+  top: -6px;
+  right: -7px;
 }
 
 .wd-badge__dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--wd-red);
-  box-shadow: 0 0 0 3px var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-card);
 }
 
 .wd-badge__count {
-  min-width: 19px;
-  height: 19px;
-  padding: 0 6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-red);
   color: #fff;
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: var(--wd-fw-semibold);
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 3px var(--wd-card);
+  box-shadow: 0 0 0 2px var(--wd-card);
 }
 
 .wd-badge--gray .wd-badge__dot,

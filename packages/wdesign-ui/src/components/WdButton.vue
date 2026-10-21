@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { WdIcon } from '@w-run/wdesign-icons'
 import { computed } from 'vue'
 
 defineOptions({ name: 'WdButton' })
@@ -21,6 +22,14 @@ const props = withDefaults(
     loadingText?: string
     /** 提交型按钮（在 form 内触发提交） */
     type?: 'button' | 'submit' | 'reset'
+    /**
+     * 追加上右箭头（↗）—— 用于"了解更多 / 去某处"这类**链接型**按钮。
+     *
+     * 为什么固定右上而不是右：右上在全站统一表达"跳走 / 新开"，
+     * 与"下一页 →"区分开；参考鸿蒙与 Apple 官网的入口按钮都这么用。
+     * 纯图标时箭头 18px（按钮 44，圆里留得住），配文字时 15px（不能抢正文）。
+     */
+    arrow?: boolean
   }>(),
   {
     variant: 'primary',
@@ -31,6 +40,7 @@ const props = withDefaults(
     loading: false,
     loadingText: '',
     type: 'button',
+    arrow: false,
   },
 )
 
@@ -68,6 +78,14 @@ function onClick(e: MouseEvent) {
   >
     <span v-if="loading" class="wd-btn__spinner" aria-hidden="true"></span>
     <template v-if="loading && loadingText">{{ loadingText }}</template>
-    <slot v-else />
+    <template v-else>
+      <slot />
+      <wd-icon
+        v-if="arrow"
+        class="wd-btn__arrow"
+        name="arrow-up-right"
+        :size="iconOnly ? 18 : 15"
+      />
+    </template>
   </button>
 </template>

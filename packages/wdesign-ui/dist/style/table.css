@@ -59,7 +59,8 @@
 }
 
 @media (hover: hover) {
-  .wd-table tbody tr:hover {
+  /* 勾选行已有选中底，hover 不能再刷成淡红 */
+  .wd-table tbody tr:hover:not(.wd-table__row--checked) {
     background: var(--wd-tint-1);
   }
 }

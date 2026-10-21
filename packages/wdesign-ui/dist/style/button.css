@@ -41,6 +41,25 @@
   padding: 0 14px;
   font-size: var(--wd-font-size-sm);
 }
+.wd-btn {
+  /*
+   * 图标按钮里的图标尺寸跟着按钮档位走。
+   * 之前完全由调用方传 `:size`，一传 16 就变成"44px 圆里塞个 16px 小点"。
+   * 这里用 CSS 兜住（CSS 宽度 > svg 的 width 属性），调用方仍可覆盖。
+   */
+}
+.wd-btn.wd-btn--icon > svg, .wd-btn.wd-btn--icon > .wd-icon > svg {
+  width: 20px;
+  height: 20px;
+}
+.wd-btn.wd-btn--icon.wd-btn--lg > svg, .wd-btn.wd-btn--icon.wd-btn--lg > .wd-icon > svg {
+  width: 22px;
+  height: 22px;
+}
+.wd-btn.wd-btn--icon.wd-btn--sm > svg, .wd-btn.wd-btn--icon.wd-btn--sm > .wd-icon > svg {
+  width: 17px;
+  height: 17px;
+}
 .wd-btn.wd-btn--icon {
   width: var(--wd-size-md);
   height: var(--wd-size-md);
@@ -57,6 +76,32 @@
 .wd-btn.wd-btn--icon.wd-btn--sm {
   width: var(--wd-size-sm);
   height: var(--wd-size-sm);
+}
+.wd-btn {
+  /*
+   * 链接箭头：跟按钮文本同色，尺寸按"是否纯图标"分两档 ——
+   * 纯图标按钮（44）里 18px，配文字时 15px（比正文小半档，不抢话）。
+   */
+}
+.wd-btn .wd-btn__arrow {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-spring-soft);
+}
+.wd-btn .wd-btn__arrow.wd-icon {
+  display: inline-flex;
+}
+.wd-btn {
+  /* 悬停时箭头往右上轻移 2px —— 指向"要去的地方"，是最省的动效表达 */
+}
+@media (hover: hover) {
+  .wd-btn:hover .wd-btn__arrow {
+    transform: translate(2px, -2px);
+  }
+}
+.wd-btn.is-hover .wd-btn__arrow {
+  transform: translate(2px, -2px);
 }
 .wd-btn.wd-btn--block {
   display: flex;

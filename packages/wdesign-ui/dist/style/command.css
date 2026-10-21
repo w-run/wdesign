@@ -122,7 +122,8 @@
 }
 
 .wd-command__item--active {
-  background: var(--wd-field-hover);
+  /* 键盘上下选中的那一行：必须比 hover 明显，否则在深色下分不出"停在哪" */
+  background: var(--wd-selected-row);
 }
 
 .wd-command__item--disabled {
