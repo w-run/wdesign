@@ -16,11 +16,32 @@
 }
 
 .wd-tab-bar__rail {
+  position: relative;
   display: flex;
   flex: 1;
   min-width: 0;
   align-items: center;
 }
+
+/*
+ * 滑动高亮块 —— 与 WdSegmented 的 `__slider` 完全同一套：同样的令牌、
+ * 同样的 `.is-initial` 首帧处理、同样的 cubic-bezier(.25,.8,.35,1)。
+ * 由 `useSlidingIndicator` 计算位置，不在这里写任何 JS 相关的魔法数。
+ */
+.wd-tab-bar__slider {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  z-index: 0;
+  border-radius: var(--wd-radius-pill);
+  background: var(--wd-selected-bg);
+  transition:
+    transform var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1),
+    width var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1),
+    height var(--wd-dur-slow) cubic-bezier(.25, .8, .35, 1);
+}
+
+.wd-tab-bar__slider.is-initial { transition: none; }
 
 .wd-tab-bar__item {
   flex: 1;
@@ -53,9 +74,14 @@
   letter-spacing: 0.01em;
 }
 
-/* 选中项：图标与文字同时变主色并加重 —— 只变颜色在浅底上不够明显 */
+/* 选中项：滑块是反相实心，图标与文字跟着变成 selected-ink */
+.wd-tab-bar__item {
+  position: relative;
+  z-index: 1;
+}
+
 .wd-tab-bar__item.is-on {
-  color: var(--wd-ink);
+  color: var(--wd-selected-ink);
 }
 
 .wd-tab-bar__item.is-on .wd-tab-bar__label {
@@ -88,17 +114,79 @@
   box-shadow: 0 0 0 2px var(--wd-card);
 }
 
+/* ---------------- 纯图标形态 ---------------- */
+/*
+ * 参考图（IMG_4424）里纯图标导航的高亮是一枚**圆**，包住图标，
+ * 而不是整块矩形 —— 所以图标外面套一个固定 40px 的圆形容器，
+ * 让滑动指示器跟着这个圆走（JS 只负责平移，形状交给 CSS）。
+ */
+.wd-tab-bar--icon-only .wd-tab-bar__item {
+  height: 48px;
+  gap: 0;
+  /* 纯图标不需要均分整条宽度，按内容收缩才有"工具条"的紧凑感 */
+  flex: none;
+  width: 52px;
+}
+
+/* 纯图标胶囊按内容收缩并居中（参考图里 3 个图标就占半条） */
+.wd-tab-bar--floating.wd-tab-bar--icon-only {
+  width: fit-content;
+  max-width: calc(100% - 24px);
+}
+
+.wd-tab-bar__icon--orb {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-spring-soft);
+}
+
+/* 图标在圆里视觉居中：比数学居中更稳 */
+.wd-tab-bar--icon-only .wd-tab-bar__item.is-on .wd-tab-bar__icon--orb {
+  transform: none;
+}
+
+/*
+ * 未选中图标用 ink-3，不要用 opacity：
+ * opacity 是"和背景混"，在白胶囊上 45% 会淡到几乎看不见；
+ * ink-3 本身已经是克制的灰，既有层级又清楚。
+ */
+.wd-tab-bar--icon-only .wd-tab-bar__item:not(.is-on) .wd-tab-bar__icon--orb {
+  color: var(--wd-ink-3);
+}
+
+.wd-tab-bar__item.is-on .wd-tab-bar__icon {
+  /* 图标在滑块上略上移 0.5px：视觉居中比数学居中更稳 */
+  transform: translateY(-0.5px);
+}
+
 /* ---------------- 悬浮胶囊形态 ---------------- */
+/*
+ * 胶囊画在 **rail** 上，不是整个容器上。
+ * 容器还包含右侧的 FAB —— 之前把胶囊画在容器上，FAB 就被包进了胶囊里，
+ * 3 个 tab 时容器只有 141px 宽，文字挤成一团（"显示异常"就是这个）。
+ */
 .wd-tab-bar--floating {
   width: min(420px, calc(100% - 32px));
   margin: 0 auto 12px;
-  padding: 6px;
+  padding: 0;
+  background: transparent;
   border-top: 0;
+  box-shadow: none;
+}
+
+.wd-tab-bar--floating .wd-tab-bar__rail {
+  flex: 1;
+  padding: 6px;
   border-radius: var(--wd-radius-pill);
+  background: var(--wd-card);
   box-shadow: var(--wd-shadow-pop);
 }
 
-/* FAB：独立的圆形主按钮，跟胶囊留 12px 缝 */
+/* FAB：独立的圆形主按钮，与胶囊之间留 10px 缝（来自容器的 gap） */
 .wd-tab-bar__fab {
   flex: none;
   display: inline-flex;
@@ -120,7 +208,6 @@
 }
 
 .wd-tab-bar--floating.wd-tab-bar--with-fab {
-  width: auto;
-  margin-left: auto;
-  margin-right: auto;
+  /* 有 FAB 时整条更宽：胶囊吃掉剩余宽度，FAB 独立在右侧 */
+  width: min(460px, calc(100% - 24px));
 }

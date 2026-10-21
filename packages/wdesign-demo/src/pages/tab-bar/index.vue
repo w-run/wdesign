@@ -14,6 +14,12 @@ const items = [
 
 const active = ref("home");
 const active2 = ref("explore");
+const active3 = ref("cloud");
+const iconItems = [
+  { key: "cloud", label: "天气", icon: "cloud" },
+  { key: "list", label: "列表", icon: "list" },
+  { key: "setting", label: "设置", icon: "settings" },
+];
 const log = ref("（还没点）");
 </script>
 
@@ -30,6 +36,17 @@ const log = ref("（还没点）");
         <div class="stage__body">内容区</div>
         <WdTabBar v-model="active" :items="items" />
       </div>
+    </DemoBlock>
+
+    <DemoBlock
+      title="纯图标胶囊"
+      desc="iconOnly 去掉文字，高亮变成包住图标的圆（参考移动端 Toolkit 型导航）；未选中图标压到 45%，靠明暗表达层级"
+    >
+      <div class="stage">
+        <div class="stage__body">内容区</div>
+        <WdTabBar v-model="active3" :items="iconItems" icon-only />
+      </div>
+      <p class="note">当前：{{ active3 }}</p>
     </DemoBlock>
 
     <DemoBlock title="带 FAB" desc="右侧独立圆形主按钮，与胶囊之间留 10px 缝：它是「新建」而不是第五个 tab">
