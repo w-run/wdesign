@@ -97,9 +97,11 @@
   background: var(--wd-ink);
   box-shadow: none;
 }
-.wd-table__row--checked { background: var(--wd-tint-1); }
+/* 选中行：用统一的中性选中底，不再用红色淡染 —— 深色主题下 tint 会变成
+   一脸灰褐，和 hover 分不开 */
+.wd-table__row--checked { background: var(--wd-selected-row); }
 @media (hover: hover) {
-  .wd-table__row--checked:hover { background: var(--wd-field-hover); }
+  .wd-table__row--checked:hover { background: var(--wd-selected-row); }
 }
 
 /* ---- 加载遮罩 ---- */

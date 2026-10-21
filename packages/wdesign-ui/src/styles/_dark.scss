@@ -27,6 +27,12 @@ html.dark-theme {
   --wd-dark-hover:  #{t.$wd-dark-hover-dark};
   --wd-dark-active: #{t.$wd-dark-active-dark};
   --wd-dark-2:     #{t.$wd-field-hover-dark};
+  /* 选中态：深色下卡面 #1C1C1E、控件底 #2A2A2E，选中要再亮一档且字纯白，
+     否则和 hover 分不开（旧值直接用 field，选中和悬停几乎同色） */
+  --wd-selected-bg:  #F2F2F5;   /* 强选中反相：近白实心 */
+  --wd-selected-ink: #101014;   /* 其上近黑字 */
+  --wd-selected-row: #2E2E36;   /* 弱选中（整行）：只比卡面亮一档 */
+
   --wd-ink:        #{t.$wd-ink-dark};   /* 正文 → 亮 */
   --wd-ink-2:      #{t.$wd-ink-2-dark};   /* 次级 → 暗灰（反向迭代：原 #8888A0 对比不足，~6.3:1） */
   --wd-ink-3:      #{t.$wd-ink-3-dark};   /* 占位（原 #55556A 对比不足，~3.7:1） */

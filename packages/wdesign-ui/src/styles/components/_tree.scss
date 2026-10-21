@@ -34,12 +34,12 @@
 }
 
 .wd-tree__node--selected {
-  background: var(--wd-field-hover);
-  color: var(--wd-red-text);
-  font-weight: 600;
+  background: var(--wd-selected-row);
+  color: var(--wd-ink);
+  font-weight: var(--wd-fw-semibold);
 }
 @media (hover: hover) {
-  .wd-tree__node--selected:hover { background: var(--wd-field); }
+  .wd-tree__node--selected:hover { background: var(--wd-selected-row); }
 }
 
 /*

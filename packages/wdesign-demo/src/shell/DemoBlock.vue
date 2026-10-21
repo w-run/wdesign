@@ -131,11 +131,11 @@ async function copyCode() {
   align-items: center;
   gap: 10px;
   margin: 0;
-  /* 参考集里卡片标题是 15~16px、正常大小写、600 字重；
-     11.5px 全大写那套是"杂志小标"的路子，放在这里显得又小又用力 */
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  /* 卡片标题走 heading 档（17px / 650）：和正文 14.5 拉开 1.17 倍，
+     再靠字重差（650 vs 450）把层级压实 —— toC 界面的"设计感"主要来自这里 */
+  font-size: var(--wd-fs-heading);
+  font-weight: var(--wd-fw-semibold);
+  letter-spacing: -0.015em;
   color: var(--wd-ink);
 }
 
@@ -175,9 +175,10 @@ async function copyCode() {
 }
 
 .demo-block__desc {
-  margin: 7px 0 0;
-  font-size: 13.5px;
-  line-height: 1.65;
+  margin: 8px 0 0;
+  font-size: var(--wd-fs-body);
+  line-height: 1.7;
+  font-weight: var(--wd-fw-regular);
   color: var(--wd-ink-2);
 }
 
@@ -233,7 +234,7 @@ async function copyCode() {
   max-width: 660px;
   overflow: auto;
   font-family: var(--wd-font-mono);
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.75;
   color: var(--wd-ink-2);
   tab-size: 2;

@@ -30,7 +30,7 @@ $wd-ink:        #191B1F !default; // 正文
 // 说明文字：原 #8A9099 在白卡仅 3.2:1（未达 AA 4.5），压深到 5.5:1；
 // 与 GitHub --fg-muted 同档，仍明显弱于正文，层次不丢。
 $wd-ink-2:      #636A73 !default; // 说明
-$wd-ink-3:      #B8BEC7 !default; // 占位
+$wd-ink-3:      #A5ADB8 !default; // 占位 / 三级说明（原来 #B8BEC7 在白底上只有 1.9:1，读不清）
 // 反向迭代（源：w-run/blog）：更完整的弱文本梯度，供时间戳/分割/禁用使用
 $wd-ink-4:      #CDD2D7 !default; // 极弱（时间戳 / 次要标注）
 $wd-ink-5:      #E3E6EA !default; // 最弱（分割 / 描边 / 禁用）
@@ -79,7 +79,7 @@ $wd-field-dark:   #2A2A2E !default;
 $wd-field-hover-dark: #3A3A40 !default;
 $wd-ink-dark:     #E8E8EC !default;
 $wd-ink-2-dark:   #9A9AB2 !default;
-$wd-ink-3-dark:   #74748C !default;
+$wd-ink-3-dark:   #8A8AA0 !default;  // 深色下提亮一档，保证 12px 小字可读（原 #74748C 仅约 3.9:1）
 $wd-ink-4-dark:   #58586E !default;
 $wd-ink-5-dark:   #45455A !default;
 $wd-dark-dark:    #F0F0F0 !default;
@@ -185,6 +185,45 @@ $wd-padding-lg: 16px 32px !default;
 $wd-font-size-sm: 13px !default;
 $wd-font-size-md: 14.5px !default;
 $wd-font-size-lg: 16px !default;
+
+/*
+ * 字重阶梯（可变字重字体，Mona Sans 支持 200~900 连续取值）。
+ *
+ * 为什么不用 400/500/600/700 这套整数档：
+ * toC 界面的层级感靠"字重的细微差"堆出来，400→700 之间只有三档，
+ * 标题和正文的对比只能靠字号硬拉，容易显得"标题很粗、正文很虚"。
+ * 这里给 450 / 560 / 650 / 780 四个主力档，正好卡在视觉可分、又不跳的区间。
+ */
+$wd-fw-regular: 450 !default;   // 正文
+$wd-fw-medium: 560 !default;    // 强调正文 / 次级标题
+$wd-fw-semibold: 650 !default;  // 卡片标题、表头
+$wd-fw-bold: 780 !default;      // 页面标题、区块标题
+$wd-fw-black: 840 !default;     // 首屏大标题
+
+/*
+ * 标题阶梯：与正文拉开明确倍数（正文 14.5）。
+ *   display 40~56 / heading 17 / body 14.5 / label 12.5
+ * 之前页面标题 30~40、卡片标题 15，跟正文 13.5 只差 1.1 倍，整页没有主次。
+ */
+$wd-fs-display: clamp(40px, 3.4vw, 56px) !default;
+$wd-fs-title: 26px !default;
+$wd-fs-heading: 17px !default;
+$wd-fs-body: 14.5px !default;
+$wd-fs-label: 12.5px !default;
+
+/*
+ * 选中态分两档 —— 用途不同，不能共用一个值：
+ *
+ *   · 强选中（selected）：侧栏项、分段控件、列表项、树节点。
+ *     用**反相实心**（浅色主题=近黑底白字，深色主题=近白底黑字）。
+ *     这是全站唯一的"当前位置"标记，必须一眼看到；浅灰底在深色主题下
+ *     会和 hover 糊成一片（用户原话：「暗色模式很多选中态是灰白色很差」）。
+ *   · 弱选中（selected-row）：表格行、日历区间。整行大面积上色，
+ *     必须克制，比 hover 深一档即可，不能刷成黑底。
+ */
+$wd-selected-bg: #191B1F !default;
+$wd-selected-ink: #FFFFFF !default;
+$wd-selected-row: #E4E9F0 !default;
 
 // =============================================================
 //  CSS 自定义属性（运行期主题化）

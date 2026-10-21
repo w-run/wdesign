@@ -25,7 +25,13 @@ const names = computed<string[]>(() =>
  * 不改成 <code> 是有意为之：说明文字来自源码，走 v-html 等于开一个注入口。
  */
 function plain(text: string) {
-  return text.replace(/`/g, "");
+  return (
+    text
+      .replace(/`/g, "")
+      // 说明里常写 `sm | md | lg` 这种枚举，竖线在等宽字体里又细又矮，
+      // 连起来读像 "smlmdllg"。正文用中点分隔，只有类型行保留竖线。
+      .replace(/\s*\|\s*/g, " · ")
+  );
 }
 
 /**
@@ -162,11 +168,11 @@ const comps = computed(() =>
   align-items: center;
   gap: 10px;
   margin: 0 0 2px;
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  font-weight: var(--wd-fw-bold);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
 }
 
 .api__label::after {
@@ -195,8 +201,8 @@ const comps = computed(() =>
 
 .api__name {
   font-family: var(--wd-font-mono);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--wd-fs-body);
+  font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink);
 }
 
@@ -221,16 +227,17 @@ const comps = computed(() =>
   display: block;
   margin-top: 4px;
   font-family: var(--wd-font-mono);
-  font-size: 12.5px;
+  font-size: 13px;
   line-height: 1.55;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   word-break: break-word;
 }
 
 .api__desc {
   margin: 6px 0 0;
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.7;
+  font-weight: var(--wd-fw-regular);
   color: var(--wd-ink-2);
 }
 
@@ -239,15 +246,15 @@ const comps = computed(() =>
   margin: 18px 0 0;
   padding-top: 12px;
   box-shadow: inset 0 1px 0 var(--wd-ink-5);
-  font-size: 11px;
+  font-size: 11.5px;
   line-height: 1.6;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
 }
 
 .api__source code {
   font-family: var(--wd-font-mono);
-  font-size: 11px;
-  color: var(--wd-ink-2);
+  font-size: 11.5px;
+  color: var(--wd-ink);
   word-break: break-all;
 }
 

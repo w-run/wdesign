@@ -138,18 +138,19 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
 
 .demo-page__title {
   margin: 0;
-  font-size: clamp(30px, 3vw, 40px);
-  font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
+  font-size: var(--wd-fs-display);
+  font-weight: var(--wd-fw-black);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
   color: var(--wd-ink);
 }
 
 .demo-page__desc {
-  max-width: 62ch;
-  margin: 14px 0 0;
-  font-size: 15.5px;
-  line-height: 1.75;
+  max-width: 58ch;
+  margin: 16px 0 0;
+  font-size: var(--wd-fs-body);
+  line-height: 1.7;
+  font-weight: var(--wd-fw-regular);
   color: var(--wd-ink-2);
 }
 

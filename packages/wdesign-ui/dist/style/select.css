@@ -117,9 +117,9 @@
  * （主按钮、当前步骤、错误态、进度），不在高频日常操作里铺底。
  */
 .wd-select__option--active {
-  background: var(--wd-field);
+  background: var(--wd-selected-row);
   color: var(--wd-ink);
-  font-weight: 700;
+  font-weight: var(--wd-fw-semibold);
 }
 
 .wd-select__option-mark {

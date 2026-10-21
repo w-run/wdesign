@@ -14,8 +14,8 @@
 
 .wd-nav {
   display: flex;
-  /* 参考集里侧栏是 14~15px，13px 显得"缩"；行高也一并放到 42 */
-  font-size: 14px;
+  /* 侧栏 14.5 与正文同档；层级靠字重差（选中 700 / 常规 560）表达 */
+  font-size: var(--wd-fs-body);
   color: var(--wd-ink-2);
 }
 
@@ -332,9 +332,9 @@
  * 是"当前位置"的轻量标记，不破坏胶囊形状。
  */
 .wd-nav--vertical .wd-nav__item.is-active {
-  background: var(--wd-field);
-  color: var(--wd-ink);
-  font-weight: 700;
+  background: var(--wd-selected-bg);
+  color: var(--wd-selected-ink);
+  font-weight: var(--wd-fw-bold);
   /* 给圆点留出位置，避免文字左移 */
   padding-left: 26px;
 }
