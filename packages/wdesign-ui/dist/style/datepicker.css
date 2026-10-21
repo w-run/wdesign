@@ -55,7 +55,8 @@
 }
 
 .wd-datepicker--open .wd-datepicker__trigger {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  box-shadow: 0 0 0 3px var(--wd-focus-ring);
+  animation: wd-focus-breathe 2.2s var(--wd-ease-smooth) infinite;
 }
 
 .wd-datepicker__placeholder {

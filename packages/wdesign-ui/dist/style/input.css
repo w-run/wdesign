@@ -30,8 +30,10 @@
 }
 
 .wd-input:focus-within {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-faint);
-  animation: wd-ring-in var(--wd-dur) var(--wd-ease-out);
+  /* 与 select 统一的聚焦语言：紧贴胶囊的红环 + 呼吸 */
+  box-shadow: 0 0 0 3px var(--wd-focus-ring);
+  /* 两条动画并存：入场环 + 持续呼吸（写两条 animation 会被后者覆盖，必须合到一行） */
+  animation: wd-focus-breathe 2.2s var(--wd-ease-smooth) infinite, wd-ring-in var(--wd-dur) var(--wd-ease-out);
   caret-color: var(--wd-red);
 }
 

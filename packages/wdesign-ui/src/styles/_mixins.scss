@@ -37,9 +37,13 @@
 ///    那样产出的字面量在静态检查器里无法解析，
 ///    且部分工具链不识别运行时拼接的变量名。
 ///    直接传完整令牌名，最安全。
-@mixin focus-ring($width: 4px, $token: --wd-focus-ring-soft) {
+@mixin focus-ring($width: 4px, $token: --wd-focus-ring-soft, $breathe: false) {
   outline: none;
   box-shadow: 0 0 0 $width var(#{$token});
+  @if $breathe {
+    // 输入类控件聚焦时缓慢呼吸：告诉用户"焦点在这里"，不是死的一圈
+    animation: wd-focus-breathe 2.2s var(--wd-ease-smooth) infinite;
+  }
 }
 
 /// 单行截断：超长文本以省略号结尾。

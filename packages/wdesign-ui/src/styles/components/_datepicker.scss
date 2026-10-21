@@ -47,7 +47,10 @@
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-datepicker__trigger.is-hover { background: var(--wd-field-hover); }
 
-.wd-datepicker--open .wd-datepicker__trigger { box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
+.wd-datepicker--open .wd-datepicker__trigger {
+  box-shadow: 0 0 0 3px var(--wd-focus-ring);
+  animation: wd-focus-breathe 2.2s var(--wd-ease-smooth) infinite;
+}
 .wd-datepicker__placeholder { color: var(--wd-ink-2); }
 .wd-datepicker__icon { flex: none; color: var(--wd-ink-3); }
 

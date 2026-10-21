@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { WdNav } from "@wdesign";
 import { routes } from "../router";
@@ -143,6 +143,22 @@ function toggleDark() {
  * 只是给 <html> 挂 data-motion，令牌值由 shell.scss 覆盖。
  */
 const slowMotion = ref(false);
+
+/**
+ * 演示站默认**绕过系统的"减少动态效果"**。
+ *
+ * 为什么：远程桌面 / 部分 Windows 环境的 prefers-reduced-motion 默认就是 reduce，
+ * 系统级把所有 animation / transition 压成 0.01ms —— 结果是"这个库看起来完全没有动效"。
+ * 但这是个**演示动效的地方**，看不到动效等于没法验收，所以这里默认打开慢放。
+ * 用户仍可点 ⏱ 关掉（关掉后回到系统行为）。
+ */
+onMounted(() => {
+  if (typeof matchMedia !== "function") return;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    slowMotion.value = true;
+    document.documentElement.dataset.motion = "slow";
+  }
+});
 
 function toggleMotion() {
   slowMotion.value = !slowMotion.value;

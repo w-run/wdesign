@@ -45,13 +45,15 @@
   background: var(--wd-field-hover);
 }
 
-.wd-select__trigger:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
-}
-
+/*
+ * 聚焦 / 展开：红环**紧贴胶囊**（box-shadow 走 border-box，圆角自动跟随）
+ * 并缓慢呼吸。之前只有一层 8% 的静态淡红，看着像"外面套了个方框"。
+ */
+.wd-select__trigger:focus-visible,
 .wd-select--open .wd-select__trigger {
-  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--wd-focus-ring);
+  animation: wd-focus-breathe 2.2s var(--wd-ease-smooth) infinite;
 }
 
 .wd-select__placeholder {

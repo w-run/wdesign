@@ -29,10 +29,10 @@ html.dark-theme {
   --wd-dark-2:     #{t.$wd-field-hover-dark};
   /* 选中态：深色下卡面 #1C1C1E、控件底 #2A2A2E，选中要再亮一档且字纯白，
      否则和 hover 分不开（旧值直接用 field，选中和悬停几乎同色） */
-  /* 深色下聚焦环反相为白色半透明，否则黑环落在深底上等于没有 */
-  --wd-focus-ring-faint: rgba(255, 255, 255, .10);
-  --wd-focus-ring:       rgba(255, 255, 255, .28);
-  --wd-focus-ring-soft:  rgba(255, 255, 255, .20);
+  /* 聚焦环在深色下仍是品牌红（红恒定），只是提亮一点，避免落在深底上看不见 */
+  --wd-focus-ring-faint: rgba(214, 40, 57, .14);
+  --wd-focus-ring:       rgba(232, 74, 90, .30);
+  --wd-focus-ring-soft:  rgba(232, 74, 90, .24);
 
   --wd-selected-bg:  #F2F2F5;   /* 强选中反相：近白实心 */
   --wd-selected-ink: #101014;   /* 其上近黑字 */

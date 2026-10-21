@@ -67,6 +67,13 @@
 // ── 精致微动效关键帧 ──
 // 说明：本文件的脉冲/外环使用「主题红常量」rgba(214,40,57,·)——红在浅深两主题下恒为 #D62839，
 // 故不令牌化（令牌化的价值在于随主题翻转，而它不翻转）。灰色环值随 --wd-ink-2 同步维护。
+// 聚焦呼吸（输入类控件聚焦时：环"跟着呼吸"，不是死的一圈）
+// 注意：不能只写扩散不写基准环，否则动画期间静态环会消失
+@keyframes wd-focus-breathe {
+  0%, 100% { box-shadow: 0 0 0 3px var(--wd-focus-ring); }
+  50%      { box-shadow: 0 0 0 6px var(--wd-focus-ring-soft); }
+}
+
 // 柔光呼吸（当前步骤 / 进行中状态：缓慢、克制）
 @keyframes wd-breathe {
   0%, 100% { box-shadow: 0 0 0 0 rgba(214, 40, 57, .16); }
@@ -142,3 +149,14 @@
   }
 }
 
+
+
+/* 尊重系统的"减少动态效果"：呼吸环停掉，只留静态环 */
+@media (prefers-reduced-motion: reduce) {
+  .wd-input:focus-within,
+  .wd-select__trigger:focus-visible,
+  .wd-select--open .wd-select__trigger,
+  .wd-datepicker--open .wd-datepicker__trigger {
+    animation: none;
+  }
+}
