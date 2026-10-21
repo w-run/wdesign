@@ -104,6 +104,8 @@
   padding: 6px;
   border-radius: var(--wd-radius-md);
   background: var(--wd-card);
+  /* 深色下浮层与页面只差几 % 亮度：靠 hairline 勾边界，比加阴影干净 */
+  border: 1px solid var(--wd-hairline);
   box-shadow: var(--wd-shadow-pop);
   /*
    * 多列高度不一会参差，用 flex 让各列等高、内部各自滚动。
