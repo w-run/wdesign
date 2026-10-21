@@ -21,8 +21,10 @@ const props = withDefaults(
     title?: string
     /** 副标题 / 分类 */
     subtitle?: string
-    /** 右上角标签（如 "Last Seen: 1 hour ago"） */
+    /** 右上角标签（如 "Last Seen: 1 hour ago"）；压在图上时是毛玻璃胶囊 */
     badge?: string
+    /** 右下角时长（视频缩略图用，如 "12:03"）；同样压在图上 */
+    duration?: string
     /** 数据条：2~4 组最佳，超过 4 组会挤 */
     stats?: MediaCardStat[]
     /** 正文段落（展开后显示） */
@@ -157,6 +159,9 @@ const hasTextOnMedia = computed(() => isOverlay.value && !!(props.title || props
           <slot name="tools" />
         </div>
       </div>
+
+      <!-- 右下角时长：压在图上，用毛玻璃小胶囊（视频站通行做法） -->
+      <span v-if="duration" class="wd-media-card__duration">{{ duration }}</span>
 
       <!--
         ⚠️ overlay 的标题**不在这里** —— 它由 body 统一渲染。

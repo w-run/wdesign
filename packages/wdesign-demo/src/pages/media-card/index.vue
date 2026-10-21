@@ -49,6 +49,7 @@ function onOpen(value: boolean) {
             title="组件总览"
             subtitle="内容压在图上的铺满卡片"
             badge="最新"
+            duration="12:03"
             layout="overlay"
             media-mode="cover"
           />
@@ -61,6 +62,7 @@ function onOpen(value: boolean) {
             title="深色模式"
             subtitle="压在图上，但图片内嵌留白"
             badge="推荐"
+            duration="9:41"
             layout="overlay"
             media-mode="inset"
           />

@@ -101,6 +101,15 @@ $wd-dark-text-dark: #1C1C1E !default;
 $wd-dark-2-dark:  #3A3A40 !default;
 
 $wd-mask:     rgba(28, 28, 28, .42) !default; // 遮罩（深色主题会覆盖）
+
+/*
+ * 毛玻璃面（压在图片 / 视频上的胶囊、标签）。
+ * 半透明深底 + backdrop-blur + 一道细亮边，白字就能压在任何亮度的照片上。
+ * 不支持 backdrop-filter 的浏览器靠 @supports 兜底成更实的底色。
+ */
+$wd-glass-bg:     rgba(20, 20, 22, .42) !default;
+$wd-glass-border: rgba(255, 255, 255, .18) !default;
+$wd-glass-blur:   12px !default;
 // 反向迭代（源：w-run/blog）：主题切换时的全局过渡时长
 $wd-dur-theme: .3s !default;
 

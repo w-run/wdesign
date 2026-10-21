@@ -199,12 +199,50 @@
   pointer-events: none;
 }
 
+/*
+ * 压在图上的一律用毛玻璃胶囊。
+ * 之前只有白字 + 文字阴影：遇到浅色照片（雪景、白墙）直接糊掉。
+ * 半透明深底 + blur + 一道亮边，任何底图都能读。
+ */
 .wd-media-card__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--wd-radius-pill);
   font-size: 12px;
   font-weight: var(--wd-fw-medium);
-  color: rgba(255, 255, 255, .92);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, .5);
-  /* 角标本身不加底色 —— 压暗层已经保证了可读性 */
+  color: var(--wd-on-dark-text);
+  background: var(--wd-glass-bg);
+  border: 1px solid var(--wd-glass-border);
+  backdrop-filter: blur(var(--wd-glass-blur));
+  -webkit-backdrop-filter: blur(var(--wd-glass-blur));
+  text-shadow: none;
+}
+
+/* 不支持 backdrop-filter：退回更实的底，保证对比度 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .wd-media-card__badge { background: rgba(20, 20, 22, .78); }
+}
+
+/* 时长胶囊：压在媒体右下角（参考视频站做法） */
+.wd-media-card__duration {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-family: var(--wd-font-mono);
+  font-size: 11.5px;
+  font-weight: var(--wd-fw-medium);
+  color: var(--wd-on-dark-text);
+  background: var(--wd-glass-bg);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .wd-media-card__tools {
