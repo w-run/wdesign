@@ -69,11 +69,20 @@ function onSubmit() {
       </DemoRow>
     </DemoBlock>
 
-    <DemoBlock title="图标态与通栏">
+    <DemoBlock title="图标态与通栏" desc="图标用 WdIcon（尺寸跟着按钮档位走），不要用 + × ⋯ 这类文字字符 —— 它们的字形大小和对齐都不可控">
       <DemoRow>
-        <WdButton variant="dark" icon-only>+</WdButton>
-        <WdButton variant="tint" icon-only>×</WdButton>
-        <WdButton variant="ghost" icon-only>⋯</WdButton>
+        <WdButton variant="dark" icon-only aria-label="新增">
+          <WdIcon name="plus" :size="20" />
+        </WdButton>
+        <WdButton variant="tint" icon-only aria-label="关闭">
+          <WdIcon name="close" :size="20" />
+        </WdButton>
+        <WdButton variant="ghost" icon-only aria-label="更多">
+          <WdIcon name="dots-horizontal" :size="20" />
+        </WdButton>
+        <WdButton variant="tint" icon-only size="lg" aria-label="筛选">
+          <WdIcon name="filter" :size="22" />
+        </WdButton>
       </DemoRow>
       <WdButton variant="primary" block>block 通栏按钮</WdButton>
     </DemoBlock>

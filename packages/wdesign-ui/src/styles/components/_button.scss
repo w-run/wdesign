@@ -30,8 +30,14 @@
    * 之前完全由调用方传 `:size`，一传 16 就变成"44px 圆里塞个 16px 小点"。
    * 这里用 CSS 兜住（CSS 宽度 > svg 的 width 属性），调用方仍可覆盖。
    */
-  /* 纯图标按钮里的箭头不需要左边距 */
-  &.wd-btn--icon .wd-btn__arrow { margin-left: 0; }
+  /* 纯图标按钮里的箭头：不要左距，且必须块级居中（行内盒会带基线偏移） */
+  &.wd-btn--icon .wd-btn__arrow {
+    display: block;
+    margin-left: 0;
+    /* 44px 的圆里 20px 还显小，箭头提到 22（比例 ~50%，和系统图标按钮一致） */
+    width: 22px;
+    height: 22px;
+  }
 
   &.wd-btn--icon > svg,
   &.wd-btn--icon > .wd-icon > svg {
@@ -40,6 +46,20 @@
   }
   &.wd-btn--icon.wd-btn--lg > svg,
   &.wd-btn--icon.wd-btn--lg > .wd-icon > svg { width: 22px; height: 22px; }
+
+  /* 纯图标按钮的悬停/按下：圆要"活"起来，否则和静态图形无异 */
+  @media (hover: hover) {
+    &.wd-btn--icon:hover:not(:disabled) {
+      transform: translateY(-1px) scale(1.04);
+    }
+    &.wd-btn--icon:hover:not(:disabled) .wd-btn__arrow {
+      transform: translate(1px, -1px);
+    }
+  }
+
+  &.wd-btn--icon:active:not(:disabled) {
+    transform: scale(.94);
+  }
   &.wd-btn--icon.wd-btn--sm > svg,
   &.wd-btn--icon.wd-btn--sm > .wd-icon > svg { width: 17px; height: 17px; }
 
