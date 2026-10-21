@@ -12,6 +12,8 @@
   height: var(--wd-size-md);
   padding: 0 20px;
   border: 0;
+  /* 按钮的 UA 默认 `text-align: center`，不覆盖就是"值居中" —— 与 WdInput 左对齐不一致 */
+  text-align: left;
   cursor: pointer;
   background: var(--wd-field);
   border-radius: var(--wd-radius-pill);
@@ -35,8 +37,9 @@
 .wd-select__trigger:focus-visible,
 .wd-select--open .wd-select__trigger {
   outline: none;
-  box-shadow: 0 0 0 3px var(--wd-focus-ring);
-  animation: wd-focus-breathe 2.2s var(--wd-ease-smooth) infinite;
+  /* 静态红环画在胶囊上；**呼吸动画由 _base.scss 的全局规则统一施加**，
+     不要在这里再写 animation —— 两处都写会互相覆盖/重复起播 */
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
 .wd-select__placeholder { color: var(--wd-ink-2); }

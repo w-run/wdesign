@@ -112,10 +112,33 @@ body {
  *  ⚠️ 只调制 box-shadow，不碰 display / opacity ——
  *     时钟停摆时最坏情况是停在某个中间值，元素仍清晰可见。
  * ============================================================= */
+/* 显式逃生口：演示站 ⏱ 打开时无视系统的 reduce（否则整套动效验收不了） */
+html[data-motion="slow"] .wd-btn:focus-visible,
+html[data-motion="slow"] .wd-input:focus-within,
+html[data-motion="slow"] .wd-select:focus-within .wd-select__trigger,
+html[data-motion="slow"] .wd-select--open .wd-select__trigger,
+html[data-motion="slow"] .wd-group:focus-within,
+html[data-motion="slow"] .wd-checkbox:focus-visible,
+html[data-motion="slow"] .wd-radio:focus-visible,
+html[data-motion="slow"] .wd-switch:focus-visible,
+html[data-motion="slow"] .wd-otp__box:focus,
+html[data-motion="slow"] .wd-rate__item:focus-visible,
+html[data-motion="slow"] .wd-pagination__btn:focus-visible,
+html[data-motion="slow"] .wd-tree__node:focus-visible,
+html[data-motion="slow"] .wd-tabs__item:focus-visible {
+  animation: wd-focus-breathe 1.4s cubic-bezier(.4, 0, .3, 1) infinite alternate;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .wd-btn:focus-visible,
   .wd-input:focus-within,
-  .wd-select:focus-within,
+  /*
+   * ⚠️ select 不能写 `.wd-select:focus-within` —— 那是外层 wrapper（无圆角），
+   * 环会画成矩形，里面再叠一层胶囊自身的静态环，看起来就是"双层边框"。
+   * 环必须落在触发器（胶囊）身上。
+   */
+  .wd-select:focus-within .wd-select__trigger,
+  .wd-select--open .wd-select__trigger,
   .wd-group:focus-within,
   .wd-checkbox:focus-visible,
   .wd-radio:focus-visible,

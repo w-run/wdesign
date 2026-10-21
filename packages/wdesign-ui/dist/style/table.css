@@ -1,4 +1,11 @@
 @charset "UTF-8";
+/**
+ * 聚焦环。
+ *
+ * ⚠️ 只画**静态环**，不要在组件里写 animation：
+ *    呼吸由 `_base.scss` 的全局规则统一施加（一条定义、处处一致）。
+ *    两处都写会出现"矩形环叠胶囊环""动画互相覆盖"这类问题。
+ */
 .wd-table-wrap {
   background: var(--wd-card);
   border-radius: var(--wd-radius-md);

@@ -145,10 +145,14 @@ function toggle(v: OptionValue) {
   if (opt?.disabled) return
 
   if (props.multiple) {
-    const set = new Set(selected.value)
-    set.has(v) ? set.delete(v) : set.add(v)
-    const next = Array.from(set)
-    set(next)
+    /*
+     * ⚠️ 局部变量不能叫 `set` —— 会遮蔽上面 useControllable 解构出来的 set()，
+     * 于是 `set(next)` 变成"把 Set 实例当函数调用"，抛 TypeError，
+     * 表现就是**多选点了没反应**（面板不关、标签不变、控制台才报错）。
+     */
+    const picked = new Set(selected.value)
+    picked.has(v) ? picked.delete(v) : picked.add(v)
+    set(Array.from(picked))
     // 多选不关闭面板，便于连续选择
   } else {
     set(v)
