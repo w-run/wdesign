@@ -24,7 +24,7 @@
   border-radius: var(--wd-radius-pill);
   background: var(--wd-ink);
   cursor: pointer;
-  transition: background var(--wd-dur) ease;
+  transition: background var(--wd-dur) var(--wd-ease-smooth);
 }
 
 .wd-switch:focus-visible {
@@ -45,7 +45,7 @@
   border-radius: 50%;
   background: #fff;
   box-shadow: var(--wd-shadow-knob);
-  transition: transform var(--wd-dur) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-smooth);
   transform: translateX(21px);
 }
 

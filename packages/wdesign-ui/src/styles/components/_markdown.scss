@@ -41,7 +41,7 @@
     text-decoration-color: var(--wd-link-underline);
     text-decoration-thickness: 1.5px;
     text-underline-offset: 3px;
-    transition: color var(--wd-dur-fast) ease, text-decoration-color var(--wd-dur-fast) ease;
+    transition: color var(--wd-dur-fast) var(--wd-ease-smooth), text-decoration-color var(--wd-dur-fast) var(--wd-ease-smooth);
   }
 @media (hover: hover) {
   a:hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }

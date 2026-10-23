@@ -57,7 +57,7 @@
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   cursor: pointer;
-  transition: color var(--wd-dur-fast) ease;
+  transition: color var(--wd-dur-fast) var(--wd-ease-smooth);
   white-space: nowrap;
 }
 @media (hover: hover) {

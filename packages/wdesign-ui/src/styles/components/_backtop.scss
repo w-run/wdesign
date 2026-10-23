@@ -36,11 +36,11 @@
   transform: translateY(8px);
   pointer-events: none;
   transition:
-    opacity var(--wd-dur-slow) ease,
-    transform var(--wd-dur-slow) ease,
-    visibility var(--wd-dur-slow) ease,
-    background var(--wd-dur-fast) ease,
-    color var(--wd-dur-fast) ease;
+    opacity var(--wd-dur-slow) var(--wd-ease-smooth),
+    transform var(--wd-dur-slow) var(--wd-ease-smooth),
+    visibility var(--wd-dur-slow) var(--wd-ease-smooth),
+    background var(--wd-dur-fast) var(--wd-ease-smooth),
+    color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-backtop.is-visible {
@@ -72,7 +72,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wd-backtop { transition: opacity var(--wd-dur-fast) ease; }
+  .wd-backtop { transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth); }
   .wd-backtop.is-visible { transform: none; }
   .wd-backtop:hover { transform: none; }
 }

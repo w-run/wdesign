@@ -146,7 +146,7 @@
   background: transparent;
   color: var(--wd-ink-3);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-modal__close:hover {

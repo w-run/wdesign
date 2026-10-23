@@ -64,7 +64,7 @@
   box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
   background: transparent;
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-transfer__check-all input:hover {
@@ -123,7 +123,7 @@
   font-size: 13px;
   color: var(--wd-ink);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-transfer__item:hover {
@@ -164,7 +164,7 @@
   box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
   background: transparent;
   color: var(--wd-card);
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-transfer__item:hover .wd-transfer__tick {
@@ -228,8 +228,8 @@
   background: var(--wd-field);
   color: var(--wd-ink-2);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease,
-              opacity var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth),
+              opacity var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-transfer__op:hover:not(:disabled) {

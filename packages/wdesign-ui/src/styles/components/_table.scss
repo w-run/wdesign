@@ -40,7 +40,7 @@
 }
 .wd-table td { padding: 14px 16px; color: var(--wd-ink); }
 
-.wd-table tbody tr { transition: background var(--wd-dur-fast) ease; }
+.wd-table tbody tr { transition: background var(--wd-dur-fast) var(--wd-ease-smooth); }
 .wd-table--striped tbody tr:nth-child(even) { background: var(--wd-bg); }
 @media (hover: hover) {
   /* 勾选行已有选中底，hover 不能再刷成淡红 */
@@ -202,7 +202,7 @@
   pointer-events: none;
   background: linear-gradient(to right, rgba(0, 0, 0, .06), transparent);
   opacity: 0;
-  transition: opacity var(--wd-dur-fast) ease;
+  transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-table__th--fixed-right::after,
@@ -250,7 +250,7 @@
   background: transparent;
   color: var(--wd-ink-3);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-table__tree-toggle:hover {
@@ -287,7 +287,7 @@
   background: transparent;
   color: var(--wd-ink-3);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-table__expander:hover {

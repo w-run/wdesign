@@ -3,7 +3,7 @@
   display: inline-flex;
   flex: none;
   color: var(--wd-ink-3);
-  transition: transform var(--wd-dur) ease, color var(--wd-dur) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-smooth), color var(--wd-dur) var(--wd-ease-smooth);
 }
 
 /*

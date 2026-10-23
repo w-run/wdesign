@@ -31,7 +31,7 @@
   border-radius: var(--wd-radius-sm);
   box-shadow: var(--wd-shadow);
   cursor: grab;
-  transition: transform var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth), background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-sortable__item:active {
@@ -118,7 +118,7 @@
 
 .wd-sort-enter-active,
 .wd-sort-leave-active {
-  transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease;
+  transition: opacity var(--wd-dur) var(--wd-ease-smooth), transform var(--wd-dur) var(--wd-ease-smooth);
 }
 
 .wd-sort-enter-from,

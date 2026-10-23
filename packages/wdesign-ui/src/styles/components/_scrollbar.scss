@@ -57,7 +57,7 @@
    */
   background: transparent;
   opacity: 0;
-  transition: opacity var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+  transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth), background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-scrollbar__track.is-visible {
@@ -75,7 +75,7 @@
   border-radius: var(--wd-radius-pill);
   background: var(--wd-ink-4);
   cursor: grab;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
   /* 触摸设备上可拖拽：阻止浏览器的滚动接管 */
   touch-action: none;
 }
@@ -88,7 +88,7 @@
   background: var(--wd-ink-2);
   cursor: grabbing;
   /* 拖动时不做位置过渡，否则滑块会"追"着指针跑 */
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (prefers-reduced-motion: reduce) {

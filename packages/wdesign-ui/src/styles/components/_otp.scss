@@ -26,9 +26,9 @@
   appearance: none;
   -moz-appearance: textfield;
   transition:
-    background var(--wd-dur-fast) ease,
-    box-shadow var(--wd-dur-fast) ease,
-    border-color var(--wd-dur-fast) ease;
+    background var(--wd-dur-fast) var(--wd-ease-smooth),
+    box-shadow var(--wd-dur-fast) var(--wd-ease-smooth),
+    border-color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-otp__box::placeholder { color: var(--wd-ink-2); }
@@ -110,7 +110,7 @@
   height: 2px;
   border-radius: 1px;
   background: var(--wd-ink-4);
-  transition: background var(--wd-dur-fast) ease, height var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), height var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 /* 聚焦时整条线变主题红并加粗 —— 焦点属于"这一组" */

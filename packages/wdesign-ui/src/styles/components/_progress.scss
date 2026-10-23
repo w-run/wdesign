@@ -18,7 +18,7 @@
   height: 100%;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-progress-color);
-  transition: width var(--wd-dur-slow) ease;
+  transition: width var(--wd-dur-slow) var(--wd-ease-smooth);
 }
 
 // 深色卡内使用

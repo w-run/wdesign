@@ -43,7 +43,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -62,7 +62,7 @@
   border-radius: 50%;
   background: #fff;
   transform: scale(0);
-  transition: transform var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 /* 单选同样用深色：见 checkbox 的说明 */
@@ -117,7 +117,7 @@
 }
 
 .wd-radio__dot {
-  transition: background var(--wd-dur-fast) ease, transform var(--wd-dur) var(--wd-ease-out);
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), transform var(--wd-dur) var(--wd-ease-out);
 }
 
 .wd-radio:active .wd-radio__dot {

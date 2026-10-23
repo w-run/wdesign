@@ -47,7 +47,7 @@
   font-weight: var(--wd-fw-medium);
   cursor: pointer;
   text-align: left;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -146,7 +146,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -198,7 +198,7 @@
 
 .wd-explorer__table tbody tr {
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -261,7 +261,7 @@
   background: transparent;
   cursor: pointer;
   font: inherit;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -287,7 +287,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -329,7 +329,7 @@
 /* 视图切换过渡（详情 ↔ 图标 / 文件夹切换） */
 .wd-fade-enter-active,
 .wd-fade-leave-active {
-  transition: opacity var(--wd-dur) ease, transform var(--wd-dur) ease;
+  transition: opacity var(--wd-dur) var(--wd-ease-smooth), transform var(--wd-dur) var(--wd-ease-smooth);
 }
 
 .wd-fade-enter-from,

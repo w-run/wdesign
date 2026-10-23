@@ -36,12 +36,12 @@
 
 // Press：按压反馈（配 :active）
 .wd-animated--press {
-  transition: transform var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-smooth);
   &:active { transform: scale(.96); }
 }
 
 // Enter/Leave：菜单 / 折叠 / 提示 的入场离场
-.wd-collapse-enter-active { transition: opacity var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease; }
+.wd-collapse-enter-active { transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth), transform var(--wd-dur-fast) var(--wd-ease-smooth); }
 .wd-collapse-enter-from,
 .wd-collapse-leave-to    { opacity: 0; transform: translateY(-4px); }
 

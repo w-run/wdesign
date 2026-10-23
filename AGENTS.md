@@ -116,6 +116,12 @@ bash tools/publish-npm.sh   # 发布到公共 npm
 真正抓到过的：`WdSelect` onChange 自递归（栈溢出）、WdNav 项被 flex 压缩、
 API 表 `undefined` 胶囊 / `/**` 残留 / 反引号、导航页灰底撑满卡片。
 
+
+**缓动一律走令牌**：`--wd-ease-out`（入场）/ `--wd-ease-smooth`（颜色、背景）/
+`--wd-ease-sharp`（退场）/ `--wd-ease-spring-soft`（微交互）。
+不要写裸 `ease` —— 浏览器的 `ease` 曲线起手偏"肉"，而且散落在 200 多个声明里
+无法统一调整（2026-10 已全量替换成 `--wd-ease-smooth`）。
+
 **动效怎么看**：远程链路 120ms 的过渡肉眼看不见 —— 侧栏底部 `⏱` 慢放开关把
 `--wd-dur-*` 整体拉长 5~8 倍；判断"有没有动效"先开它再看。
 

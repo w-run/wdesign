@@ -19,7 +19,7 @@
   padding: 12px 18px;
   /* 可点击列表项优先胶囊 */
   border-radius: var(--wd-radius-pill);
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-list-item--clickable {

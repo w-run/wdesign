@@ -25,7 +25,7 @@
   color: var(--wd-ink);
   cursor: pointer;
   outline: none;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -110,7 +110,7 @@
   box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
   background: transparent;
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-tree__check input:hover {
@@ -164,7 +164,7 @@
   align-items: center;
   gap: 4px;
   opacity: 0;
-  transition: opacity var(--wd-dur-fast) ease;
+  transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-tree__node:hover .wd-tree__extra,

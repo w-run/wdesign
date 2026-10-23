@@ -67,7 +67,7 @@
 
 .wd-drawer__foot { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 
-.wd-drawer-fade-enter-active, .wd-drawer-fade-leave-active { transition: opacity var(--wd-dur-slow) ease; }
+.wd-drawer-fade-enter-active, .wd-drawer-fade-leave-active { transition: opacity var(--wd-dur-slow) var(--wd-ease-smooth); }
 .wd-drawer-fade-enter-from, .wd-drawer-fade-leave-to { opacity: 0; }
 
 /* 面板滑入：由同一套 Transition 控制，不叠加 animation
@@ -85,7 +85,7 @@
   transform: translateX(-24px);
 }
 .wd-drawer-fade-leave-active .wd-drawer__panel {
-  transition: transform var(--wd-dur) ease, opacity var(--wd-dur) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-smooth), opacity var(--wd-dur) var(--wd-ease-smooth);
 }
 .wd-drawer-fade-leave-to .wd-drawer__panel {
   transform: translateX(24px);

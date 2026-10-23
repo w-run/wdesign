@@ -57,7 +57,7 @@
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-nav__item:active:not(.is-disabled) {
@@ -138,7 +138,7 @@
      远低于 WCAG 对小字的 4.5:1。ink-2 是 5.1:1，仍然是次要层级 */
   color: var(--wd-ink-2);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -302,7 +302,7 @@
   background: transparent;
   color: var(--wd-ink-3);
   cursor: pointer;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {

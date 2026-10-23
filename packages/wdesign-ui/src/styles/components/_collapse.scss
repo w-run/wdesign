@@ -23,7 +23,7 @@
   color: var(--wd-ink);
   cursor: pointer;
   text-align: left;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
   .wd-collapse__head:hover { background: var(--wd-bg); }
@@ -34,7 +34,7 @@
 .wd-collapse__body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--wd-dur-slow) ease;
+  transition: grid-template-rows var(--wd-dur-slow) var(--wd-ease-smooth);
 }
 .wd-collapse__item--open .wd-collapse__body { grid-template-rows: 1fr; }
 .wd-collapse__inner { overflow: hidden; }
@@ -44,7 +44,7 @@
   line-height: 1.65;
   color: var(--wd-ink-2);
   opacity: 1;
-  transition: opacity var(--wd-dur) ease;
+  transition: opacity var(--wd-dur) var(--wd-ease-smooth);
 }
 .wd-collapse__item:not(.wd-collapse__item--open) .wd-collapse__content {
   opacity: 0;

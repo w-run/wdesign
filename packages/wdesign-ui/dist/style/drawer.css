@@ -112,7 +112,7 @@
 }
 
 .wd-drawer-fade-enter-active, .wd-drawer-fade-leave-active {
-  transition: opacity var(--wd-dur-slow) ease;
+  transition: opacity var(--wd-dur-slow) var(--wd-ease-smooth);
 }
 
 .wd-drawer-fade-enter-from, .wd-drawer-fade-leave-to {
@@ -136,7 +136,7 @@
 }
 
 .wd-drawer-fade-leave-active .wd-drawer__panel {
-  transition: transform var(--wd-dur) ease, opacity var(--wd-dur) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-smooth), opacity var(--wd-dur) var(--wd-ease-smooth);
 }
 
 .wd-drawer-fade-leave-to .wd-drawer__panel {

@@ -82,7 +82,7 @@
   background: #D62839;
   opacity: 0.3;
   margin-top: 0.5em;
-  transition: opacity 0.24s ease;
+  transition: opacity 0.24s var(--wd-ease-smooth);
 }
 @media (hover: hover) {
   .wd-title-line:hover::after {
@@ -106,7 +106,7 @@ img.wd-theme-invert {
 
 .wd-theme-transition,
 .wd-theme-transition * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  transition: background-color 0.3s var(--wd-ease-smooth), color 0.3s var(--wd-ease-smooth), border-color 0.3s var(--wd-ease-smooth), box-shadow 0.3s var(--wd-ease-smooth), filter 0.3s var(--wd-ease-smooth);
 }
 
 .wd-reveal {

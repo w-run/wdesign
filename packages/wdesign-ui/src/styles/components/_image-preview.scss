@@ -18,7 +18,7 @@
   max-height: 100%;
   border-radius: var(--wd-radius-sm);
   box-shadow: var(--wd-shadow-lg);
-  transition: transform var(--wd-dur) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-smooth);
   cursor: grab;
 }
 
@@ -51,6 +51,6 @@
 }
 
 .wd-preview-fade-enter-active,
-.wd-preview-fade-leave-active { transition: opacity var(--wd-dur) ease; }
+.wd-preview-fade-leave-active { transition: opacity var(--wd-dur) var(--wd-ease-smooth); }
 .wd-preview-fade-enter-from,
 .wd-preview-fade-leave-to { opacity: 0; }

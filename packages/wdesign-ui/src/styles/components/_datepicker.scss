@@ -39,7 +39,7 @@
   font: inherit;
   font-size: 14px;
   color: var(--wd-ink);
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-datepicker--sm .wd-datepicker__trigger {

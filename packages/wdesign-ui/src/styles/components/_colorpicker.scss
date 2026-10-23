@@ -19,7 +19,7 @@
   background: var(--wd-field);
   cursor: pointer;
   user-select: none;
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {

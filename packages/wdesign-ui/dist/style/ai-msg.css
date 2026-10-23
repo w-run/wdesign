@@ -133,7 +133,7 @@
   font-weight: var(--wd-fw-semibold);
   text-align: left;
   color: var(--wd-ink-2);
-  transition: color var(--wd-dur-fast) ease;
+  transition: color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -165,7 +165,7 @@
 .wd-ai-msg__reasoning-body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows var(--wd-dur-slow) ease;
+  transition: grid-template-rows var(--wd-dur-slow) var(--wd-ease-smooth);
 }
 
 .wd-ai-msg__reasoning--open .wd-ai-msg__reasoning-body {

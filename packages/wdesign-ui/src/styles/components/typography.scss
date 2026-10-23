@@ -24,7 +24,7 @@
     background: $wd-red;
     opacity: 0.3;
     margin-top: 0.5em;
-    transition: opacity $wd-dur-slow ease;
+    transition: opacity $wd-dur-slow var(--wd-ease-smooth);
   }
 @media (hover: hover) {
   &:hover::after { opacity: 1; }
@@ -46,11 +46,11 @@ img.wd-theme-invert {
 .wd-theme-transition,
 .wd-theme-transition * {
   transition:
-    background-color $wd-dur-theme ease,
-    color $wd-dur-theme ease,
-    border-color $wd-dur-theme ease,
-    box-shadow $wd-dur-theme ease,
-    filter $wd-dur-theme ease;
+    background-color $wd-dur-theme var(--wd-ease-smooth),
+    color $wd-dur-theme var(--wd-ease-smooth),
+    border-color $wd-dur-theme var(--wd-ease-smooth),
+    box-shadow $wd-dur-theme var(--wd-ease-smooth),
+    filter $wd-dur-theme var(--wd-ease-smooth);
 }
 
 // =============================================================

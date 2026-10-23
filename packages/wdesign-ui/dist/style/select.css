@@ -29,7 +29,7 @@
   font: inherit;
   font-size: 14.5px;
   color: var(--wd-ink);
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-select__trigger--lg {
@@ -206,7 +206,7 @@
   /* 继承的红色再叠 0.6 透明度，在淡红底上就"糊成一个点"（截图里根本看不出是 ×） */
   color: inherit;
   /* 不要叠透明度：继承色本身就是淡红底上的红，再乘 0.6 就糊成一个点 */
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -235,7 +235,7 @@
   cursor: pointer;
   background: var(--wd-ink-3);
   color: var(--wd-card);
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {

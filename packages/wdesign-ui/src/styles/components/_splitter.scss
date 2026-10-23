@@ -59,7 +59,7 @@
   content: '';
   position: absolute;
   background: var(--wd-ink-5);
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-splitter--horizontal .wd-splitter__bar::before {
@@ -121,7 +121,7 @@
   border-radius: 1px;
   background: var(--wd-ink-4);
   opacity: 0;
-  transition: opacity var(--wd-dur-fast) ease;
+  transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth);
   pointer-events: none;
 }
 

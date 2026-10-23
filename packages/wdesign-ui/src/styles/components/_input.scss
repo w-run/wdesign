@@ -10,7 +10,7 @@
   border-radius: var(--wd-radius-pill);
   color: var(--wd-ink);
   font-size: var(--wd-font-size-md);
-  transition: box-shadow var(--wd-dur-fast) ease;
+  transition: box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 .wd-input--rounded { border-radius: var(--wd-radius-md); }
 .wd-input--lg { height: var(--wd-size-lg); padding: 0 28px; font-size: var(--wd-font-size-lg); }
@@ -37,7 +37,7 @@
 /* ---- 微交互（精致版）---- */
 .wd-input { transition: box-shadow var(--wd-dur) var(--wd-ease-out), background var(--wd-dur-fast) var(--wd-ease-out); }
 .wd-input__icon { transition: color var(--wd-dur-fast) var(--wd-ease-out); }
-.wd-input input::placeholder { opacity: 1; transition: opacity var(--wd-dur) ease; }
+.wd-input input::placeholder { opacity: 1; transition: opacity var(--wd-dur) var(--wd-ease-smooth); }
 .wd-input:focus-within input::placeholder { opacity: .45; }
 .wd-input:focus-within .wd-input__icon { color: var(--wd-red-text); }
 

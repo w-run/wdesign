@@ -13,7 +13,7 @@
   height: var(--wd-size-md);
   padding: 0 24px;
   border-radius: var(--wd-radius-pill);
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease, transform var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth), transform var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 .wd-btn:active:not(:disabled) {
   transform: scale(0.97);

@@ -47,7 +47,7 @@
   transform: translateY(-50%);
   z-index: 2;
   box-shadow: var(--wd-shadow-pop);
-  transition: transform var(--wd-dur) ease;
+  transition: transform var(--wd-dur) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {
@@ -87,7 +87,7 @@
   background: var(--wd-on-dark-2);
   box-shadow: 0 0 0 1px var(--wd-ring-soft);
   cursor: pointer;
-  transition: width var(--wd-dur-slow) var(--wd-ease), background var(--wd-dur-slow) ease;
+  transition: width var(--wd-dur-slow) var(--wd-ease), background var(--wd-dur-slow) var(--wd-ease-smooth);
 }
 
 .wd-carousel__dot--active {

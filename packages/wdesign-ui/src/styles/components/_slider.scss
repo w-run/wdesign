@@ -45,7 +45,7 @@
   background: var(--wd-slider-color);
   box-shadow: 0 0 0 3px var(--wd-card), var(--wd-shadow-knob);
   cursor: grab;
-  transition: transform var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 .wd-slider input[type='range']::-webkit-slider-thumb:active {
   cursor: grabbing;

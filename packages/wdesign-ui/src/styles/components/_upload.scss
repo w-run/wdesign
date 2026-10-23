@@ -15,7 +15,7 @@
   border-radius: var(--wd-radius-lg);
   background: var(--wd-bg);
   cursor: pointer;
-  transition: border-color var(--wd-dur-fast) ease, background var(--wd-dur-fast) ease;
+  transition: border-color var(--wd-dur-fast) var(--wd-ease-smooth), background var(--wd-dur-fast) var(--wd-ease-smooth);
   text-align: center;
 }
 @media (hover: hover) {
@@ -25,7 +25,7 @@
 .wd-upload__zone.is-hover { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
 
 .wd-upload__zone--over { border-color: var(--wd-red-soft); background: var(--wd-tint-1); }
-.wd-upload__zone--over { animation: wd-upload-pulse .6s ease; }
+.wd-upload__zone--over { animation: wd-upload-pulse .6s var(--wd-ease-smooth); }
 @keyframes wd-upload-pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.012); }
@@ -73,7 +73,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
   .wd-upload__remove:hover { background: var(--wd-field-hover); color: var(--wd-red-text); }
@@ -87,7 +87,7 @@
   margin-top: 4px;
   overflow: hidden;
 }
-.wd-upload__progress-bar { height: 100%; border-radius: 999px; background: var(--wd-red); transition: width var(--wd-dur) ease; }
+.wd-upload__progress-bar { height: 100%; border-radius: 999px; background: var(--wd-red); transition: width var(--wd-dur) var(--wd-ease-smooth); }
 
 /* ---- 超限提示 ---- */
 .wd-upload__error {

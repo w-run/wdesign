@@ -355,7 +355,7 @@
 /* inset 的子项默认透明，悬停/选中才有底色（浮起感） */
 .wd-group--inset > .wd-group__item {
   border-radius: var(--wd-radius-xs) !important;
-  transition: background var(--wd-dur-fast) ease, box-shadow var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 .wd-group--inset > .wd-group__item:hover {
   background-color: var(--wd-field-hover);
@@ -367,7 +367,7 @@
 
 .wd-group--inset > .wd-group__item {
   border-radius: var(--wd-radius-xs);
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 .wd-group--inset > .wd-group__item:hover {

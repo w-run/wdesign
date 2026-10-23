@@ -28,7 +28,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
   .wd-radio:hover .wd-radio__dot { background: var(--wd-tint-1); }
@@ -42,7 +42,7 @@
   border-radius: 50%;
   background: #fff;
   transform: scale(0);
-  transition: transform var(--wd-dur-fast) ease;
+  transition: transform var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 /* 单选同样用深色：见 checkbox 的说明 */
 /* 与 checkbox 共用同一套可配色变量约定 */
@@ -75,7 +75,7 @@
   animation: wd-ring-out var(--wd-dur-slow) var(--wd-ease-out);
 }
 .wd-radio__dot {
-  transition: background var(--wd-dur-fast) ease, transform var(--wd-dur) var(--wd-ease-out);
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), transform var(--wd-dur) var(--wd-ease-out);
 }
 .wd-radio:active .wd-radio__dot { transform: scale(.94); }
 

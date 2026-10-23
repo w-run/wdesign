@@ -41,7 +41,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
   .wd-checkbox:hover .wd-checkbox__box { background: var(--wd-tint-1); }
@@ -93,6 +93,6 @@
 }
 /* 取消选中：盒底色回落 */
 .wd-checkbox .wd-checkbox__box {
-  transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease, transform var(--wd-dur) var(--wd-ease-out);
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth), transform var(--wd-dur) var(--wd-ease-out);
 }
 
