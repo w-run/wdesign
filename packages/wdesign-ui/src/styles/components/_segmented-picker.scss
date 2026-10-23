@@ -65,10 +65,15 @@
 
 /* 面板（跟 WdDropdown 视觉同源） */
 .wd-segmented-picker__panel {
+  /* 定位交给 useAnchoredPosition（Teleport 到 body），不要写 top/left */
   position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  min-width: 100%;
+  /*
+   * ⚠️ 原来写 `min-width: 100%` —— 那是相对**触发器容器**的，Teleport 到 body 后
+   * 就变成"至少和 body 一样宽"（实测 1512px）。CSS 里 min-width 又优先于 max-width，
+   * 于是 max-width: 320 完全失效。改成按内容撑开 + 两端都夹住。
+   */
+  width: max-content;
+  min-width: min(280px, 88vw);
   max-width: min(320px, 88vw);
   max-height: min(320px, 60vh);
   overflow-y: auto;
@@ -79,7 +84,7 @@
   /* 深色下浮层靠 hairline 勾边界（浅色为 transparent，零变化） */
   border: 1px solid var(--wd-hairline, transparent);
   box-shadow: var(--wd-shadow-hover, 0 12px 32px rgba(14, 15, 19, .14));
-  z-index: 60;
+  z-index: 1200;
   scrollbar-width: thin;
 }
 

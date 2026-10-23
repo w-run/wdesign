@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useDismiss } from './anchor'
+import { useAnchoredPosition, useDismiss } from './anchor'
 import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdSegmented' })
@@ -91,8 +91,21 @@ const mode = ref<Mode>('flat')
 const canLeft = ref(false)
 const canRight = ref(false)
 const dropdownOpen = ref(false)
+
+/*
+ * 下拉形态（选项溢出时的降级）也是浮层，面板必须 Teleport 到 body：
+ * 挂在自己身上时会被祖先的 `transform` 层叠上下文困住 ——
+ * 演示站每张卡都有 `transition: transform`，下一张卡会整块盖住它。
+ */
+const pickerPanel = ref<HTMLElement | null>(null)
+const { pos: pickerPos, actual: pickerPlace } = useAnchoredPosition(
+  dropdownOpen,
+  wrap,
+  pickerPanel,
+  { placement: 'bottom-start', gap: 6 },
+)
 /** 点击外部关闭：统一走 anchor.ts（click 事件，与触发器一致） */
-useDismiss([wrap], () => { dropdownOpen.value = false }, dropdownOpen)
+useDismiss([wrap, pickerPanel], () => { dropdownOpen.value = false }, dropdownOpen)
 
 
 
@@ -331,7 +344,15 @@ watch(items, () =>
         <span class="wd-segmented-picker__meta">{{ items.length }} 项</span>
         <wd-icon class="wd-segmented-picker__caret" :class="{ 'is-open': dropdownOpen }" name="chevron-down" :size="16" />
       </button>
-      <div v-if="dropdownOpen" class="wd-segmented-picker__panel" role="listbox">
+      <Teleport to="body">
+      <div
+        v-if="dropdownOpen"
+        ref="pickerPanel"
+        class="wd-segmented-picker__panel"
+        role="listbox"
+        :data-placement="pickerPlace"
+        :style="{ top: pickerPos.top + 'px', left: pickerPos.left + 'px' }"
+      >
         <button
           v-for="o in items"
           :key="o.value"
@@ -346,6 +367,7 @@ watch(items, () =>
           <wd-icon v-if="o.value === modelValue" name="check" :size="15" />
         </button>
       </div>
+      </Teleport>
     </div>
   </div>
 </template>
