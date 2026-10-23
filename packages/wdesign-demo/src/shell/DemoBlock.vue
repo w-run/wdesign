@@ -129,6 +129,12 @@ async function copyCode() {
   background: var(--wd-card);
   border-radius: var(--wd-radius-lg);
   padding: 24px 28px 26px;
+  /*
+   * 深色下卡片与页底只差 3% 亮度，`--wd-shadow` 在深色里几乎不可见 ——
+   * 于是每个 DemoBlock 都"糊"在页面里、看不出边界。加一道 hairline
+   * （浅色主题下是 transparent，观感零变化），与 .wd-card 同一套做法。
+   */
+  border: 1px solid var(--wd-hairline);
   box-shadow: var(--wd-shadow);
   transition:
     box-shadow var(--wd-dur-slow) var(--wd-ease-out),
