@@ -150,7 +150,12 @@
 
 .wd-nav__group-arrow {
   flex: none;
-  color: var(--wd-ink-4);
+  /*
+   * ink-4 (#CDD2D7) 在白底只有 1.5:1 —— 截图里那个箭头就是一团噪点。
+   * 折叠箭头是**功能性提示**（指引"这里能开合、当前是收起"），
+   * 非文本对比度底线 3:1；ink-2 是 5.1:1，靠"小一号"保持安静，不靠"浅一档"。
+   */
+  color: var(--wd-ink-2);
   /* 只动旋转，不动透明度（pitfalls 第 1 条：透明度承载状态会卡在起始帧） */
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }

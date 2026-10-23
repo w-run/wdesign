@@ -91,23 +91,55 @@ body {
 }
 
 .side-theme {
+  /* 图标按钮：盒模型自己居中，别指望文字基线 —— 位置由 flex 定，不靠 padding 猜 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   width: 32px;
   height: 32px;
   margin-left: auto;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
-  font-size: 14px;
+  /* 底栏两个图标是唯一入口，属于功能性控件：ink-3(2.27:1) 太浅，用 ink-2 */
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition:
     background var(--wd-dur-fast) var(--wd-ease-smooth),
     color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
+/* 两个按钮并排时，第二个不要被 margin-left:auto 顶到最右 */
+.side-theme + .side-theme {
+  margin-left: 4px;
+}
+
 .side-theme:hover {
   background: var(--wd-field);
   color: var(--wd-ink);
+}
+
+/*
+ * 慢放是**开关型**状态，必须有可见反馈。
+ * 之前 :class="{ 'is-on': slowMotion }" 挂着、却没有对应样式 ——
+ * 点了之后按钮长得一模一样，用户只能靠"动效好像变慢了"去猜。
+ */
+.side-theme.is-on {
+  background: var(--wd-red-soft);
+  color: var(--wd-red-text);
+}
+
+.side-theme.is-on:hover {
+  background: var(--wd-red-soft);
+  color: var(--wd-red-text);
+}
+
+/* 键盘焦点要有环：底栏是唯一的主题/动效入口，找不到焦点就很致命 */
+.side-theme:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
 }
 
 /* ---------------- 滚动条 ----------------

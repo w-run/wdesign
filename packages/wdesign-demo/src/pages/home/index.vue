@@ -73,6 +73,14 @@ const stats = [
   /* 首页同样吃满内容区宽度 */
   width: 100%;
   padding-bottom: 40px;
+
+  /*
+   * 首屏专用字阶。
+   * --wd-fs-display 的上限 56 是「页面主标题」的档位；首页宣言要撑住一屏，
+   * 单独开一档而不是在页面里写裸 68px —— 否则「全站字号只走令牌」就破了例。
+   */
+  --home-hero-size: clamp(40px, 5.4vw, 68px);
+  --home-stat-size: clamp(28px, 2.4vw, 34px);
 }
 
 /* ---------------- 首屏 ---------------- */
@@ -104,23 +112,29 @@ const stats = [
   display: flex;
   flex-direction: column;
   margin: 0 0 28px;
-  font-size: clamp(36px, 5.4vw, 68px);
-  font-weight: 800;
+  font-size: var(--home-hero-size);
+  font-weight: var(--wd-fw-black);
   line-height: 1.06;
   letter-spacing: -0.04em;
   color: var(--wd-ink);
 }
 
-/* 第二行压成灰：层次靠明度，不靠颜色 */
+/*
+ * 第二行压成灰：层次靠明度，不靠颜色。
+ *
+ * ⚠️ 这里不能用 --wd-ink-3：#A5ADB8 落在 #F3F4F7 上只有 2.1:1，
+ * 68px 的大字也够不上 3:1 的底线 —— 远看像「没加载出来的占位符」。
+ * 换成 --wd-ink-2（≈5:1），两行之间仍有近黑的明度差，层级不掉。
+ */
 .home__title-sub {
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
 }
 
 .home__desc {
-  max-width: 56ch;
+  max-width: 62ch;
   margin: 0;
-  font-size: 15.5px;
-  line-height: 1.8;
+  font-size: 15px;
+  line-height: 1.75;
   color: var(--wd-ink-2);
 }
 
@@ -147,8 +161,8 @@ const stats = [
 }
 
 .home__stat-value {
-  font-size: 34px;
-  font-weight: 800;
+  font-size: var(--home-stat-size);
+  font-weight: var(--wd-fw-bold);
   line-height: 1;
   letter-spacing: -0.03em;
   color: var(--wd-ink);
@@ -173,7 +187,7 @@ const stats = [
   gap: 10px;
   margin: 0 0 18px;
   font-size: 11.5px;
-  font-weight: 800;
+  font-weight: var(--wd-fw-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--wd-ink-2);

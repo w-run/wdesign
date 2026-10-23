@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { WdNav } from "@wdesign";
+import { WdIcon, WdNav } from "@wdesign";
 import { routes } from "../router";
 
 /**
@@ -155,7 +155,6 @@ const slowMotion = ref(false);
  */
 onMounted(() => {
   /*
-  /*
    * 默认**就播放动效**。
    *
    * 这是演示站，动效本身是要被评审的内容 —— 跟随系统 reduce 会导致
@@ -192,17 +191,31 @@ function toggleMotion() {
   >
     <template #footer>
       <span class="side-version">v1.0</span>
+      <!--
+        图标必须用 WdIcon，不许拿 ⏱ / ☾ 这类字符顶替：
+        字形由字体的字面决定，字号、基线、光学居中全都不受控 ——
+        实测这两个字符在 32px 圆里会偏下 1~2px，且随字体回退变形。
+      -->
       <button
         class="side-theme"
         type="button"
         :class="{ 'is-on': slowMotion }"
+        :aria-pressed="slowMotion"
+        aria-label="慢放动效"
         title="慢放动效（远程看不清过渡时用）"
         @click="toggleMotion"
       >
-        ⏱
+        <WdIcon name="clock" :size="16" />
       </button>
-      <button class="side-theme" type="button" title="切换主题" @click="toggleDark">
-        {{ dark ? "☀" : "☾" }}
+      <button
+        class="side-theme"
+        type="button"
+        :aria-pressed="dark"
+        :aria-label="dark ? '切换到浅色主题' : '切换到深色主题'"
+        :title="dark ? '切换到浅色主题' : '切换到深色主题'"
+        @click="toggleDark"
+      >
+        <WdIcon :name="dark ? 'sun' : 'moon'" :size="16" />
       </button>
     </template>
   </WdNav>
