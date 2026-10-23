@@ -58,6 +58,7 @@ html.dark-theme {
   --wd-ink:        #{t.$wd-ink-dark};   /* 正文 → 亮 */
   --wd-ink-2:      #{t.$wd-ink-2-dark};   /* 次级 → 暗灰（反向迭代：原 #8888A0 对比不足，~6.3:1） */
   --wd-ink-3:      #{t.$wd-ink-3-dark};   /* 占位（原 #55556A 对比不足，~3.7:1） */
+  --wd-control-line: #{t.$wd-control-line-dark};  /* 控件轮廓：深底上要亮回来 */
   --wd-ink-4:      #{t.$wd-ink-4-dark};   /* 极弱：时间戳 */
   --wd-ink-5:      #{t.$wd-ink-5-dark};   /* 最弱：分割/描边 */
 

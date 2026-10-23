@@ -36,12 +36,19 @@
   flex: none;
   /* 复选框也走圆形，与全站一致（圆形表达"可勾选"） */
   border-radius: 50%;
+  /*
+   * 未勾选的圈必须有轮廓：--wd-field 在白底上只有 ≈1.1:1，
+   * 一整列表格勾选框看起来像"几个脏点"。控件边界按 WCAG 非文本要求 ≥3:1。
+   * 用 border 而不是 box-shadow —— 焦点环也是 box-shadow，会被它顶掉。
+   */
+  border: 1.5px solid var(--wd-control-line);
   background: var(--wd-field);
   color: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth),
+    border-color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
   .wd-checkbox:hover .wd-checkbox__box {
@@ -57,7 +64,7 @@
  * 与 danger 语义混淆。深色块在黑白灰体系里已经足够明确。
  * 与 WdTree / WdTransfer 的自绘勾选保持一致。
  */
-.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-check-color); /* 勾选符号必须与勾选底反相：深色主题下 --wd-ink 翻成近白，符号再写死 #fff 就看不见了 */
+.wd-checkbox--checked .wd-checkbox__box { background: var(--wd-check-color); border-color: transparent; /* 勾选符号必须与勾选底反相：深色主题下 --wd-ink 翻成近白，符号再写死 #fff 就看不见了 */
   color: var(--wd-card); }
 @media (hover: hover) {
   .wd-checkbox--checked:hover .wd-checkbox__box {

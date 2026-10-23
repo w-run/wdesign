@@ -27,7 +27,8 @@
   transition: background var(--wd-dur) var(--wd-ease-smooth);
 }
 .wd-switch:focus-visible { outline: none; box-shadow: 0 0 0 4px var(--wd-focus-ring-soft); }
-.wd-switch--off { background: var(--wd-ink-3); }
+/* 关闭态不是禁用态：--wd-ink-3 只有 2.27:1，整条轨道淡得像不可点 */
+.wd-switch--off { background: var(--wd-control-line); }
 
 .wd-switch__knob {
   position: absolute;

@@ -90,14 +90,15 @@
   border-radius: 50%;
   cursor: pointer;
   background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+  /* 未勾选的圈要过 3:1（ink-4 只有 1.5:1，整列看起来是几个脏点） */
+  box-shadow: inset 0 0 0 1.5px var(--wd-control-line);
   /* 与 checkbox 同理：勾选底是 --wd-ink（深色主题下翻成近白），符号必须反相 */
   color: var(--wd-card);
   transition: background var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-out);
 }
 @media (hover: hover) {
   .wd-table__check:hover {
-    box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+    box-shadow: inset 0 0 0 1.5px var(--wd-ink-2);
   }
 }
 .wd-table__check--on,
@@ -115,7 +116,34 @@
 }
 
 /* ---- 加载遮罩 ---- */
-.wd-table-wrap { position: relative; }
+.wd-table-wrap {
+  position: relative;
+  /*
+   * 横向滚动条走"细条"：表格经常列多于容器宽度，
+   * Chrome 默认的 15px 灰槽会横在最后一行下面，像一条脏边。
+   */
+  scrollbar-width: thin;
+  scrollbar-color: var(--wd-ink-4) transparent;
+}
+
+.wd-table-wrap::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.wd-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-4);
+  border: 3px solid transparent;
+  border-radius: var(--wd-radius-pill);
+  background-clip: content-box;
+}
+
+@media (hover: hover) {
+  .wd-table-wrap::-webkit-scrollbar-thumb:hover {
+    background: var(--wd-ink-3);
+    background-clip: content-box;
+  }
+}
 .wd-table-wrap--loading { min-height: 120px; }
 .wd-table-wrap--loading .wd-table { opacity: .45; pointer-events: none; }
 .wd-table__loading {
