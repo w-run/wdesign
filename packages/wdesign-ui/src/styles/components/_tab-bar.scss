@@ -53,6 +53,8 @@
   padding: 6px;
   border-radius: var(--wd-radius-pill);
   background: var(--wd-card);
+  /* 悬浮胶囊在深色下只靠阴影立不住，补一道细边（浅色为 transparent） */
+  border: 1px solid var(--wd-hairline);
   box-shadow: var(--wd-shadow-pop);
 }
 
