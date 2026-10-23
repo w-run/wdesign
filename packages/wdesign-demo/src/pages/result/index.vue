@@ -80,7 +80,7 @@ import { WdButton, WdIcon, WdResult } from "@wdesign";
 /* 结果页自带大留白，并排时用等宽网格，避免四块内容宽度参差 */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   gap: 12px;
 }
 
