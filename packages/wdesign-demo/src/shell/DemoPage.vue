@@ -259,4 +259,18 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
     animation: none;
   }
 }
+/*
+ * 窄屏标题：--wd-fs-display 是 64px，264px 的内容列放不下 "DateTimePicker"，
+ * 溢出后被裁成 "DateTimeP"。改成随视口收缩，并允许长单词断行兜底。
+ */
+@media (max-width: 720px) {
+  .demo-page__title {
+    /* 再收到 8.6vw："DateTimePicker" 这种长名字在 390 屏能整词落一行，
+       而不是断成 "DateTimePic / ker" */
+    font-size: clamp(26px, 8.6vw, 56px);
+    letter-spacing: -0.03em;
+    overflow-wrap: anywhere;
+  }
+}
+
 </style>

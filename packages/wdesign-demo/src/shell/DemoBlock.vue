@@ -119,7 +119,12 @@ async function copyCode() {
    * 而且源码本来就需要横向空间。
    */
   width: fit-content;
-  min-width: 300px;
+  /*
+   * ⚠️ min-width 必须夹到 100%：CSS 里 min-width 优先级高于 max-width，
+   * 容器窄于 300（390 屏去掉侧栏与内距只剩 264）时卡片会顶出列宽，
+   * 被外层 overflow 裁掉右边 —— 看着就是"卡片贴着屏幕右缘被切了一刀"。
+   */
+  min-width: min(300px, 100%);
   max-width: 100%;
   background: var(--wd-card);
   border-radius: var(--wd-radius-lg);
@@ -328,4 +333,13 @@ html[data-theme="dark"] .demo-block__pre :deep(span[style*="--shiki-dark"]) {
 .demo-block__copy:hover {
   color: var(--wd-ink);
 }
+/* 窄屏收紧内距：390 屏去掉侧栏与页边距后内容列只有 264，
+   28px 的左右内距会把正文压成每行 8 个字 */
+@media (max-width: 640px) {
+  .demo-block {
+    padding: 18px 18px 20px;
+    border-radius: var(--wd-radius-md);
+  }
+}
+
 </style>

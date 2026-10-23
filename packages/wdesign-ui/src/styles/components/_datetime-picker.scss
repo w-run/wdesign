@@ -57,7 +57,9 @@
 .wd-datetime-picker__placeholder {
   flex: 1;
   min-width: 0;
-  color: var(--wd-ink-3);
+  /* 与 Input / Select / DatePicker 一致：占位文字是要读的提示，不是装饰。
+     ink-3（2.27:1）在白底上太淡，同一个表单里会显得"这个框没启用" */
+  color: var(--wd-ink-2);
 }
 
 .wd-datetime-picker__clear {
@@ -126,7 +128,8 @@
   font-size: 11px;
   font-weight: var(--wd-fw-semibold);
   letter-spacing: .04em;
-  color: var(--wd-ink-3);
+  /* 分组小标题，属于信息层级而不是装饰 */
+  color: var(--wd-ink-2);
   padding-left: 2px;
 }
 

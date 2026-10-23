@@ -25,7 +25,8 @@
   display: inline-flex;
   flex-direction: column;
   gap: 14px;
-  width: 340px;
+  /* 夹到容器宽：390 屏的卡片内容列只有 228，写死 340 会让日历右侧被裁掉半列 */
+  width: min(340px, 100%);
   /*
    * 内边距与 TimePicker / DateTimePicker 统一为 24px 28px。
    * 三个日期时间类组件并排出现时，padding 不一致会让它们
@@ -39,7 +40,7 @@
 }
 
 .wd-calendar--sm {
-  width: 284px;
+  width: min(284px, 100%);
   padding: 18px 20px;
   gap: 8px;
   border-radius: var(--wd-radius-md);

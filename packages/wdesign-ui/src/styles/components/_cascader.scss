@@ -67,7 +67,8 @@
   @include m.truncate;
 }
 
-.wd-cascader__value.is-placeholder { color: var(--wd-ink-3); }
+/* 占位文字与 Input / Select 统一为 ink-2（ink-3 只有 2.27:1，读起来像禁用态） */
+.wd-cascader__value.is-placeholder { color: var(--wd-ink-2); }
 
 .wd-cascader__clear {
   flex: none;
