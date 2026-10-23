@@ -2,9 +2,13 @@
 import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, ref, watch } from 'vue'
 import { useAnchoredPosition, useDismiss } from './anchor'
+import { uid } from './uid'
 import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdCascader' })
+
+/** 面板 id：触发器的 aria-controls 指过来，读屏才知道展开的是哪个列表 */
+const panelId = uid('wd-cascader-panel')
 
 export interface WdCascaderOption {
   /** 值 */
@@ -202,6 +206,7 @@ watch(open, async (v) => {
     role="combobox"
     :aria-expanded="open"
     aria-haspopup="listbox"
+    :aria-controls="open ? panelId : undefined"
     @click="toggleOpen"
     @keydown="onKeydown"
   >
@@ -210,15 +215,15 @@ watch(open, async (v) => {
     </span>
 
     <!-- 清空：只在有值时出现，且不触发面板开关 -->
-    <span
+    <button
       v-if="clearable && displayText && !disabled"
+      type="button"
       class="wd-cascader__clear"
-      role="button"
       aria-label="清空"
-      @click="clear"
+      @click.stop="clear"
     >
-      <wd-icon name="close" :size="13" />
-    </span>
+      <wd-icon name="close" :size="13" aria-hidden="true" />
+    </button>
 
     <wd-icon
       class="wd-cascader__caret"
@@ -235,6 +240,7 @@ watch(open, async (v) => {
       class="wd-cascader__panel"
       :class="{ 'is-open': open }"
       :style="style"
+      :id="panelId"
       role="listbox"
     >
       <!--

@@ -72,6 +72,11 @@
 
 .wd-cascader__clear {
   flex: none;
+  /* 从 <span> 换成 <button> 后要重置原生外观 */
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
