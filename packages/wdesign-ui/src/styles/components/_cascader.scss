@@ -14,7 +14,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-width: 180px;
+  /* 夹到容器：390 屏卡片内容列只有 208，写死 180 + max-width:100% 不会生效（min 优先） */
+  min-width: min(180px, 100%);
   max-width: 100%;
   /* 胶囊：与 Input / Select 的触发器一致。本库约定可点击控件优先用 pill */
   padding: 0 16px;

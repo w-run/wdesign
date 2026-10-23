@@ -57,6 +57,7 @@
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
   /* 面板宽度跟着选项文字走：之前只有触发器的 200px，长选项会被折成两行 */
   width: max-content;
+  /* check-sizing: ignore —— max 是 min(380px, 100vw-32px)，正常视口下恒 ≥ 220 */
   min-width: 220px;
   max-width: min(380px, calc(100vw - 32px));
   z-index: 1200;

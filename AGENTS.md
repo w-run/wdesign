@@ -198,6 +198,7 @@ ss -lntp | grep 5273
 |---|---|
 | `check-tokens.py` | `var(--wd-*)` 未定义 / 带 fallback |
 | `check-icons.py` | 图标名不存在 |
+| `check-sizing.py` | **min-width 与 max-width 打架**（CSS 里 min 优先于 max，容器窄了就被顶破 / 被裁）+ `minmax(数字 px, …)` 网格 |
 | `check-template-refs.py` | **模板里误写 `xxx.value`** —— 模板自动解包，写了就是 undefined，render 抛错、DOM 停在上一帧（点不动、aria 不翻转，极难查） |
 | `smoke-test.mjs` | 每个组件的渲染冒烟 |
 

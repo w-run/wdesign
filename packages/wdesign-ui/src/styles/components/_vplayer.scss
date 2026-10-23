@@ -538,7 +538,7 @@
 }
 .wd-vplayer__eps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(64px, 100%), 1fr));
   gap: 6px;
   padding: 10px;
   overflow-y: auto;

@@ -13,7 +13,8 @@
 .wd-segmented-picker {
   position: relative;
   display: inline-block;
-  min-width: 168px;
+  /* 同 .wd-cascader：min-width 优先级高于 max-width，必须自己夹到 100% */
+  min-width: min(168px, 100%);
   max-width: 100%;
 }
 
