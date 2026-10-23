@@ -176,7 +176,8 @@ const covers = computed<string[]>(() => meta.value.covers ?? []);
   font-size: 10.5px;
   font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.08em;
-  color: var(--wd-ink-3);
+  /* 「组件」这个小标签原来是 ink-3（1.93:1，几乎看不见），提到 ink-2 */
+  color: var(--wd-ink-2);
 }
 
 /*

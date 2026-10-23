@@ -1,4 +1,9 @@
 // WDesign — DatePicker
+//
+// ⚠️ 这个文件只负责「触发器 + 浮层外壳」。
+//    日期网格、年月快跳、min/max、键盘、区间…全部在 Calendar 里，
+//    面板里直接嵌 <WdCalendar size="sm">。
+//    不要再往这里加 __day / __week / __grid —— 那是第 4 条 pitfall（两份实现）。
 @use '../mixins' as m;
 
 .wd-datepicker {
@@ -58,81 +63,6 @@
 .wd-datepicker__placeholder { color: var(--wd-ink-2); }
 .wd-datepicker__icon { flex: none; color: var(--wd-ink-3); }
 
-/* Teleport 到 body：定位由 JS 计算 */
-.wd-datepicker__panel {
-  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
-  display: none;
-  width: 302px;
-  padding: 18px;
-  background: var(--wd-card);
-  /* 深色下浮层与页面只差几 % 亮度：靠 hairline 勾边界，比加阴影干净 */
-  border: 1px solid var(--wd-hairline);
-  border-radius: var(--wd-radius-lg);
-  box-shadow: var(--wd-shadow-hover);
-}
-.wd-datepicker__panel.is-open { display: block; }
-
-.wd-datepicker__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-.wd-datepicker__month { font-size: 14.5px; font-weight: var(--wd-fw-semibold); }
-.wd-datepicker__nav { display: flex; gap: 6px; }
-
-.wd-datepicker__week { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
-.wd-datepicker__week span { text-align: center; font-size: 11.5px; font-weight: var(--wd-fw-medium); color: var(--wd-ink-2); }
-
-.wd-datepicker__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-.wd-datepicker__day {
-  height: 34px;
-  border: 0;
-  background: transparent;
-  border-radius: 50%;
-  font: inherit;
-  font-size: 13px;
-  color: var(--wd-ink);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--wd-dur-fast) ease;
-}
-@media (hover: hover) {
-  .wd-datepicker__day:hover { background: var(--wd-tint-1); }
-}
-.wd-datepicker__day.is-hover { background: var(--wd-tint-1); }
-
-.wd-datepicker__day--muted { color: var(--wd-ink-2); }
-.wd-datepicker__day--today { color: var(--wd-red-text); font-weight: var(--wd-fw-semibold); }
-.wd-datepicker__day--selected { background: var(--wd-red); color: #fff; font-weight: var(--wd-fw-semibold); }
-@media (hover: hover) {
-  .wd-datepicker__day--selected:hover { background: var(--wd-red-hover); }
-}
-.wd-datepicker__day--selected.is-hover { background: var(--wd-red-hover); }
-
-.wd-datepicker__foot { display: flex; justify-content: center; margin-top: 10px; }
-.wd-datepicker__todaybtn {
-  border: 0;
-  background: transparent;
-  /* 次要操作，用中性色：红在本库留给主操作与危险态，
-     面板底部一个"回到今天"用红会比选中日期还抢眼 */
-  color: var(--wd-ink-2);
-  font: inherit;
-  font-size: 13px;
-  font-weight: var(--wd-fw-medium);
-  padding: 5px 12px;
-  border-radius: var(--wd-radius-pill);
-  cursor: pointer;
-}
-@media (hover: hover) {
-  .wd-datepicker__todaybtn:hover { background: var(--wd-field-hover); }
-}
-.wd-datepicker__todaybtn.is-hover { background: var(--wd-field-hover); }
-
-
 /* 已选日期文本 */
 .wd-datepicker__value {
   flex: 1;
@@ -141,76 +71,34 @@
   color: var(--wd-ink);
 }
 
+/* ---------------- 浮层 ---------------- */
+/* Teleport 到 body：定位由 JS 计算 */
+.wd-datepicker__panel {
+  position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
+  z-index: 1200;
+  display: none;
+  /* 固定 286 = Calendar sm（284）+ 左右各 1px 边框。
+     ⚠️ 不能写 auto：面板是 absolute，宽度会退化成 shrink-to-fit，
+     而里面的 Calendar 又是 width:100% —— 互相依赖，实测塌到 208。 */
+  width: 286px;
+  padding: 0;
+  background: var(--wd-card);
+  /* 深色下浮层与页面只差几 % 亮度：靠 hairline 勾边界，比加阴影干净 */
+  border: 1px solid var(--wd-hairline);
+  border-radius: var(--wd-radius-lg);
+  box-shadow: var(--wd-shadow-hover);
+}
+.wd-datepicker__panel.is-open { display: block; }
 
-/* ---------------- 月视图（点标题展开） ---------------- */
-.wd-datepicker__month {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 7px 3px 9px;
-  border: 0;
-  border-radius: var(--wd-radius-pill);
+/*
+ * 面板本身就是"卡片"，里面的 Calendar 必须**卸掉自己的卡片外观** ——
+ * 保留 background / border-radius / 内距 会出现"卡片套卡片"的双层底，
+ * 圆角也会叠成 24 + 12 的大斜角。
+ * 只留布局（宽 100%、无背景、无圆角、无投影），点击目标与网格规则全部继承。
+ */
+.wd-datepicker__panel .wd-calendar {
+  width: 100%;
+  border-radius: inherit;
   background: transparent;
-  color: var(--wd-ink);
-  font: inherit;
-  font-size: 13.5px;
-  font-weight: var(--wd-fw-semibold);
-  cursor: pointer;
-  transition: background var(--wd-dur-fast) var(--wd-ease-out);
+  box-shadow: none;
 }
-
-@media (hover: hover) {
-  .wd-datepicker__month:hover { background: var(--wd-field); }
-}
-.wd-datepicker__month.is-hover { background: var(--wd-field); }
-
-.wd-datepicker__months {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  padding: 4px 2px 8px;
-}
-
-.wd-datepicker__month-item {
-  height: 36px;
-  border: 0;
-  border-radius: var(--wd-radius-sm);
-  background: transparent;
-  color: var(--wd-ink);
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background var(--wd-dur-fast) var(--wd-ease-out),
-    color var(--wd-dur-fast) var(--wd-ease-out);
-}
-
-@media (hover: hover) {
-  .wd-datepicker__month-item:hover:not(.is-on) { background: var(--wd-field); }
-}
-.wd-datepicker__month-item.is-hover:not(.is-on) { background: var(--wd-field); }
-
-/* 当前月：反相实心，一眼看出"现在停在哪个月" */
-.wd-datepicker__month-item.is-on {
-  background: var(--wd-selected-bg);
-  color: var(--wd-selected-ink);
-  font-weight: var(--wd-fw-semibold);
-}
-
-
-/* 超出 min / max 的日子：灰掉且划线感，明确"不可选"而不是"不存在的日期" */
-.wd-datepicker__day--disabled,
-.wd-datepicker__day--disabled.wd-datepicker__day--muted {
-  color: var(--wd-ink-4);
-  cursor: not-allowed;
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-}
-
-.wd-datepicker__day--disabled:hover {
-  background: transparent;
-}
-
-
-/* 日视图容器（与月视图互斥） */
-.wd-datepicker__days { display: block; }

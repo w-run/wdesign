@@ -122,6 +122,21 @@ API 表 `undefined` 胶囊 / `/**` 残留 / 反引号、导航页灰底撑满卡
 判据：**像一份组件文档**，不是一块卡片墙。左栏一条线读下来：标题 → 预览 → 代码；
 右栏随时能查属性。想靠"多列并排"提高密度 = 走错方向（试过，代码一展开就参差不齐）。
 
+## 项目级 Skills（`.codebuddy/skills/`）
+
+用于**审查界面细节**的技能，随仓库本地安装（`.codebuddy/` 与 `.agents/` 都在 `.gitignore` 里，
+所以只在本机生效；要让团队共享就把这两条从 `.gitignore` 挪走）。
+
+| Skill | 什么时候用 | 产出 |
+|---|---|---|
+| `web-design-guidelines` | 改完 UI 代码，要一次规范级自查（焦点环、表单、排版、动效、暗色、i18n） | `文件:行` 形式的逐条违规 |
+| `fixing-accessibility` | 加交互控件 / 弹窗 / 图标按钮前，查无障碍 | 违规片段 + 一句理由 + 具体改法 |
+| `review-animations` | 改过渡、滑块、弹层入场 | 按"工艺线"逐条判定（要先 `/review-animations` 手动触发） |
+| `web-quality-audit` + `performance` | 要实测证据：Lighthouse、性能 trace、可访问性树 | 实测基线 + 源码定位，配合 `w-yun-chrome` 的 `lighthouse_audit` |
+
+安装方式：`npx skills add <owner/repo> --skill <name> -y`（在仓库根跑，会自动 symlink 进 `.codebuddy/skills/`）。
+技能的真实文件在 `.agents/skills/`，**改技能改那里**，`.codebuddy/skills/` 里只是软链。
+
 ## 环境与远程调试（可用工具）
 
 ```
@@ -222,6 +237,17 @@ ss -lntp | grep 5273
 - `defineOptions({ name: 'WdXxx' })` 置于脚本开头
 - 事件名 **kebab-case**，`size` 只许 `sm | md | lg`
 - 共用逻辑抽模块：`overlay` / `overlay-stack` / `anchor` / `controllable` / `time`
+
+
+### 日期面板只有一份实现
+
+`WdDatePicker` / `WdDateTimePicker` **必须内嵌 `WdCalendar`**，不许自己画格子。
+
+- 面板长什么样 = Calendar 长什么样：年月滚轮、min/max、今天/清空、键盘、标记、区间，一处改处处生效
+- DatePicker 只负责「触发器 + 浮层 + 关闭时机」；外壳样式只留触发器和面板卡片，
+  `__day / __week / __grid / __month-item` 这些类一旦出现就是又抄了一份
+- 键盘：方向键移动 `.is-cursor` 描边（只在 Calendar 聚焦时显示），Enter / Space 才提交 ——
+  按一下方向键就把日期改掉是表单里的破坏性操作
 
 ### 布局
 - 附加信息（标记点、底部文字）一律**绝对定位浮层**，不参与布局

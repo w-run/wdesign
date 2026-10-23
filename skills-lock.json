@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "skills": {
+    "fixing-accessibility": {
+      "source": "ibelick/ui-skills",
+      "sourceType": "github",
+      "skillPath": "skills/fixing-accessibility/SKILL.md",
+      "computedHash": "4fa8f5a772b4eef3d28a54c136b507d070e54e2c326578f65eaf5e5a0118b38a"
+    },
+    "performance": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "skillPath": "skills/performance/SKILL.md",
+      "computedHash": "ce9d36f139a1b2a6a8ac2cb222698963b8076d2dd8b41685e8e8ae589cdcf1e4"
+    },
+    "review-animations": {
+      "source": "emilkowalski/skills",
+      "sourceType": "github",
+      "skillPath": "skills/review-animations/SKILL.md",
+      "computedHash": "b4e5f0f4fe3e2743c85bf7354108f48a0b9d502cb20ef5c4a9c195da91f93736"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    },
+    "web-quality-audit": {
+      "source": "addyosmani/web-quality-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-quality-audit/SKILL.md",
+      "computedHash": "9be796fc70ff05cf9842327d234b019376dc1abad8d7e3c4e3ea2dab8d8d3deb"
+    }
+  }
+}

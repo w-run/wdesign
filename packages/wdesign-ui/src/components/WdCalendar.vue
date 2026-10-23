@@ -465,6 +465,7 @@ function pick(cell: Cell) {
   }
 
   if (!isControlled.value) inner.value = cell.key
+  cursor.value = cell.key
   emit('update:modelValue', cell.key)
   emit('change', cell.key)
   // 点到上/下月的日期时顺带翻月，操作更顺
@@ -476,8 +477,11 @@ function pick(cell: Cell) {
 
 function goToday() {
   const d = new Date()
+  const key = toKey(d)
   view.value = { y: d.getFullYear(), m: d.getMonth() }
-  pick({ key: toKey(d), day: d.getDate(), inMonth: true, isToday: true, isSelected: false, disabled: false })
+  // 「今天」在 min/max 之外时只翻到该月，不选 —— 否则会绕过约束选中不可选日期
+  if ((props.min && key < props.min) || (props.max && key > props.max)) return
+  pick({ key, day: d.getDate(), inMonth: true, isToday: true, isSelected: false, disabled: false })
 }
 
 function clear() {
@@ -486,8 +490,50 @@ function clear() {
   emit('change', '')
 }
 
+/*
+ * 键盘光标。
+ *
+ * 原来方向键**直接提交选中**：在 DatePicker 里按一下 → 面板立刻关闭，
+ * 等于"想挪到 15 号却把日期改成了 1 号"，是表单里的破坏性操作。
+ * 现在方向键只移动光标（`.is-cursor` 描边），Enter / Space 才提交 ——
+ * 与日历类组件的通用约定一致（macOS / AntD / 原生 date input 都这样）。
+ */
+const cursor = ref('')
+
+watch(
+  () => [selected.value, view.value.y, view.value.m],
+  () => {
+    if (!cursor.value) cursor.value = selected.value || toKey(new Date(view.value.y, view.value.m, 1))
+  },
+  { immediate: true },
+)
+
+function moveCursor(next: Date) {
+  cursor.value = toKey(next)
+  // 光标移出当前月时自动翻页，和翻月按钮的行为一致
+  if (next.getMonth() !== view.value.m || next.getFullYear() !== view.value.y) {
+    view.value = { y: next.getFullYear(), m: next.getMonth() }
+    emit('update:month', `${next.getFullYear()}-${pad(next.getMonth() + 1)}`)
+  }
+}
+
+function commitCursor() {
+  const d = parseKey(cursor.value)
+  if (!d) return
+  const key = toKey(d)
+  if ((props.min && key < props.min) || (props.max && key > props.max)) return
+  view.value = { y: d.getFullYear(), m: d.getMonth() }
+  pick({ key, day: d.getDate(), inMonth: true, isToday: key === todayKey(), isSelected: false, disabled: false })
+}
+
 function onKeydown(e: KeyboardEvent) {
-  const cur = parseKey(selected.value) ?? new Date(view.value.y, view.value.m, 1)
+  if (e.key === 'Enter' || e.key === ' ') {
+    if (!cursor.value) return
+    e.preventDefault()
+    commitCursor()
+    return
+  }
+  const cur = parseKey(cursor.value) ?? parseKey(selected.value) ?? new Date(view.value.y, view.value.m, 1)
   let next: Date | null = null
   if (e.key === 'ArrowLeft') next = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() - 1)
   else if (e.key === 'ArrowRight') next = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1)
@@ -497,8 +543,7 @@ function onKeydown(e: KeyboardEvent) {
   else if (e.key === 'PageDown') shiftMonth(1)
   if (next) {
     e.preventDefault()
-    view.value = { y: next.getFullYear(), m: next.getMonth() }
-    pick({ key: toKey(next), day: next.getDate(), inMonth: true, isToday: false, isSelected: false, disabled: false })
+    moveCursor(next)
   }
 }
 </script>
@@ -593,6 +638,7 @@ function onKeydown(e: KeyboardEvent) {
           'is-range-start': c.isRangeStart,
           'is-range-end': c.isRangeEnd,
           'in-range': c.inRange && !c.isRangeStart && !c.isRangeEnd,
+          'is-cursor': c.key === cursor,
           'has-marks': c.marks.length > 0,
         }"
         role="gridcell"

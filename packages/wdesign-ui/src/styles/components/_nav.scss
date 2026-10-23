@@ -105,7 +105,9 @@
   font-weight: var(--wd-fw-semibold);
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--wd-ink-3);
+  /* 分组标题是导航的"章节名"，属于要读的信息：ink-3 在白底只有 2.27:1，
+     远低于 WCAG 对小字的 4.5:1。ink-2 是 5.1:1，仍然是次要层级 */
+  color: var(--wd-ink-2);
   padding: 0 10px;
   margin-top: 6px;
 }
@@ -132,7 +134,9 @@
   font-weight: var(--wd-fw-semibold);
   letter-spacing: .08em;
   text-transform: uppercase;
-  color: var(--wd-ink-3);
+  /* 分组标题是导航的"章节名"，属于要读的信息：ink-3 在白底只有 2.27:1，
+     远低于 WCAG 对小字的 4.5:1。ink-2 是 5.1:1，仍然是次要层级 */
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) ease, color var(--wd-dur-fast) ease;
 }
