@@ -194,9 +194,18 @@ const groups = computed(() => {
   return [...map.entries()].map(([title, items]) => ({ title, items }))
 })
 
-/** 图标的默认尺寸：横栏略小，竖栏略大（竖栏是点击主体） */
+/**
+ * 图标的默认尺寸：横栏略小，竖栏略大（竖栏是点击主体）。
+ *
+ * 纯图标态（iconOnly / collapsed）再大一档：没有文字兜底时，
+ * 图标是唯一语义 —— 17px 塞在 46px 的圆里会显得又小又"扁"，
+ * 视觉重量撑不起点击目标。
+ */
 const iconSize = computed(() => {
-  if (isVertical.value) return props.size === 'sm' ? 17 : 19
+  if (isVertical.value) {
+    if (thin.value) return props.size === 'sm' ? 19 : 21
+    return props.size === 'sm' ? 17 : 19
+  }
   return props.size === 'sm' ? 14 : 16
 })
 </script>

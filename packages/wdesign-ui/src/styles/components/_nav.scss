@@ -437,6 +437,18 @@
   height: 34px;
 }
 
+/*
+ * ⚠️ 纯图标态必须**方**的。
+ * 上面 sm 档把高度压到 34，而折叠规则只给了 width: 46 ——
+ * 两条同权重、后者先写，结果 46×34 的椭圆：
+ * 图标在里头看着"扁扁的"，圆角 50% 也变成胶囊。
+ */
+.wd-nav--vertical.is-collapsed.wd-nav--sm .wd-nav__item,
+.wd-nav--vertical.wd-nav--icon-only.wd-nav--sm .wd-nav__item {
+  width: 38px;
+  height: 38px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wd-nav__item,
   .wd-nav--vertical,
