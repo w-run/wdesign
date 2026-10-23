@@ -13,7 +13,7 @@
  */
 .wd-dropdown__menu {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   min-width: 180px;
   display: none;
   padding: 8px;

@@ -3,7 +3,7 @@
   position: fixed;
   left: 24px;
   bottom: 24px;
-  z-index: 1000;
+  z-index: var(--wd-z-toast);
   display: flex;
   align-items: flex-start;
   gap: 12px;

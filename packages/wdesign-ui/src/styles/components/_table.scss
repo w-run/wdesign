@@ -245,6 +245,7 @@
 }
 
 .wd-table__tree-toggle {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -256,7 +257,7 @@
   /* 图标按钮 → 圆形 */
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
@@ -284,6 +285,7 @@
 
 /* ---------------- 行展开 ---------------- */
 .wd-table__expander {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -294,7 +296,7 @@
   /* 图标按钮 → 圆形 */
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }

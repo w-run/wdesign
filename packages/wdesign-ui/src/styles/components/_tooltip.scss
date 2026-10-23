@@ -7,7 +7,7 @@
 
 .wd-tooltip__bubble {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   background: var(--wd-dark);
   color: var(--wd-dark-text);
   font-size: 12.5px;

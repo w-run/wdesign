@@ -4,7 +4,7 @@
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1200;
+  z-index: var(--wd-z-toast);
   display: flex;
   flex-direction: column;
   align-items: center;

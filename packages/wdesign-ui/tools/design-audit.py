@@ -244,6 +244,20 @@ for label, fg_t, bg_t, need in CONTRAST_CASES_DARK:
     if r < need:
         errors.append('%s：%s on %s = %.2f:1（需 ≥%.1f）' % (label, fg, bg, r, need))
 
+# ── 8. 跨层 z-index 必须走 --wd-z-* ───────────────────────────
+# 组件内部的局部位次（0~10）是合法的：它只在自己形成的层叠上下文里比较。
+# 一旦写到三位数，就意味着"要盖住别的组件"，这个顺序只能由令牌决定 ——
+# 否则就会出现「Toast 1200 被 Modal 1300 盖住」这类没人写得出来、但一定发生的事故。
+RE_Z_RAW = re.compile(r'z-index\s*:\s*(\d{3,})\s*(?:!important)?\s*;')
+for p in walk(('.scss', '.vue')):
+    rel = os.path.relpath(p, ROOT)
+    for no, line in enumerate(rd(p).split('\n'), 1):
+        body = line.split('//')[0]
+        m = RE_Z_RAW.search(body)
+        if m:
+            errors.append('%s:%d  z-index: %s 是裸数字 —— 跨层位次改 var(--wd-z-sticky|float|popover|modal|confirm|toast|drag)'
+                          % (rel, no, m.group(1)))
+
 # ── 输出 ─────────────────────────────────────────────────────
 def show(title, items, mark):
     if not items:

@@ -47,7 +47,7 @@
 /* ---------------- 候选浮层 ---------------- */
 .wd-mentions__panel {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   min-width: 200px;
   max-width: 300px;
   max-height: 260px;

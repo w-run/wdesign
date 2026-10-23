@@ -91,7 +91,7 @@
    * `position: static` 覆盖。
    */
   position: absolute;
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   display: flex;
   align-items: center;
   gap: 6px;

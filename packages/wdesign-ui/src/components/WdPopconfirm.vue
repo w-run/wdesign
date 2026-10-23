@@ -2,6 +2,7 @@
 import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useDismiss } from './anchor'
+import { nextZIndex } from './overlay-stack'
 import { popDuration } from './pop-duration'
 
 const POP_DURATION = popDuration()
@@ -129,12 +130,27 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', place)
 })
 
+/*
+ * 层级必须**跟着打开顺序**走，不能写死。
+ *
+ * 之前这里只有 CSS 的固定 z-index：表格行里的 Popconfirm 一旦放进对话框，
+ * 就永远压在对话框下面 —— 点"删除"看似没反应，其实气泡开在遮罩底下。
+ * 对话框/抽屉/下拉都从 overlay-stack 领号（1000 起，每次 +10），
+ * 所以气泡也要领号，才能保证"后打开的在上面"。
+ */
+const z = ref<number>()
+
 const bubbleStyle = computed(() => ({
   top: pos.value.top + 'px',
   left: pos.value.left + 'px',
   width: props.width + 'px',
+  zIndex: z.value,
   transform: props.placement === 'top' ? 'translateY(-100%)' : undefined,
 }))
+
+watch(open, (v) => {
+  if (v) z.value = nextZIndex()
+})
 </script>
 
 <template>

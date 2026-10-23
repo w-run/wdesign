@@ -87,7 +87,7 @@
   /* 深色下浮层靠 hairline 勾边界（浅色为 transparent，零变化） */
   border: 1px solid var(--wd-hairline, transparent);
   box-shadow: var(--wd-shadow-hover, 0 12px 32px rgba(14, 15, 19, .14));
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   scrollbar-width: thin;
 }
 

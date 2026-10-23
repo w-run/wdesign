@@ -76,6 +76,7 @@
 .wd-cascader__value.is-placeholder { color: var(--wd-ink-2); }
 
 .wd-cascader__clear {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   flex: none;
   /* 从 <span> 换成 <button> 后要重置原生外观 */
   padding: 0;
@@ -88,7 +89,7 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
@@ -108,7 +109,7 @@
 /* ---------------- 面板 ---------------- */
 .wd-cascader__panel {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   display: none;
   /* 与触发器同宽起步：面板比触发器窄会显得"缩了一号" */
   min-width: 176px;

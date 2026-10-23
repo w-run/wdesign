@@ -177,7 +177,7 @@
 .wd-nav--horizontal.is-sticky {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: var(--wd-z-sticky);
 }
 
 /*
@@ -295,6 +295,7 @@
 }
 
 .wd-nav__collapse {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -305,7 +306,7 @@
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }

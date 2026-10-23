@@ -7,7 +7,7 @@
 .wd-command {
   position: fixed;
   inset: 0;
-  z-index: 1300;
+  z-index: var(--wd-z-modal);
   display: flex;
   align-items: flex-start;
   justify-content: center;

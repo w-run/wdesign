@@ -2,7 +2,7 @@
 .wd-image-preview { display: inline-flex; cursor: zoom-in; }
 .wd-image-preview__thumb { width: 100%; border-radius: var(--wd-radius-sm); display: block; }
 
-.wd-preview { position: fixed; inset: 0; z-index: 1300; }
+.wd-preview { position: fixed; inset: 0; z-index: var(--wd-z-modal); }
 .wd-preview__mask { position: absolute; inset: 0; background: var(--wd-mask); }
 
 .wd-preview__stage {

@@ -3,7 +3,7 @@
 .wd-drawer {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--wd-z-modal);
   display: none;
 }
 .wd-drawer.is-open {

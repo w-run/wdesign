@@ -87,12 +87,13 @@
   border-radius: 999px;
 }
 .wd-explorer__view-btn {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   width: 30px;
   height: 30px;
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   display: inline-flex;
   align-items: center;

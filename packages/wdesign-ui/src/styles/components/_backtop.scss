@@ -10,7 +10,7 @@
 
 .wd-backtop {
   position: fixed;
-  z-index: 1000;
+  z-index: var(--wd-z-float);
   display: inline-flex;
   align-items: center;
   justify-content: center;

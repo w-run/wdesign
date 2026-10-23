@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useAnchoredPosition } from './anchor'
+import { nextZIndex } from './overlay-stack'
 
 defineOptions({ name: 'WdTooltip' })
 
@@ -64,10 +65,21 @@ const { pos } = useAnchoredPosition(open, anchorEl, panelEl, {
   gap: 8,
 })
 
+/*
+ * 和 Popconfirm 同因：CSS 固定层级的提示气泡会被"后来打开的对话框"盖住。
+ * 提示是当前操作的说明，必须跟宿主浮层一起领号。
+ */
+const z = ref<number>()
+
 const style = computed(() => ({
   top: pos.value.top + 'px',
   left: pos.value.left + 'px',
+  zIndex: z.value,
 }))
+
+watch(open, (v) => {
+  if (v) z.value = nextZIndex()
+})
 </script>
 
 <template>

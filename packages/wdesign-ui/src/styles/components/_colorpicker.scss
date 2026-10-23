@@ -93,7 +93,7 @@
 /* ---------------- 面板 ---------------- */
 .wd-colorpicker__panel {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   display: none;
   width: 232px;
   padding: 12px;
