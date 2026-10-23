@@ -3,6 +3,7 @@ import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useOverlayLayer } from './overlay-stack'
 import { useAnchoredPosition, useDismiss } from './anchor'
+import { uid } from './uid'
 import { useControllable } from './controllable'
 
 // <Transition> 依赖 transitionend 收尾；事件丢失时元素会停在 enter-from。
@@ -12,6 +13,10 @@ import { popDuration } from './pop-duration'
 const POP_DURATION = popDuration()
 
 defineOptions({ name: 'WdSelect' })
+
+/** listbox id + 选项 id：触发器的 aria-controls / aria-activedescendant 都指向它们 */
+const listboxId = uid('wd-select-listbox')
+const optId = (i: number) => `${listboxId}-opt-${i}`
 
 type OptionValue = string | number
 type Option = string | { label: string; value: OptionValue; disabled?: boolean }
@@ -230,6 +235,8 @@ watch(visible, (list) => {
       :disabled="disabled"
       :aria-expanded="open"
       aria-haspopup="listbox"
+      :aria-controls="listboxId"
+      :aria-activedescendant="open && activeIndex >= 0 ? optId(activeIndex) : undefined"
       @click="toggleOpen"
     >
       <!-- 多选：标签堆叠 -->
@@ -277,6 +284,7 @@ watch(visible, (list) => {
       class="wd-select__menu"
       :class="{ 'is-open': open }"
       :style="{ top: pos.top + 'px', left: pos.left + 'px', minWidth: '220px' }"
+      :id="listboxId"
       role="listbox"
       :aria-multiselectable="multiple || undefined"
     >
@@ -295,6 +303,7 @@ watch(visible, (list) => {
           v-for="(o, i) in visible"
           :key="o.value"
           type="button"
+          :id="optId(i)"
           role="option"
           class="wd-select__option"
           :class="{

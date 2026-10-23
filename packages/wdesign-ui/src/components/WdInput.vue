@@ -1,9 +1,23 @@
 <script setup lang="ts">
 import { WdIcon } from '@w-run/wdesign-icons'
-import { computed, ref } from 'vue'
+import { computed, ref, useAttrs } from 'vue'
 import { useControllable } from './controllable'
 
-defineOptions({ name: 'WdInput' })
+/*
+ * ⚠️ inheritAttrs: false 是必需的。
+ *
+ * 根节点是包住 input 的 <label>，默认情况下 `id` / `name` / `autocomplete` /
+ * `aria-label` 这些都会落到 <label> 上 —— 对 <label> 写 aria-label 毫无意义，
+ * `name` 也不会跟着表单提交。必须把它们绑到真正的 <input> 上。
+ * class / style 仍留在根节点，否则使用方传的类名会跑到输入框上、破坏布局。
+ */
+defineOptions({ name: 'WdInput', inheritAttrs: false })
+
+const attrs = useAttrs()
+const inputAttrs = computed(() => {
+  const { class: _c, style: _s, ...rest } = attrs
+  return rest
+})
 
 const props = withDefaults(
   defineProps<{
@@ -101,16 +115,21 @@ defineExpose({ focus: () => el.value?.focus(), blur: () => el.value?.blur() })
 <template>
   <label
     class="wd-input"
-    :class="{
-      'wd-input--rounded': shape === 'rounded',
-      'wd-input--lg': size === 'lg',
-      'wd-input--sm': size === 'sm',
-      'wd-input--has-count': !!count,
-    }"
+    :style="$attrs.style"
+    :class="[
+      {
+        'wd-input--rounded': shape === 'rounded',
+        'wd-input--lg': size === 'lg',
+        'wd-input--sm': size === 'sm',
+        'wd-input--has-count': !!count,
+      },
+      $attrs.class,
+    ]"
   >
     <span v-if="$slots.icon" class="wd-input__icon"><slot name="icon" /></span>
     <input
       ref="el"
+      v-bind="inputAttrs"
       :type="type"
       :value="value"
       :placeholder="placeholder"

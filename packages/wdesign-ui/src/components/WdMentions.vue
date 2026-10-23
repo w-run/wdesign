@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useAnchoredPosition, useDismiss } from './anchor'
+import { uid } from './uid'
 import { useOverlayLayer } from './overlay-stack'
 
 defineOptions({ name: 'WdMentions' })
+
+/** listbox 的 id：textarea 用 aria-controls 指过来（屏幕阅读器据此知道候选列表在哪） */
+const listboxId = uid('wd-mentions-listbox')
 
 export interface WdMentionUser {
   /** 唯一标识 */
@@ -203,6 +207,10 @@ const charCount = computed(() => text.value.length)
     <textarea
       ref="ta"
       class="wd-mentions__input"
+      role="combobox"
+      aria-autocomplete="list"
+      :aria-expanded="open"
+      :aria-controls="listboxId"
       :value="text"
       :rows="rows"
       :placeholder="placeholder"
@@ -221,7 +229,7 @@ const charCount = computed(() => text.value.length)
       其他浮层（select / dropdown / popover / datepicker）早就 Teleport 了，只有这里漏了。
     -->
     <Teleport to="body">
-    <div v-if="open" ref="panelEl" class="wd-mentions__panel" :style="panelStyle" role="listbox">
+    <div v-if="open" :id="listboxId" ref="panelEl" class="wd-mentions__panel" :style="panelStyle" role="listbox">
       <button
         v-for="(u, i) in filtered"
         :key="u.id"

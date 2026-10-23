@@ -239,6 +239,16 @@ ss -lntp | grep 5273
 - 共用逻辑抽模块：`overlay` / `overlay-stack` / `anchor` / `controllable` / `time`
 
 
+
+### 输入类组件的 attrs 要落到原生控件
+
+`WdInput` 这类「根节点是外壳、真正控件在里面」的组件，必须
+`inheritAttrs: false`，再把 `id / name / autocomplete / aria-*` 绑到原生 `<input>`：
+
+- 默认透传会把它们挂在外层 `<label>` 上 —— `name` 不参与表单提交、`aria-label` 对 label 毫无意义
+- 但 `class / style` 要留在根节点，否则使用方传的类名会跑到输入框上、布局直接坏
+- 组件间互指用的 id 走 `components/uid.ts`（模块级自增，不用 `useId`：peer 依赖是 vue>=3.3）
+
 ### 日期面板只有一份实现
 
 `WdDatePicker` / `WdDateTimePicker` **必须内嵌 `WdCalendar`**，不许自己画格子。
