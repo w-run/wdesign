@@ -83,11 +83,15 @@
 
 /* ---------------- 面板 ---------------- */
 .wd-time-picker__panel {
+  /*
+   * 定位交给 useAnchoredPosition（浮层形态 Teleport 到 body）。
+   * ⚠️ 不能再写 top/left/transform 居中 —— 会覆盖 JS 算出的文档坐标，
+   *    而且 transform 会让自己成为层叠上下文。
+   * inline 形态（DateTimePicker 内嵌）由 .wd-datetime-picker 的
+   * `position: static` 覆盖。
+   */
   position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
+  z-index: 1200;
   display: flex;
   align-items: center;
   gap: 6px;

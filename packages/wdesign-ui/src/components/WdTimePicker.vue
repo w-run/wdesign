@@ -2,6 +2,7 @@
 import { WdIcon } from '@w-run/wdesign-icons'
 import { computed, nextTick, ref, watch } from 'vue'
 import { useControllable } from './controllable'
+import { useAnchoredPosition, useDismiss } from './anchor'
 
 defineOptions({ name: 'WdTimePicker' })
 
@@ -27,6 +28,14 @@ const props = withDefaults(
     disabled?: boolean
     /** 尺寸 */
     size?: 'sm' | 'md'
+    /**
+     * 内联形态：面板不浮起来，直接展开在组件内部（DateTimePicker 用）。
+     *
+     * 默认是浮层 —— `position: fixed` 会被祖先的 `overflow` 裁、被祖先的
+     * `transform` 层叠上下文困住（实测：演示站里被下一张卡片整块盖住，
+     * z-index 调到 1200 也没用）。所以必须 Teleport 到 body。
+     */
+    inline?: boolean
   }>(),
   {
     defaultValue: '',
@@ -38,6 +47,7 @@ const props = withDefaults(
     max: '',
     disabled: false,
     size: 'md',
+    inline: false,
   },
 )
 
@@ -266,6 +276,23 @@ function onColScroll(part: 'hour' | 'minute' | 'second', e: Event) {
 /* ---------------- 打开 / 关闭 ---------------- */
 const open = ref(false)
 
+const rootEl = ref<HTMLElement | null>(null)
+const panelEl = ref<HTMLElement | null>(null)
+
+/** 浮层形态才需要定位；inline 由 CSS 决定（position: static） */
+const { pos, actual } = useAnchoredPosition(open, rootEl, panelEl, {
+  /*
+   * 用 bottom-start 而不是 bottom-center：面板宽度 > 触发器宽度，
+   * 居中要靠面板实测宽度来算，而 v-if 首帧宽度是 0 —— 会算偏（实测偏右 220px）。
+   * 左对齐与触发器左边线对齐，不依赖宽度测量。
+   */
+  placement: 'bottom-start',
+  gap: 8,
+})
+
+/** 点击外部关闭：面板 Teleport 到 body 后不在 root 里，必须显式登记 */
+useDismiss([rootEl, panelEl], () => { open.value = false }, open)
+
 /** 列元素引用，打开时需要按当前值定位 */
 const hourCol = ref<HTMLElement | null>(null)
 const minuteCol = ref<HTMLElement | null>(null)
@@ -309,7 +336,10 @@ function toggle() {
 function onBlur(e: FocusEvent) {
   // 焦点移出整个组件才关闭，避免点内部选项时误关
   const root = e.currentTarget as HTMLElement
-  if (!root.contains(e.relatedTarget as Node)) open.value = false
+  const t = e.relatedTarget as Node | null
+  // 面板可能已 Teleport 到 body，不能只用 root.contains 判断
+  if (root.contains(t) || panelEl.value?.contains(t)) return
+  open.value = false
 }
 
 const display = computed(() => value.value || '--:--')
@@ -317,6 +347,7 @@ const display = computed(() => value.value || '--:--')
 
 <template>
   <div
+    ref="rootEl"
     class="wd-time-picker"
     :class="[`wd-time-picker--${size}`, { 'is-open': open, 'is-disabled': disabled }]"
     tabindex="-1"
@@ -333,7 +364,14 @@ const display = computed(() => value.value || '--:--')
       <wd-icon name="clock" :size="15" class="wd-time-picker__icon" />
     </button>
 
-    <div v-if="open" class="wd-time-picker__panel">
+    <Teleport to="body" :disabled="inline">
+    <div
+      v-if="open"
+      ref="panelEl"
+      class="wd-time-picker__panel"
+      :data-placement="inline ? undefined : actual"
+      :style="inline ? undefined : { top: pos.top + 'px', left: pos.left + 'px' }"
+    >
       <!-- 时 -->
       <div
         ref="hourCol"
@@ -401,5 +439,6 @@ const display = computed(() => value.value || '--:--')
           </div>
       </template>
     </div>
+    </Teleport>
   </div>
 </template>

@@ -246,6 +246,13 @@ ss -lntp | grep 5273
 
 
 
+
+**浮层必须 Teleport 到 body**：`position: absolute` 的面板挂在组件内部时，
+会被祖先的 `overflow` 裁切、被祖先的 `transform`（**transform 会创建层叠上下文**）
+困住 —— 演示站的 `.demo-block` 就有 `transition: transform`，实测时间面板被
+下一张卡片整块盖住，`z-index` 调到 1200 也没用。内联形态（如 DateTimePicker 里的
+时间列）用 `inline` 属性显式关掉 Teleport。
+
 ### 输入类组件的 attrs 要落到原生控件
 
 `WdInput` 这类「根节点是外壳、真正控件在里面」的组件，必须

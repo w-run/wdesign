@@ -145,6 +145,7 @@ const display = computed(() => {
       <div class="wd-datetime-picker__side">
         <div class="wd-datetime-picker__side-label">时间</div>
         <wd-time-picker
+          inline
           :model-value="parts.time"
           :second="second"
           :minute-step="minuteStep"
