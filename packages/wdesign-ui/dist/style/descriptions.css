@@ -5,6 +5,12 @@
   width: 100%;
   border-radius: var(--wd-radius-sm);
   overflow: hidden;
+  /*
+   * 让组件按**自己的宽度**做响应，而不是视口宽度：
+   * 三列描述放在 264 宽的卡片里（390 屏）和放在 900 宽的卡片里，
+   * 视口媒体查询区分不出来 —— 容器查询才判断得准。
+   */
+  container-type: inline-size;
 }
 
 .wd-descriptions__row {
@@ -116,4 +122,49 @@
   text-align: center;
   font-size: 13px;
   color: var(--wd-ink-2);
+}
+
+/*
+ * 窄容器（< 400）：多列改单列。
+ * 264 宽三列 = 每格 88，标签吃掉 40% 只剩 52 给值，
+ * 中文会被压成"订/单/号"竖排 —— 不是换行问题，是根本没宽度。
+ */
+@container (max-width: 400px) {
+  /*
+   * ⚠️ 只处理横向（默认）布局：`--vertical` 本来就是一列一个 item，
+   * 再套一层 column 只是多余。更关键的是 —— 在 column 容器里
+   * `flex: 0 0 5.5em` 的 basis 作用于**高度**，标签会被撑成 66px 高，
+   * 实测就是「订单号」和值之间空出一大块。
+   */
+  .wd-descriptions:not(.wd-descriptions--vertical) .wd-descriptions__row {
+    flex-direction: column;
+    padding: 10px 0;
+  }
+  .wd-descriptions:not(.wd-descriptions--vertical) .wd-descriptions__row + .wd-descriptions__row {
+    border-top: 1px solid var(--wd-hairline);
+  }
+  .wd-descriptions:not(.wd-descriptions--vertical) .wd-descriptions__item {
+    flex: none;
+    width: 100%;
+    padding: 2px 0;
+  }
+  /*
+   * 竖排变体同样要收成一列：264 宽两列 = 每格 114，
+   * 「WD-20261017-0042」这种值会被折成三行。
+   */
+  .wd-descriptions--vertical .wd-descriptions__row {
+    flex-direction: column;
+  }
+  .wd-descriptions--vertical .wd-descriptions__item {
+    flex: none;
+    width: 100%;
+    padding-right: 0;
+    padding-bottom: 6px;
+  }
+  /* 固定 5.5em 让所有值从同一条竖线开始，否则标签长短不同、值会错开 */
+  .wd-descriptions:not(.wd-descriptions--vertical) .wd-descriptions__label {
+    flex: 0 0 5.5em;
+    max-width: 45%;
+    overflow-wrap: break-word;
+  }
 }
