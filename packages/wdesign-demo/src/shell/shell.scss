@@ -207,4 +207,17 @@ html[data-motion="slow"] {
 
   /* 折叠按钮在图标栏里没有意义，藏掉 */
   .demo-side .wd-nav__collapse { display: none; }
+
+  /*
+   * 68px 的图标栏里，6px 的滑轨就是一块脏斑（深色下尤其明显）。
+   * 图标栏本来就靠滚轮/方向键滚动，不需要可见滑轨。
+   * ⚠️ 必须写在媒体查询里、且选择器比基础规则多一层 —— 基础规则把它设成了 thin。
+   */
+  .demo-side .wd-nav__list {
+    scrollbar-width: none;
+  }
+
+  .demo-side .wd-nav__list::-webkit-scrollbar {
+    display: none;
+  }
 }
