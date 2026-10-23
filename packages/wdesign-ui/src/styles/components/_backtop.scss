@@ -50,11 +50,10 @@
   pointer-events: auto;
 }
 
-.wd-backtop:hover {
-  background: var(--wd-card);
-  color: var(--wd-ink);
-  /* 悬停轻微抬起：给"可点"的反馈，但不夸张 */
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .wd-backtop:hover {
+    background: var(--wd-card); color: var(--wd-ink); /* 悬停轻微抬起：给"可点"的反馈，但不夸张 */ transform: translateY(-2px);
+  }
 }
 
 .wd-backtop:active {
@@ -68,11 +67,18 @@
 
 /* 触屏设备上没有悬停，去掉抬起效果避免"点完还悬着"的错觉 */
 @media (hover: none) {
-  .wd-backtop:hover { transform: translateY(0); }
+  .wd-backtop:hover {
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .wd-backtop { transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth); }
   .wd-backtop.is-visible { transform: none; }
-  .wd-backtop:hover { transform: none; }
+
+@media (hover: hover) {
+  .wd-backtop:hover {
+    transform: none;
+  }
+}
 }

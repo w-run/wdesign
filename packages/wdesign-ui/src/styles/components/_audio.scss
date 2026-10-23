@@ -105,9 +105,11 @@
 .wd-audio--inverse .wd-audio__times { color: var(--wd-dark-text-2); }
 .wd-audio--inverse .wd-audio__remain { color: var(--wd-dark-text-2); }
 .wd-audio--inverse .wd-audio__ctl { color: var(--wd-dark-text-2); }
-.wd-audio--inverse .wd-audio__ctl:hover {
-  background: rgba(255, 255, 255, .12);
-  color: #fff;
+
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__ctl:hover {
+    background: rgba(255, 255, 255, .12); color: #fff;
+  }
 }
 /*
  * 反色卡片是**固定深色面**，不跟随主题翻转。
@@ -130,7 +132,9 @@
 }
 .wd-audio--inverse .wd-audio__rate-menu--card button { color: var(--wd-dark-text-2); }
 @media (hover: hover) {
-  .wd-audio--inverse .wd-audio__rate-menu--card button:hover { background: rgba(255, 255, 255, .1); }
+  .wd-audio--inverse .wd-audio__rate-menu--card button:hover {
+    background: rgba(255, 255, 255, .1);
+  }
 }
 .wd-audio--inverse .wd-audio__rate-menu--card button.is-on {
   background: var(--wd-dark-text);
@@ -471,7 +475,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-audio__ctl:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
+  .wd-audio__ctl:hover {
+    background: var(--wd-field-hover); color: var(--wd-ink);
+  }
 }
 .wd-audio__ctl--text { font-variant-numeric: tabular-nums; }
 /*
@@ -514,9 +520,11 @@
               box-shadow var(--wd-dur-fast) var(--wd-ease-smooth),
               background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
-.wd-audio__main-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, .22);
+
+@media (hover: hover) {
+  .wd-audio__main-btn:hover {
+    transform: scale(1.05); box-shadow: 0 6px 20px rgba(0, 0, 0, .22);
+  }
 }
 .wd-audio__main-btn:active { transform: scale(.97); }
 
@@ -573,7 +581,9 @@
   cursor: pointer;
 }
 @media (hover: hover) {
-  .wd-audio__rate-menu--card button:hover { background: var(--wd-field-hover); }
+  .wd-audio__rate-menu--card button:hover {
+    background: var(--wd-field-hover);
+  }
 }
 .wd-audio__rate-menu--card button.is-on { background: var(--wd-ink); color: var(--wd-card); }
 
@@ -637,10 +647,14 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-audio__cover:hover .wd-audio__cover-play { background: rgba(0, 0, 0, .46); }
+  .wd-audio__cover:hover .wd-audio__cover-play {
+    background: rgba(0, 0, 0, .46);
+  }
 }
 @media (hover: hover) {
-  .wd-audio__cover:hover { transform: scale(1.03); }
+  .wd-audio__cover:hover {
+    transform: scale(1.03);
+  }
 }
 
 /* 无封面时占位图标（降低存在感，不要和播放键打架） */
@@ -760,7 +774,10 @@
   transform: translateY(-50%) scale(0);
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-audio__scrub:hover .wd-audio__knob,
+@media (hover: hover) {
+  .wd-audio__scrub:hover .wd-audio__knob { transform: translateY(-50%) scale(1); }
+}
+/* 焦点态单独一条：触屏上也要能看见（不受 hover 媒体查询限制） */
 .wd-audio__scrub:focus-visible .wd-audio__knob { transform: translateY(-50%) scale(1); }
 
 /*
@@ -836,7 +853,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-audio__ibtn:hover { background: var(--wd-field-hover); color: var(--wd-ink); }
+  .wd-audio__ibtn:hover {
+    background: var(--wd-field-hover); color: var(--wd-ink);
+  }
 }
 .wd-audio__ibtn--text { font-variant-numeric: tabular-nums; }
 
@@ -850,9 +869,11 @@
   overflow: hidden;
   transition: width var(--wd-dur-fast) var(--wd-ease-out), margin var(--wd-dur-fast) var(--wd-ease-smooth);
 }
-.wd-audio__vol:hover .wd-audio__vol-track {
-  width: 52px;
-  margin: 0 6px 0 2px;
+
+@media (hover: hover) {
+  .wd-audio__vol:hover .wd-audio__vol-track {
+    width: 52px; margin: 0 6px 0 2px;
+  }
 }
 .wd-audio__vol-fill { display: block; height: 100%; background: var(--wd-red); }
 
@@ -883,7 +904,9 @@
   white-space: nowrap;
 }
 @media (hover: hover) {
-  .wd-audio__rate-menu button:hover { background: var(--wd-field-hover); }
+  .wd-audio__rate-menu button:hover {
+    background: var(--wd-field-hover);
+  }
 }
 .wd-audio__rate-menu button.is-on { color: var(--wd-red-text); font-weight: var(--wd-fw-semibold); }
 
@@ -926,7 +949,9 @@
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 @media (hover: hover) {
-  .wd-audio__mini-play:hover { transform: scale(1.06); }
+  .wd-audio__mini-play:hover {
+    transform: scale(1.06);
+  }
 }
 
 .wd-audio__mini-main {
@@ -989,7 +1014,9 @@
   .wd-audio__hero-badge i { animation: none; }
   .wd-audio__main-btn:hover,
   .wd-audio__play:active,
-  .wd-audio__mini-play:hover { transform: none; }
+  .wd-audio__mini-play:hover {
+    transform: none;
+  }
 }
 
 /* 窄容器：card 的音量键让位 */
@@ -1064,7 +1091,9 @@
 
 .wd-audio--inverse .wd-audio__vol-mute { color: var(--wd-dark-text-2); }
 @media (hover: hover) {
-  .wd-audio--inverse .wd-audio__vol-mute:hover { background: rgba(255, 255, 255, .12); }
+  .wd-audio--inverse .wd-audio__vol-mute:hover {
+    background: rgba(255, 255, 255, .12);
+  }
 }
 
 /*
@@ -1173,7 +1202,12 @@
   pointer-events: none;
 }
 
-.wd-audio__pbar:hover .wd-audio__pbar-thumb,
+@media (hover: hover) {
+  .wd-audio__pbar:hover .wd-audio__pbar-thumb {
+    transform: translateY(-50%) scale(1);
+  }
+}
+
 .wd-audio__pbar:focus-visible .wd-audio__pbar-thumb {
   transform: translateY(-50%) scale(1);
 }

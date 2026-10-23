@@ -52,18 +52,24 @@
 /* ---- 微交互（精致版）---- */
 .wd-tag { transition: background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out); }
 @media (hover: hover) {
-  .wd-tag--tint:hover { background: var(--wd-tint-3); }
+  .wd-tag--tint:hover {
+    background: var(--wd-tint-3);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-tag--tint.is-hover { background: var(--wd-tint-3); }
 
 @media (hover: hover) {
-  .wd-tag--gray:hover { background: var(--wd-field-hover); }
+  .wd-tag--gray:hover {
+    background: var(--wd-field-hover);
+  }
 }
 .wd-tag--gray.is-hover { background: var(--wd-field-hover); }
 
 @media (hover: hover) {
-  .wd-tag--dark:hover { background: var(--wd-dark-2); }
+  .wd-tag--dark:hover {
+    background: var(--wd-dark-2);
+  }
 }
 .wd-tag--dark.is-hover { background: var(--wd-dark-2); }
 

@@ -96,7 +96,9 @@
   transition: color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-ai-msg__reasoning-head:hover { color: var(--wd-ink); }
+  .wd-ai-msg__reasoning-head:hover {
+    color: var(--wd-ink);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-ai-msg__reasoning-head.is-hover { color: var(--wd-ink); }

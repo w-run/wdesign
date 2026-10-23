@@ -22,6 +22,13 @@ SRC = os.path.join(ROOT, 'src')
 STY = os.path.join(SRC, 'styles')
 COMPS = os.path.join(SRC, 'components')
 
+# 组件通过 inline style / 自身作用域注入的变量，不属于令牌系统
+INTERNAL_VARS = {
+    '--wd-desc-span', '--wd-check-color', '--wd-check-hover', '--wd-check-disabled',
+    '--wd-group-fs', '--wd-group-h', '--wd-group-pad', '--wd-progress-color',
+    '--wd-slider-color', '--wd-audio-accent', '--wd-tree-line-x',
+}
+
 errors, warns, infos = [], [], []
 
 
@@ -40,10 +47,19 @@ def walk(exts=('.scss', '.vue', '.ts')):
 # ── 1. 组件三张清单一致 ────────────────────────────────────────
 files = {f[:-4] for f in os.listdir(COMPS) if f.endswith('.vue')}
 idx = rd(os.path.join(SRC, 'index.ts'))
-imported = set(re.findall(r"^import (Wd\w+) from '\./components/\w+\.vue'", idx, re.M))
-exported = set(re.findall(r'^  (Wd\w+),$', idx, re.M)) - {'toast'}
-arr = idx.split('const components = [')[1].split(']')[0]
-registered = set(re.findall(r'(Wd\w+)', arr))
+# 兼容两种写法：具名导出（当前）与 import 后统一注册（早期）
+_pairs = re.findall(
+    r"^(?:import (Wd\w+) from|export \{ default as (Wd\w+) \} from) '\./components/\w+\.vue'",
+    idx, re.M,
+)
+imported = {a or b for a, b in _pairs}
+exported = imported
+# index.ts 现在只有具名导出，没有统一的注册数组 —— 有就校验，没有就跳过
+if 'const components = [' in idx:
+    arr = idx.split('const components = [')[1].split(']')[0]
+    registered = set(re.findall(r'(Wd\w+)', arr))
+else:
+    registered = imported
 
 if files - imported:
     errors.append('组件未 import：%s' % ', '.join(sorted(files - imported)))
@@ -87,7 +103,7 @@ for p in walk():
         refs.setdefault(v, set()).add(os.path.relpath(p, ROOT))
 
 # 由消费方按需覆盖的变量（令牌提供默认值即可，不属于「未定义」）
-OPTIONAL_VARS = {'wd-reveal-delay'}
+OPTIONAL_VARS = {'wd-reveal-delay'} | {v.lstrip('-') for v in INTERNAL_VARS}
 for v in sorted(set(refs) - defined - OPTIONAL_VARS):
     errors.append('引用了未定义的 CSS 变量 --%s（整条声明会静默失效）← %s'
                   % (v, ', '.join(sorted(refs[v]))))

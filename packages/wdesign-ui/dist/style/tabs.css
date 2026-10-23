@@ -132,11 +132,12 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-tabs__close:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-red-text);
+@media (hover: hover) {
+  .wd-tabs__close:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-red-text);
+  }
 }
-
 .wd-tabs__add {
   flex: none;
   display: inline-flex;

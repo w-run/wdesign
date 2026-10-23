@@ -279,12 +279,11 @@
   /* 关键：切断 transition，否则背景色会卡在旧值（时钟停摆时永远不完成） */
   transition: none !important;
 }
-.wd-group--capsule > .wd-group__item.wd-btn--tint:hover:not(:disabled),
-.wd-group--capsule > .wd-group__item.wd-btn--ghost:hover:not(:disabled),
-.wd-group--capsule > .wd-group__item > .wd-btn--tint:hover:not(:disabled),
-.wd-group--capsule > .wd-group__item > .wd-btn--ghost:hover:not(:disabled) {
-  background-color: rgba(0, 0, 0, .05) !important;
-  transition: none !important;
+
+@media (hover: hover) {
+  .wd-group--capsule > .wd-group__item.wd-btn--tint:hover:not(:disabled), .wd-group--capsule > .wd-group__item.wd-btn--ghost:hover:not(:disabled), .wd-group--capsule > .wd-group__item > .wd-btn--tint:hover:not(:disabled), .wd-group--capsule > .wd-group__item > .wd-btn--ghost:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, .05) !important; transition: none !important;
+  }
 }
 
 /* ---------------- 变体：拼合 ---------------- */
@@ -357,8 +356,11 @@
   border-radius: var(--wd-radius-xs) !important;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
-.wd-group--inset > .wd-group__item:hover {
-  background-color: var(--wd-field-hover);
+
+@media (hover: hover) {
+  .wd-group--inset > .wd-group__item:hover {
+    background-color: var(--wd-field-hover);
+  }
 }
 .wd-group--inset > .wd-group__item > .wd-btn--primary {
   background-color: var(--wd-card);
@@ -370,8 +372,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-group--inset > .wd-group__item:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-group--inset > .wd-group__item:hover {
+    background: var(--wd-field-hover);
+  }
 }
 
 /* inset 靠间距区分，不画分隔线 */

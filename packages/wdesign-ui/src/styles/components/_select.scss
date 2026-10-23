@@ -25,7 +25,9 @@
 .wd-select__trigger--lg { height: var(--wd-size-lg); padding: 0 26px; font-size: var(--wd-font-size-lg); }
 .wd-select__trigger--sm { height: var(--wd-size-sm); padding: 0 12px; font-size: var(--wd-font-size-sm); }
 @media (hover: hover) {
-  .wd-select__trigger:hover { background: var(--wd-field-hover); }
+  .wd-select__trigger:hover {
+    background: var(--wd-field-hover);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-select__trigger.is-hover { background: var(--wd-field-hover); }
@@ -90,7 +92,9 @@
   text-align: left;
 }
 @media (hover: hover) {
-  .wd-select__option:hover:not(.wd-select__option--active) { background: var(--wd-field); }
+  .wd-select__option:hover:not(.wd-select__option--active) {
+    background: var(--wd-field);
+  }
 }
 /* 键盘高亮：选中项已经有了选中底，不能再被 it 覆盖成浅灰 */
 .wd-select__option.is-hover:not(.wd-select__option--active) { background: var(--wd-field); }
@@ -169,7 +173,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-select__tag-x:hover { background: var(--wd-tint-3); }
+  .wd-select__tag-x:hover {
+    background: var(--wd-tint-3);
+  }
 }
 
 /* ---- 右侧动作区（清除 + 箭头） ---- */
@@ -195,7 +201,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-select__clear:hover { background: var(--wd-ink-2); }
+  .wd-select__clear:hover {
+    background: var(--wd-ink-2);
+  }
 }
 
 /* ---- 搜索框 ---- */

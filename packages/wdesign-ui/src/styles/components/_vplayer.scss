@@ -240,9 +240,14 @@
 .wd-vplayer__played { background: var(--wd-red); }
 
 /* 悬停时进度条加粗，更易瞄准；不悬停时保持细条不压画面 */
-.wd-vplayer__scrub:hover .wd-vplayer__track,
-.wd-vplayer__scrub:hover .wd-vplayer__buffer,
-.wd-vplayer__scrub:hover .wd-vplayer__played,
+@media (hover: hover) {
+  .wd-vplayer__scrub:hover .wd-vplayer__track,
+  .wd-vplayer__scrub:hover .wd-vplayer__buffer,
+  .wd-vplayer__scrub:hover .wd-vplayer__played {
+    height: 5px;
+  }
+}
+
 .wd-vplayer__scrub:focus-visible .wd-vplayer__track,
 .wd-vplayer__scrub:focus-visible .wd-vplayer__played {
   height: 5px;
@@ -260,7 +265,12 @@
   transform: translateY(-50%) scale(0);
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
-.wd-vplayer__scrub:hover .wd-vplayer__knob,
+@media (hover: hover) {
+  .wd-vplayer__scrub:hover .wd-vplayer__knob {
+    transform: translateY(-50%) scale(1);
+  }
+}
+
 .wd-vplayer__scrub:focus-visible .wd-vplayer__knob {
   transform: translateY(-50%) scale(1);
 }
@@ -339,9 +349,11 @@
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
-.wd-vplayer__btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, .16);
-  color: #fff;
+
+@media (hover: hover) {
+  .wd-vplayer__btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, .16); color: #fff;
+  }
 }
 .wd-vplayer__btn:disabled {
   opacity: .32;
@@ -425,7 +437,13 @@
 }
 
 /* 展开态：多出来的一圈底，让它读成"一个胶囊"而不是"按钮旁边浮着一条线" */
-.wd-vplayer__vol:hover,
+@media (hover: hover) {
+  .wd-vplayer__vol:hover {
+    width: 106px;
+    background: var(--wd-mask);
+  }
+}
+
 .wd-vplayer__vol:focus-within,
 .wd-vplayer__vol.is-open {
   width: 106px;
@@ -449,7 +467,14 @@
     transform var(--wd-dur) var(--wd-ease-spring-soft);
 }
 
-.wd-vplayer__vol:hover .wd-vplayer__vol-slider,
+@media (hover: hover) {
+  .wd-vplayer__vol:hover .wd-vplayer__vol-slider {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+}
+
 .wd-vplayer__vol:focus-within .wd-vplayer__vol-slider,
 .wd-vplayer__vol.is-open .wd-vplayer__vol-slider {
   opacity: 1;
@@ -496,7 +521,9 @@
   white-space: nowrap;
 }
 @media (hover: hover) {
-  .wd-vplayer__panel--rates button:hover { background: rgba(255, 255, 255, .12); }
+  .wd-vplayer__panel--rates button:hover {
+    background: rgba(255, 255, 255, .12);
+  }
 }
 .wd-vplayer__panel--rates button.is-on {
   color: var(--wd-red-on-dark);
@@ -558,7 +585,9 @@
   @include m.truncate;
 }
 @media (hover: hover) {
-  .wd-vplayer__ep:hover { background: rgba(255, 255, 255, .18); }
+  .wd-vplayer__ep:hover {
+    background: rgba(255, 255, 255, .18);
+  }
 }
 .wd-vplayer__ep.is-on {
   background: var(--wd-red);
@@ -602,15 +631,14 @@
   transition: transform var(--wd-dur-fast) var(--wd-ease-out), background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-/*
+@media (hover: hover) {
+  /*
   播放三角的视觉补偿已挪到图标自身（play.svg 内平移 12.4 viewBox 单位）。
   图标的视觉重心是图标的责任，不该让每个使用方各自写 transform 补偿 ——
   那样每处补偿量都得单独调，且容易互相覆盖。
 */
 
-.wd-vplayer__big:hover {
-  transform: translate(-50%, -50%) scale(1.06);
-  background: var(--wd-red);
+.wd-vplayer__big:hover { transform: translate(-50%, -50%) scale(1.06); background: var(--wd-red); }
 }
 
 .wd-vplayer__loading {
@@ -852,7 +880,9 @@
 }
 
 @media (hover: hover) {
-  .wd-vplayer__ep-tab:hover { background: rgba(255, 255, 255, .14); color: var(--wd-on-dark-text); }
+  .wd-vplayer__ep-tab:hover {
+    background: rgba(255, 255, 255, .14); color: var(--wd-on-dark-text);
+  }
 }
 
 .wd-vplayer__ep-tab.is-on {

@@ -44,7 +44,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-checkbox:hover .wd-checkbox__box { background: var(--wd-tint-1); }
+  .wd-checkbox:hover .wd-checkbox__box {
+    background: var(--wd-tint-1);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-checkbox.is-hover .wd-checkbox__box { background: var(--wd-tint-1); }
@@ -58,14 +60,18 @@
 .wd-checkbox--checked .wd-checkbox__box { background: var(--wd-check-color); /* 勾选符号必须与勾选底反相：深色主题下 --wd-ink 翻成近白，符号再写死 #fff 就看不见了 */
   color: var(--wd-card); }
 @media (hover: hover) {
-  .wd-checkbox--checked:hover .wd-checkbox__box { background: var(--wd-check-hover); }
+  .wd-checkbox--checked:hover .wd-checkbox__box {
+    background: var(--wd-check-hover);
+  }
 }
 .wd-checkbox--checked.is-hover .wd-checkbox__box { background: var(--wd-check-hover); }
 
 .wd-checkbox__label { line-height: 1.4; }
 .wd-checkbox--disabled { cursor: default; color: var(--wd-ink-3); }
 @media (hover: hover) {
-  .wd-checkbox--disabled:hover .wd-checkbox__box { background: var(--wd-field); }
+  .wd-checkbox--disabled:hover .wd-checkbox__box {
+    background: var(--wd-field);
+  }
 }
 .wd-checkbox--disabled.is-hover .wd-checkbox__box { background: var(--wd-field); }
 

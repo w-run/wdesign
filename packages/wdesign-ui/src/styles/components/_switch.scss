@@ -45,13 +45,17 @@
 /* ---- 微交互（精致版）---- */
 .wd-switch__knob { transition: transform var(--wd-dur) var(--wd-ease-spring); }
 @media (hover: hover) {
-  .wd-switch:not(.wd-switch--off):hover { box-shadow: 0 0 0 4px var(--wd-ink-5); }
+  .wd-switch:not(.wd-switch--off):hover {
+    box-shadow: 0 0 0 4px var(--wd-ink-5);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-switch:not(.wd-switch--off).is-hover { box-shadow: 0 0 0 4px var(--wd-ink-5); }
 
 @media (hover: hover) {
-  .wd-switch--off:hover { box-shadow: 0 0 0 4px var(--wd-ring-soft); }
+  .wd-switch--off:hover {
+    box-shadow: 0 0 0 4px var(--wd-ring-soft);
+  }
 }
 .wd-switch--off.is-hover { box-shadow: 0 0 0 4px var(--wd-ring-soft); }
 

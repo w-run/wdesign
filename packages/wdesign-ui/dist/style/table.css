@@ -314,11 +314,12 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-table__tree-toggle:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-table__tree-toggle:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-table__tree-toggle svg {
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
@@ -351,11 +352,12 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-table__expander:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-table__expander:hover {
+    background: var(--wd-field-hover);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-table__expander svg {
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }

@@ -101,11 +101,12 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-popover__close:hover {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-popover__close:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-popover__body {
   /* 内容块之间给一点默认节奏，避免使用者每次自己加间距 */
   display: flex;

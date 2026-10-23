@@ -14,7 +14,9 @@
 /* 悬停放大只对支持悬停的设备生效——触屏上 pointerenter 不会随手指离开复位，
    放大态会粘住（移动端「点一下星就一直是放大的」的观感问题）。 */
 @media (hover: hover) and (pointer: fine) {
-  .wd-rate__item:hover { transform: scale(1.08); }
+  .wd-rate__item:hover {
+    transform: scale(1.08);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-rate__item.is-hover { transform: scale(1.08); }

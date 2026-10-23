@@ -80,8 +80,10 @@
   touch-action: none;
 }
 
-.wd-scrollbar__thumb:hover {
-  background: var(--wd-ink-3);
+@media (hover: hover) {
+  .wd-scrollbar__thumb:hover {
+    background: var(--wd-ink-3);
+  }
 }
 
 .wd-scrollbar__thumb.is-dragging {

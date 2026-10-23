@@ -27,7 +27,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-tree__node:hover:not(.wd-tree__node--selected) { background: var(--wd-field-hover); }
+  .wd-tree__node:hover:not(.wd-tree__node--selected) {
+    background: var(--wd-field-hover);
+  }
 }
 .wd-tree__node:focus-visible {
   box-shadow: inset 0 0 0 2px var(--wd-focus-ring);
@@ -39,7 +41,9 @@
   font-weight: var(--wd-fw-semibold);
 }
 @media (hover: hover) {
-  .wd-tree__node--selected:hover { background: var(--wd-selected-row); }
+  .wd-tree__node--selected:hover {
+    background: var(--wd-selected-row);
+  }
 }
 
 /*
@@ -66,7 +70,9 @@
 .wd-tree__arrow--open { transform: rotate(90deg); }
 .wd-tree__arrow--leaf { visibility: hidden; }
 @media (hover: hover) {
-  .wd-tree__arrow:hover { color: var(--wd-ink); }
+  .wd-tree__arrow:hover {
+    color: var(--wd-ink);
+  }
 }
 
 /* ---- 复选框 ---- */
@@ -99,8 +105,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-tree__check input:hover {
-  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+@media (hover: hover) {
+  .wd-tree__check input:hover {
+    box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+  }
 }
 
 /* 选中：深色实心 + 白勾（与 Transfer 一致，不用主题红） */
@@ -149,7 +157,12 @@
   opacity: 0;
   transition: opacity var(--wd-dur-fast) var(--wd-ease-smooth);
 }
-.wd-tree__node:hover .wd-tree__extra,
+
+@media (hover: hover) {
+  .wd-tree__node:hover .wd-tree__extra {
+    opacity: 1;
+  }
+}
 .wd-tree__node--selected .wd-tree__extra { opacity: 1; }
 
 /*

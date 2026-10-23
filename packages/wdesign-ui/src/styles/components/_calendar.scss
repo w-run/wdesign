@@ -127,9 +127,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-calendar__nav:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-calendar__nav:hover {
+    background: var(--wd-field-hover); color: var(--wd-ink);
+  }
 }
 
 .wd-calendar__nav:focus-visible {
@@ -192,8 +193,10 @@
 
 .wd-calendar--sm .wd-calendar__cell { font-size: 11.5px; }
 
-.wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
+    background: var(--wd-field-hover);
+  }
 }
 
 /*
@@ -311,9 +314,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-calendar__action:hover {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-calendar__action:hover {
+    background: var(--wd-field-hover); color: var(--wd-ink);
+  }
 }
 
 .wd-calendar__action:focus-visible {

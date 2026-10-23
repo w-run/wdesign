@@ -579,8 +579,12 @@
 }
 
 @media (hover: hover) {
-  .wd-media-card__cta:hover { background: var(--wd-dark-2); }
-  .wd-media-card--overlay .wd-media-card__cta:hover { background: rgba(255, 255, 255, .88); }
+  .wd-media-card__cta:hover {
+    background: var(--wd-dark-2);
+  }
+  .wd-media-card--overlay .wd-media-card__cta:hover {
+    background: rgba(255, 255, 255, .88);
+  }
 }
 .wd-media-card__cta:active { transform: scale(.99); }
 

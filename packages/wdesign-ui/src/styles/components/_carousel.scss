@@ -42,7 +42,9 @@
   transition: transform var(--wd-dur) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-carousel__arrow:hover { transform: translateY(-50%) scale(1.08); }
+  .wd-carousel__arrow:hover {
+    transform: translateY(-50%) scale(1.08);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-carousel__arrow.is-hover { transform: translateY(-50%) scale(1.08); }

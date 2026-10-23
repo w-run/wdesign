@@ -54,7 +54,9 @@
   font-size: var(--wd-font-size-lg);
 }
 @media (hover: hover) {
-  .wd-datepicker__trigger:hover { background: var(--wd-field-hover); }
+  .wd-datepicker__trigger:hover {
+    background: var(--wd-field-hover);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-datepicker__trigger.is-hover { background: var(--wd-field-hover); }

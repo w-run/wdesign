@@ -50,7 +50,9 @@
 
   /* 悬停时箭头往右上轻移 2px —— 指向"要去的地方"，是最省的动效表达 */
   @media (hover: hover) {
-    &:hover .wd-btn__arrow { transform: translate(2px, -2px); }
+    &:hover .wd-btn__arrow {
+    transform: translate(2px, -2px);
+  }
   }
   &.is-hover .wd-btn__arrow { transform: translate(2px, -2px); }
 
@@ -63,7 +65,9 @@
   background: var(--wd-red);
   color: #fff;
 @media (hover: hover) {
-  &:hover:not(:disabled) { background: var(--wd-red-hover); }
+  &:hover:not(:disabled) {
+    background: var(--wd-red-hover);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 &.is-hover:not(:disabled) { background: var(--wd-red-hover); }
@@ -86,7 +90,9 @@
   background: var(--wd-field);
   color: var(--wd-ink);
 @media (hover: hover) {
-  &:hover:not(:disabled) { background: var(--wd-field-hover); }
+  &:hover:not(:disabled) {
+    background: var(--wd-field-hover);
+  }
 }
 &.is-hover:not(:disabled) { background: var(--wd-field-hover); }
 
@@ -99,7 +105,9 @@
   background: var(--wd-dark);
   color: var(--wd-dark-text);
 @media (hover: hover) {
-  &:hover:not(:disabled) { background: var(--wd-dark-hover); }
+  &:hover:not(:disabled) {
+    background: var(--wd-dark-hover);
+  }
 }
 &.is-hover:not(:disabled) { background: var(--wd-dark-hover); }
 
@@ -112,11 +120,15 @@
   background: transparent;
   color: var(--wd-ink);
 @media (hover: hover) {
-  &:hover:not(:disabled) { background: var(--wd-field); }
+  &:hover:not(:disabled) {
+    background: var(--wd-field);
+  }
 }
 &.is-hover:not(:disabled) { background: var(--wd-field); }
 
-  &:active:not(:disabled) { background: var(--wd-field-hover); }
+  &:active:not(:disabled) {
+    background: var(--wd-field-hover);
+  }
   &:disabled { background: transparent; color: var(--wd-ink-3); }
 }
 /*
@@ -149,7 +161,9 @@
  */
 
 @media (hover: hover) {
-  .wd-btn--tint:not(:disabled):hover { background: var(--wd-field-hover); }
+  .wd-btn--tint:not(:disabled):hover {
+    background: var(--wd-field-hover);
+  }
 }
 .wd-btn--tint:not(:disabled).is-hover { background: var(--wd-field-hover); }
 

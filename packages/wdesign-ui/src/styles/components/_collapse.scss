@@ -26,7 +26,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-collapse__head:hover { background: var(--wd-bg); }
+  .wd-collapse__head:hover {
+    background: var(--wd-bg);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-collapse__head.is-hover { background: var(--wd-bg); }

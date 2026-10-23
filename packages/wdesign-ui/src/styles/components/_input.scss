@@ -59,7 +59,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-out);
 }
 @media (hover: hover) {
-  .wd-input__clear:hover { background: var(--wd-ink-2); }
+  .wd-input__clear:hover {
+    background: var(--wd-ink-2);
+  }
 }
 
 /* ---- 字数统计 ---- */

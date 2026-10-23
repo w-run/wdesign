@@ -36,7 +36,9 @@
   transition: background-color var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
 @media (hover: hover) {
-  .wd-segmented-picker__trigger:hover { background: var(--wd-field-hover); }
+  .wd-segmented-picker__trigger:hover {
+    background: var(--wd-field-hover);
+  }
 }
 .wd-segmented-picker__trigger.is-hover { background: var(--wd-field-hover); }
 
@@ -109,7 +111,9 @@
   transition: background-color var(--wd-dur-fast, .18s) var(--wd-ease-smooth, cubic-bezier(.4, 0, .2, 1));
 }
 @media (hover: hover) {
-  .wd-segmented-picker__option:hover { background: var(--wd-field); }
+  .wd-segmented-picker__option:hover {
+    background: var(--wd-field);
+  }
 }
 .wd-segmented-picker__option.is-hover { background: var(--wd-field); }
 

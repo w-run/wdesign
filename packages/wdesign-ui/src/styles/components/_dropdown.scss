@@ -46,14 +46,18 @@
   text-align: left;
 }
 @media (hover: hover) {
-  .wd-dropdown__item:hover { background: var(--wd-bg); }
+  .wd-dropdown__item:hover {
+    background: var(--wd-bg);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-dropdown__item.is-hover { background: var(--wd-bg); }
 
 .wd-dropdown__item--danger { color: var(--wd-red-text); }
 @media (hover: hover) {
-  .wd-dropdown__item--danger:hover { background: var(--wd-tint-1); }
+  .wd-dropdown__item--danger:hover {
+    background: var(--wd-tint-1);
+  }
 }
 .wd-dropdown__item--danger.is-hover { background: var(--wd-tint-1); }
 

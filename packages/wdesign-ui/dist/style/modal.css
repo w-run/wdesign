@@ -149,11 +149,12 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-modal__close:hover {
-  background: var(--wd-field);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-modal__close:hover {
+    background: var(--wd-field);
+    color: var(--wd-ink);
+  }
 }
-
 .wd-modal__close:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--wd-focus-ring-soft);

@@ -60,20 +60,28 @@
   transition: transform var(--wd-dur-reveal, .45s) var(--wd-ease-out, cubic-bezier(.16, 1, .3, 1));
 }
 @media (hover: hover) {
-  .wd-post-item:hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-hover); }
-  .wd-post-item--plain:hover { transform: translateX(4px); box-shadow: none; }
+  .wd-post-item:hover {
+    transform: translateY(-2px); box-shadow: var(--wd-shadow-hover);
+  }
+  .wd-post-item--plain:hover {
+    transform: translateX(4px); box-shadow: none;
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-post-item.is-hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-hover); }
 .wd-post-item--plain.is-hover { transform: translateX(4px); box-shadow: none; }
 
 @media (hover: hover) {
-  .wd-post-item:hover::before { transform: scaleX(1); }
+  .wd-post-item:hover::before {
+    transform: scaleX(1);
+  }
 }
 .wd-post-item.is-hover::before { transform: scaleX(1); }
 
 @media (hover: hover) {
-  .wd-post-item:hover .wd-post-item__title { color: var(--wd-red-text); }
+  .wd-post-item:hover .wd-post-item__title {
+    color: var(--wd-red-text);
+  }
 }
 .wd-post-item.is-hover .wd-post-item__title { color: var(--wd-red-text); }
 

@@ -31,7 +31,9 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 @media (hover: hover) {
-  .wd-radio:hover .wd-radio__dot { background: var(--wd-tint-1); }
+  .wd-radio:hover .wd-radio__dot {
+    background: var(--wd-tint-1);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-radio.is-hover .wd-radio__dot { background: var(--wd-tint-1); }
@@ -61,7 +63,9 @@
 
 .wd-radio--disabled { cursor: default; color: var(--wd-ink-3); }
 @media (hover: hover) {
-  .wd-radio--disabled:hover .wd-radio__dot { background: var(--wd-field); }
+  .wd-radio--disabled:hover .wd-radio__dot {
+    background: var(--wd-field);
+  }
 }
 .wd-radio--disabled.is-hover .wd-radio__dot { background: var(--wd-field); }
 

@@ -44,7 +44,9 @@
     transition: color var(--wd-dur-fast) var(--wd-ease-smooth), text-decoration-color var(--wd-dur-fast) var(--wd-ease-smooth);
   }
 @media (hover: hover) {
-  a:hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
+  a:hover {
+    color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
@@ -158,7 +160,9 @@ a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hov
     thead th { background: var(--wd-field); font-size: 13px; font-weight: var(--wd-fw-semibold); color: var(--wd-ink); }
     tbody tr:nth-child(even) { background: var(--wd-bg); }
 @media (hover: hover) {
-  tbody tr:hover { background: var(--wd-tint-1); }
+  tbody tr:hover {
+    background: var(--wd-tint-1);
+  }
 }
 tbody tr.is-hover { background: var(--wd-tint-1); }
 

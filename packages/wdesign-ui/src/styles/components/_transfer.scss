@@ -67,8 +67,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-transfer__check-all input:hover {
-  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+@media (hover: hover) {
+  .wd-transfer__check-all input:hover {
+    box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+  }
 }
 
 .wd-transfer__check-all input:checked {
@@ -126,8 +128,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-transfer__item:hover {
-  background: var(--wd-field-hover);
+@media (hover: hover) {
+  .wd-transfer__item:hover {
+    background: var(--wd-field-hover);
+  }
 }
 
 .wd-transfer__item.is-checked {
@@ -138,8 +142,11 @@
   color: var(--wd-ink-3);
   cursor: not-allowed;
 }
-.wd-transfer__item.is-disabled:hover {
-  background: transparent;
+
+@media (hover: hover) {
+  .wd-transfer__item.is-disabled:hover {
+    background: transparent;
+  }
 }
 
 /* ---------------- 圆形勾选指示器 ---------------- */
@@ -167,8 +174,10 @@
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-transfer__item:hover .wd-transfer__tick {
-  box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+@media (hover: hover) {
+  .wd-transfer__item:hover .wd-transfer__tick {
+    box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+  }
 }
 
 .wd-transfer__tick.is-on {
@@ -232,9 +241,10 @@
               opacity var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-transfer__op:hover:not(:disabled) {
-  background: var(--wd-field-hover);
-  color: var(--wd-ink);
+@media (hover: hover) {
+  .wd-transfer__op:hover:not(:disabled) {
+    background: var(--wd-field-hover); color: var(--wd-ink);
+  }
 }
 
 .wd-transfer__op:disabled {

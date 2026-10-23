@@ -78,25 +78,29 @@
   transform: translateY(-50%);
 }
 
-/*
+@media (hover: hover) {
+  /*
  * hover / 拖拽时线变主色 + 加粗。
  * 这是拖拽类组件最重要的反馈：用户必须能在移动前确认
  * "我抓到的是这根线"，否则会犹豫。
  */
-.wd-splitter__bar:hover::before,
-.wd-splitter.is-dragging .wd-splitter__bar::before {
-  background: var(--wd-red);
+.wd-splitter__bar:hover::before { background: var(--wd-red); }
 }
+.wd-splitter.is-dragging .wd-splitter__bar::before { background: var(--wd-red); }
 
-.wd-splitter--horizontal .wd-splitter__bar:hover::before,
-.wd-splitter--horizontal.is-dragging .wd-splitter__bar::before {
-  width: 3px;
+@media (hover: hover) {
+  .wd-splitter--horizontal .wd-splitter__bar:hover::before {
+    width: 3px;
+  }
 }
+.wd-splitter--horizontal.is-dragging .wd-splitter__bar::before { width: 3px; }
 
-.wd-splitter--vertical .wd-splitter__bar:hover::before,
-.wd-splitter--vertical.is-dragging .wd-splitter__bar::before {
-  height: 3px;
+@media (hover: hover) {
+  .wd-splitter--vertical .wd-splitter__bar:hover::before {
+    height: 3px;
+  }
 }
+.wd-splitter--vertical.is-dragging .wd-splitter__bar::before { height: 3px; }
 
 .wd-splitter__bar:focus-visible::before {
   background: var(--wd-red);
@@ -134,7 +138,14 @@
   opacity: 0;
 }
 
-.wd-splitter__bar:hover .wd-splitter__grip.is-visible,
+@media (hover: hover) {
+  .wd-splitter__bar:hover .wd-splitter__grip.is-visible {
+    opacity: 1;
+    background: var(--wd-red);
+  }
+}
+
+/* 焦点与拖拽不受 hover 媒体查询限制 */
 .wd-splitter__bar:focus-visible .wd-splitter__grip.is-visible,
 .wd-splitter.is-dragging .wd-splitter__grip.is-visible {
   opacity: 1;

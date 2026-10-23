@@ -84,6 +84,8 @@
   background: var(--wd-red-active);
 }
 
-.wd-popconfirm__ok--danger:hover:not(:disabled) {
-  background: #8F1A25;
+@media (hover: hover) {
+  .wd-popconfirm__ok--danger:hover:not(:disabled) {
+    background: #8F1A25;
+  }
 }

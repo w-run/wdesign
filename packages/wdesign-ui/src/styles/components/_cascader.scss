@@ -42,7 +42,9 @@
 .wd-cascader--lg { height: var(--wd-size-lg); font-size: var(--wd-font-size-lg); }
 
 @media (hover: hover) {
-  .wd-cascader:hover { background: var(--wd-field-hover); }
+  .wd-cascader:hover {
+    background: var(--wd-field-hover);
+  }
 }
 
 .wd-cascader.is-open {
@@ -59,7 +61,9 @@
   cursor: not-allowed;
 }
 @media (hover: hover) {
-  .wd-cascader.is-disabled:hover { background: var(--wd-field); }
+  .wd-cascader.is-disabled:hover {
+    background: var(--wd-field);
+  }
 }
 
 .wd-cascader__value {
@@ -87,9 +91,11 @@
   color: var(--wd-ink-3);
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
-.wd-cascader__clear:hover {
-  background: var(--wd-tint-3);
-  color: var(--wd-ink);
+
+@media (hover: hover) {
+  .wd-cascader__clear:hover {
+    background: var(--wd-tint-3); color: var(--wd-ink);
+  }
 }
 
 .wd-cascader__caret {
@@ -179,7 +185,9 @@
 }
 
 @media (hover: hover) {
-  .wd-cascader__option:hover { background: var(--wd-field-hover); }
+  .wd-cascader__option:hover {
+    background: var(--wd-field-hover);
+  }
 }
 
 /* 当前浏览路径高亮：比"已选中"弱一档，两者语义不同 */
@@ -199,7 +207,9 @@
   cursor: not-allowed;
 }
 @media (hover: hover) {
-  .wd-cascader__option.is-disabled:hover { background: transparent; }
+  .wd-cascader__option.is-disabled:hover {
+    background: transparent;
+  }
 }
 
 .wd-cascader__label {

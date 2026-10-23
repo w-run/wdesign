@@ -34,7 +34,9 @@
 .wd-segmented--dark { background: var(--wd-dark-2); }
 .wd-segmented--dark .wd-segmented__item { color: var(--wd-dark-text-2); }
 @media (hover: hover) {
-  .wd-segmented--dark .wd-segmented__item:hover { color: var(--wd-dark-text); }
+  .wd-segmented--dark .wd-segmented__item:hover {
+    color: var(--wd-dark-text);
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-segmented--dark .wd-segmented__item.is-hover { color: var(--wd-dark-text); }
@@ -61,7 +63,9 @@
   white-space: nowrap;
 }
 @media (hover: hover) {
-  .wd-segmented__item:hover { color: var(--wd-ink); }
+  .wd-segmented__item:hover {
+    color: var(--wd-ink);
+  }
 }
 .wd-segmented__item.is-hover { color: var(--wd-ink); }
 
@@ -69,7 +73,9 @@
 .wd-segmented__item--active { color: var(--wd-ink); }
 .wd-segmented--dark .wd-segmented__item--active { color: var(--wd-dark-text); }
 @media (hover: hover) {
-  .wd-segmented--dark .wd-segmented__item--active:hover { color: var(--wd-dark-text); }
+  .wd-segmented--dark .wd-segmented__item--active:hover {
+    color: var(--wd-dark-text);
+  }
 }
 .wd-segmented--dark .wd-segmented__item--active.is-hover { color: var(--wd-dark-text); }
 

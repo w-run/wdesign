@@ -47,7 +47,9 @@
   transition: transform var(--wd-dur) var(--wd-ease-out), box-shadow var(--wd-dur) var(--wd-ease-out);
 }
 @media (hover: hover) {
-  .wd-avatars .wd-avatar:hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-sm); z-index: 2; }
+  .wd-avatars .wd-avatar:hover {
+    transform: translateY(-2px); box-shadow: var(--wd-shadow-sm); z-index: 2;
+  }
 }
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 .wd-avatars .wd-avatar.is-hover { transform: translateY(-2px); box-shadow: var(--wd-shadow-sm); z-index: 2; }

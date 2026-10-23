@@ -91,11 +91,12 @@
   color: var(--wd-dark-text-2);
 }
 
-.wd-audio--inverse .wd-audio__ctl:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+@media (hover: hover) {
+  .wd-audio--inverse .wd-audio__ctl:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+  }
 }
-
 /*
  * 反色卡片是**固定深色面**，不跟随主题翻转。
  * ⚠️ 不能用 --wd-red-on-dark —— 它在深色主题下会变成浅粉，
@@ -572,11 +573,12 @@
   transition: transform var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth), background var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-audio__main-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+@media (hover: hover) {
+  .wd-audio__main-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  }
 }
-
 .wd-audio__main-btn:active {
   transform: scale(0.97);
 }
@@ -863,7 +865,12 @@
   transition: transform var(--wd-dur-fast) var(--wd-ease-out);
 }
 
-.wd-audio__scrub:hover .wd-audio__knob,
+@media (hover: hover) {
+  .wd-audio__scrub:hover .wd-audio__knob {
+    transform: translateY(-50%) scale(1);
+  }
+}
+/* 焦点态单独一条：触屏上也要能看见（不受 hover 媒体查询限制） */
 .wd-audio__scrub:focus-visible .wd-audio__knob {
   transform: translateY(-50%) scale(1);
 }
@@ -969,11 +976,12 @@
   transition: width var(--wd-dur-fast) var(--wd-ease-out), margin var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
-.wd-audio__vol:hover .wd-audio__vol-track {
-  width: 52px;
-  margin: 0 6px 0 2px;
+@media (hover: hover) {
+  .wd-audio__vol:hover .wd-audio__vol-track {
+    width: 52px;
+    margin: 0 6px 0 2px;
+  }
 }
-
 .wd-audio__vol-fill {
   display: block;
   height: 100%;
@@ -1341,7 +1349,11 @@
   pointer-events: none;
 }
 
-.wd-audio__pbar:hover .wd-audio__pbar-thumb,
+@media (hover: hover) {
+  .wd-audio__pbar:hover .wd-audio__pbar-thumb {
+    transform: translateY(-50%) scale(1);
+  }
+}
 .wd-audio__pbar:focus-visible .wd-audio__pbar-thumb {
   transform: translateY(-50%) scale(1);
 }
