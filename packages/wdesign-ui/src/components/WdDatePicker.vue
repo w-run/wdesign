@@ -113,10 +113,17 @@ function onPick(value: string) {
 
 <template>
   <div ref="root" class="wd-datepicker" :class="[`wd-datepicker--${size}`, { 'wd-datepicker--open': open }]">
-    <button type="button" class="wd-datepicker__trigger" :disabled="disabled" @click="toggle">
+    <button
+      type="button"
+      class="wd-datepicker__trigger"
+      :disabled="disabled"
+      aria-haspopup="dialog"
+      :aria-expanded="open"
+      @click="toggle"
+    >
       <span v-if="modelValue" class="wd-datepicker__value">{{ modelValue }}</span>
       <span v-else class="wd-datepicker__placeholder">{{ placeholder }}</span>
-      <wd-icon class="wd-datepicker__icon" name="calendar" :size="15" />
+      <wd-icon class="wd-datepicker__icon" name="calendar" :size="15" aria-hidden="true" />
     </button>
   </div>
 
@@ -126,6 +133,8 @@ function onPick(value: string) {
       class="wd-datepicker__panel"
       :class="{ 'is-open': open }"
       :style="{ top: pos.top + 'px', left: pos.left + 'px' }"
+      role="dialog"
+      aria-label="选择日期"
     >
       <!--
         日期面板唯一实现 = WdCalendar。

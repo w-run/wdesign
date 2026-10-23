@@ -582,14 +582,14 @@ function onKeydown(e: KeyboardEvent) {
         <span class="wd-calendar__year">{{ view.y }}</span>
         <span class="wd-calendar__slash" aria-hidden="true">/</span>
         <span class="wd-calendar__mon">{{ pad(view.m + 1) }}</span>
-        <wd-icon name="chevron-down" :size="14" class="wd-calendar__month-caret" />
+        <wd-icon name="chevron-down" :size="14" class="wd-calendar__month-caret" aria-hidden="true" />
       </button>
       <div class="wd-calendar__navs">
         <button type="button" class="wd-calendar__nav" aria-label="上个月" @click="shiftMonth(-1)">
-          <wd-icon name="chevron-left" :size="15" />
+          <wd-icon name="chevron-left" :size="15" aria-hidden="true" />
         </button>
         <button type="button" class="wd-calendar__nav" aria-label="下个月" @click="shiftMonth(1)">
-          <wd-icon name="chevron-right" :size="15" />
+          <wd-icon name="chevron-right" :size="15" aria-hidden="true" />
         </button>
       </div>
     </div>
@@ -603,6 +603,7 @@ function onKeydown(e: KeyboardEvent) {
           type="button"
           class="wd-calendar__picker-opt"
           :class="{ 'is-on': y === view.y }"
+          :aria-label="`${y} 年`"
           @click="pickYear(y)"
         >{{ y }}</button>
       </div>
@@ -613,6 +614,7 @@ function onKeydown(e: KeyboardEvent) {
           type="button"
           class="wd-calendar__picker-opt"
           :class="{ 'is-on': m - 1 === view.m }"
+          :aria-label="`${m} 月`"
           @click="pickMonth(m - 1)"
         >{{ pad(m) }}</button>
       </div>
@@ -623,7 +625,11 @@ function onKeydown(e: KeyboardEvent) {
       <span v-for="w in weekHeads" :key="w" class="wd-calendar__weekday" role="columnheader">{{ w }}</span>
     </div>
 
-    <!-- 日期网格 -->
+    <!--
+      日期网格。
+      格子上用 roving tabindex：42 个可 Tab 的格子意味着用户要按 42 次才出得去，
+      所以只有「光标格」留在 Tab 序列里（tabindex=0），其余 -1，方向键在组内移动。
+    -->
     <div class="wd-calendar__grid" role="rowgroup">
       <button
         v-for="c in cells"
@@ -644,6 +650,8 @@ function onKeydown(e: KeyboardEvent) {
         role="gridcell"
         :aria-selected="c.isSelected || c.isRangeStart || c.isRangeEnd"
         :disabled="c.disabled"
+        :tabindex="c.key === cursor ? 0 : -1"
+        @focus="cursor = c.key"
         @click="pick(c)"
       >
         <span class="wd-calendar__day">{{ c.day }}</span>
