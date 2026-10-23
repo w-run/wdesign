@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { useAnchoredPosition } from './anchor'
 
 defineOptions({ name: 'WdTooltip' })
@@ -10,11 +10,45 @@ const props = withDefaults(
     content?: string
     /** 气泡出现方向：top 在触发器上方，bottom 在下方 */
     placement?: 'top' | 'bottom'
+    /**
+     * 悬停多久后出现（ms）。
+     *
+     * 鼠标划过一排图标时，零延迟会让气泡疯狂闪烁 —— 200ms 是
+     * 「停下来才算想看」的常用阈值。键盘聚焦不受它影响（必须立刻出现）。
+     */
+    delay?: number
   }>(),
-  { content: '', placement: 'top' },
+  { content: '', placement: 'top', delay: 200 },
 )
 
 const open = ref(false)
+
+/** 悬停延迟计时器：离开或聚焦时都要清掉，否则会出现"鼠标移开又弹出来" */
+let showTimer: number | undefined
+
+function clearTimer() {
+  if (showTimer !== undefined) {
+    clearTimeout(showTimer)
+    showTimer = undefined
+  }
+}
+
+function onHoverIn() {
+  clearTimer()
+  showTimer = window.setTimeout(() => { open.value = true }, props.delay)
+}
+
+function onHoverOut() {
+  clearTimer()
+  open.value = false
+}
+
+function onFocusIn() {
+  clearTimer()
+  open.value = true
+}
+
+onBeforeUnmount(clearTimer)
 const anchorEl = ref<HTMLElement | null>(null)
 const panelEl = ref<HTMLElement | null>(null)
 
@@ -40,10 +74,10 @@ const style = computed(() => ({
   <span
     ref="anchorEl"
     class="wd-tooltip"
-    @mouseenter="open = true"
-    @mouseleave="open = false"
-    @focusin="open = true"
-    @focusout="open = false"
+    @mouseenter="onHoverIn"
+    @mouseleave="onHoverOut"
+    @focusin="onFocusIn"
+    @focusout="onHoverOut"
   >
     <slot />
   </span>

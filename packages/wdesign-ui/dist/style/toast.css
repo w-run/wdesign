@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .wd-toasts {
   position: fixed;
   top: 24px;
@@ -27,11 +28,21 @@
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   pointer-events: auto;
   cursor: pointer;
-  transition: opacity var(--wd-dur-slow) ease, transform var(--wd-dur-slow) ease;
+  /* 入场：轻盈沉降（ease 是默认曲线，起手太"肉"，UI 里应该快出慢落） */
+  transition: opacity var(--wd-dur-slow) var(--wd-ease-out), transform var(--wd-dur-slow) var(--wd-ease-out);
 }
 
 .wd-toast--enter,
 .wd-toast--leave {
   opacity: 0;
   transform: translateY(-8px);
+}
+
+/*
+ * 退场比入场快、且用 sharp 曲线：提示条是"被看完就该走"的东西，
+ * 慢慢淡出会挡住下面的内容（进 240ms / 出 140ms）。
+ */
+.wd-toast--leave {
+  transition-duration: var(--wd-dur-pop-out);
+  transition-timing-function: var(--wd-ease-sharp);
 }

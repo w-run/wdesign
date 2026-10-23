@@ -39,7 +39,13 @@
 
 .wd-notification-fade-enter-active,
 .wd-notification-fade-leave-active {
-  transition: opacity var(--wd-dur-slow) ease, transform var(--wd-dur-slow) ease;
+  transition: opacity var(--wd-dur-slow) var(--wd-ease-out), transform var(--wd-dur-slow) var(--wd-ease-out);
+}
+
+/* 退场更快更干脆：通知是"扫一眼就走"的，慢慢淡出会挡视线 */
+.wd-notification-fade-leave-active {
+  transition-duration: var(--wd-dur-pop-out);
+  transition-timing-function: var(--wd-ease-sharp);
 }
 
 .wd-notification-fade-enter-from,
