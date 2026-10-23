@@ -122,7 +122,11 @@
   gap: 2px;
 }
 
-.wd-cascader__panel.is-open { display: flex; }
+.wd-cascader__panel.is-open {
+  display: flex;
+  /* display 切换式浮层：打开必须自带 animation，否则是硬切 */
+  animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
+}
 
 .wd-cascader__column {
   flex: none;

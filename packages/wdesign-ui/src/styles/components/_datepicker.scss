@@ -88,7 +88,11 @@
   border-radius: var(--wd-radius-lg);
   box-shadow: var(--wd-shadow-hover);
 }
-.wd-datepicker__panel.is-open { display: block; }
+.wd-datepicker__panel.is-open {
+  display: block;
+  /* display 切换式浮层：打开必须自带 animation，否则是硬切（其余浮层都这么做） */
+  animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
+}
 
 /*
  * 面板本身就是"卡片"，里面的 Calendar 必须**卸掉自己的卡片外观** ——

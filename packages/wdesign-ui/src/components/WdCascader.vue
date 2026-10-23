@@ -63,7 +63,7 @@ const mounted = ref(false)
 const rootEl = ref<HTMLElement | null>(null)
 const panelEl = ref<HTMLElement | null>(null)
 
-const { pos } = useAnchoredPosition(open, rootEl, panelEl, {
+const { pos, actual } = useAnchoredPosition(open, rootEl, panelEl, {
   placement: 'bottom-start',
   gap: 6,
   matchWidth: true,
@@ -240,6 +240,7 @@ watch(open, async (v) => {
       class="wd-cascader__panel"
       :class="{ 'is-open': open }"
       :style="style"
+      :data-placement="actual"
       :id="panelId"
       role="listbox"
     >

@@ -69,7 +69,7 @@ useDismiss([root, panelEl], () => { open.value = false }, open)
 const PANEL_WIDTH = 286
 
 /** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
-const { pos } = useAnchoredPosition(open, root, panelEl, {
+const { pos, actual } = useAnchoredPosition(open, root, panelEl, {
   placement: 'bottom-start',
   gap: 8,
   width: PANEL_WIDTH,
@@ -133,6 +133,7 @@ function onPick(value: string) {
       class="wd-datepicker__panel"
       :class="{ 'is-open': open }"
       :style="{ top: pos.top + 'px', left: pos.left + 'px' }"
+      :data-placement="actual"
       role="dialog"
       aria-label="选择日期"
     >

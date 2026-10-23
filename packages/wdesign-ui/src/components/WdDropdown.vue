@@ -45,7 +45,7 @@ useDismiss([root, triggerEl, menuEl], () => { open.value = false }, open)
  * Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切
  * （表格单元格、卡片里是常态，不是边缘情况）。
  */
-const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
+const { pos, actual } = useAnchoredPosition(open, triggerEl, menuEl, {
   placement: 'bottom-start',
   gap: 6,
   matchWidth: false,
@@ -84,6 +84,7 @@ onBeforeUnmount(() => {
       class="wd-dropdown__menu"
       :class="{ 'is-open': open }"
       :style="{ top: pos.top + 'px', left: pos.left + 'px' }"
+      :data-placement="actual"
       role="menu"
     >
         <button

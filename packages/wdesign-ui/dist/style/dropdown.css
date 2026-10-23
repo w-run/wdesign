@@ -38,7 +38,6 @@
   display: flex;
   /* display 切换式浮层：打开靠 animation 给"浮出"，否则是硬切 */
   animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
-  transform-origin: top center;
 }
 
 .wd-dropdown__item {

@@ -73,7 +73,7 @@ const triggerEl = ref<HTMLElement | null>(null)
 const menuEl = ref<HTMLElement | null>(null)
 
 /** Teleport 到 body + fixed 定位，避免被祖先 overflow:hidden 裁切 */
-const { pos } = useAnchoredPosition(open, triggerEl, menuEl, {
+const { pos, actual } = useAnchoredPosition(open, triggerEl, menuEl, {
   placement: 'bottom-start',
   gap: 6,
   matchWidth: true,
@@ -284,6 +284,7 @@ watch(visible, (list) => {
       class="wd-select__menu"
       :class="{ 'is-open': open }"
       :style="{ top: pos.top + 'px', left: pos.left + 'px', minWidth: '220px' }"
+      :data-placement="actual"
       :id="listboxId"
       role="listbox"
       :aria-multiselectable="multiple || undefined"

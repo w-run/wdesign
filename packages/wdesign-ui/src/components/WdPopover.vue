@@ -59,7 +59,7 @@ const panelEl = ref<HTMLElement | null>(null)
 /** 节点是否已挂载（关闭动画/首帧都需要它先存在） */
 const mounted = ref(false)
 
-const { pos } = useAnchoredPosition(open, anchorEl, panelEl, {
+const { pos, actual } = useAnchoredPosition(open, anchorEl, panelEl, {
   placement: props.placement,
   gap: props.gap,
   width: props.width,
@@ -181,6 +181,7 @@ function onKeydown(e: KeyboardEvent) {
       class="wd-popover__panel"
       :class="{ 'is-open': open }"
       :style="style"
+      :data-placement="actual"
       role="dialog"
       :aria-label="title || undefined"
       @mouseenter="onEnter"

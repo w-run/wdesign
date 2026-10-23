@@ -67,7 +67,6 @@
 
 .wd-popover__panel.is-open {
   animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
-  transform-origin: top center;
   display: block;
   opacity: 1;
   transform: translateY(0);
@@ -130,6 +129,52 @@
  *  而是 `display` 切换 —— 所以**打开时必须自带 animation**，否则就是一个硬切。
  *  之前 popover / select / dropdown 三处只有 display 变化，等于没有动效。
  * ============================================================= */
+/*
+ * 缩放原点跟着**实际方位**走。
+ *
+ * `bottom-start` 的浮层左边缘与触发器对齐、开口在左侧，
+ * 却从 `top center` 放大 —— 起手时左边缘会横向滑 1.5% 宽度，
+ * 看着"弹出来时先晃一下"。按 data-placement 分别给原点才是对的。
+ *
+ * 方位由 useAnchoredPosition 的 actual 给出（空间不够会翻转），
+ * 所以不能用组件上的 placement 属性。
+ */
+.wd-select__menu[data-placement^="bottom"],
+.wd-dropdown__menu[data-placement^="bottom"],
+.wd-popover__panel[data-placement^="bottom"],
+.wd-datepicker__panel[data-placement^="bottom"],
+.wd-cascader__panel[data-placement^="bottom"] { transform-origin: top center; }
+
+.wd-select__menu[data-placement^="top"],
+.wd-dropdown__menu[data-placement^="top"],
+.wd-popover__panel[data-placement^="top"],
+.wd-datepicker__panel[data-placement^="top"],
+.wd-cascader__panel[data-placement^="top"] { transform-origin: bottom center; }
+
+.wd-select__menu[data-placement$="-start"],
+.wd-dropdown__menu[data-placement$="-start"],
+.wd-popover__panel[data-placement$="-start"],
+.wd-datepicker__panel[data-placement$="-start"],
+.wd-cascader__panel[data-placement$="-start"] { transform-origin: top left; }
+
+.wd-select__menu[data-placement$="-end"],
+.wd-dropdown__menu[data-placement$="-end"],
+.wd-popover__panel[data-placement$="-end"],
+.wd-datepicker__panel[data-placement$="-end"],
+.wd-cascader__panel[data-placement$="-end"] { transform-origin: top right; }
+
+.wd-select__menu[data-placement^="top"][data-placement$="-start"],
+.wd-dropdown__menu[data-placement^="top"][data-placement$="-start"],
+.wd-popover__panel[data-placement^="top"][data-placement$="-start"],
+.wd-datepicker__panel[data-placement^="top"][data-placement$="-start"],
+.wd-cascader__panel[data-placement^="top"][data-placement$="-start"] { transform-origin: bottom left; }
+
+.wd-select__menu[data-placement^="top"][data-placement$="-end"],
+.wd-dropdown__menu[data-placement^="top"][data-placement$="-end"],
+.wd-popover__panel[data-placement^="top"][data-placement$="-end"],
+.wd-datepicker__panel[data-placement^="top"][data-placement$="-end"],
+.wd-cascader__panel[data-placement^="top"][data-placement$="-end"] { transform-origin: bottom right; }
+
 @keyframes wd-surface-in {
   from {
     opacity: 0;

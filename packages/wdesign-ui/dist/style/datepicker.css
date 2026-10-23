@@ -107,6 +107,8 @@
 
 .wd-datepicker__panel.is-open {
   display: block;
+  /* display 切换式浮层：打开必须自带 animation，否则是硬切（其余浮层都这么做） */
+  animation: wd-surface-in var(--wd-dur-fast) var(--wd-ease-spring-soft) both;
 }
 
 /*
