@@ -18,6 +18,8 @@
   color: var(--wd-ink);
   font: inherit;
   font-family: var(--wd-font-mono);
+  /* 保留 22px：验证码码字属数据展示，不属于文本字阶
+     check-type-scale: ignore */
   font-size: 22px;
   font-weight: var(--wd-fw-semibold);
   text-align: center;
@@ -67,6 +69,8 @@
   border-radius: 0;
   width: 44px;
   height: 48px;
+  /* 保留 20px：验证码码字属数据展示，不属于文本字阶
+     check-type-scale: ignore */
   font-size: 20px;
   /*
    * **不要分隔线**。

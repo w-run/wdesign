@@ -50,19 +50,21 @@
 }
 
 .wd-stat-bar__num {
+  /* 数据展示大数字，不属于文本字阶（保持独立数值）
+     check-type-scale: ignore */
   font-size: 26px;
   font-weight: var(--wd-fw-bold);
 }
 
 .wd-stat-bar__affix {
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
 }
 
 .wd-stat-bar__label {
   margin: 0;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   line-height: 1.4;
   color: var(--wd-ink-2);
   /* 说明最多两行，再长就省略 —— 统计条不该被文字撑高 */
@@ -85,7 +87,7 @@
   height: 18px;
   padding: 0 6px 0 4px;
   border-radius: var(--wd-radius-pill);
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-medium);
   letter-spacing: 0;
   white-space: nowrap;
@@ -106,18 +108,22 @@
   padding: 12px 2px;
 
   .wd-stat-bar__item { padding: 0 14px; gap: 3px; }
+  /* 数据展示大数字，不属于文本字阶（保持独立数值）
+     check-type-scale: ignore */
   .wd-stat-bar__num { font-size: 20px; }
-  .wd-stat-bar__affix { font-size: 12px; }
-  .wd-stat-bar__label { font-size: 11.5px; }
+  .wd-stat-bar__affix { font-size: var(--wd-fs-label); }
+  .wd-stat-bar__label { font-size: var(--wd-fs-xs); }
 }
 
 .wd-stat-bar--lg {
   padding: 20px 6px;
 
   .wd-stat-bar__item { padding: 0 24px; gap: 6px; }
+  /* 数据展示大数字，不属于文本字阶（保持独立数值）
+     check-type-scale: ignore */
   .wd-stat-bar__num { font-size: 34px; }
-  .wd-stat-bar__affix { font-size: 14px; }
-  .wd-stat-bar__label { font-size: 13.5px; }
+  .wd-stat-bar__affix { font-size: var(--wd-fs-ui); }
+  .wd-stat-bar__label { font-size: var(--wd-fs-caption); }
 }
 
 /* 不带底时不需要额外的左右内距补偿 */
@@ -148,6 +154,8 @@
   }
 
   .wd-stat-bar__num {
+    /* 数据展示大数字，不属于文本字阶（保持独立数值）
+       check-type-scale: ignore */
     font-size: 22px;
   }
 

@@ -23,7 +23,7 @@
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   cursor: pointer;
   user-select: none;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -37,9 +37,9 @@
  * 高度差 4~8px，肉眼能直接看出来。
  * 本库约定：控件尺寸以 `--wd-size-{sm,md,lg}` 为唯一来源，消费方不自建。
  */
-.wd-cascader--sm { height: var(--wd-size-sm); font-size: var(--wd-font-size-sm); }
+.wd-cascader--sm { height: var(--wd-size-sm); font-size: var(--wd-fs-caption); }
 .wd-cascader--md { height: var(--wd-size-md); }
-.wd-cascader--lg { height: var(--wd-size-lg); font-size: var(--wd-font-size-lg); }
+.wd-cascader--lg { height: var(--wd-size-lg); font-size: var(--wd-fs-lg); }
 
 @media (hover: hover) {
   .wd-cascader:hover {
@@ -179,7 +179,7 @@
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   text-align: left;
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -230,7 +230,7 @@
   margin: 0;
   padding: 16px 9px;
   text-align: center;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-3);
 }
 

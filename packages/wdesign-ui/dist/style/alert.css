@@ -32,12 +32,13 @@
 }
 
 .wd-alert__close {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   flex: none;
   border: 0;
   background: transparent;
   padding: 2px;
   cursor: pointer;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   line-height: 0;
 }
 

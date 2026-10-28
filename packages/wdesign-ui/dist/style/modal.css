@@ -9,7 +9,7 @@
 .wd-modal {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: var(--wd-z-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +119,7 @@
 .wd-modal__title {
   flex: 1;
   min-width: 0;
-  font-size: 17px;
+  font-size: var(--wd-fs-heading);
   font-weight: var(--wd-fw-bold);
   letter-spacing: -0.015em;
   line-height: 1.35;
@@ -136,15 +136,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   /* 上移 2px 让图标与标题首行的视觉中线对齐（标题有行高留白） */
   margin-top: -2px;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  /*
+   * ink-3 是"装饰级灰"（白底 2.27:1）：关闭键是唯一出口，做成一团淡灰
+   * 等于把"怎么关"藏起来 —— 截图里它看着像禁用态。功能性图标走 ink-2。
+   * 28px 的命中区也偏小，抬到 32px 与按钮体系对齐。
+   */
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
@@ -161,7 +166,7 @@
 }
 
 .wd-modal__body {
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   line-height: 1.7;
   color: var(--wd-ink-2);
 }

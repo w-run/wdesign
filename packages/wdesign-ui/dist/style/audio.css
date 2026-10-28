@@ -18,7 +18,7 @@
   position: relative;
   color: var(--wd-ink);
   user-select: none;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
 }
 
 /* =============================================================
@@ -205,6 +205,8 @@
 }
 
 .wd-audio--card .wd-audio__title {
+  /* 保留 19px：大号标题独立于文本字阶，不属于文本层级（与数据展示大数字同理）
+     check-type-scale: ignore */
   font-size: 19px;
   font-weight: var(--wd-fw-bold);
   letter-spacing: -0.01em;
@@ -215,7 +217,7 @@
 }
 
 .wd-audio--card .wd-audio__subtitle {
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -452,7 +454,7 @@
   justify-content: space-between;
   align-items: center;
   /* 参考图里时间字号明显大于常规说明文字，且加粗 */
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-semibold);
   font-variant-numeric: tabular-nums;
   color: var(--wd-ink);
@@ -514,7 +516,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   font-weight: var(--wd-fw-semibold);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -631,7 +633,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   cursor: pointer;
 }
@@ -783,12 +785,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: var(--wd-fw-semibold);
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
 }
 
 .wd-audio--bar .wd-audio__subtitle {
   flex: none;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-2);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -891,7 +893,7 @@
 .wd-audio__time-cur,
 .wd-audio__time-total {
   flex: none;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -921,7 +923,7 @@
 .wd-audio__err {
   color: var(--wd-red-text);
   font-weight: var(--wd-fw-medium);
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
 }
 
 /* ---------------- 侧栏控件 ---------------- */
@@ -944,7 +946,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   cursor: pointer;
   text-decoration: none;
@@ -1013,7 +1015,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   text-align: left;
   cursor: pointer;
   white-space: nowrap;
@@ -1094,12 +1096,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: var(--wd-fw-semibold);
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
 }
 
 .wd-audio--mini .wd-audio__subtitle {
   flex: none;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1135,7 +1137,7 @@
 .wd-audio__mini-time {
   flex: none;
   margin-left: 4px;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-3);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1288,7 +1290,7 @@
 }
 
 .wd-audio__vol-num {
-  font-size: 10.5px;
+  font-size: var(--wd-fs-micro);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-3);
   font-variant-numeric: tabular-nums;

@@ -166,7 +166,7 @@ async function copyCode() {
   align-items: center;
   gap: 10px;
   margin: 0;
-  /* 卡片标题走 heading 档（17px / 650）：和正文 14.5 拉开 1.17 倍，
+  /* 卡片标题走 heading 档（18px / 650）：和正文 14.5 拉开 1.24 倍，
      再靠字重差（650 vs 450）把层级压实 —— toC 界面的"设计感"主要来自这里 */
   font-size: var(--wd-fs-heading);
   font-weight: var(--wd-fw-semibold);

@@ -154,7 +154,7 @@ function onSubmit() {
 
 .cap {
   margin: 0;
-  font-size: var(--wd-fs-sm);
+  font-size: var(--wd-fs-caption);
   line-height: 1.6;
   color: var(--wd-ink-2);
 }

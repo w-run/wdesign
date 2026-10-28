@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .wd-statistic {
   display: flex;
   flex-direction: column;
@@ -6,7 +7,7 @@
 }
 
 .wd-statistic__title {
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   letter-spacing: 0.01em;
@@ -22,13 +23,15 @@
 }
 
 .wd-statistic__num {
+  /* 数据展示大数字，不属于文本字阶（保持独立数值）
+     check-type-scale: ignore */
   font-size: 30px;
   font-weight: var(--wd-fw-bold);
   color: var(--wd-ink);
 }
 
 .wd-statistic__affix {
-  font-size: 16px;
+  font-size: var(--wd-fs-lg);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
 }
@@ -39,6 +42,6 @@
 
 .wd-statistic__footer {
   margin-top: 4px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
 }

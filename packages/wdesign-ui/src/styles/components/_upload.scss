@@ -34,9 +34,9 @@
 }
 
 .wd-upload__icon { color: var(--wd-ink-3); }
-.wd-upload__hint { font-size: 13.5px; color: var(--wd-ink-2); }
+.wd-upload__hint { font-size: var(--wd-fs-caption); color: var(--wd-ink-2); }
 .wd-upload__hint strong { color: var(--wd-red-text); font-weight: var(--wd-fw-semibold); }
-.wd-upload__browse { font-size: 13px; color: var(--wd-red-text); font-weight: var(--wd-fw-medium); }
+.wd-upload__browse { font-size: var(--wd-fs-caption); color: var(--wd-red-text); font-weight: var(--wd-fw-medium); }
 .wd-upload__input { display: none; }
 
 .wd-upload__list { display: flex; flex-direction: column; gap: 8px; }
@@ -62,8 +62,8 @@
   flex: none;
 }
 .wd-upload__info { flex: 1; min-width: 0; }
-.wd-upload__name { font-size: 13.5px; font-weight: var(--wd-fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.wd-upload__meta { font-size: 11.5px; color: var(--wd-ink-2); margin-top: 2px; }
+.wd-upload__name { font-size: var(--wd-fs-caption); font-weight: var(--wd-fw-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wd-upload__meta { font-size: var(--wd-fs-xs); color: var(--wd-ink-2); margin-top: 2px; }
 .wd-upload__remove {
   width: 28px;
   height: 28px;
@@ -97,7 +97,7 @@
 .wd-upload__error {
   display: block;
   margin-top: 8px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-red-text);
 }

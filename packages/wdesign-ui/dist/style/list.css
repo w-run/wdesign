@@ -57,7 +57,7 @@
 .wd-list-item__title {
   flex: 1;
   min-width: 0;
-  font-size: 14.5px;
+  font-size: var(--wd-fs-body);
   font-weight: var(--wd-fw-medium);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -65,7 +65,7 @@
 }
 
 .wd-list-item__meta {
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 

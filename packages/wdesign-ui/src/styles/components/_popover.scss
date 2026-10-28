@@ -28,7 +28,7 @@
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -50,7 +50,7 @@
   border: 1px solid var(--wd-hairline);
   box-shadow: var(--wd-shadow-pop);
   color: var(--wd-ink);
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   line-height: 1.6;
 
   /*
@@ -84,7 +84,7 @@
 .wd-popover__title {
   flex: 1;
   min-width: 0;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink);
   @include m.truncate;
@@ -123,7 +123,7 @@
 /* 面板内的说明性文字：弱一档 */
 .wd-popover__body .wd-popover__hint {
   color: var(--wd-ink-2);
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
 }
 
 

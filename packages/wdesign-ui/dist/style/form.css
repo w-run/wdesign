@@ -31,7 +31,7 @@
 }
 
 .wd-form-item__label {
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   line-height: 1.4;
@@ -61,7 +61,7 @@
 
 .wd-form-item__error {
   margin: 0;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   line-height: 1.5;
   color: var(--wd-red-text);
   display: flex;
@@ -80,7 +80,7 @@
 
 .wd-form-item__hint {
   margin: 0;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   line-height: 1.5;
   color: var(--wd-ink-2);
 }

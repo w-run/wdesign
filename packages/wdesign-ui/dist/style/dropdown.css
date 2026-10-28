@@ -21,7 +21,7 @@
  */
 .wd-dropdown__menu {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   min-width: 180px;
   display: none;
   padding: 8px;
@@ -49,7 +49,7 @@
   background: transparent;
   border-radius: var(--wd-radius-pill);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   color: var(--wd-ink);
   cursor: pointer;
   text-align: left;

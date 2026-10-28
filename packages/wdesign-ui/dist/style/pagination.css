@@ -14,7 +14,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   cursor: pointer;
   display: inline-flex;
@@ -63,7 +63,7 @@
 
 .wd-pagination__dots {
   color: var(--wd-ink-2);
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   padding: 0 2px;
 }
 
@@ -82,14 +82,14 @@
 
 .wd-pagination__total {
   margin-right: 6px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
 }
 
 .wd-pagination__simple-text {
   padding: 0 8px;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink);
   font-variant-numeric: tabular-nums;
@@ -108,7 +108,7 @@
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   cursor: pointer;
   outline: none;
 }

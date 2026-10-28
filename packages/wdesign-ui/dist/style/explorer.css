@@ -25,7 +25,7 @@
 
 .wd-explorer__side-title {
   padding: 4px 10px 8px;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.04em;
   color: var(--wd-ink-2);
@@ -43,7 +43,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   cursor: pointer;
   text-align: left;
@@ -70,7 +70,7 @@
 
 .wd-explorer__count {
   margin-left: auto;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);
 }
@@ -98,7 +98,7 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
 }
 
 .wd-explorer__crumb {
@@ -136,12 +136,13 @@
 }
 
 .wd-explorer__view-btn {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   width: 30px;
   height: 30px;
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -169,12 +170,12 @@
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
 }
 
 .wd-explorer__table thead th {
   padding: 9px 10px;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   text-align: left;
@@ -213,7 +214,7 @@
 .wd-explorer__table .is-num {
   text-align: right;
   font-family: var(--wd-font-mono);
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -307,14 +308,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-all;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   line-height: 1.35;
   text-align: center;
 }
 
 .wd-explorer__tile-size {
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);
 }
@@ -322,7 +323,7 @@
 .wd-explorer__empty {
   padding: 44px 12px;
   text-align: center;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 

@@ -47,7 +47,7 @@
   display: flex;
   align-items: flex-start;
   gap: 7px;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-semibold);
   line-height: 1.5;
   color: var(--wd-ink);
@@ -62,7 +62,7 @@
 
 .wd-popconfirm__desc {
   margin: 6px 0 0;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   line-height: 1.55;
   color: var(--wd-ink-2);
 }

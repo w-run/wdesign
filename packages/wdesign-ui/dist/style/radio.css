@@ -21,7 +21,7 @@
   padding: 0;
   cursor: pointer;
   font: inherit;
-  font-size: 14.5px;
+  font-size: var(--wd-fs-body);
   color: var(--wd-ink);
   user-select: none;
 }
@@ -39,11 +39,13 @@
   height: 24px;
   flex: none;
   border-radius: 50%;
+  /* 同 checkbox：未选中也要看得见轮廓，见 _checkbox.scss 的说明 */
+  border: 1.5px solid var(--wd-control-line);
   background: var(--wd-field);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
+  transition: background var(--wd-dur-fast) var(--wd-ease-smooth), border-color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 
 @media (hover: hover) {

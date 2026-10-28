@@ -27,10 +27,11 @@
 .wd-card--hoverable.is-hover { box-shadow: var(--wd-shadow-hover); transform: translateY(-2px); }
 
 .wd-card__title { font-size: var(--wd-fs-heading); font-weight: var(--wd-fw-semibold); letter-spacing: -.015em; }
-.wd-card__meta { font-size: 13px; color: var(--wd-ink-2); margin-top: 4px; }
+.wd-card__meta { font-size: var(--wd-fs-caption); color: var(--wd-ink-2); margin-top: 4px; }
 .wd-card--dark .wd-card__meta { color: var(--wd-dark-text-2); }
 
 .wd-card__stat {
+  /* 数据展示大数字，不属于文本字阶 · check-type-scale: ignore */
   font-size: 40px;
   font-weight: var(--wd-fw-bold);
   letter-spacing: -.02em;

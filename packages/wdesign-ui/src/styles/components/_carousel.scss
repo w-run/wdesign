@@ -31,6 +31,8 @@
   pointer-events: none;
   display: block;
 }
+/* 保留 20px：轮播叠层大标题，独立于文本字阶（与数据展示大数字同理）
+   check-type-scale: ignore */
 .wd-carousel__label { font-size: 20px; font-weight: var(--wd-fw-bold); color: var(--wd-ink); }
 
 .wd-carousel__arrow {

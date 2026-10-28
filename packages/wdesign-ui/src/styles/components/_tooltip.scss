@@ -10,7 +10,7 @@
   z-index: var(--wd-z-popover);
   background: var(--wd-dark);
   color: var(--wd-dark-text);
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   line-height: 1.5;
   padding: 8px 12px;

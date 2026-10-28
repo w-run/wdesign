@@ -39,13 +39,13 @@
   min-width: max-content;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
 }
 
 .wd-table th {
   padding: 13px 16px;
   text-align: left;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   background: var(--wd-bg);
@@ -103,7 +103,7 @@
 .wd-table__empty {
   padding: 42px 20px;
   text-align: center;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 
@@ -128,7 +128,8 @@
   border-radius: 50%;
   cursor: pointer;
   background: transparent;
-  box-shadow: inset 0 0 0 1.5px var(--wd-ink-4);
+  /* 未勾选的圈要过 3:1（ink-4 只有 1.5:1，整列看起来是几个脏点） */
+  box-shadow: inset 0 0 0 1.5px var(--wd-control-line);
   /* 与 checkbox 同理：勾选底是 --wd-ink（深色主题下翻成近白），符号必须反相 */
   color: var(--wd-card);
   transition: background var(--wd-dur-fast) var(--wd-ease-out), box-shadow var(--wd-dur-fast) var(--wd-ease-out);
@@ -136,7 +137,7 @@
 
 @media (hover: hover) {
   .wd-table__check:hover {
-    box-shadow: inset 0 0 0 1.5px var(--wd-ink-3);
+    box-shadow: inset 0 0 0 1.5px var(--wd-ink-2);
   }
 }
 .wd-table__check--on,
@@ -159,8 +160,32 @@
 /* ---- 加载遮罩 ---- */
 .wd-table-wrap {
   position: relative;
+  /*
+   * 横向滚动条走"细条"：表格经常列多于容器宽度，
+   * Chrome 默认的 15px 灰槽会横在最后一行下面，像一条脏边。
+   */
+  scrollbar-width: thin;
+  scrollbar-color: var(--wd-ink-4) transparent;
 }
 
+.wd-table-wrap::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.wd-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--wd-ink-4);
+  border: 3px solid transparent;
+  border-radius: var(--wd-radius-pill);
+  background-clip: content-box;
+}
+
+@media (hover: hover) {
+  .wd-table-wrap::-webkit-scrollbar-thumb:hover {
+    background: var(--wd-ink-3);
+    background-clip: content-box;
+  }
+}
 .wd-table-wrap--loading {
   min-height: 120px;
 }
@@ -178,7 +203,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
   background: color-mix(in srgb, var(--wd-card) 55%, transparent);
   border-radius: inherit;
@@ -214,7 +239,7 @@
 .wd-table--sm th,
 .wd-table--sm td {
   padding: 9px 12px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
 }
 
 /* ---------------- 固定列 ---------------- */
@@ -298,6 +323,7 @@
 }
 
 .wd-table__tree-toggle {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -309,7 +335,7 @@
   /* 图标按钮 → 圆形 */
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
@@ -337,6 +363,7 @@
 
 /* ---------------- 行展开 ---------------- */
 .wd-table__expander {
+  /* ink-3/4 是装饰级灰，功能控件读不出来 */
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -347,7 +374,7 @@
   /* 图标按钮 → 圆形 */
   border-radius: 50%;
   background: transparent;
-  color: var(--wd-ink-3);
+  color: var(--wd-ink-2);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
 }
@@ -382,11 +409,11 @@
 
 .wd-table__expand-cell {
   padding: 14px 18px !important;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 
 .wd-table__expand-empty {
   color: var(--wd-ink-3);
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
 }

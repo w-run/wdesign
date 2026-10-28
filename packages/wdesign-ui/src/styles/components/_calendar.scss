@@ -82,6 +82,8 @@
 
 .wd-calendar__year,
 .wd-calendar__mon {
+  /* 保留 26px：年月标题属数据展示大数字，不属于文本字阶
+     check-type-scale: ignore */
   font-size: 26px;
   font-weight: var(--wd-fw-bold);
   line-height: 1;
@@ -89,6 +91,8 @@
 
 /* 主色斜杠：整个标题唯一的彩色元素，起到视觉分隔作用 */
 .wd-calendar__slash {
+  /* 保留 26px：与年月同号的大数字，不属于文本字阶
+     check-type-scale: ignore */
   font-size: 26px;
   font-weight: var(--wd-fw-bold);
   line-height: 1;
@@ -97,9 +101,13 @@
   margin: 0 1px;
 }
 
+/* 保留 20px：年月标题属数据展示大数字，不属于文本字阶 */
 .wd-calendar--sm .wd-calendar__year,
 .wd-calendar--sm .wd-calendar__mon,
-.wd-calendar--sm .wd-calendar__slash { font-size: 20px; }
+.wd-calendar--sm .wd-calendar__slash {
+  /* check-type-scale: ignore */
+  font-size: 20px;
+}
 
 /* 右侧翻页按钮组 */
 .wd-calendar__navs {
@@ -146,7 +154,7 @@
 
 .wd-calendar__weekday {
   text-align: center;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   padding: 4px 0;
@@ -172,7 +180,7 @@
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
@@ -191,7 +199,7 @@
    */
 }
 
-.wd-calendar--sm .wd-calendar__cell { font-size: 11.5px; }
+.wd-calendar--sm .wd-calendar__cell { font-size: var(--wd-fs-xs); }
 
 @media (hover: hover) {
   .wd-calendar__cell:hover:not(.is-selected):not(.is-disabled) {
@@ -308,7 +316,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -537,7 +545,8 @@
 }
 
 .wd-calendar__mark-more {
-  font-size: 7px;
+  /* 「+N」计数角标 —— 超小角标走最小字阶令牌 nano */
+  font-size: var(--wd-fs-nano);
   font-weight: var(--wd-fw-semibold);
   line-height: 1;
   color: var(--wd-ink-3);
@@ -639,8 +648,8 @@
   bottom: 3px;
   transform: translateX(-50%);
   max-width: calc(100% - 2px);
-  /* 8.5px：再小就难以辨认，这个尺寸在 340px 宽的日历里刚好是"注脚"级别 */
-  font-size: 8.5px;
+  /* 注脚级文字：用最小字阶令牌 nano（9.5px），再小就难以辨认 */
+  font-size: var(--wd-fs-nano);
   line-height: 1.1;
   font-weight: var(--wd-fw-medium);
   letter-spacing: -.01em;
@@ -765,7 +774,7 @@ button.wd-calendar__month:focus-visible {
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;

@@ -47,7 +47,7 @@
   background: transparent;
   border-radius: var(--wd-radius-pill);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), color var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);

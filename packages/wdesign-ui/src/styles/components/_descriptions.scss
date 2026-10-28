@@ -40,7 +40,7 @@
   flex: 0 1 auto;
   min-width: 0;
   max-width: 40%;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   line-height: 1.6;
@@ -52,7 +52,7 @@
   flex: 1 1 0;
   /* 保证值区至少有可读宽度，否则宁可整行变窄 */
   min-width: 3.5em;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink);
   line-height: 1.6;
   overflow-wrap: break-word;
@@ -61,7 +61,7 @@
 .wd-descriptions__hint {
   display: inline-block;
   margin-left: 6px;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
 }
 
@@ -70,11 +70,11 @@
 /* ---- 尺寸 ---- */
 .wd-descriptions--lg .wd-descriptions__row { padding: 13px 0; }
 .wd-descriptions--lg .wd-descriptions__label,
-.wd-descriptions--lg .wd-descriptions__value { font-size: 13.5px; }
+.wd-descriptions--lg .wd-descriptions__value { font-size: var(--wd-fs-caption); }
 .wd-descriptions--md .wd-descriptions__row { padding: 9px 0; }
 .wd-descriptions--sm .wd-descriptions__row { padding: 6px 0; }
 .wd-descriptions--sm .wd-descriptions__label,
-.wd-descriptions--sm .wd-descriptions__value { font-size: 12.5px; }
+.wd-descriptions--sm .wd-descriptions__value { font-size: var(--wd-fs-label); }
 
 /* ---- 竖排：标签在上 ---- */
 .wd-descriptions--vertical .wd-descriptions__item {
@@ -84,7 +84,7 @@
 }
 .wd-descriptions--vertical .wd-descriptions__label {
   max-width: none;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
 }
 .wd-descriptions--vertical .wd-descriptions__value { font-weight: var(--wd-fw-medium); }
@@ -102,7 +102,7 @@
 .wd-descriptions__empty {
   padding: 18px 0;
   text-align: center;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 

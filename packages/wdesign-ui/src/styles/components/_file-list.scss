@@ -48,14 +48,14 @@
 .wd-file-list__name {
   flex: 1;
   min-width: 0;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   @include m.truncate;
 }
 .wd-file-list__size {
   flex: none;
   width: 66px;
   text-align: right;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);
   font-variant-numeric: tabular-nums;

@@ -27,7 +27,7 @@
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   line-height: 1.65;
   resize: vertical;
   min-height: 72px;
@@ -76,7 +76,7 @@
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   text-align: left;
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -113,7 +113,7 @@
 /* 没有头像时用首字占位 —— 比灰色人像图标更易区分 */
 .wd-mentions__avatar--text {
   color: var(--wd-red-text);
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-bold);
   background: var(--wd-field);
 }
@@ -128,7 +128,7 @@
 }
 
 .wd-mentions__desc {
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-3);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,7 +139,7 @@
   position: absolute;
   right: 10px;
   bottom: 8px;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-3);
   font-variant-numeric: tabular-nums;

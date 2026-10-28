@@ -51,7 +51,7 @@
 }
 
 .wd-card__meta {
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
   margin-top: 4px;
 }
@@ -61,6 +61,7 @@
 }
 
 .wd-card__stat {
+  /* 数据展示大数字，不属于文本字阶 · check-type-scale: ignore */
   font-size: 40px;
   font-weight: var(--wd-fw-bold);
   letter-spacing: -0.02em;

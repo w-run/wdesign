@@ -4,7 +4,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 2px;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
 }
 
 .wd-breadcrumb__item {
@@ -33,4 +33,4 @@
 }
 .wd-breadcrumb__item--current.is-hover { color: var(--wd-ink); background: transparent; }
 
-.wd-breadcrumb__sep { color: var(--wd-ink-2); font-size: 12px; user-select: none; }
+.wd-breadcrumb__sep { color: var(--wd-ink-2); font-size: var(--wd-fs-label); user-select: none; }

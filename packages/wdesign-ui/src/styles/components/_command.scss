@@ -61,7 +61,7 @@
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
-  font-size: 15px;
+  font-size: var(--wd-fs-body);
   outline: none;
 }
 .wd-command__input::placeholder { color: var(--wd-ink-2); }
@@ -73,7 +73,7 @@
   background: var(--wd-field);
   color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);
-  font-size: 10.5px;
+  font-size: var(--wd-fs-micro);
   letter-spacing: .04em;
 }
 
@@ -88,7 +88,7 @@
 
 .wd-command__group {
   padding: 8px 8px 4px;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -106,7 +106,7 @@
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   text-align: left;
   cursor: pointer;
 }
@@ -126,7 +126,7 @@
   align-items: center;
   justify-content: center;
   width: 22px;
-  font-size: 15px;
+  font-size: var(--wd-fs-body);
 }
 
 .wd-command__item-main {
@@ -142,7 +142,7 @@
 }
 
 .wd-command__item-hint {
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-2);
   @include m.truncate;
 }
@@ -155,14 +155,14 @@
   background: var(--wd-field);
   color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);
-  font-size: 10.5px;
+  font-size: var(--wd-fs-micro);
   line-height: 1.5;
 }
 
 .wd-command__empty {
   padding: 28px 12px;
   text-align: center;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 
@@ -176,7 +176,7 @@
   border-top: 1px solid var(--wd-ink-5);
   /* 提示条用中性浅灰，与面板主体区分即可 —— 不需要淡红 */
   background: var(--wd-bg);
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-ink-2);
 }
 .wd-command__footer span {

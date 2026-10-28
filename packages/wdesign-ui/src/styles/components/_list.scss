@@ -43,11 +43,11 @@
 .wd-list-item__title {
   flex: 1;
   min-width: 0;
-  font-size: 14.5px;
+  font-size: var(--wd-fs-body);
   font-weight: var(--wd-fw-medium);
   @include m.truncate;
 }
-.wd-list-item__meta { font-size: 13px; color: var(--wd-ink-2); }
+.wd-list-item__meta { font-size: var(--wd-fs-caption); color: var(--wd-ink-2); }
 /* ---- 微交互（精致版）---- */
 .wd-list-item__icon {
   transition: transform var(--wd-dur) var(--wd-ease-out), background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);

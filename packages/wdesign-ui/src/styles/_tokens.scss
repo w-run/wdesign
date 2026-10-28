@@ -208,17 +208,11 @@ $wd-space-16: 64px !default;
 // 字体栈：WDesignSans 优先（WIP，可先用），Mona Sans / 系统中文字体兜底
 $wd-font-family: "WDesignSans Latin", "WDesignSans CJK Symbol", "WDesignSans GB2312", "WDesignSans GB2312 Extra", "WDesignSans BIG5", "WDesignSans BIG5 Extra", "WDesignSans JIS", "Mona Sans", "Source Han Sans SC", "PingFang SC", -apple-system, BlinkMacSystemFont, "Inter", sans-serif !default;
 $wd-font-mono:   "Monaspace Neon", "Source Han Sans Mono-ish", ui-monospace, "SF Mono", Menlo, Consolas, monospace !default; // 等宽：Monaspace Neon（此前写的 "Mona Sans Mono" 并不存在，一直在回落系统字体）
-$wd-fs-display:  56px !default; // 800
-$wd-fs-h1:       32px !default; // 800
-$wd-fs-h2:       24px !default; // 700
-$wd-fs-h3:       18px !default; // 600
 $wd-fs-lg:       16px !default; // 大控件文字
-$wd-fs-body:     15.5px !default; // 400
 $wd-fs-ui-lg:    14.5px !default; // 主控件文字（按钮 / 输入 / 下拉）
 $wd-fs-ui:       14px !default;   // 控件标签文字
 $wd-fs-caption:  13px !default; // 400 · $wd-ink-2
 $wd-fs-sm:       12.5px !default; // 辅助（角标内的说明）
-$wd-fs-xs:       11.5px !default; // 微标注（步骤标签 / 徽标）
 
 // --- 控件尺寸档位（sm / md / lg）· 供 button / input / select / tag 复用
 $wd-size-sm: 34px !default;
@@ -258,14 +252,31 @@ $wd-fw-black: 780 !default;     // 首屏大标题（仅此一处）
 
 /*
  * 标题阶梯：与正文拉开明确倍数（正文 14.5）。
- *   display 40~56 / heading 17 / body 14.5 / label 12.5
+ *   display 40~56 / title 28 / heading 18 / body 14.5 / label 12.5 / xs 11.5
  * 之前页面标题 30~40、卡片标题 15，跟正文 13.5 只差 1.1 倍，整页没有主次。
+ *
+ * ⚠️ 2026-10-24 修复：这组值此前在文件上方被**重复定义过一次**，
+ *    而 SCSS 变量的 `!default` 是"先定义者胜"—— 上面那份 56px / 15.5px
+ *    一直生效，下面的 clamp / 14.5px 从未被读取过。
+ *    后果：页面标题写死 56px（窄屏溢出）、正文比设计稿大 1px。
+ *    这属于 AGENTS.md 明令禁止的"静默失效"，由 check-tokens 巡检发现。
  */
-$wd-fs-display: clamp(40px, 3.4vw, 56px) !default;
-$wd-fs-title: 28px !default;
-$wd-fs-heading: 18px !default;
-$wd-fs-body: 14.5px !default;
-$wd-fs-label: 12.5px !default;
+$wd-fs-display: clamp(40px, 3.4vw, 56px) !default; // 页面主标题（窄屏自动降档）
+$wd-fs-title: 28px !default;   // 区块标题
+$wd-fs-heading: 18px !default; // 卡片标题
+$wd-fs-body: 14.5px !default;  // 正文
+$wd-fs-label: 12.5px !default; // 辅助 / 次级说明
+$wd-fs-xs: 11.5px !default;    // 微标注（步骤标签 / 徽标）
+/*
+ * 极小档 —— 徽标与角标里的字。
+ *
+ * 为什么单独开两档而不是继续往下细分：角标只有 16~19px 高，
+ * 字号必须比正文小两档以上才不会撑破胶囊；但也不能无限细分，
+ * 档位一多，"哪个是哪个"就没人记得住，最后又是一堆裸值。
+ * 两档收口：micro（10.5，徽标）+ nano（9.5，超小角标 / 剧集角标）。
+ */
+$wd-fs-micro: 10.5px !default; // 徽标内文字
+$wd-fs-nano: 9.5px !default;   // 超小角标（分段控件角标 / 剧集标签）
 
 /*
  * 选中态分两档 —— 用途不同，不能共用一个值：

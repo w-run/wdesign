@@ -43,7 +43,7 @@
   cursor: grab;
 }
 .wd-sortable__item--drag .wd-sortable__handle { cursor: grabbing; }
-.wd-sortable__label { font-size: 14px; font-weight: var(--wd-fw-medium); }
+.wd-sortable__label { font-size: var(--wd-fs-ui); font-weight: var(--wd-fw-medium); }
 
 /* 拖动过程中悬浮镜像 */
 .wd-sortable__clone {

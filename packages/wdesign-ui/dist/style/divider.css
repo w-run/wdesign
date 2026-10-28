@@ -30,7 +30,7 @@
 
 .wd-divider__text {
   flex: none;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink-2);
   white-space: nowrap;

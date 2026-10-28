@@ -138,7 +138,7 @@ const threads = [
 }
 
 .threads__text {
-  font-size: var(--wd-fs-sm);
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
   white-space: nowrap;
   overflow: hidden;
@@ -147,7 +147,7 @@ const threads = [
 
 .threads__time {
   flex: none;
-  font-size: var(--wd-fs-sm);
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-3);
 }
 </style>

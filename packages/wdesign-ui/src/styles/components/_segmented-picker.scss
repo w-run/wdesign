@@ -25,7 +25,7 @@
   width: 100%;
   padding: 0.65rem 0.9rem 0.65rem 1rem;
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink);
   background: var(--wd-field);
@@ -51,7 +51,7 @@
   @include m.truncate;
 }
 .wd-segmented-picker__meta {
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   font-variant-numeric: tabular-nums;
@@ -99,7 +99,7 @@
   width: 100%;
   padding: 0.5rem 0.7rem;
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   text-align: left;
   color: var(--wd-ink);

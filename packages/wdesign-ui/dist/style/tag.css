@@ -6,7 +6,7 @@
   height: 28px;
   padding: 0 14px;
   border-radius: var(--wd-radius-pill);
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   line-height: 1.2;
   white-space: nowrap;
@@ -15,13 +15,13 @@
 .wd-tag--lg {
   height: 36px;
   padding: 0 20px;
-  font-size: var(--wd-font-size-md);
+  font-size: var(--wd-fs-body);
 }
 
 .wd-tag--sm {
   height: 22px;
   padding: 0 10px;
-  font-size: var(--wd-font-size-sm);
+  font-size: var(--wd-fs-caption);
 }
 
 /* 话题 / 分类：主题淡红（红在这里是"品牌标签"，不是错误） */

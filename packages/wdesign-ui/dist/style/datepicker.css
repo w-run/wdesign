@@ -37,7 +37,7 @@
   /* 胶囊：与 Input / Select 一致（本库可点击控件优先 pill） */
   border-radius: var(--wd-radius-pill);
   font: inherit;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   color: var(--wd-ink);
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
@@ -45,13 +45,13 @@
 .wd-datepicker--sm .wd-datepicker__trigger {
   height: var(--wd-size-sm);
   padding: 0 14px;
-  font-size: var(--wd-font-size-sm);
+  font-size: var(--wd-fs-caption);
 }
 
 .wd-datepicker--lg .wd-datepicker__trigger {
   height: var(--wd-size-lg);
   padding: 0 22px;
-  font-size: var(--wd-font-size-lg);
+  font-size: var(--wd-fs-lg);
 }
 
 @media (hover: hover) {
@@ -91,7 +91,7 @@
 /* Teleport 到 body：定位由 JS 计算 */
 .wd-datepicker__panel {
   position: absolute; /* 文档坐标：JS 已加上 scrollX/scrollY */
-  z-index: 1200;
+  z-index: var(--wd-z-popover);
   display: none;
   /* 固定 286 = Calendar sm（284）+ 左右各 1px 边框。
      ⚠️ 不能写 auto：面板是 absolute，宽度会退化成 shrink-to-fit，

@@ -117,7 +117,7 @@
 .wd-modal__title {
   flex: 1;
   min-width: 0;
-  font-size: 17px;
+  font-size: var(--wd-fs-heading);
   font-weight: var(--wd-fw-bold);
   letter-spacing: -.015em;
   line-height: 1.35;
@@ -163,7 +163,7 @@
 }
 
 .wd-modal__body {
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   line-height: 1.7;
   color: var(--wd-ink-2);
 }

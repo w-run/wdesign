@@ -78,7 +78,7 @@
 }
 
 .wd-colorpicker__value {
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   font-variant-numeric: tabular-nums;
   color: var(--wd-ink);
@@ -187,7 +187,7 @@
 
 .wd-colorpicker__field > span {
   flex: none;
-  font-size: 10.5px;
+  font-size: var(--wd-fs-micro);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-3);
   letter-spacing: .04em;
@@ -200,7 +200,7 @@
   background: transparent;
   color: var(--wd-ink);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   outline: none;

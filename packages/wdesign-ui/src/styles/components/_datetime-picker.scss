@@ -35,14 +35,14 @@
   border-radius: var(--wd-radius-pill);
   background: var(--wd-field);
   color: var(--wd-ink);
-  font-size: var(--wd-font-size-md);
+  font-size: var(--wd-fs-body);
   font-variant-numeric: tabular-nums;
 }
 
 .wd-datetime-picker--sm .wd-datetime-picker__field {
   height: var(--wd-size-sm);
   min-width: 200px;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
 }
 
 .wd-datetime-picker__text {
@@ -126,7 +126,7 @@
 }
 
 .wd-datetime-picker__side-label {
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   letter-spacing: .04em;
   /* 分组小标题，属于信息层级而不是装饰 */

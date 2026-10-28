@@ -9,7 +9,7 @@
 // =============================================================
 
 .wd-markdown {
-  font-size: 15.5px;
+  font-size: var(--wd-fs-body);
   line-height: 1.75;
   color: var(--wd-ink);
   word-wrap: break-word;
@@ -19,6 +19,8 @@
   > :first-child { margin-top: 0; }
 
   // ---- 标题
+  /* 标题用 rem 相对量级（2rem / 1.55rem / …），按倍数跟随根字号缩放 ——
+     属于「与正文同比例的层级」而非独立字阶，故不套 var(--wd-fs-*) 绝对令牌 */
   h1, h2, h3, h4, h5, h6 {
     margin: 1.6em 0 .6em;
     font-weight: var(--wd-fw-bold);
@@ -51,6 +53,8 @@
 /* JS 增强（addHover）：同一份声明，由 .is-hover 驱动，不受 hover 媒体查询限制 */
 a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hover); }
 
+  /* 行内 em 量级（small / code / kbd / 上下标）必须保持相对父级 ——
+     套绝对令牌会脱离正文的缩放比例，不属于文本字阶 */
   strong, b { font-weight: var(--wd-fw-semibold); }
   em { font-style: italic; }
   mark { padding: .05em .35em; border-radius: 6px; background: var(--wd-mark-bg); color: inherit; }
@@ -77,7 +81,7 @@ a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hov
     color: var(--wd-on-dark-text);
     border-radius: var(--wd-radius-md);
     overflow: auto;
-    font-size: 13.5px;
+    font-size: var(--wd-fs-caption);
     line-height: 1.7;
     code { padding: 0; background: transparent; border-radius: 0; color: inherit; font-size: inherit; white-space: pre; }
   }
@@ -151,13 +155,13 @@ a.is-hover { color: var(--wd-red-hover); text-decoration-color: var(--wd-red-hov
     margin: 0 0 1.25em;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 14.5px;
+    font-size: var(--wd-fs-body);
     background: var(--wd-card);
     border-radius: var(--wd-radius-sm);
     overflow: hidden;
     box-shadow: var(--wd-shadow);
     th, td { padding: 11px 16px; text-align: left; }
-    thead th { background: var(--wd-field); font-size: 13px; font-weight: var(--wd-fw-semibold); color: var(--wd-ink); }
+    thead th { background: var(--wd-field); font-size: var(--wd-fs-caption); font-weight: var(--wd-fw-semibold); color: var(--wd-ink); }
     tbody tr:nth-child(even) { background: var(--wd-bg); }
 @media (hover: hover) {
   tbody tr:hover {
@@ -181,7 +185,7 @@ tbody tr.is-hover { background: var(--wd-tint-1); }
   // ---- 图片 / 图注
   img { max-width: 100%; height: auto; border-radius: var(--wd-radius-md); background: var(--wd-bg); }
   figure { margin: 0 0 1.25em; }
-  figcaption { margin-top: 8px; font-size: 12.5px; color: var(--wd-ink-2); text-align: center; }
+  figcaption { margin-top: 8px; font-size: var(--wd-fs-label); color: var(--wd-ink-2); text-align: center; }
 
   // ---- 定义列表
   dl { margin: 0 0 1.25em; }

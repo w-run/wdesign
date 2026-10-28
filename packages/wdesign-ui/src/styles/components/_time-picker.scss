@@ -29,7 +29,7 @@
   background: var(--wd-field);
   color: var(--wd-ink);
   font: inherit;
-  font-size: var(--wd-font-size-md);
+  font-size: var(--wd-fs-body);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-smooth), box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
@@ -38,7 +38,7 @@
 .wd-time-picker--sm .wd-time-picker__trigger {
   height: var(--wd-size-sm);
   min-width: 140px;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
 }
 
 @media (hover: hover) {
@@ -105,7 +105,7 @@
 }
 
 .wd-time-picker__sep {
-  font-size: 15px;
+  font-size: var(--wd-fs-body);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-3);
   padding-bottom: 2px;
@@ -155,7 +155,7 @@
   background: transparent;
   color: var(--wd-ink-2);
   font: inherit;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-medium);
   font-variant-numeric: tabular-nums;
   cursor: pointer;

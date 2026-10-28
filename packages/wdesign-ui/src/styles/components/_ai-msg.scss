@@ -9,7 +9,7 @@
   border-radius: 50%;
   background: var(--wd-field);
   color: var(--wd-ink-2);
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-bold);
   display: flex;
   align-items: center;
@@ -37,7 +37,7 @@
   align-items: center;
   gap: 5px;
   margin-bottom: 8px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
 }
 .wd-ai-msg__thinking i {
@@ -56,7 +56,7 @@
 
 .wd-ai-msg__text {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;
@@ -89,7 +89,7 @@
   background: transparent;
   cursor: pointer;
   font: inherit;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   text-align: left;
   color: var(--wd-ink-2);
@@ -105,7 +105,7 @@
 
 .wd-ai-msg__reasoning-spark { color: var(--wd-ink-3); flex: none; }
 .wd-ai-msg__reasoning-title { color: var(--wd-ink); }
-.wd-ai-msg__reasoning-state { margin-left: auto; font-size: 11.5px; font-weight: var(--wd-fw-medium); color: var(--wd-ink-2); }
+.wd-ai-msg__reasoning-state { margin-left: auto; font-size: var(--wd-fs-xs); font-weight: var(--wd-fw-medium); color: var(--wd-ink-2); }
 
 .wd-ai-msg__reasoning-body {
   display: grid;
@@ -117,7 +117,7 @@
 .wd-ai-msg__reasoning-text {
   margin: 0;
   padding: 0 14px 12px;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   line-height: 1.7;
   color: var(--wd-ink-2);
   white-space: pre-wrap;

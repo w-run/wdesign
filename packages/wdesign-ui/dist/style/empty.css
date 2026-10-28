@@ -20,13 +20,13 @@
 }
 
 .wd-empty__title {
-  font-size: 15px;
+  font-size: var(--wd-fs-body);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink);
 }
 
 .wd-empty__desc {
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
   max-width: 320px;
 }

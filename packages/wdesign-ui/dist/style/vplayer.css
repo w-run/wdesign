@@ -28,7 +28,7 @@
   color: var(--wd-on-dark-text);
   /* 播放器内部不再继承页面字体，避免外部 line-height 影响垂直居中 */
   line-height: 1.4;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   user-select: none;
 }
 
@@ -157,7 +157,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: var(--wd-fw-medium);
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-on-dark-text);
 }
 
@@ -180,7 +180,7 @@
   border-radius: 999px;
   background: var(--wd-red);
   color: #fff;
-  font-size: 11px;
+  font-size: var(--wd-fs-xs);
   font-weight: var(--wd-fw-semibold);
   letter-spacing: 0.02em;
 }
@@ -399,7 +399,7 @@
 }
 
 .wd-vplayer__btn--text {
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   font-variant-numeric: tabular-nums;
   padding: 0 7px;
@@ -408,7 +408,7 @@
 /* 播放三角的视觉补偿已修正到图标本身（play.svg），此处不再需要 transform */
 .wd-vplayer__time {
   margin-left: 6px;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-on-dark);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -555,7 +555,7 @@
   background: transparent;
   color: var(--wd-on-dark-2);
   font: inherit;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   text-align: left;
   cursor: pointer;
   white-space: nowrap;
@@ -600,7 +600,7 @@
 .wd-vplayer__eps-head {
   flex: none;
   padding: 10px 12px 8px;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-on-dark);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -624,7 +624,7 @@
   background: rgba(255, 255, 255, 0.08);
   color: var(--wd-on-dark-2);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -652,7 +652,7 @@
   top: 0;
   right: 0;
   padding: 0 3px;
-  font-size: 9px;
+  font-size: var(--wd-fs-nano);
   font-style: normal;
   line-height: 1.5;
   background: rgba(0, 0, 0, 0.45);
@@ -723,7 +723,7 @@
   gap: 8px;
   background: rgba(0, 0, 0, 0.72);
   color: var(--wd-on-dark-text);
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
 }
 
 /* 弹幕开关的关闭态：文字变灰，与"已开启"区分 */
@@ -794,7 +794,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 12px 12px 10px 14px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-on-dark-text);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -865,7 +865,7 @@
   background: transparent;
   color: var(--wd-on-dark-2);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   text-align: left;
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
@@ -876,7 +876,7 @@
   flex: none;
   min-width: 26px;
   font-family: var(--wd-font-mono);
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   color: var(--wd-on-dark-3);
   text-align: right;
 }
@@ -933,7 +933,7 @@
   background: rgba(255, 255, 255, 0.07);
   color: var(--wd-on-dark-2);
   font: inherit;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   cursor: pointer;
   transition: background var(--wd-dur-fast) var(--wd-ease-out), color var(--wd-dur-fast) var(--wd-ease-out);
 }
@@ -962,7 +962,7 @@
   background: rgba(255, 255, 255, 0.07);
   color: var(--wd-on-dark-2);
   font: inherit;
-  font-size: 12px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
   white-space: nowrap;
   overflow: hidden;

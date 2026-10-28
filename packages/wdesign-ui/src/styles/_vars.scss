@@ -117,17 +117,11 @@
   --wd-logo-filter:       #{$wd-logo-filter};
   --wd-logo-opacity:      #{$wd-logo-opacity};
 
-  --wd-fs-display: #{$wd-fs-display};
-  --wd-fs-h1:      #{$wd-fs-h1};
-  --wd-fs-h2:      #{$wd-fs-h2};
-  --wd-fs-h3:      #{$wd-fs-h3};
   --wd-fs-lg:      #{$wd-fs-lg};
-  --wd-fs-body:    #{$wd-fs-body};
   --wd-fs-ui-lg:   #{$wd-fs-ui-lg};
   --wd-fs-ui:      #{$wd-fs-ui};
   --wd-fs-caption: #{$wd-fs-caption};
   --wd-fs-sm:      #{$wd-fs-sm};
-  --wd-fs-xs:      #{$wd-fs-xs};
   --wd-size-sm: #{$wd-size-sm};
   --wd-size-md: #{$wd-size-md};
   --wd-size-lg: #{$wd-size-lg};
@@ -149,6 +143,9 @@
   --wd-fs-heading: #{$wd-fs-heading};
   --wd-fs-body:    #{$wd-fs-body};
   --wd-fs-label:   #{$wd-fs-label};
+  --wd-fs-xs:      #{$wd-fs-xs};
+  --wd-fs-micro:   #{$wd-fs-micro};
+  --wd-fs-nano:    #{$wd-fs-nano};
 
   --wd-danger:      #{$wd-danger};
   --wd-danger-soft: #{$wd-danger-soft};

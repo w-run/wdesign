@@ -34,14 +34,14 @@
 }
 
 .wd-result__title {
-  font-size: 19px;
+  font-size: var(--wd-fs-heading);
   font-weight: var(--wd-fw-bold);
   letter-spacing: -0.01em;
 }
 
 .wd-result__desc {
   margin-top: 8px;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   color: var(--wd-ink-2);
   max-width: 440px;
 }

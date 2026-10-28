@@ -1,6 +1,6 @@
 @charset "UTF-8";
 .wd-markdown {
-  font-size: 15.5px;
+  font-size: var(--wd-fs-body);
   line-height: 1.75;
   color: var(--wd-ink);
   word-wrap: break-word;
@@ -12,6 +12,10 @@
 }
 .wd-markdown > :first-child {
   margin-top: 0;
+}
+.wd-markdown {
+  /* 标题用 rem 相对量级（2rem / 1.55rem / …），按倍数跟随根字号缩放 ——
+     属于「与正文同比例的层级」而非独立字阶，故不套 var(--wd-fs-*) 绝对令牌 */
 }
 .wd-markdown h1, .wd-markdown h2, .wd-markdown h3, .wd-markdown h4, .wd-markdown h5, .wd-markdown h6 {
   margin: 1.6em 0 0.6em;
@@ -61,6 +65,10 @@
 .wd-markdown a.is-hover {
   color: var(--wd-red-hover);
   text-decoration-color: var(--wd-red-hover);
+}
+.wd-markdown {
+  /* 行内 em 量级（small / code / kbd / 上下标）必须保持相对父级 ——
+     套绝对令牌会脱离正文的缩放比例，不属于文本字阶 */
 }
 .wd-markdown strong, .wd-markdown b {
   font-weight: var(--wd-fw-semibold);
@@ -112,7 +120,7 @@
   color: var(--wd-on-dark-text);
   border-radius: var(--wd-radius-md);
   overflow: auto;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   line-height: 1.7;
 }
 .wd-markdown pre code {
@@ -204,7 +212,7 @@
   margin: 0 0 1.25em;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 14.5px;
+  font-size: var(--wd-fs-body);
   background: var(--wd-card);
   border-radius: var(--wd-radius-sm);
   overflow: hidden;
@@ -216,7 +224,7 @@
 }
 .wd-markdown table thead th {
   background: var(--wd-field);
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink);
 }
@@ -250,7 +258,7 @@
 }
 .wd-markdown figcaption {
   margin-top: 8px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   color: var(--wd-ink-2);
   text-align: center;
 }

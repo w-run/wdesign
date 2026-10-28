@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .wd-image-preview {
   display: inline-flex;
   cursor: zoom-in;
@@ -12,7 +13,7 @@
 .wd-preview {
   position: fixed;
   inset: 0;
-  z-index: 1300;
+  z-index: var(--wd-z-modal);
 }
 
 .wd-preview__mask {
@@ -53,6 +54,9 @@
   box-shadow: var(--wd-shadow-pop);
 }
 
+/* 17px：工具条按钮是操作符号（‹ ↻ − ＋ 1:1）的字形尺寸，
+   不是数据展示大数字，也不属于文本字阶 —— 保留独立数值 */
+/* check-type-scale: ignore */
 .wd-preview__btn {
   font-size: 17px;
 }
@@ -66,7 +70,7 @@
   background: var(--wd-mask);
   color: #fff;
   border-radius: 999px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-medium);
 }
 

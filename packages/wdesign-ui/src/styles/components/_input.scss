@@ -9,12 +9,12 @@
   background: var(--wd-field);
   border-radius: var(--wd-radius-pill);
   color: var(--wd-ink);
-  font-size: var(--wd-font-size-md);
+  font-size: var(--wd-fs-body);
   transition: box-shadow var(--wd-dur-fast) var(--wd-ease-smooth);
 }
 .wd-input--rounded { border-radius: var(--wd-radius-md); }
-.wd-input--lg { height: var(--wd-size-lg); padding: 0 28px; font-size: var(--wd-font-size-lg); }
-.wd-input--sm { height: var(--wd-size-sm); padding: 0 14px; font-size: var(--wd-font-size-sm); }
+.wd-input--lg { height: var(--wd-size-lg); padding: 0 28px; font-size: var(--wd-fs-lg); }
+.wd-input--sm { height: var(--wd-size-sm); padding: 0 14px; font-size: var(--wd-fs-caption); }
 .wd-input:focus-within {
   /* 静态红环；呼吸由 _base.scss 的全局规则统一施加 */
   box-shadow: 0 0 0 4px var(--wd-focus-ring-soft);
@@ -67,7 +67,7 @@
 /* ---- 字数统计 ---- */
 .wd-input__count {
   flex: none;
-  font-size: 11.5px;
+  font-size: var(--wd-fs-xs);
   font-variant-numeric: tabular-nums;
   color: var(--wd-ink-2);
   font-family: var(--wd-font-mono);

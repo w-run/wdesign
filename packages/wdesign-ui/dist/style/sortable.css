@@ -64,14 +64,14 @@
 }
 
 .wd-sortable__label {
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   font-weight: var(--wd-fw-medium);
 }
 
 /* 拖动过程中悬浮镜像 */
 .wd-sortable__clone {
   position: fixed;
-  z-index: 9999;
+  z-index: var(--wd-z-drag);
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -108,7 +108,7 @@
   height: 2px;
   background: var(--wd-red);
   border-radius: 999px;
-  z-index: 1000;
+  z-index: var(--wd-z-popover);
 }
 
 /* transition 动画 */

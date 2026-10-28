@@ -27,12 +27,12 @@
   min-width: max-content;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
 }
 .wd-table th {
   padding: 13px 16px;
   text-align: left;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
   font-weight: var(--wd-fw-semibold);
   color: var(--wd-ink-2);
   background: var(--wd-bg);
@@ -65,7 +65,7 @@
 .wd-table__empty {
   padding: 42px 20px;
   text-align: center;
-  font-size: 13.5px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 
@@ -154,7 +154,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
   background: color-mix(in srgb, var(--wd-card) 55%, transparent);
   border-radius: inherit;
@@ -191,7 +191,7 @@
 .wd-table--sm th,
 .wd-table--sm td {
   padding: 9px 12px;
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
 }
 
 /* ---------------- 固定列 ---------------- */
@@ -359,11 +359,11 @@
 
 .wd-table__expand-cell {
   padding: 14px 18px !important;
-  font-size: 13px;
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 
 .wd-table__expand-empty {
   color: var(--wd-ink-3);
-  font-size: 12.5px;
+  font-size: var(--wd-fs-label);
 }

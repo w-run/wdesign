@@ -143,7 +143,7 @@ const people = [
 }
 
 .people__role {
-  font-size: var(--wd-fs-sm);
+  font-size: var(--wd-fs-caption);
   color: var(--wd-ink-2);
 }
 </style>

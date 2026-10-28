@@ -18,7 +18,7 @@
   border: 0;
   background: transparent;
   font: inherit;
-  font-size: 14.5px;
+  font-size: var(--wd-fs-body);
   font-weight: var(--wd-fw-medium);
   color: var(--wd-ink);
   cursor: pointer;
@@ -42,7 +42,7 @@
 .wd-collapse__inner { overflow: hidden; }
 .wd-collapse__content {
   padding: 0 20px 18px;
-  font-size: 14px;
+  font-size: var(--wd-fs-ui);
   line-height: 1.65;
   color: var(--wd-ink-2);
   opacity: 1;
